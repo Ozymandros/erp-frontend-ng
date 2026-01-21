@@ -3,12 +3,14 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { ApiResponse, ProblemDetails } from '@/app/types/api.types';
+import { environment } from '@/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiClientService {
   private authToken: string | null = null;
+  private baseUrl = environment.apiBaseUrl;
 
   constructor(private http: HttpClient) {}
 
@@ -16,40 +18,55 @@ export class ApiClientService {
     this.authToken = token;
   }
 
+  private getFullUrl(url: string): string {
+    if (url.startsWith('http') || !this.baseUrl) {
+      return url;
+    }
+    // Avoid double slashes if baseUrl has one and url has one
+    const base = this.baseUrl.endsWith('/') ? this.baseUrl.slice(0, -1) : this.baseUrl;
+    const path = url.startsWith('/') ? url : `/${url}`;
+    return `${base}${path}`;
+  }
+
   get<T>(url: string, params?: any): Observable<T> {
+    const fullUrl = this.getFullUrl(url);
     const options = {
       headers: this.getHeaders(),
       params: this.buildParams(params)
     };
     
-    return this.http.get<ApiResponse<T>>(url, options).pipe(
+    return this.http.get<ApiResponse<T>>(fullUrl, options).pipe(
       map(response => this.handleResponse(response)),
       catchError(error => this.handleError(error))
     );
   }
 
+
   post<T>(url: string, data?: any): Observable<T> {
+    const fullUrl = this.getFullUrl(url);
     const options = { headers: this.getHeaders() };
     
-    return this.http.post<ApiResponse<T>>(url, data, options).pipe(
+    return this.http.post<ApiResponse<T>>(fullUrl, data, options).pipe(
       map(response => this.handleResponse(response)),
       catchError(error => this.handleError(error))
     );
   }
 
   put<T>(url: string, data?: any): Observable<T> {
+    const fullUrl = this.getFullUrl(url);
     const options = { headers: this.getHeaders() };
     
-    return this.http.put<ApiResponse<T>>(url, data, options).pipe(
+    return this.http.put<ApiResponse<T>>(fullUrl, data, options).pipe(
       map(response => this.handleResponse(response)),
       catchError(error => this.handleError(error))
     );
   }
 
   delete<T>(url: string): Observable<T> {
+    const fullUrl = this.getFullUrl(url);
     const options = { headers: this.getHeaders() };
     
-    return this.http.delete<ApiResponse<T>>(url, options).pipe(
+    return this.http.delete<ApiResponse<T>>(fullUrl, options).pipe(
       map(response => this.handleResponse(response)),
       catchError(error => this.handleError(error))
     );
