@@ -1,0 +1,13 @@
+
+[1A[2K[WebServer] Node.js version v25.2.1 detected.
+[WebServer] Odd numbered Node.js versions will not enter LTS status and should not be used for production. For more information, please see https://nodejs.org/en/about/previous-releases/.
+
+[1A[2K[WebServer] - Building...
+[WebServer] 
+Error: Timed out waiting 300000ms from config.webServer.
+
+[1A[2K
+To open last HTML report run:
+[36m[39m
+[36m  pnpm exec playwright show-report[39m
+[36m[39m

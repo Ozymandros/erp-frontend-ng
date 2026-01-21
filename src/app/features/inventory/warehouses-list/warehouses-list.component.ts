@@ -1,0 +1,152 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { InventoryService } from '@/app/core/services/inventory.service';
+import { WarehouseDto } from '@/app/types/api.types';
+
+@Component({
+  selector: 'app-warehouses-list',
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterLink,
+    FormsModule,
+    NzTableModule,
+    NzButtonModule,
+    NzInputModule,
+    NzIconModule,
+    NzTagModule,
+    NzPopconfirmModule,
+    NzCardModule
+  ],
+  template: `
+    <div class="page-header" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+      <h1>Warehouses Management</h1>
+      <button nz-button nzType="primary" routerLink="/inventory/warehouses/new">
+        <i nz-icon nzType="plus"></i> Add Warehouse
+      </button>
+    </div>
+
+    <nz-card>
+      <div style="margin-bottom: 16px; display: flex; gap: 16px;">
+        <nz-input-group [nzPrefix]="prefixIconSearch">
+          <input type="text" nz-input placeholder="Search warehouses..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" />
+        </nz-input-group>
+        <ng-template #prefixIconSearch>
+          <i nz-icon nzType="search"></i>
+        </ng-template>
+      </div>
+
+      <nz-table
+        #basicTable
+        [nzData]="warehouses"
+        [nzLoading]="loading"
+        [nzTotal]="total"
+        [(nzPageIndex)]="pageIndex"
+        [(nzPageSize)]="pageSize"
+        [nzFrontPagination]="false"
+        (nzPageIndexChange)="loadWarehouses()"
+        (nzPageSizeChange)="loadWarehouses()"
+      >
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Status</th>
+            <th>Created At</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of basicTable.data">
+            <td><strong>{{ data.name }}</strong></td>
+            <td>{{ data.location || '-' }}</td>
+            <td>
+              <nz-tag [nzColor]="data.isActive ? 'success' : 'error'">
+                {{ data.isActive ? 'Active' : 'Inactive' }}
+              </nz-tag>
+            </td>
+            <td>{{ data.createdAt | date:'short' }}</td>
+            <td>
+              <a [routerLink]="['/inventory/warehouses', data.id]" style="margin-right: 8px;">Edit</a>
+              <a
+                nz-popconfirm
+                nzPopconfirmTitle="Are you sure delete this warehouse?"
+                (nzOnConfirm)="deleteWarehouse(data.id)"
+                nzPopconfirmPlacement="left"
+                style="color: #ff4d4f;"
+              >Delete</a>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-card>
+  `,
+  styles: [`
+    h1 {
+      margin: 0;
+    }
+  `]
+})
+export class WarehousesListComponent implements OnInit {
+  warehouses: WarehouseDto[] = [];
+  loading = true;
+  total = 0;
+  pageIndex = 1;
+  pageSize = 10;
+  searchTerm = '';
+
+  constructor(
+    private inventoryService: InventoryService,
+    private message: NzMessageService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadWarehouses();
+  }
+
+  loadWarehouses(): void {
+    this.loading = true;
+    this.inventoryService.getWarehouses({
+      page: this.pageIndex,
+      pageSize: this.pageSize,
+      search: this.searchTerm
+    }).subscribe({
+      next: (response) => {
+        this.warehouses = response.items;
+        this.total = response.total;
+        this.loading = false;
+      },
+      error: () => {
+        this.message.error('Failed to load warehouses');
+        this.loading = false;
+      }
+    });
+  }
+
+  onSearch(): void {
+    this.pageIndex = 1;
+    this.loadWarehouses();
+  }
+
+  deleteWarehouse(id: string): void {
+    this.inventoryService.deleteWarehouse(id).subscribe({
+      next: () => {
+        this.message.success('Warehouse deleted successfully');
+        this.loadWarehouses();
+      },
+      error: () => {
+        this.message.error('Failed to delete warehouse');
+      }
+    });
+  }
+}

@@ -1,0 +1,121 @@
+Node.js version v25.2.1 detected.
+Odd numbered Node.js versions will not enter LTS status and should not be used for production. For more information, please see https://nodejs.org/en/about/previous-releases/.
+- Generating browser application bundles (phase: setup)...
+Ô£ö Browser application bundle generation complete.
+20 01 2026 17:27:26.163:INFO [karma-server]: Karma v6.4.4 server started at http://localhost:9876/
+20 01 2026 17:27:26.164:INFO [launcher]: Launching browsers ChromeHeadless with concurrency unlimited
+20 01 2026 17:27:26.167:INFO [launcher]: Starting browser ChromeHeadless
+20 01 2026 17:27:28.280:INFO [Chrome Headless 143.0.0.0 (Windows 10)]: Connected on socket VwSVZ9SIzVyf6Zl6AAAB with id 76930120
+Chrome Headless 143.0.0.0 (Windows 10): Executed 0 of 8[32m SUCCESS[39m (0 secs / 0 secs)
+[1A[2KChrome Headless 143.0.0.0 (Windows 10): Executed 1 of 8[32m SUCCESS[39m (0 secs / 0.057 secs)
+[1A[2KChrome Headless 143.0.0.0 (Windows 10): Executed 2 of 8[32m SUCCESS[39m (0 secs / 0.061 secs)
+[1A[2KChrome Headless 143.0.0.0 (Windows 10): Executed 3 of 8[32m SUCCESS[39m (0 secs / 0.063 secs)
+[1A[2KChrome Headless 143.0.0.0 (Windows 10): Executed 4 of 8[32m SUCCESS[39m (0 secs / 0.065 secs)
+[1A[2KChrome Headless 143.0.0.0 (Windows 10): Executed 5 of 8[32m SUCCESS[39m (0 secs / 0.067 secs)
+[1A[2KChrome Headless 143.0.0.0 (Windows 10): Executed 6 of 8[32m SUCCESS[39m (0 secs / 0.069 secs)
+[1A[2KERROR: [36m'API Error:', TypeError: Cannot read properties of null (reading 'success')
+TypeError: Cannot read properties of null (reading 'success')
+    at ApiClientService.handleResponse (http://localhost:9876/_karma_webpack_/webpack:/src/app/core/api/http-client.service.ts:85:18)
+    at call (http://localhost:9876/_karma_webpack_/webpack:/src/app/core/api/http-client.service.ts:53:28)
+    at onNext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/map.js:7:37)
+    at OperatorSubscriber._next (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/OperatorSubscriber.js:13:21)
+    at OperatorSubscriber.next (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:31:18)
+    at onNext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/map.js:7:24)
+    at OperatorSubscriber._next (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/OperatorSubscriber.js:13:21)
+    at OperatorSubscriber.next (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:31:18)
+    at onNext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/filter.js:6:128)
+    at OperatorSubscriber._next (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/OperatorSubscriber.js:13:21)[39m
+Chrome Headless 143.0.0.0 (Windows 10): Executed 6 of 8[32m SUCCESS[39m (0 secs / 0.069 secs)
+ERROR: 'API Error:', TypeError: Cannot read properties of null (reading 'success')
+TypeError: Cannot read properties of null (reading 'success')
+    at ApiClientService.handleResponse (http://localhost:9876/_karma_webpack_/webpack:/src/app/core/api/http-client.service.ts:85:18)
+    at call (http://localhost:9876/_karma_webpack_/webpack:/src/app/core/api/http-client.service.ts:53:28)
+    at onNext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/map.js:7:37)
+    at OperatorSubscriber._next (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/OperatorSubscriber.js:13:21)
+    at OperatorSubscriber.next (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:31:18)
+    at onNext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/map.js:7:24)
+    at OperatorSubscriber._next (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/OperatorSubscriber.js:13:21)
+    at OperatorSubscriber.next (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:31:18)
+    at onNext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/filter.js:6:128)
+    at OperatorSubscriber._next (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/OperatorSubscriber.js:13:21)
+[1A[2KChrome Headless 143.0.0.0 (Windows 10): Executed 7 of 8[32m SUCCESS[39m (0 secs / 0.085 secs)
+[1A[2KERROR: [36m'API Error:', Error: Unknown error occurred
+Error: Unknown error occurred
+    at ApiClientService.handleResponse (http://localhost:9876/_karma_webpack_/webpack:/src/app/core/api/http-client.service.ts:88:11)
+    at call (http://localhost:9876/_karma_webpack_/webpack:/src/app/core/api/http-client.service.ts:26:28)
+    at onNext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/map.js:7:37)
+    at OperatorSubscriber._next (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/OperatorSubscriber.js:13:21)
+    at OperatorSubscriber.next (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:31:18)
+    at onNext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/map.js:7:24)
+    at OperatorSubscriber._next (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/OperatorSubscriber.js:13:21)
+    at OperatorSubscriber.next (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:31:18)
+    at onNext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/filter.js:6:128)
+    at OperatorSubscriber._next (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/OperatorSubscriber.js:13:21)[39m
+Chrome Headless 143.0.0.0 (Windows 10): Executed 7 of 8[32m SUCCESS[39m (0 secs / 0.085 secs)
+ERROR: 'API Error:', Error: Unknown error occurred
+Error: Unknown error occurred
+    at ApiClientService.handleResponse (http://localhost:9876/_karma_webpack_/webpack:/src/app/core/api/http-client.service.ts:88:11)
+    at call (http://localhost:9876/_karma_webpack_/webpack:/src/app/core/api/http-client.service.ts:26:28)
+    at onNext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/map.js:7:37)
+    at OperatorSubscriber._next (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/OperatorSubscriber.js:13:21)
+    at OperatorSubscriber.next (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:31:18)
+    at onNext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/map.js:7:24)
+    at OperatorSubscriber._next (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/OperatorSubscriber.js:13:21)
+    at OperatorSubscriber.next (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:31:18)
+    at onNext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/filter.js:6:128)
+    at OperatorSubscriber._next (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/OperatorSubscriber.js:13:21)
+[1A[2KChrome Headless 143.0.0.0 (Windows 10): Executed 8 of 8[32m SUCCESS[39m (0 secs / 0.087 secs)
+[1A[2K[31mChrome Headless 143.0.0.0 (Windows 10) ERROR[39m
+  An error was thrown in afterAll
+  Error: Cannot read properties of null (reading 'success')
+      at errorFactory (http://localhost:9876/_karma_webpack_/webpack:/src/app/core/api/http-client.service.ts:101:31)
+      at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:51)
+      at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+      at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+      at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+      at Observable.subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:22:21)
+      at onError (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/catchError.js:14:31)
+      at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/OperatorSubscriber.js:23:21)
+      at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+      at OperatorSubscriber._next (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/OperatorSubscriber.js:16:33)
+  Error: Unknown error occurred
+      at errorFactory (http://localhost:9876/_karma_webpack_/webpack:/src/app/core/api/http-client.service.ts:101:31)
+      at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:51)
+      at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+      at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+      at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+      at Observable.subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:22:21)
+      at onError (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/catchError.js:14:31)
+      at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/OperatorSubscriber.js:23:21)
+      at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+      at OperatorSubscriber._next (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/OperatorSubscriber.js:16:33)
+Chrome Headless 143.0.0.0 (Windows 10): Executed 8 of 8[31m ERROR[39m (0 secs / 0.087 secs)
+Chrome Headless 143.0.0.0 (Windows 10) ERROR
+  An error was thrown in afterAll
+  Error: Cannot read properties of null (reading 'success')
+      at errorFactory (http://localhost:9876/_karma_webpack_/webpack:/src/app/core/api/http-client.service.ts:101:31)
+      at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:51)
+      at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+      at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+      at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+      at Observable.subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:22:21)
+      at onError (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/catchError.js:14:31)
+      at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/OperatorSubscriber.js:23:21)
+      at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+      at OperatorSubscriber._next (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/OperatorSubscriber.js:16:33)
+  Error: Unknown error occurred
+      at errorFactory (http://localhost:9876/_karma_webpack_/webpack:/src/app/core/api/http-client.service.ts:101:31)
+      at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:51)
+      at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+      at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+      at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+      at Observable.subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:22:21)
+      at onError (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/catchError.js:14:31)
+      at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/OperatorSubscriber.js:23:21)
+      at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+      at OperatorSubscriber._next (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/OperatorSubscriber.js:16:33)
+[1A[2KChrome Headless 143.0.0.0 (Windows 10): Executed 8 of 8[31m ERROR[39m (0.102 secs / 0.087 secs)
+Ô£ö Browser application bundle generation complete.
+[1A[2KChrome Headless 143.0.0.0 (Windows 10): Executed 8 of 8[31m ERROR[39m (0.106 secs / 0.087 secs)
+Ô£ö Browser application bundle generation complete.
+Ô£ö Browser application bundle generation complete.

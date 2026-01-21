@@ -1,0 +1,24 @@
+Node.js version v25.2.1 detected.
+Odd numbered Node.js versions will not enter LTS status and should not be used for production. For more information, please see https://nodejs.org/en/about/previous-releases/.
+- Building...
+
+Application bundle generation failed. [4.975 seconds]
+
+X [ERROR] Could not resolve "@ctrl/tinycolor"
+
+    node_modules/ng-zorro-antd/fesm2022/ng-zorro-antd-core-color.mjs:1:47:
+      1 Ôöé import { rgbToHsv, rgbToHex, inputToRGB } from '@ctrl/tinycolor';
+        ÔòÁ                                                ~~~~~~~~~~~~~~~~~
+
+  You can mark the path "@ctrl/tinycolor" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+
+
+X [ERROR] Could not resolve "@ctrl/tinycolor"
+
+    node_modules/ng-zorro-antd/fesm2022/ng-zorro-antd-core-config.mjs:5:26:
+      5 Ôöé import { TinyColor } from '@ctrl/tinycolor';
+        ÔòÁ                           ~~~~~~~~~~~~~~~~~
+
+  You can mark the path "@ctrl/tinycolor" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+
+

@@ -1,0 +1,30 @@
+// Import NG-Zorro styles
+@import "ng-zorro-antd/ng-zorro-antd.min.css";
+
+// NG-Zorro Theme Variables
+:root {
+  --ant-primary-color: #1890ff;
+  --ant-success-color: #52c41a;
+  --ant-warning-color: #faad14;
+  --ant-error-color: #f5222d;
+}
+
+// Global styles
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.85);
+  background-color: #f0f2f5;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}

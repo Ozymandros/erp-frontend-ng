@@ -1,0 +1,46 @@
+
+> temp-ng-project@0.0.0 build
+> ng build
+
+Node.js version v25.2.1 detected.
+Odd numbered Node.js versions will not enter LTS status and should not be used for production. For more information, please see https://nodejs.org/en/about/previous-releases/.
+- Building...
+
+Initial chunk files   | Names                    |  Raw size | Estimated transfer size
+styles-MKOJUF76.css   | styles                   | 555.12 kB |                53.35 kB
+chunk-AJQ4WBNA.js     | -                        | 202.17 kB |                57.24 kB
+chunk-T4ZT5XX5.js     | -                        |  74.39 kB |                19.67 kB
+chunk-TWTU6DGK.js     | -                        |  67.31 kB |                16.62 kB
+polyfills-FFHMD2TL.js | polyfills                |  33.71 kB |                11.02 kB
+chunk-XVTBLQ4G.js     | -                        |  11.21 kB |                 2.65 kB
+main-IMFC2SYV.js      | main                     |   3.14 kB |               993 bytes
+chunk-LW7YQY5Z.js     | -                        |   2.13 kB |               748 bytes
+chunk-OCXFE7BL.js     | -                        | 135 bytes |               135 bytes
+
+                      | Initial total            | 949.31 kB |               162.37 kB
+
+Lazy chunk files      | Names                    |  Raw size | Estimated transfer size
+chunk-PA72TCA4.js     | -                        | 126.31 kB |                29.81 kB
+chunk-JQFOVC25.js     | -                        |  93.39 kB |                17.31 kB
+chunk-OQPKXYXK.js     | -                        |  74.41 kB |                16.11 kB
+chunk-YI7GDJ6Y.js     | -                        |  69.92 kB |                16.48 kB
+chunk-UTYDWSO2.js     | -                        |  52.68 kB |                11.89 kB
+chunk-GTHUSE4L.js     | -                        |  32.91 kB |                 6.62 kB
+chunk-PK3IWMPC.js     | -                        |  28.53 kB |                 8.98 kB
+chunk-3MWL6B3D.js     | -                        |  18.46 kB |                 4.68 kB
+chunk-J67KQRO7.js     | app-layout-component     |  13.80 kB |                 3.43 kB
+chunk-XXFMH2AN.js     | -                        |  11.70 kB |                 3.00 kB
+chunk-4XA67LR4.js     | -                        |  11.24 kB |                 3.12 kB
+chunk-LTUNWO3T.js     | -                        |  11.19 kB |                 2.89 kB
+chunk-SU6WUGGQ.js     | -                        |   8.68 kB |                 2.60 kB
+chunk-SGOZFWYU.js     | dashboard-component      |   8.45 kB |                 2.34 kB
+chunk-EHXXZTSW.js     | product-detail-component |   5.99 kB |                 1.90 kB
+...and 27 more lazy chunks files. Use "--verbose" to show all the files.
+
+Output location: C:\Projects\ERP_ASPIRE_APP\erp-frontend-ng\dist\temp-ng-project
+
+Application bundle generation complete. [52.597 seconds]
+
+Ôû▓ [WARNING] bundle initial exceeded maximum budget. Budget 500.00 kB was not met by 449.31 kB with a total of 949.31 kB.
+
+

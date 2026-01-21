@@ -1,0 +1,79 @@
+
+> temp-ng-project@0.0.0 test
+> ng test --watch=false --browsers=ChromeHeadless
+
+Node.js version v25.2.1 detected.
+Odd numbered Node.js versions will not enter LTS status and should not be used for production. For more information, please see https://nodejs.org/en/about/previous-releases/.
+- Generating browser application bundles (phase: setup)...
+Ô£ö Browser application bundle generation complete.
+
+./src/app/test/e2e/auth.spec.ts - Error: Module build failed (from ./node_modules/@ngtools/webpack/src/ivy/index.js):
+Error: C:\Projects\ERP_ASPIRE_APP\erp-frontend-ng\src\app\test\e2e\auth.spec.ts is missing from the TypeScript compilation. Please make sure it is in your tsconfig via the 'files' or 'include' property.
+
+./src/app/test/e2e/inventory.spec.ts - Error: Module build failed (from ./node_modules/@ngtools/webpack/src/ivy/index.js):
+Error: C:\Projects\ERP_ASPIRE_APP\erp-frontend-ng\src\app\test\e2e\inventory.spec.ts is missing from the TypeScript compilation. Please make sure it is in your tsconfig via the 'files' or 'include' property.
+
+./src/app/test/e2e/purchasing.spec.ts - Error: Module build failed (from ./node_modules/@ngtools/webpack/src/ivy/index.js):
+Error: C:\Projects\ERP_ASPIRE_APP\erp-frontend-ng\src\app\test\e2e\purchasing.spec.ts is missing from the TypeScript compilation. Please make sure it is in your tsconfig via the 'files' or 'include' property.
+
+./src/app/test/e2e/sales.spec.ts - Error: Module build failed (from ./node_modules/@ngtools/webpack/src/ivy/index.js):
+Error: C:\Projects\ERP_ASPIRE_APP\erp-frontend-ng\src\app\test\e2e\sales.spec.ts is missing from the TypeScript compilation. Please make sure it is in your tsconfig via the 'files' or 'include' property.
+
+./src/app/test/e2e/users.spec.ts - Error: Module build failed (from ./node_modules/@ngtools/webpack/src/ivy/index.js):
+Error: C:\Projects\ERP_ASPIRE_APP\erp-frontend-ng\src\app\test\e2e\users.spec.ts is missing from the TypeScript compilation. Please make sure it is in your tsconfig via the 'files' or 'include' property.
+
+Error: src/app/features/auth/login/login.component.spec.ts:51:42 - error TS2345: Argument of type 'Observable<{ token: string; user: { id: string; email: string; role: string; username: string; }; }>' is not assignable to parameter of type 'Observable<AuthResponse>'.
+  Type '{ token: string; user: { id: string; email: string; role: string; username: string; }; }' is missing the following properties from type 'AuthResponse': accessToken, refreshToken, expiresIn, tokenType
+
+51     authServiceSpy.login.and.returnValue(of({ token: '123', user: { id: '1', email: 'test@example.com', role: 'ADMIN', username: 'test' } }));
+                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Error: src/app/features/auth/register/register.component.spec.ts:51:45 - error TS2345: Argument of type 'Observable<{ token: string; user: { id: string; email: string; role: string; username: string; }; }>' is not assignable to parameter of type 'Observable<AuthResponse>'.
+  Type '{ token: string; user: { id: string; email: string; role: string; username: string; }; }' is missing the following properties from type 'AuthResponse': accessToken, refreshToken, expiresIn, tokenType
+
+51     authServiceSpy.register.and.returnValue(of({ token: '123', user: { id: '1', email: 'test@example.com', role: 'USER', username: 'user' } }));
+                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Error: src/app/features/dashboard/dashboard.component.spec.ts:18:5 - error TS2353: Object literal may only specify known properties, and 'data' does not exist in type 'PaginatedResponse<any>'.
+
+18     data: [],
+       ~~~~
+
+
+Error: src/app/features/profile/profile.component.spec.ts:22:5 - error TS2561: Object literal may only specify known properties, but 'role' does not exist in type 'User'. Did you mean to write 'roles'?
+
+22     role: 'ADMIN',
+       ~~~~
+
+
+Error: src/app/features/users/users-list/users-list.component.spec.ts:17:5 - error TS2353: Object literal may only specify known properties, and 'data' does not exist in type 'PaginatedResponse<User>'.
+
+17     data: [
+       ~~~~
+
+
+Error: src/app/features/users/users-list/users-list.component.spec.ts:32:43 - error TS2339: Property 'data' does not exist on type 'PaginatedResponse<User>'.
+
+32   const mockResponse = { items: mockUsers.data, total: 1 };
+                                             ~~~~
+
+
+Error: src/app/layout/header/header.component.spec.ts:20:5 - error TS2561: Object literal may only specify known properties, but 'role' does not exist in type 'User'. Did you mean to write 'roles'?
+
+20     role: 'ADMIN',
+       ~~~~
+
+
+
+20 01 2026 18:58:15.505:INFO [karma-server]: Karma v6.4.4 server started at http://localhost:9876/
+20 01 2026 18:58:15.506:INFO [launcher]: Launching browsers ChromeHeadless with concurrency unlimited
+20 01 2026 18:58:15.506:ERROR [karma-server]: Error: Found 1 load error
+    at Server.<anonymous> (C:\Projects\ERP_ASPIRE_APP\erp-frontend-ng\node_modules\karma\lib\server.js:243:26)
+    at Object.onceWrapper (node:events:622:28)
+    at Server.emit (node:events:520:35)
+    at emitListeningNT (node:net:1983:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:88:21)
+Ô£ö Browser application bundle generation complete.
+Ô£ö Browser application bundle generation complete.

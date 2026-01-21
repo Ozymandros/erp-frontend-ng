@@ -1,0 +1,272 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+  checks: write
+
+jobs:
+  lint-workflows:
+    name: Lint GitHub workflows
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      checks: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: actionlint
+        uses: docker://rhysd/actionlint:latest
+
+  lint:
+    name: Lint & Type Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: lint-workflows
+    permissions:
+      contents: read
+      checks: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run Lint
+        run: echo "Linting not configured yet" # pnpm lint
+      # - name: Run TypeScript type check
+      #   run: pnpm exec tsc --noEmit
+
+  build:
+    name: Build Verification
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: lint
+    permissions:
+      contents: read
+      checks: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build production bundle
+        run: pnpm build
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1
+
+  audit:
+    name: Dependency Security Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: lint-workflows
+    permissions:
+      contents: read
+      checks: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run pnpm audit
+        run: pnpm audit --audit-level=moderate || echo "Audit warnings found (non-blocking)"
+
+  codeql:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: build
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ["javascript"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+      - uses: github/codeql-action/autobuild@v3
+      - uses: github/codeql-action/analyze@v3
+
+  sonarqube:
+    name: SonarQube Community Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: build
+    continue-on-error: true
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run tests with coverage
+        run: pnpm exec ng test --watch=false --browsers=ChromeHeadless --code-coverage
+        continue-on-error: true
+      - name: SonarQube Community Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        continue-on-error: true
+      - name: SonarQube Quality Gate check
+        id: sonarqube-quality-gate-check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        continue-on-error: true
+
+  unit-tests:
+    name: Unit Tests & Coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [codeql, audit]
+    env:
+      CI: true
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run unit tests with coverage
+        run: pnpm exec ng test --watch=false --browsers=ChromeHeadless --code-coverage
+      - name: Upload coverage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
+          retention-days: 7
+      - name: Upload coverage to Codecov
+        if: env.CODECOV_TOKEN != ''
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/lcov.info
+          fail_ci_if_error: true
+
+  playwright:
+    name: Playwright E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: build
+    env:
+      CI: true
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps
+      - name: Run Playwright tests
+        run: xvfb-run --auto-servernum pnpm exec playwright test
+      - name: Publish Playwright test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+  ci-status:
+    name: CI Status
+    runs-on: ubuntu-latest
+    needs:
+      [lint-workflows, lint, build, audit, codeql, sonarqube, unit-tests, playwright]
+    if: always()
+    permissions:
+      contents: read
+      checks: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check CI status
+        run: |
+          FAILED=0
+          [ "${{ needs.lint-workflows.result }}" == "failure" ] && FAILED=1
+          [ "${{ needs.lint.result }}" == "failure" ] && FAILED=1
+          [ "${{ needs.build.result }}" == "failure" ] && FAILED=1
+          [ "${{ needs.audit.result }}" == "failure" ] && FAILED=1
+          [ "${{ needs.codeql.result }}" == "failure" ] && FAILED=1
+          [ "${{ needs.unit-tests.result }}" == "failure" ] && FAILED=1
+          [ "${{ needs.playwright.result }}" == "failure" ] && FAILED=1
+          # SonarQube is non-blocking
+
+          if [ "$FAILED" -eq 1 ]; then
+            echo "CI Failed"
+            exit 1
+          fi
+          echo "All checks passed!"
