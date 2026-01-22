@@ -6,7 +6,12 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "test:playwright": "playwright test",
+    "test:coverage": "ng test --code-coverage",
+    "test:coverage:playwright": "playwright test --coverage",
+    "e2e": "playwright test",
+    "e2e:report": "playwright show-report"
   },
   "private": true,
   "dependencies": {
