@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RoleDetailComponent } from './role-detail.component';
-import { RolesService } from '@/app/core/services/roles.service';
-import { PermissionsService } from '@/app/core/services/permissions.service';
+import { RolesService } from '../../../core/services/roles.service';
+import { PermissionsService } from '../../../core/services/permissions.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';

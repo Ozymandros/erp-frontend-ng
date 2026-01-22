@@ -1,0 +1,53 @@
+<div class="stock-operations">
+  <div class="page-header stock-operations-header">
+    <h1>Inventory Operations</h1>
+  </div>
+
+  <div nz-row [nzGutter]="16">
+    <div nz-col [nzSpan]="12">
+      <nz-card nzTitle="Manual Stock Adjustment">
+        <form nz-form [formGroup]="adjustmentForm" (ngSubmit)="submitAdjustment()">
+          <nz-form-item>
+            <nz-form-label [nzSpan]="6" nzRequired>Product</nz-form-label>
+            <nz-form-control [nzSpan]="18" nzErrorTip="Please select a product!">
+              <nz-select formControlName="productId" nzShowSearch nzPlaceHolder="Search product">
+                <nz-option *ngFor="let p of products" [nzValue]="p.id" [nzLabel]="p.name + ' (' + p.sku + ')'"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item>
+            <nz-form-label [nzSpan]="6" nzRequired>Warehouse</nz-form-label>
+            <nz-form-control [nzSpan]="18" nzErrorTip="Please select a warehouse!">
+              <nz-select formControlName="warehouseId" nzPlaceHolder="Select warehouse">
+                <nz-option *ngFor="let w of warehouses" [nzValue]="w.id" [nzLabel]="w.name"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item>
+            <nz-form-label [nzSpan]="6" nzRequired>Adjustment</nz-form-label>
+            <nz-form-control [nzSpan]="18" nzExtra="Use negative numbers for stock removals">
+              <nz-input-number formControlName="quantity" [nzStep]="1" class="full-width-input"></nz-input-number>
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item>
+            <nz-form-label [nzSpan]="6">Reference/Reason</nz-form-label>
+            <nz-form-control [nzSpan]="18">
+              <input nz-input formControlName="reason" placeholder="e.g. Damage, Correcting count" />
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item>
+            <nz-form-control [nzOffset]="6" [nzSpan]="18">
+              <button nz-button nzType="primary" type="submit" [nzLoading]="submitting" [disabled]="!adjustmentForm.valid">
+                Apply Adjustment
+              </button>
+            </nz-form-control>
+          </nz-form-item>
+        </form>
+      </nz-card>
+    </div>
+  </div>
+</div>

@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { RolesService } from './roles.service';
-import { ApiClientService } from '@/app/core/api/http-client.service';
-import { Role, PaginatedResponse } from '@/app/types/api.types';
+import { ApiClientService } from '../api/http-client.service';
+import { Role, PaginatedResponse } from '../types/api.types';
 
 describe('RolesService', () => {
   let service: RolesService;

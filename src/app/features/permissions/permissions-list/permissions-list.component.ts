@@ -9,8 +9,8 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzCardModule } from 'ng-zorro-antd/card';
-import { PermissionsService } from '@/app/core/services/permissions.service';
-import { Permission } from '@/app/types/api.types';
+import { PermissionsService } from '../../../core/services/permissions.service';
+import { Permission } from '../../../types/api.types';
 
 @Component({
   selector: 'app-permissions-list',

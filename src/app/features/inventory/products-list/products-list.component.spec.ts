@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ProductsListComponent } from './products-list.component';
-import { InventoryService } from '@/app/core/services/inventory.service';
+import { ProductsService } from '../../../core/services/products.service';
+import { ProductDto, PaginatedResponse } from '../../../types/api.types';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -11,7 +12,7 @@ import { ActivatedRoute } from '@angular/router';
 describe('ProductsListComponent', () => {
   let component: ProductsListComponent;
   let fixture: ComponentFixture<ProductsListComponent>;
-  let inventoryServiceSpy: jasmine.SpyObj<InventoryService>;
+  let productsServiceSpy: jasmine.SpyObj<ProductsService>;
   let messageServiceSpy: jasmine.SpyObj<NzMessageService>;
   let modalServiceSpy: jasmine.SpyObj<NzModalService>;
 
@@ -21,20 +22,36 @@ describe('ProductsListComponent', () => {
   };
 
   beforeEach(async () => {
-    inventoryServiceSpy = jasmine.createSpyObj('InventoryService', ['getProducts', 'deleteProduct']);
+    productsServiceSpy = jasmine.createSpyObj('ProductsService', ['getProducts', 'deleteProduct']);
+    productsServiceSpy.getProducts.and.returnValue(of({ items: [], total: 0 } as any));
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
-    modalServiceSpy = jasmine.createSpyObj('NzModalService', ['confirm']);
+    modalServiceSpy = jasmine.createSpyObj('NzModalService', ['confirm', 'create', 'info', 'success', 'error', 'warning', 'open']);
 
-    inventoryServiceSpy.getProducts.and.returnValue(of(mockResponse as any));
+    productsServiceSpy.getProducts.and.returnValue(of({
+      items: mockResponse.items,
+      total: mockResponse.total,
+      page: 1,
+      pageSize: 10,
+      totalPages: 1,
+      hasPreviousPage: false,
+      hasNextPage: false
+    } as PaginatedResponse<ProductDto>));
 
     await TestBed.configureTestingModule({
       imports: [ ProductsListComponent, BrowserAnimationsModule, HttpClientTestingModule ],
       providers: [
-        { provide: InventoryService, useValue: inventoryServiceSpy },
+        { provide: ProductsService, useValue: productsServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
         { provide: NzModalService, useValue: modalServiceSpy },
         { provide: ActivatedRoute, useValue: {} }
       ]
+    })
+    .overrideComponent(ProductsListComponent, {
+      set: {
+        providers: [
+          { provide: NzModalService, useValue: modalServiceSpy }
+        ]
+      }
     })
     .compileComponents();
 
@@ -55,12 +72,12 @@ describe('ProductsListComponent', () => {
   it('should search products', () => {
     component.searchText = 'query';
     component.onSearch();
-    expect(inventoryServiceSpy.getProducts).toHaveBeenCalledWith(jasmine.objectContaining({ search: 'query', page: 1 }));
+    expect(productsServiceSpy.getProducts).toHaveBeenCalledWith(jasmine.objectContaining({ search: 'query', page: 1 }));
   });
 
   it('should change page', () => {
     component.onPageChange(2);
-    expect(inventoryServiceSpy.getProducts).toHaveBeenCalledWith(jasmine.objectContaining({ page: 2 }));
+    expect(productsServiceSpy.getProducts).toHaveBeenCalledWith(jasmine.objectContaining({ page: 2 }));
   });
 
   it('should delete product via modal', () => {
@@ -68,12 +85,13 @@ describe('ProductsListComponent', () => {
       options.nzOnOk();
       return undefined as any;
     });
-    inventoryServiceSpy.deleteProduct.and.returnValue(of(undefined));
+    productsServiceSpy.deleteProduct.and.returnValue(of(void 0));
+    productsServiceSpy.getProducts.and.returnValue(of({ items: [], total: 0 } as any));
     
     component.deleteProduct(mockResponse.items[0] as any);
     
     expect(modalServiceSpy.confirm).toHaveBeenCalled();
-    expect(inventoryServiceSpy.deleteProduct).toHaveBeenCalledWith('1');
+    expect(productsServiceSpy.deleteProduct).toHaveBeenCalledWith('1');
     expect(messageServiceSpy.success).toHaveBeenCalled();
   });
 });

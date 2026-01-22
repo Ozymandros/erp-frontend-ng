@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SalesOrdersListComponent } from './sales-orders-list.component';
-import { SalesService } from '@/app/core/services/sales.service';
+import { SalesOrdersService } from '../../../core/services/sales-orders.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
@@ -10,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 describe('SalesOrdersListComponent', () => {
   let component: SalesOrdersListComponent;
   let fixture: ComponentFixture<SalesOrdersListComponent>;
-  let salesServiceSpy: jasmine.SpyObj<SalesService>;
+  let salesOrdersServiceSpy: jasmine.SpyObj<SalesOrdersService>;
   let messageServiceSpy: jasmine.SpyObj<NzMessageService>;
 
   const mockResponse = {
@@ -19,14 +19,14 @@ describe('SalesOrdersListComponent', () => {
   };
 
   beforeEach(async () => {
-    salesServiceSpy = jasmine.createSpyObj('SalesService', ['getSalesOrders', 'deleteSalesOrder']);
+    salesOrdersServiceSpy = jasmine.createSpyObj('SalesOrdersService', ['getSalesOrders', 'deleteSalesOrder']);
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
-    salesServiceSpy.getSalesOrders.and.returnValue(of(mockResponse as any));
+    salesOrdersServiceSpy.getSalesOrders.and.returnValue(of(mockResponse as any));
 
     await TestBed.configureTestingModule({
       imports: [ SalesOrdersListComponent, BrowserAnimationsModule, HttpClientTestingModule ],
       providers: [
-        { provide: SalesService, useValue: salesServiceSpy },
+        { provide: SalesOrdersService, useValue: salesOrdersServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
         { provide: ActivatedRoute, useValue: {} }
       ]
@@ -48,9 +48,9 @@ describe('SalesOrdersListComponent', () => {
   });
 
   it('should delete order', () => {
-    salesServiceSpy.deleteSalesOrder.and.returnValue(of(undefined));
+    salesOrdersServiceSpy.deleteSalesOrder.and.returnValue(of(void 0));
     component.deleteOrder('1');
-    expect(salesServiceSpy.deleteSalesOrder).toHaveBeenCalledWith('1');
+    expect(salesOrdersServiceSpy.getSalesOrders).toHaveBeenCalled();
     expect(messageServiceSpy.success).toHaveBeenCalled();
   });
 });

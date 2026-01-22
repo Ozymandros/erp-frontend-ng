@@ -7,8 +7,8 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzCardModule } from 'ng-zorro-antd/card';
-import { InventoryService } from '@/app/core/services/inventory.service';
-import { InventoryTransactionDto } from '@/app/types/api.types';
+import { InventoryTransactionsService } from '../../../core/services/inventory-transactions.service';
+import { InventoryTransactionDto } from '../../../types/api.types';
 
 @Component({
   selector: 'app-inventory-transactions-list',
@@ -92,7 +92,7 @@ export class InventoryTransactionsListComponent implements OnInit {
   searchTerm = '';
 
   constructor(
-    private inventoryService: InventoryService,
+    private inventoryTransactionsService: InventoryTransactionsService,
     private message: NzMessageService
   ) {}
 
@@ -102,12 +102,12 @@ export class InventoryTransactionsListComponent implements OnInit {
 
   loadTransactions(): void {
     this.loading = true;
-    this.inventoryService.getInventoryTransactions({
+    this.inventoryTransactionsService.getInventoryTransactions({
       page: this.pageIndex,
       pageSize: this.pageSize,
       search: this.searchTerm
     }).subscribe({
-      next: (response) => {
+      next: (response: any) => {
         this.transactions = response.items;
         this.total = response.total;
         this.loading = false;

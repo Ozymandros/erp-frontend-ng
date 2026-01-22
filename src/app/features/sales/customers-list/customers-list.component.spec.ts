@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CustomersListComponent } from './customers-list.component';
-import { SalesService } from '@/app/core/services/sales.service';
+import { CustomersService } from '../../../core/services/customers.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -11,7 +11,7 @@ import { ActivatedRoute } from '@angular/router';
 describe('CustomersListComponent', () => {
   let component: CustomersListComponent;
   let fixture: ComponentFixture<CustomersListComponent>;
-  let salesServiceSpy: jasmine.SpyObj<SalesService>;
+  let customersServiceSpy: jasmine.SpyObj<CustomersService>;
   let messageServiceSpy: jasmine.SpyObj<NzMessageService>;
   let modalServiceSpy: jasmine.SpyObj<NzModalService>;
 
@@ -21,20 +21,27 @@ describe('CustomersListComponent', () => {
   };
 
   beforeEach(async () => {
-    salesServiceSpy = jasmine.createSpyObj('SalesService', ['getCustomers', 'deleteCustomer']);
+    customersServiceSpy = jasmine.createSpyObj('CustomersService', ['getCustomers', 'deleteCustomer']);
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
-    modalServiceSpy = jasmine.createSpyObj('NzModalService', ['confirm']);
+    modalServiceSpy = jasmine.createSpyObj('NzModalService', ['confirm', 'create', 'info', 'success', 'error', 'warning', 'open']);
 
-    salesServiceSpy.getCustomers.and.returnValue(of(mockResponse as any));
+    customersServiceSpy.getCustomers.and.returnValue(of(mockResponse as any));
 
     await TestBed.configureTestingModule({
       imports: [ CustomersListComponent, BrowserAnimationsModule, HttpClientTestingModule ],
       providers: [
-        { provide: SalesService, useValue: salesServiceSpy },
+        { provide: CustomersService, useValue: customersServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
         { provide: NzModalService, useValue: modalServiceSpy },
         { provide: ActivatedRoute, useValue: {} }
       ]
+    })
+    .overrideComponent(CustomersListComponent, {
+      set: {
+        providers: [
+          { provide: NzModalService, useValue: modalServiceSpy }
+        ]
+      }
     })
     .compileComponents();
 
@@ -57,11 +64,11 @@ describe('CustomersListComponent', () => {
       options.nzOnOk();
       return undefined as any;
     });
-    salesServiceSpy.deleteCustomer.and.returnValue(of(undefined));
+    customersServiceSpy.deleteCustomer.and.returnValue(of(void 0));
     
-    component.deleteCustomer(mockResponse.items[0] as any);
+    component.deleteCustomer({ id: '1' } as any);
     
-    expect(salesServiceSpy.deleteCustomer).toHaveBeenCalledWith('1');
+    expect(customersServiceSpy.deleteCustomer).toHaveBeenCalledWith('1');
     expect(messageServiceSpy.success).toHaveBeenCalled();
   });
 });

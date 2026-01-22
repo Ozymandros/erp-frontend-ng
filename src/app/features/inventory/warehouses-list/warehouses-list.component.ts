@@ -10,8 +10,8 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzCardModule } from 'ng-zorro-antd/card';
-import { InventoryService } from '@/app/core/services/inventory.service';
-import { WarehouseDto } from '@/app/types/api.types';
+import { WarehousesService } from '../../../core/services/warehouses.service';
+import { WarehouseDto } from '../../../types/api.types';
 
 @Component({
   selector: 'app-warehouses-list',
@@ -106,7 +106,7 @@ export class WarehousesListComponent implements OnInit {
   searchTerm = '';
 
   constructor(
-    private inventoryService: InventoryService,
+    private warehousesService: WarehousesService,
     private message: NzMessageService
   ) {}
 
@@ -116,7 +116,7 @@ export class WarehousesListComponent implements OnInit {
 
   loadWarehouses(): void {
     this.loading = true;
-    this.inventoryService.getWarehouses({
+    this.warehousesService.getWarehouses({
       page: this.pageIndex,
       pageSize: this.pageSize,
       search: this.searchTerm
@@ -139,7 +139,7 @@ export class WarehousesListComponent implements OnInit {
   }
 
   deleteWarehouse(id: string): void {
-    this.inventoryService.deleteWarehouse(id).subscribe({
+    this.warehousesService.deleteWarehouse(id).subscribe({
       next: () => {
         this.message.success('Warehouse deleted successfully');
         this.loadWarehouses();

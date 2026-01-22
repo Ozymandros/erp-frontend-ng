@@ -1,0 +1,53 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e4]:
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - heading "ERP Admin" [level=2] [ref=e8]
+      - list [ref=e9]:
+        - listitem [ref=e10] [cursor=pointer]:
+          - generic [ref=e11]: Users
+        - listitem [ref=e12] [cursor=pointer]:
+          - generic [ref=e13]: Roles
+        - listitem [ref=e14] [cursor=pointer]:
+          - generic [ref=e15]: Permissions
+        - listitem [ref=e16] [cursor=pointer]:
+          - generic [ref=e17]: Products
+        - listitem [ref=e18] [cursor=pointer]:
+          - generic [ref=e19]: Warehouses
+        - listitem [ref=e20] [cursor=pointer]:
+          - generic [ref=e21]: Customers
+        - listitem [ref=e22] [cursor=pointer]:
+          - generic [ref=e23]: Sales Orders
+        - listitem [ref=e24] [cursor=pointer]:
+          - generic [ref=e25]: Purchase Orders
+        - listitem [ref=e26] [cursor=pointer]:
+          - generic [ref=e27]: Warehouse Stocks
+        - listitem [ref=e28] [cursor=pointer]:
+          - generic [ref=e29]: Transactions
+        - listitem [ref=e30] [cursor=pointer]:
+          - generic [ref=e31]: Stock Operations
+        - listitem [ref=e32] [cursor=pointer]:
+          - generic [ref=e33]: Orders
+    - img [ref=e36] [cursor=pointer]
+  - generic [ref=e38]:
+    - generic [ref=e41]:
+      - heading "Enterprise Resource Planning" [level=1] [ref=e43]
+      - generic [ref=e46] [cursor=pointer]: AU
+    - generic [ref=e49]:
+      - heading "Dashboard Overview" [level=1] [ref=e50]
+      - generic [ref=e51]:
+        - generic [ref=e55]:
+          - generic [ref=e56]: Total Users
+          - generic [ref=e59]: "0"
+        - generic [ref=e63]:
+          - generic [ref=e64]: Products
+          - generic [ref=e67]: "0"
+        - generic [ref=e71]:
+          - generic [ref=e72]: Customers
+          - generic [ref=e75]: "0"
+        - generic [ref=e79]:
+          - generic [ref=e80]: Warehouses
+          - generic [ref=e83]: "0"
+```

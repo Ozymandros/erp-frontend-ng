@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { PermissionsListComponent } from './permissions-list.component';
-import { PermissionsService } from '@/app/core/services/permissions.service';
+import { PermissionsService } from '../../../core/services/permissions.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';

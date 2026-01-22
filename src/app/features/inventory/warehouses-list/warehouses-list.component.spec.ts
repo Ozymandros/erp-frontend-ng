@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { WarehousesListComponent } from './warehouses-list.component';
-import { InventoryService } from '@/app/core/services/inventory.service';
+import { WarehousesService } from '../../../core/services/warehouses.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
@@ -10,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 describe('WarehousesListComponent', () => {
   let component: WarehousesListComponent;
   let fixture: ComponentFixture<WarehousesListComponent>;
-  let inventoryServiceSpy: jasmine.SpyObj<InventoryService>;
+  let warehousesServiceSpy: jasmine.SpyObj<WarehousesService>;
   let messageServiceSpy: jasmine.SpyObj<NzMessageService>;
 
   const mockResponse = {
@@ -19,14 +19,15 @@ describe('WarehousesListComponent', () => {
   };
 
   beforeEach(async () => {
-    inventoryServiceSpy = jasmine.createSpyObj('InventoryService', ['getWarehouses', 'deleteWarehouse']);
+    warehousesServiceSpy = jasmine.createSpyObj('WarehousesService', ['getWarehouses', 'deleteWarehouse']);
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
-    inventoryServiceSpy.getWarehouses.and.returnValue(of(mockResponse as any));
+    warehousesServiceSpy.getWarehouses.and.returnValue(of(mockResponse as any));
+    warehousesServiceSpy.deleteWarehouse.and.returnValue(of(void 0));
 
     await TestBed.configureTestingModule({
       imports: [ WarehousesListComponent, BrowserAnimationsModule, HttpClientTestingModule ],
       providers: [
-        { provide: InventoryService, useValue: inventoryServiceSpy },
+        { provide: WarehousesService, useValue: warehousesServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
         { provide: ActivatedRoute, useValue: {} }
       ]
@@ -48,9 +49,9 @@ describe('WarehousesListComponent', () => {
   });
 
   it('should delete warehouse', () => {
-    inventoryServiceSpy.deleteWarehouse.and.returnValue(of(undefined));
+    warehousesServiceSpy.deleteWarehouse.and.returnValue(of(undefined));
     component.deleteWarehouse('1');
-    expect(inventoryServiceSpy.deleteWarehouse).toHaveBeenCalledWith('1');
+    expect(warehousesServiceSpy.deleteWarehouse).toHaveBeenCalledWith('1');
     expect(messageServiceSpy.success).toHaveBeenCalled();
   });
 });

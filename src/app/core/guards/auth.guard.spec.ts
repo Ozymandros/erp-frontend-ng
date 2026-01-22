@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { authGuard } from './auth.guard';
-import { AuthService } from '@/app/core/services/auth.service';
+import { AuthService } from '../../core/services/auth.service';
 
 describe('authGuard', () => {
   let authServiceSpy: jasmine.SpyObj<AuthService>;

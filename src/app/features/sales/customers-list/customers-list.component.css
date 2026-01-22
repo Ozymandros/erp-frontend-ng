@@ -1,0 +1,25 @@
+.customers-list {
+  padding: 24px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.search-bar {
+  margin-bottom: 16px;
+  max-width: 400px;
+}
+
+nz-tag {
+  margin-right: 4px;
+}

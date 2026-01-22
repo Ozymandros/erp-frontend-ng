@@ -10,8 +10,8 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { InventoryService } from '@/app/core/services/inventory.service';
-import { ProductDto } from '@/app/types/api.types';
+import { ProductsService } from '../../../core/services/products.service';
+import { ProductDto } from '../../../types/api.types';
 
 @Component({
   selector: 'app-product-detail',
@@ -28,135 +28,8 @@ import { ProductDto } from '@/app/types/api.types';
     NzSelectModule,
     NzSwitchModule
   ],
-  template: `
-    <div class="product-detail">
-      <div class="page-header">
-        <button nz-button nzType="default" routerLink="/inventory/products">
-          <span nz-icon nzType="arrow-left"></span>
-          Back to List
-        </button>
-        <h1>{{ isEditMode ? 'Edit Product' : 'Create Product' }}</h1>
-      </div>
-
-      <nz-card [nzLoading]="loading">
-        <form nz-form [formGroup]="productForm" (ngSubmit)="save()">
-          <div nz-row [nzGutter]="16">
-            <div nz-col [nzSpan]="12">
-              <nz-form-item>
-                <nz-form-label nzRequired>SKU</nz-form-label>
-                <nz-form-control nzErrorTip="Please input SKU!">
-                  <input nz-input formControlName="sku" placeholder="SKU" />
-                </nz-form-control>
-              </nz-form-item>
-            </div>
-            <div nz-col [nzSpan]="12">
-              <nz-form-item>
-                <nz-form-label nzRequired>Name</nz-form-label>
-                <nz-form-control nzErrorTip="Please input product name!">
-                  <input nz-input formControlName="name" placeholder="Product Name" />
-                </nz-form-control>
-              </nz-form-item>
-            </div>
-          </div>
-
-          <nz-form-item>
-            <nz-form-label>Description</nz-form-label>
-            <nz-form-control>
-              <textarea nz-input formControlName="description" [nzAutosize]="{ minRows: 2, maxRows: 6 }" placeholder="Product Description"></textarea>
-            </nz-form-control>
-          </nz-form-item>
-
-          <div nz-row [nzGutter]="16">
-            <div nz-col [nzSpan]="12">
-              <nz-form-item>
-                <nz-form-label>Category</nz-form-label>
-                <nz-form-control>
-                  <input nz-input formControlName="category" placeholder="Category" />
-                </nz-form-control>
-              </nz-form-item>
-            </div>
-            <div nz-col [nzSpan]="12">
-              <nz-form-item>
-                <nz-form-label nzRequired>Unit Price</nz-form-label>
-                <nz-form-control nzErrorTip="Please input unit price!">
-                  <nz-input-number formControlName="unitPrice" [nzMin]="0" [nzStep]="0.01" style="width: 100%"></nz-input-number>
-                </nz-form-control>
-              </nz-form-item>
-            </div>
-          </div>
-
-          <div nz-row [nzGutter]="16">
-            <div nz-col [nzSpan]="12">
-              <nz-form-item>
-                <nz-form-label nzRequired>Initial Stock</nz-form-label>
-                <nz-form-control nzErrorTip="Please input initial stock!">
-                  <nz-input-number formControlName="stock" [nzMin]="0" [nzPrecision]="0" style="width: 100%"></nz-input-number>
-                </nz-form-control>
-              </nz-form-item>
-            </div>
-            <div nz-col [nzSpan]="12">
-              <nz-form-item>
-                <nz-form-label>Reorder Level</nz-form-label>
-                <nz-form-control>
-                  <nz-input-number formControlName="reorderLevel" [nzMin]="0" [nzPrecision]="0" style="width: 100%"></nz-input-number>
-                </nz-form-control>
-              </nz-form-item>
-            </div>
-          </div>
-
-          <div nz-row [nzGutter]="16">
-            <div nz-col [nzSpan]="12">
-              <nz-form-item>
-                <nz-form-label>Barcode</nz-form-label>
-                <nz-form-control>
-                  <input nz-input formControlName="barcode" placeholder="Barcode" />
-                </nz-form-control>
-              </nz-form-item>
-            </div>
-            <div nz-col [nzSpan]="12">
-              <nz-form-item>
-                <nz-form-label>Active</nz-form-label>
-                <nz-form-control>
-                  <nz-switch formControlName="isActive"></nz-switch>
-                </nz-form-control>
-              </nz-form-item>
-            </div>
-          </div>
-
-          <div class="form-actions">
-            <button nz-button nzType="primary" [nzLoading]="saving" [disabled]="!productForm.valid">
-              {{ isEditMode ? 'Update' : 'Create' }}
-            </button>
-            <button nz-button nzType="default" type="button" routerLink="/inventory/products">Cancel</button>
-          </div>
-        </form>
-      </nz-card>
-    </div>
-  `,
-  styles: [`
-    .product-detail {
-      padding: 24px;
-    }
-
-    .page-header {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    .page-header h1 {
-      margin: 0;
-      font-size: 24px;
-      font-weight: 500;
-    }
-
-    .form-actions {
-      margin-top: 24px;
-      display: flex;
-      gap: 8px;
-    }
-  `]
+  templateUrl: './product-detail.component.html',
+  styleUrls: ['./product-detail.component.css']
 })
 export class ProductDetailComponent implements OnInit {
   productForm: FormGroup;
@@ -167,7 +40,7 @@ export class ProductDetailComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private inventoryService: InventoryService,
+    private productsService: ProductsService,
     private route: ActivatedRoute,
     private router: Router,
     private message: NzMessageService
@@ -196,7 +69,7 @@ export class ProductDetailComponent implements OnInit {
 
   loadProduct(id: string): void {
     this.loading = true;
-    this.inventoryService.getProductById(id).subscribe({
+    this.productsService.getProductById(id).subscribe({
       next: (product) => {
         this.productForm.patchValue(product);
         this.loading = false;
@@ -214,8 +87,8 @@ export class ProductDetailComponent implements OnInit {
       const data = this.productForm.value;
 
       const observable = this.isEditMode && this.productId
-        ? this.inventoryService.updateProduct(this.productId, data)
-        : this.inventoryService.createProduct(data);
+        ? this.productsService.updateProduct(this.productId, data)
+        : this.productsService.createProduct(data);
 
       observable.subscribe({
         next: () => {

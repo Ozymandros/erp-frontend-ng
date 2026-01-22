@@ -34,19 +34,22 @@ describe('SidebarComponent', () => {
     // Submenus are also elements.
     // Let's just check for some known text
     const nativeElement = fixture.nativeElement as HTMLElement;
-    expect(nativeElement.textContent).toContain('Dashboard');
     expect(nativeElement.textContent).toContain('Users');
-    expect(nativeElement.textContent).toContain('Inventory');
-    expect(nativeElement.textContent).toContain('Sales');
-    expect(nativeElement.textContent).toContain('Purchasing');
+    expect(nativeElement.textContent).toContain('Roles');
+    expect(nativeElement.textContent).toContain('Permissions');
+    expect(nativeElement.textContent).toContain('Products');
+    expect(nativeElement.textContent).toContain('Warehouses');
+    expect(nativeElement.textContent).toContain('Customers');
+    expect(nativeElement.textContent).toContain('Sales Orders');
+    expect(nativeElement.textContent).toContain('Purchase Orders');
   });
   
   it('should have correct router links', () => {
      // Check a few links
      const links = fixture.debugElement.queryAll(By.css('[routerLink]'));
      const linkPaths = links.map(l => l.attributes['routerLink']);
-     expect(linkPaths).toContain('/');
      expect(linkPaths).toContain('/users');
+     expect(linkPaths).toContain('/roles');
      expect(linkPaths).toContain('/sales/customers');
   });
 });

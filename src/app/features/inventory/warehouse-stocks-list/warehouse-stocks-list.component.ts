@@ -7,8 +7,8 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzCardModule } from 'ng-zorro-antd/card';
-import { InventoryService } from '@/app/core/services/inventory.service';
-import { WarehouseStockDto } from '@/app/types/api.types';
+import { WarehouseStocksService } from '../../../core/services/warehouse-stocks.service';
+import { WarehouseStockDto } from '../../../types/api.types';
 
 @Component({
   selector: 'app-warehouse-stocks-list',
@@ -88,7 +88,7 @@ export class WarehouseStocksListComponent implements OnInit {
   searchTerm = '';
 
   constructor(
-    private inventoryService: InventoryService,
+    private warehouseStocksService: WarehouseStocksService,
     private message: NzMessageService
   ) {}
 
@@ -98,7 +98,7 @@ export class WarehouseStocksListComponent implements OnInit {
 
   loadStocks(): void {
     this.loading = true;
-    this.inventoryService.getWarehouseStocks({
+    this.warehouseStocksService.getWarehouseStocks({
       page: this.pageIndex,
       pageSize: this.pageSize,
       search: this.searchTerm

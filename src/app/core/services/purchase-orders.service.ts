@@ -1,17 +1,18 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiClientService } from '@/app/core/api/http-client.service';
-import { PURCHASING_ENDPOINTS } from '@/app/core/api/endpoints.constants';
+import { ApiClientService } from '../api/http-client.service';
+import { PURCHASING_ENDPOINTS } from '../api/endpoints.constants';
 import {
   PurchaseOrderDto,
+  CreateUpdatePurchaseOrderDto,
   PaginatedResponse,
   SearchParams
-} from '@/app/types/api.types';
+} from '../types/api.types';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PurchasingService {
+export class PurchaseOrdersService {
   constructor(private apiClient: ApiClientService) {}
 
   getPurchaseOrders(params?: SearchParams): Observable<PaginatedResponse<PurchaseOrderDto>> {
@@ -22,11 +23,11 @@ export class PurchasingService {
     return this.apiClient.get<PurchaseOrderDto>(PURCHASING_ENDPOINTS.ORDER_BY_ID(id));
   }
 
-  createPurchaseOrder(data: any): Observable<PurchaseOrderDto> {
+  createPurchaseOrder(data: CreateUpdatePurchaseOrderDto): Observable<PurchaseOrderDto> {
     return this.apiClient.post<PurchaseOrderDto>(PURCHASING_ENDPOINTS.ORDERS, data);
   }
 
-  updatePurchaseOrder(id: string, data: any): Observable<PurchaseOrderDto> {
+  updatePurchaseOrder(id: string, data: CreateUpdatePurchaseOrderDto): Observable<PurchaseOrderDto> {
     return this.apiClient.put<PurchaseOrderDto>(PURCHASING_ENDPOINTS.ORDER_BY_ID(id), data);
   }
 

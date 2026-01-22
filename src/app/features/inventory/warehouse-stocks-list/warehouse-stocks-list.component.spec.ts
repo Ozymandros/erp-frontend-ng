@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { WarehouseStocksListComponent } from './warehouse-stocks-list.component';
-import { InventoryService } from '@/app/core/services/inventory.service';
+import { WarehouseStocksService } from '../../../core/services/warehouse-stocks.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
@@ -9,7 +9,7 @@ import { of } from 'rxjs';
 describe('WarehouseStocksListComponent', () => {
   let component: WarehouseStocksListComponent;
   let fixture: ComponentFixture<WarehouseStocksListComponent>;
-  let inventoryServiceSpy: jasmine.SpyObj<InventoryService>;
+  let warehouseStocksServiceSpy: jasmine.SpyObj<WarehouseStocksService>;
   let messageServiceSpy: jasmine.SpyObj<NzMessageService>;
 
   const mockResponse = {
@@ -18,14 +18,14 @@ describe('WarehouseStocksListComponent', () => {
   };
 
   beforeEach(async () => {
-    inventoryServiceSpy = jasmine.createSpyObj('InventoryService', ['getWarehouseStocks']);
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
-    inventoryServiceSpy.getWarehouseStocks.and.returnValue(of(mockResponse as any));
+    warehouseStocksServiceSpy = jasmine.createSpyObj('WarehouseStocksService', ['getWarehouseStocks']);
+    warehouseStocksServiceSpy.getWarehouseStocks.and.returnValue(of(mockResponse as any));
 
     await TestBed.configureTestingModule({
       imports: [ WarehouseStocksListComponent, BrowserAnimationsModule, HttpClientTestingModule ],
       providers: [
-        { provide: InventoryService, useValue: inventoryServiceSpy },
+        { provide: WarehouseStocksService, useValue: warehouseStocksServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy }
       ]
     })
@@ -48,6 +48,6 @@ describe('WarehouseStocksListComponent', () => {
   it('should search stocks', () => {
     component.searchTerm = 'query';
     component.onSearch();
-    expect(inventoryServiceSpy.getWarehouseStocks).toHaveBeenCalledWith(jasmine.objectContaining({ search: 'query' }));
+    expect(warehouseStocksServiceSpy.getWarehouseStocks).toHaveBeenCalledWith(jasmine.objectContaining({ search: 'query' }));
   });
 });

@@ -1,0 +1,65 @@
+<div class="page-header users-list-header">
+  <h1>Users Management</h1>
+  <button nz-button nzType="primary" routerLink="/users/new">
+    <i nz-icon nzType="plus"></i> Add User
+  </button>
+</div>
+
+<nz-card>
+  <div class="users-list-search-bar">
+    <nz-input-group [nzPrefix]="prefixIconSearch">
+      <input type="text" nz-input placeholder="Search users..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" />
+    </nz-input-group>
+    <ng-template #prefixIconSearch>
+      <i nz-icon nzType="search"></i>
+    </ng-template>
+  </div>
+
+  <nz-table
+    #basicTable
+    [nzData]="users"
+    [nzLoading]="loading"
+    [nzTotal]="total"
+    [(nzPageIndex)]="pageIndex"
+    [(nzPageSize)]="pageSize"
+    [nzFrontPagination]="false"
+    (nzPageIndexChange)="loadUsers()"
+    (nzPageSizeChange)="loadUsers()"
+  >
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Roles</th>
+        <th>Status</th>
+        <th>Created At</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of basicTable.data">
+        <td>{{ data.username }}</td>
+        <td>{{ data.email }}</td>
+        <td>
+          <nz-tag *ngFor="let role of data.roles" [nzColor]="'blue'">{{ role.name }}</nz-tag>
+        </td>
+        <td>
+          <nz-tag [nzColor]="data.isActive ? 'success' : 'error'">
+            {{ data.isActive ? 'Active' : 'Inactive' }}
+          </nz-tag>
+        </td>
+        <td>{{ data.createdAt | date:'short' }}</td>
+        <td>
+          <a [routerLink]="['/users', data.id]" class="edit-link">Edit</a>
+          <a
+            nz-popconfirm
+            nzPopconfirmTitle="Are you sure delete this user?"
+            (nzOnConfirm)="deleteUser(data.id)"
+            nzPopconfirmPlacement="left"
+            class="delete-link"
+          >Delete</a>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</nz-card>

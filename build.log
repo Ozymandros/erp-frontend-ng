@@ -1,0 +1,81 @@
+
+> temp-ng-project@0.0.0 build C:\Projects\ERP_ASPIRE_APP\erp-frontend-ng
+> ng build
+
+Node.js version v25.2.1 detected.
+Odd numbered Node.js versions will not enter LTS status and should not be used for production. For more information, please see https://nodejs.org/en/about/previous-releases/.
+- Building...
+
+Application bundle generation failed. [8.540 seconds]
+
+X [ERROR] NG9: Property 'productName' does not exist on type 'InventoryTransactionDto'. [plugin angular-compiler]
+
+    src/app/features/inventory/inventory-transactions-list/inventory-transactions-list.component.ts:68:32:
+      68 Ôöé             <td><strong>{{ data.productName }}</strong></td>
+         ÔòÁ                                 ~~~~~~~~~~~
+
+
+X [ERROR] NG9: Property 'warehouseName' does not exist on type 'InventoryTransactionDto'. [plugin angular-compiler]
+
+    src/app/features/inventory/inventory-transactions-list/inventory-transactions-list.component.ts:69:24:
+      69 Ôöé             <td>{{ data.warehouseName }}</td>
+         ÔòÁ                         ~~~~~~~~~~~~~
+
+
+X [ERROR] NG9: Property 'referenceNumber' does not exist on type 'InventoryTransactionDto'. [plugin angular-compiler]
+
+    src/app/features/inventory/inventory-transactions-list/inventory-transactions-list.component.ts:74:31:
+      74 Ôöé             <td><small>{{ data.referenceNumber || '-' }}</small></td>
+         ÔòÁ                                ~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG9: Property 'warehouseName' does not exist on type 'WarehouseStockDto'. [plugin angular-compiler]
+
+    src/app/features/inventory/warehouse-stocks-list/warehouse-stocks-list.component.ts:62:24:
+      62 Ôöé             <td>{{ data.warehouseName }}</td>
+         ÔòÁ                         ~~~~~~~~~~~~~
+
+
+X [ERROR] NG9: Property 'productName' does not exist on type 'WarehouseStockDto'. [plugin angular-compiler]
+
+    src/app/features/inventory/warehouse-stocks-list/warehouse-stocks-list.component.ts:63:32:
+      63 Ôöé ...      <td><strong>{{ data.productName }}</strong> ({{ data.prod...
+         ÔòÁ                              ~~~~~~~~~~~
+
+
+X [ERROR] NG9: Property 'productSku' does not exist on type 'WarehouseStockDto'. [plugin angular-compiler]
+
+    src/app/features/inventory/warehouse-stocks-list/warehouse-stocks-list.component.ts:63:65:
+      63 Ôöé ...trong>{{ data.productName }}</strong> ({{ data.productSku }})</td>
+         ÔòÁ                                                   ~~~~~~~~~~
+
+
+X [ERROR] NG9: Property 'avatarUrl' does not exist on type 'User'. [plugin angular-compiler]
+
+    src/app/features/profile/profile.component.ts:37:74:
+      37 Ôöé ...="128" nzIcon="user" [nzSrc]="currentUser?.avatarUrl"></nz-avatar>
+         ÔòÁ                                               ~~~~~~~~~
+
+
+X [ERROR] TS2353: Object literal may only specify known properties, and 'password' does not exist in type 'UpdateUserRequest'. [plugin angular-compiler]
+
+    src/app/features/profile/profile.component.ts:174:58:
+      174 Ôöé ...ser(this.currentUser.id, { password: this.passwordForm.value.p...
+          ÔòÁ                               ~~~~~~~~
+
+
+X [ERROR] NG9: Property 'supplierName' does not exist on type 'PurchaseOrderDto'. [plugin angular-compiler]
+
+    src/app/features/purchasing/purchase-orders-list/purchase-orders-list.component.ts:73:24:
+      73 Ôöé             <td>{{ data.supplierName }}</td>
+         ÔòÁ                         ~~~~~~~~~~~~
+
+
+X [ERROR] NG9: Property 'customerName' does not exist on type 'SalesOrderDto'. [plugin angular-compiler]
+
+    src/app/features/sales/sales-orders-list/sales-orders-list.component.ts:73:24:
+      73 Ôöé             <td>{{ data.customerName }}</td>
+         ÔòÁ                         ~~~~~~~~~~~~
+
+
+ÔÇëELIFECYCLEÔÇë Command failed with exit code 1.

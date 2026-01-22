@@ -10,8 +10,8 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzCardModule } from 'ng-zorro-antd/card';
-import { PurchasingService } from '@/app/core/services/purchasing.service';
-import { PurchaseOrderDto } from '@/app/types/api.types';
+import { PurchaseOrdersService } from '../../../core/services/purchase-orders.service';
+import { PurchaseOrderDto } from '../../../types/api.types';
 
 @Component({
   selector: 'app-purchase-orders-list',
@@ -108,7 +108,7 @@ export class PurchaseOrdersListComponent implements OnInit {
   searchTerm = '';
 
   constructor(
-    private purchasingService: PurchasingService,
+    private purchaseOrdersService: PurchaseOrdersService,
     private message: NzMessageService
   ) {}
 
@@ -118,7 +118,7 @@ export class PurchaseOrdersListComponent implements OnInit {
 
   loadOrders(): void {
     this.loading = true;
-    this.purchasingService.getPurchaseOrders({
+    this.purchaseOrdersService.getPurchaseOrders({
       page: this.pageIndex,
       pageSize: this.pageSize,
       search: this.searchTerm
@@ -141,7 +141,7 @@ export class PurchaseOrdersListComponent implements OnInit {
   }
 
   deleteOrder(id: string): void {
-    this.purchasingService.deletePurchaseOrder(id).subscribe({
+    this.purchaseOrdersService.deletePurchaseOrder(id).subscribe({
       next: () => {
         this.message.success('Order cancelled successfully');
         this.loadOrders();

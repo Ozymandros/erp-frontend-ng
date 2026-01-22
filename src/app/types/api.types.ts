@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// API Response Types based on OpenAPI spec
+// API Response Types based on legacy Vite-React project parity
 
 export interface ApiResponse<T = any> {
   data?: T;
@@ -102,9 +102,9 @@ export interface ProblemDetails {
 // Pagination and Query Types
 export interface PaginatedResponse<T> {
   items: T[];
-  page: number;
+  page: number; // Maps to backend PageNumber
   pageSize: number;
-  total: number;
+  total: number; // Maps to backend TotalCount
   totalPages: number;
   hasPreviousPage: boolean;
   hasNextPage: boolean;
@@ -158,6 +158,14 @@ export interface AuthResponse {
 export interface RefreshTokenRequest {
   accessToken: string;
   refreshToken: string;
+}
+
+export interface ExternalLoginDto {
+  provider: string;
+  externalId: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
 }
 
 export interface PermissionCheckRequest {
@@ -299,9 +307,43 @@ export interface WarehouseStockDto {
   lastUpdated: string;
 }
 
+export interface StockAvailabilityDto {
+  productId: string;
+  totalAvailable: number;
+  warehouseStocks: WarehouseStockDto[];
+}
+
+export interface OrderDto extends IAuditableDto<string> {
+  orderNumber: string;
+  status: OrderStatus;
+  orderDate: string;
+  customerId: string;
+  orderLines: OrderLineDto[];
+  totalAmount: number;
+}
+
+export interface OrderLineDto {
+  productId: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+}
+
+export interface StockOperationRequest {
+  productId: string;
+  warehouseId: string;
+  fromWarehouseId?: string;
+  toWarehouseId?: string;
+  quantity: number;
+  reason: string;
+  adjustmentType?: AdjustmentType;
+}
+
 export interface InventoryTransactionDto extends IAuditableDto<string> {
   transactionType: TransactionType;
+  productId: string;
   productName?: string;
+  warehouseId: string;
   warehouseName?: string;
   quantity: number;
   referenceId?: string;
@@ -312,6 +354,35 @@ export interface InventoryTransactionDto extends IAuditableDto<string> {
 }
 
 // ==================== SALES MODULE ====================
+
+export interface SalesOrderDto extends IAuditableDto<string> {
+  orderNumber: string;
+  customerId: string;
+  customerName?: string;
+  status: SalesOrderStatus;
+  orderDate: string;
+  totalAmount: number;
+  orderLines: SalesOrderLineDto[];
+}
+
+export interface CreateUpdateSalesOrderDto {
+  customerId: string;
+  orderDate: string;
+  orderLines: CreateUpdateSalesOrderLineDto[];
+}
+
+export interface SalesOrderLineDto {
+  productId: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+}
+
+export interface CreateUpdateSalesOrderLineDto {
+  productId: string;
+  quantity: number;
+  unitPrice: number;
+}
 
 export interface CustomerDto extends IAuditableDto<string> {
   name: string;
@@ -335,23 +406,6 @@ export interface CreateUpdateCustomerDto {
   isActive: boolean;
 }
 
-export interface SalesOrderDto extends IAuditableDto<string> {
-  orderNumber: string;
-  customerId: string;
-  customerName?: string;
-  status: SalesOrderStatus;
-  orderDate: string;
-  totalAmount: number;
-  orderLines: SalesOrderLineDto[];
-}
-
-export interface SalesOrderLineDto {
-  productId: string;
-  quantity: number;
-  unitPrice: number;
-  totalPrice: number;
-}
-
 // ==================== PURCHASING MODULE ====================
 
 export interface PurchaseOrderDto extends IAuditableDto<string> {
@@ -365,11 +419,29 @@ export interface PurchaseOrderDto extends IAuditableDto<string> {
   orderLines: PurchaseOrderLineDto[];
 }
 
+export interface CreateUpdatePurchaseOrderDto {
+  supplierId: string;
+  orderDate: string;
+  expectedDeliveryDate?: string;
+  orderLines: PurchaseOrderLineDto[];
+}
+
 export interface PurchaseOrderLineDto {
   productId: string;
   quantity: number;
   unitPrice: number;
   totalPrice: number;
+}
+
+export interface SupplierDto extends IAuditableDto<string> {
+  name: string;
+  email: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  country?: string;
+  postalCode?: string;
+  isActive: boolean;
 }
 
 // ==================== ENUMS ====================

@@ -8,9 +8,9 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { RolesService } from '@/app/core/services/roles.service';
-import { PermissionsService } from '@/app/core/services/permissions.service';
-import { Role, Permission } from '@/app/types/api.types';
+import { RolesService } from '../../../core/services/roles.service';
+import { PermissionsService } from '../../../core/services/permissions.service';
+import { Role, Permission } from '../../../types/api.types';
 
 @Component({
   selector: 'app-role-detail',
@@ -25,52 +25,7 @@ import { Role, Permission } from '@/app/types/api.types';
     NzCardModule,
     NzSelectModule
   ],
-  template: `
-    <div class="role-detail">
-      <div class="page-header" style="margin-bottom: 24px;">
-        <button nz-button nzType="default" routerLink="/roles" style="margin-right: 16px;">
-          <i nz-icon nzType="arrow-left"></i> Back
-        </button>
-        <h1>{{ isEditMode ? 'Edit Role' : 'Create Role' }}</h1>
-      </div>
-
-      <nz-card [nzLoading]="loading">
-        <form nz-form [formGroup]="roleForm" (ngSubmit)="save()">
-          <nz-form-item>
-            <nz-form-label [nzSpan]="4" nzRequired>Role Name</nz-form-label>
-            <nz-form-control [nzSpan]="14" nzErrorTip="Please input role name!">
-              <input nz-input formControlName="name" placeholder="e.g. Administrator" />
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSpan]="4">Description</nz-form-label>
-            <nz-form-control [nzSpan]="14">
-              <textarea nz-input formControlName="description" placeholder="Role description..." [nzAutosize]="{ minRows: 2, maxRows: 6 }"></textarea>
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSpan]="4">Permissions</nz-form-label>
-            <nz-form-control [nzSpan]="14">
-              <nz-select formControlName="permissionIds" nzMode="multiple" nzPlaceHolder="Select permissions">
-                <nz-option *ngFor="let p of allPermissions" [nzValue]="p.id" [nzLabel]="p.module + ':' + p.action"></nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-control [nzOffset]="4" [nzSpan]="14">
-              <button nz-button nzType="primary" [nzLoading]="saving" [disabled]="!roleForm.valid">
-                {{ isEditMode ? 'Update' : 'Create' }}
-              </button>
-              <button nz-button nzType="default" type="button" routerLink="/roles" style="margin-left: 8px;">Cancel</button>
-            </nz-form-control>
-          </nz-form-item>
-        </form>
-      </nz-card>
-    </div>
-  `,
+  templateUrl: './role-detail.component.html',
   styles: [`
     h1 {
       display: inline-block;
@@ -128,7 +83,7 @@ export class RoleDetailComponent implements OnInit {
         this.roleForm.patchValue({
           name: role.name,
           description: role.description,
-          permissionIds: role.permissions.map(p => p.id)
+          permissionIds: role.permissions.map((p: Permission) => p.id)
         });
         this.loading = false;
       },

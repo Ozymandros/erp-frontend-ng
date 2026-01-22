@@ -1,7 +1,9 @@
 
 export default async function globalTeardown() {
-  console.log('Teoubleshooting Testcontainer...');
-  // if (process.env.TESTCONTAINER_STOP_CALLBACK) {
-  //    await process.env.TESTCONTAINER_STOP_CALLBACK();
-  // }
+  console.log('Stopping Testcontainers...');
+  const container = (global as any).__MOCK_CONTAINER__;
+  if (container) {
+    await container.stop();
+    console.log('MockServer container stopped.');
+  }
 }

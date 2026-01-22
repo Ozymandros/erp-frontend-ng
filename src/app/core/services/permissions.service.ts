@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiClientService } from '@/app/core/api/http-client.service';
-import { PERMISSIONS_ENDPOINTS } from '@/app/core/api/endpoints.constants';
+import { ApiClientService } from '../api/http-client.service';
+import { PERMISSIONS_ENDPOINTS } from '../api/endpoints.constants';
 import {
   Permission,
   CreatePermissionRequest,
   UpdatePermissionRequest,
   PaginatedResponse,
   SearchParams
-} from '@/app/types/api.types';
+} from '../types/api.types';
 
 @Injectable({
   providedIn: 'root'

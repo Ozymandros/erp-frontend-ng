@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { UsersListComponent } from './users-list.component';
-import { UsersService } from '@/app/core/services/users.service';
+import { UsersService } from '../../../core/services/users.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { of, throwError } from 'rxjs';
-import { PaginatedResponse, User } from '@/app/types/api.types';
+import { PaginatedResponse, User } from '../../../types/api.types';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 

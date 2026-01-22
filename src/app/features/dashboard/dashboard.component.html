@@ -1,0 +1,25 @@
+<div class="dashboard dashboard-container">
+  <h1 class="dashboard-title">Dashboard Overview</h1>
+  <div nz-row [nzGutter]="16">
+    <div nz-col [nzSpan]="6">
+      <nz-card [nzLoading]="loading">
+        <nz-statistic [nzValue]="userCount" nzTitle="Total Users"></nz-statistic>
+      </nz-card>
+    </div>
+    <div nz-col [nzSpan]="6">
+      <nz-card [nzLoading]="loading">
+        <nz-statistic [nzValue]="productCount" nzTitle="Products"></nz-statistic>
+      </nz-card>
+    </div>
+    <div nz-col [nzSpan]="6">
+      <nz-card [nzLoading]="loading">
+        <nz-statistic [nzValue]="customerCount" nzTitle="Customers"></nz-statistic>
+      </nz-card>
+    </div>
+    <div nz-col [nzSpan]="6">
+      <nz-card [nzLoading]="loading">
+        <nz-statistic [nzValue]="warehouseCount" nzTitle="Warehouses"></nz-statistic>
+      </nz-card>
+    </div>
+  </div>
+</div>

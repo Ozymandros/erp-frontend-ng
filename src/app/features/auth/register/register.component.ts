@@ -7,8 +7,8 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { AuthService } from '@/app/core/services/auth.service';
-import { RegisterRequest } from '@/app/types/api.types';
+import { AuthService } from '../../../core/services/auth.service';
+import { RegisterRequest } from '../../../types/api.types';
 
 @Component({
   selector: 'app-register',
@@ -22,86 +22,8 @@ import { RegisterRequest } from '@/app/types/api.types';
     NzButtonModule,
     NzCardModule
   ],
-  template: `
-    <div class="register-container">
-      <nz-card class="register-card" nzTitle="Create Account">
-        <form nz-form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-          <nz-form-item>
-            <nz-form-label nzRequired>Username</nz-form-label>
-            <nz-form-control nzErrorTip="Please input your username!">
-              <input nz-input formControlName="username" placeholder="Username" />
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label nzRequired>Email</nz-form-label>
-            <nz-form-control nzErrorTip="Please input a valid email!">
-              <input nz-input formControlName="email" type="email" placeholder="Email" />
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label>First Name</nz-form-label>
-            <nz-form-control>
-              <input nz-input formControlName="firstName" placeholder="First Name" />
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label>Last Name</nz-form-label>
-            <nz-form-control>
-              <input nz-input formControlName="lastName" placeholder="Last Name" />
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label nzRequired>Password</nz-form-label>
-            <nz-form-control nzErrorTip="Please input your password!">
-              <input nz-input formControlName="password" type="password" placeholder="Password" />
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label nzRequired>Confirm Password</nz-form-label>
-            <nz-form-control nzErrorTip="Passwords do not match!">
-              <input nz-input formControlName="passwordConfirm" type="password" placeholder="Confirm Password" />
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <button nz-button nzType="primary" nzBlock [nzLoading]="isLoading" [disabled]="!registerForm.valid">
-              Register
-            </button>
-          </nz-form-item>
-
-          <div class="login-link">
-            Already have an account? <a routerLink="/login">Login here</a>
-          </div>
-        </form>
-      </nz-card>
-    </div>
-  `,
-  styles: [`
-    .register-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      padding: 20px;
-    }
-
-    .register-card {
-      width: 500px;
-      max-width: 100%;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .login-link {
-      text-align: center;
-      margin-top: 16px;
-    }
-  `]
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
   registerForm: FormGroup;

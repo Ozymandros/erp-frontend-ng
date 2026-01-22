@@ -39,9 +39,9 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: 'pnpm start',
+    command: 'npx serve -s dist/temp-ng-project/browser -p 4200',
     url: 'http://localhost:4200',
     reuseExistingServer: true,
-    timeout: 300 * 1000,
+    timeout: 60 * 1000,
   },
 });

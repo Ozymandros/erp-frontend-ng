@@ -10,8 +10,8 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzCardModule } from 'ng-zorro-antd/card';
-import { RolesService } from '@/app/core/services/roles.service';
-import { Role } from '@/app/types/api.types';
+import { RolesService } from '../../../core/services/roles.service';
+import { Role } from '../../../types/api.types';
 
 @Component({
   selector: 'app-roles-list',
@@ -28,70 +28,7 @@ import { Role } from '@/app/types/api.types';
     NzPopconfirmModule,
     NzCardModule
   ],
-  template: `
-    <div class="page-header" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
-      <h1>Roles Management</h1>
-      <button nz-button nzType="primary" routerLink="/roles/new">
-        <i nz-icon nzType="plus"></i> Add Role
-      </button>
-    </div>
-
-    <nz-card>
-      <div style="margin-bottom: 16px; display: flex; gap: 16px;">
-        <nz-input-group [nzPrefix]="prefixIconSearch">
-          <input type="text" nz-input placeholder="Search roles..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" />
-        </nz-input-group>
-        <ng-template #prefixIconSearch>
-          <i nz-icon nzType="search"></i>
-        </ng-template>
-      </div>
-
-      <nz-table
-        #basicTable
-        [nzData]="roles"
-        [nzLoading]="loading"
-        [nzTotal]="total"
-        [(nzPageIndex)]="pageIndex"
-        [(nzPageSize)]="pageSize"
-        [nzFrontPagination]="false"
-        (nzPageIndexChange)="loadRoles()"
-        (nzPageSizeChange)="loadRoles()"
-      >
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Permissions</th>
-            <th>Created At</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let data of basicTable.data">
-            <td><strong>{{ data.name }}</strong></td>
-            <td>{{ data.description || '-' }}</td>
-            <td>
-              <nz-tag *ngFor="let perm of data.permissions | slice:0:3" [nzColor]="'orange'">
-                {{ perm.module }}:{{ perm.action }}
-              </nz-tag>
-              <span *ngIf="data.permissions.length > 3">...</span>
-            </td>
-            <td>{{ data.createdAt | date:'short' }}</td>
-            <td>
-              <a [routerLink]="['/roles', data.id]" style="margin-right: 8px;">Edit</a>
-              <a
-                nz-popconfirm
-                nzPopconfirmTitle="Are you sure delete this role?"
-                (nzOnConfirm)="deleteRole(data.id)"
-                nzPopconfirmPlacement="left"
-                style="color: #ff4d4f;"
-              >Delete</a>
-            </td>
-          </tr>
-        </tbody>
-      </nz-table>
-    </nz-card>
-  `,
+  templateUrl: './roles-list.component.html',
   styles: [`
     h1 {
       margin: 0;

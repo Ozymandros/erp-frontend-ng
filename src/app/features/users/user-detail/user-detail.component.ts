@@ -9,9 +9,9 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { UsersService } from '@/app/core/services/users.service';
-import { RolesService } from '@/app/core/services/roles.service';
-import { User, Role } from '@/app/types/api.types';
+import { UsersService } from '../../../core/services/users.service';
+import { RolesService } from '../../../core/services/roles.service';
+import { User, Role } from '../../../types/api.types';
 
 @Component({
   selector: 'app-user-detail',
@@ -27,122 +27,8 @@ import { User, Role } from '@/app/types/api.types';
     NzSelectModule,
     NzSwitchModule
   ],
-  template: `
-    <div class="user-detail">
-      <div class="page-header">
-        <button nz-button nzType="default" routerLink="/users">
-          <span nz-icon nzType="arrow-left"></span>
-          Back to List
-        </button>
-        <h1>{{ isEditMode ? 'Edit User' : 'Create User' }}</h1>
-      </div>
-
-      <nz-card [nzLoading]="loading">
-        <form nz-form [formGroup]="userForm" (ngSubmit)="save()">
-          <div nz-row [nzGutter]="16">
-            <div nz-col [nzSpan]="12">
-              <nz-form-item>
-                <nz-form-label nzRequired>Username</nz-form-label>
-                <nz-form-control nzErrorTip="Please input username!">
-                  <input nz-input formControlName="username" placeholder="Username" />
-                </nz-form-control>
-              </nz-form-item>
-            </div>
-            <div nz-col [nzSpan]="12">
-              <nz-form-item>
-                <nz-form-label nzRequired>Email</nz-form-label>
-                <nz-form-control nzErrorTip="Please input a valid email!">
-                  <input nz-input formControlName="email" type="email" placeholder="Email" />
-                </nz-form-control>
-              </nz-form-item>
-            </div>
-          </div>
-
-          <div nz-row [nzGutter]="16">
-            <div nz-col [nzSpan]="12">
-              <nz-form-item>
-                <nz-form-label>First Name</nz-form-label>
-                <nz-form-control>
-                  <input nz-input formControlName="firstName" placeholder="First Name" />
-                </nz-form-control>
-              </nz-form-item>
-            </div>
-            <div nz-col [nzSpan]="12">
-              <nz-form-item>
-                <nz-form-label>Last Name</nz-form-label>
-                <nz-form-control>
-                  <input nz-input formControlName="lastName" placeholder="Last Name" />
-                </nz-form-control>
-              </nz-form-item>
-            </div>
-          </div>
-
-          <div nz-row [nzGutter]="16" *ngIf="!isEditMode">
-            <div nz-col [nzSpan]="12">
-              <nz-form-item>
-                <nz-form-label nzRequired>Password</nz-form-label>
-                <nz-form-control nzErrorTip="Password is required!">
-                  <input nz-input formControlName="password" type="password" placeholder="Password" />
-                </nz-form-control>
-              </nz-form-item>
-            </div>
-          </div>
-
-          <div nz-row [nzGutter]="16">
-            <div nz-col [nzSpan]="12">
-              <nz-form-item>
-                <nz-form-label>Roles</nz-form-label>
-                <nz-form-control>
-                  <nz-select formControlName="roleIds" nzMode="multiple" nzPlaceHolder="Select roles">
-                    <nz-option *ngFor="let role of allRoles" [nzValue]="role.id" [nzLabel]="role.name"></nz-option>
-                  </nz-select>
-                </nz-form-control>
-              </nz-form-item>
-            </div>
-            <div nz-col [nzSpan]="12">
-              <nz-form-item>
-                <nz-form-label>Active</nz-form-label>
-                <nz-form-control>
-                  <nz-switch formControlName="isActive"></nz-switch>
-                </nz-form-control>
-              </nz-form-item>
-            </div>
-          </div>
-
-          <div class="form-actions">
-            <button nz-button nzType="primary" [nzLoading]="saving" [disabled]="!userForm.valid">
-              {{ isEditMode ? 'Update' : 'Create' }}
-            </button>
-            <button nz-button nzType="default" type="button" routerLink="/users">Cancel</button>
-          </div>
-        </form>
-      </nz-card>
-    </div>
-  `,
-  styles: [`
-    .user-detail {
-      padding: 24px;
-    }
-
-    .page-header {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    .page-header h1 {
-      margin: 0;
-      font-size: 24px;
-      font-weight: 500;
-    }
-
-    .form-actions {
-      margin-top: 24px;
-      display: flex;
-      gap: 8px;
-    }
-  `]
+  templateUrl: './user-detail.component.html',
+  styleUrls: ['./user-detail.component.css']
 })
 export class UserDetailComponent implements OnInit {
   userForm: FormGroup;
@@ -203,7 +89,7 @@ export class UserDetailComponent implements OnInit {
           firstName: user.firstName,
           lastName: user.lastName,
           isActive: user.isActive,
-          roleIds: user.roles.map(r => r.id)
+          roleIds: user.roles.map((r: { id: string }) => r.id)
         });
         this.loading = false;
       },

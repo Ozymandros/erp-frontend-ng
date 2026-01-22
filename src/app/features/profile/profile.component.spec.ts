@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ProfileComponent } from './profile.component';
-import { AuthService } from '@/app/core/services/auth.service';
-import { UsersService } from '@/app/core/services/users.service';
+import { AuthService } from '../../core/services/auth.service';
+import { UsersService } from '../../core/services/users.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { of, BehaviorSubject } from 'rxjs';
-import { User } from '@/app/types/api.types';
+import { User } from '../../types/api.types';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('ProfileComponent', () => {

@@ -1,17 +1,30 @@
 import { GenericContainer, StartedTestContainer } from 'testcontainers';
 
+let container: StartedTestContainer;
+
 export default async function globalSetup() {
-  console.log('Starting Testcontainer...');
-  // Example: Start a Generic Redis or MockServer container
-  // For demonstration, we'll start a simple nginx or mockserver
-  // const container = await new GenericContainer("mockserver/mockserver")
-  //   .withExposedPorts(1080)
-  //   .start();
+  console.log('Starting MockServer container via Testcontainers...');
   
-  // process.env.TESTCONTAINER_PORT = container.getMappedPort(1080).toString();
-  // process.env.TESTCONTAINER_HOST = container.getHost();
-  
-  console.log('Testcontainer setup placeholder. Uncomment to enable actual Docker container startup.');
+  try {
+    container = await new GenericContainer("nginx:alpine")
+      .withExposedPorts(80)
+      .start();
+    
+    const host = container.getHost();
+    const port = container.getMappedPort(80);
+    const url = `http://${host}:${port}`;
+    
+    process.env['MOCK_SERVER_URL'] = url;
+    console.log(`MockServer is running at: ${url}`);
+    
+    // Store the container in a way that teardown can access it if needed
+    // (though Ryuk will clean it up anyway)
+    (global as any).__MOCK_CONTAINER__ = container;
+    
+  } catch (error) {
+    console.error('Failed to start Testcontainer:', error);
+    // Don't fail the whole test suite if Docker is missing, just log it
+  }
 }
 
 // export async function globalTeardown() {

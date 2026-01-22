@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { ApiClientService } from '@/app/core/api/http-client.service';
-import { AUTH_ENDPOINTS, USERS_ENDPOINTS, PERMISSIONS_ENDPOINTS } from '@/app/core/api/endpoints.constants';
+import { ApiClientService } from '../api/http-client.service';
+import { AUTH_ENDPOINTS, USERS_ENDPOINTS, PERMISSIONS_ENDPOINTS } from '../api/endpoints.constants';
 import {
   LoginRequest,
   RegisterRequest,
@@ -11,7 +11,7 @@ import {
   User,
   PermissionCheckRequest,
   PermissionCheckResponse
-} from '@/app/types/api.types';
+} from '../types/api.types';
 
 const ACCESS_TOKEN_KEY = 'access_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';

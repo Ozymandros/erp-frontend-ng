@@ -8,8 +8,10 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { InventoryService } from '@/app/core/services/inventory.service';
-import { ProductDto, WarehouseDto } from '@/app/types/api.types';
+import { StockOperationsService } from '../../../core/services/stock-operations.service';
+import { ProductsService } from '../../../core/services/products.service';
+import { WarehousesService } from '../../../core/services/warehouses.service';
+import { ProductDto, WarehouseDto } from '../../../types/api.types';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -25,69 +27,8 @@ import { forkJoin } from 'rxjs';
     NzSelectModule,
     NzInputNumberModule
   ],
-  template: `
-    <div class="stock-operations">
-      <div class="page-header" style="margin-bottom: 24px;">
-        <h1>Inventory Operations</h1>
-      </div>
-
-      <div nz-row [nzGutter]="16">
-        <div nz-col [nzSpan]="12">
-          <nz-card nzTitle="Manual Stock Adjustment">
-            <form nz-form [formGroup]="adjustmentForm" (ngSubmit)="submitAdjustment()">
-              <nz-form-item>
-                <nz-form-label [nzSpan]="6" nzRequired>Product</nz-form-label>
-                <nz-form-control [nzSpan]="18" nzErrorTip="Please select a product!">
-                  <nz-select formControlName="productId" nzShowSearch nzPlaceHolder="Search product">
-                    <nz-option *ngFor="let p of products" [nzValue]="p.id" [nzLabel]="p.name + ' (' + p.sku + ')'"></nz-option>
-                  </nz-select>
-                </nz-form-control>
-              </nz-form-item>
-
-              <nz-form-item>
-                <nz-form-label [nzSpan]="6" nzRequired>Warehouse</nz-form-label>
-                <nz-form-control [nzSpan]="18" nzErrorTip="Please select a warehouse!">
-                  <nz-select formControlName="warehouseId" nzPlaceHolder="Select warehouse">
-                    <nz-option *ngFor="let w of warehouses" [nzValue]="w.id" [nzLabel]="w.name"></nz-option>
-                  </nz-select>
-                </nz-form-control>
-              </nz-form-item>
-
-              <nz-form-item>
-                <nz-form-label [nzSpan]="6" nzRequired>Adjustment</nz-form-label>
-                <nz-form-control [nzSpan]="18" nzExtra="Use negative numbers for stock removals">
-                  <nz-input-number formControlName="quantity" [nzStep]="1" style="width: 100%;"></nz-input-number>
-                </nz-form-control>
-              </nz-form-item>
-
-              <nz-form-item>
-                <nz-form-label [nzSpan]="6">Reference/Reason</nz-form-label>
-                <nz-form-control [nzSpan]="18">
-                  <input nz-input formControlName="reason" placeholder="e.g. Damage, Correcting count" />
-                </nz-form-control>
-              </nz-form-item>
-
-              <nz-form-item>
-                <nz-form-control [nzOffset]="6" [nzSpan]="18">
-                  <button nz-button nzType="primary" [nzLoading]="submitting" [disabled]="!adjustmentForm.valid">
-                    Apply Adjustment
-                  </button>
-                </nz-form-control>
-              </nz-form-item>
-            </form>
-          </nz-card>
-        </div>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .stock-operations {
-      padding: 24px;
-    }
-    h1 {
-      margin: 0;
-    }
-  `]
+  templateUrl: './stock-operations.component.html',
+  styleUrls: ['./stock-operations.component.css']
 })
 export class StockOperationsComponent implements OnInit {
   adjustmentForm: FormGroup;
@@ -97,7 +38,9 @@ export class StockOperationsComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private inventoryService: InventoryService,
+    private stockOperationsService: StockOperationsService,
+    private productsService: ProductsService,
+    private warehousesService: WarehousesService,
     private message: NzMessageService
   ) {
     this.adjustmentForm = this.fb.group({
@@ -114,8 +57,8 @@ export class StockOperationsComponent implements OnInit {
 
   loadData(): void {
     forkJoin({
-      products: this.inventoryService.getProducts({ pageSize: 1000 }),
-      warehouses: this.inventoryService.getWarehouses({ pageSize: 1000 })
+      products: this.productsService.getProducts(),
+      warehouses: this.warehousesService.getWarehouses()
     }).subscribe({
       next: (results) => {
         this.products = results.products.items;
@@ -130,13 +73,18 @@ export class StockOperationsComponent implements OnInit {
   submitAdjustment(): void {
     if (this.adjustmentForm.valid) {
       this.submitting = true;
-      // In a real app we'd have a specific endpoint for this
-      // For now we'll just show a success message as a placeholder if mock API doesn't support it
-      setTimeout(() => {
-        this.message.success('Stock adjustment applied successfully');
-        this.adjustmentForm.reset({ quantity: 0 });
-        this.submitting = false;
-      }, 1000);
+      const data = this.adjustmentForm.value;
+      // Assuming this form is specifically for 'adjust' operation
+      const obs = this.stockOperationsService.adjust(data);
+
+      obs.subscribe({
+        next: () => {
+          this.message.success(`Stock adjustment completed successfully`);
+          this.adjustmentForm.reset({ quantity: 0 });
+          this.submitting = false;
+        },
+        error: () => this.submitting = false
+      });
     }
   }
 }
