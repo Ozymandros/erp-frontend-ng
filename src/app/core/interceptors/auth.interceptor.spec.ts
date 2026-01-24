@@ -25,7 +25,7 @@ describe('authInterceptor', () => {
 
     TestBed.runInInjectionContext(() => {
       authInterceptor(req, next).subscribe({
-        error: (err) => {
+        error: (err: any) => {
           expect(err.status).toBe(401);
           expect(sessionStorage.clear).toHaveBeenCalled();
           expect(routerSpy.navigate).toHaveBeenCalledWith(['/login']);
@@ -43,7 +43,7 @@ describe('authInterceptor', () => {
 
     TestBed.runInInjectionContext(() => {
       authInterceptor(req, next).subscribe({
-        error: (err) => {
+        error: (err: any) => {
           expect(err.status).toBe(500);
           expect(sessionStorage.clear).not.toHaveBeenCalled();
           expect(routerSpy.navigate).not.toHaveBeenCalled();

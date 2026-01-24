@@ -12,7 +12,7 @@
     "downlevelIteration": true,
     "experimentalDecorators": true,
     // 'moduleResolution=node10' is deprecated in TS 5.0, see https://aka.ms/ts6
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",

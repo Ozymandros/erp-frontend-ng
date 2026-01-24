@@ -64,7 +64,7 @@ describe('SalesOrdersListComponent', () => {
 
     expect(salesOrdersServiceSpy.exportToXlsx).toHaveBeenCalled();
     expect(FileUtils.saveFile).toHaveBeenCalledWith(mockBlob, 'sales-orders.xlsx');
-    expect(messageServiceSpy.success).toHaveBeenCalledWith('Orders exported to XLSX successfully');
+    expect(messageServiceSpy.success).toHaveBeenCalledWith('Sales orders exported to XLSX successfully');
   });
 
   it('should handle export to XLSX error', () => {
@@ -73,7 +73,7 @@ describe('SalesOrdersListComponent', () => {
     component.exportToXlsx();
     
     expect(salesOrdersServiceSpy.exportToXlsx).toHaveBeenCalled();
-    expect(messageServiceSpy.error).toHaveBeenCalledWith('Failed to export orders to XLSX');
+    expect(messageServiceSpy.error).toHaveBeenCalledWith('Failed to export sales orders to XLSX');
   });
 
   it('should export to PDF', () => {
@@ -85,7 +85,7 @@ describe('SalesOrdersListComponent', () => {
 
     expect(salesOrdersServiceSpy.exportToPdf).toHaveBeenCalled();
     expect(FileUtils.saveFile).toHaveBeenCalledWith(mockBlob, 'sales-orders.pdf');
-    expect(messageServiceSpy.success).toHaveBeenCalledWith('Orders exported to PDF successfully');
+    expect(messageServiceSpy.success).toHaveBeenCalledWith('Sales orders exported to PDF successfully');
   });
 
   it('should handle export to PDF error', () => {
@@ -94,7 +94,7 @@ describe('SalesOrdersListComponent', () => {
     component.exportToPdf();
     
     expect(salesOrdersServiceSpy.exportToPdf).toHaveBeenCalled();
-    expect(messageServiceSpy.error).toHaveBeenCalledWith('Failed to export orders to PDF');
+    expect(messageServiceSpy.error).toHaveBeenCalledWith('Failed to export sales orders to PDF');
   });
 });
 
