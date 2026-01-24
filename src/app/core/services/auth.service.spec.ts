@@ -18,6 +18,7 @@ describe('AuthService', () => {
     emailConfirmed: true,
     isExternalLogin: false,
     isAdmin: true,
+    isActive: true,
     createdAt: '',
     createdBy: ''
   };

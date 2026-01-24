@@ -43,6 +43,7 @@ export class UserDto extends AuditableDto<string> {
   public isExternalLogin: boolean = false;
   public externalProvider?: string;
   public isAdmin: boolean = false;
+  public isActive: boolean = true;
   public roles: RoleDto[] = [];
   public permissions: PermissionDto[] = [];
 
@@ -186,6 +187,7 @@ export interface User extends IAuditableDto<string> {
   isExternalLogin: boolean;
   externalProvider?: string;
   isAdmin: boolean;
+  isActive: boolean;
   roles: Role[];
   permissions: Permission[];
 }

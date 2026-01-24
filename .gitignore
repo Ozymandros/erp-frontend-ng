@@ -13,8 +13,8 @@
 package-lock.json
 
 # Node
-npm-debug.log
-yarn-error.log
+*.log
+*.txt
 
 # IDEs and editors
 .idea/

@@ -27,6 +27,7 @@ describe('ProfileComponent', () => {
     isExternalLogin: false,
     
     isAdmin: true,
+    isActive: true,
     permissions: [],
     createdAt: new Date().toISOString(),
     createdBy: 'system'
