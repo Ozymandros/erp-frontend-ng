@@ -1,0 +1,7 @@
+{
+  "npm.packageManager": "pnpm",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "files.exclude": {
+    "**/node_modules": true
+  }
+}

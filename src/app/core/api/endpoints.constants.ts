@@ -54,11 +54,16 @@ export const SALES_ENDPOINTS = {
   CUSTOMER_BY_ID: (id: string) => `${SALES_SERVICE_BASE}/customers/${id}`,
   ORDERS: `${SALES_SERVICE_BASE}/orders`,
   ORDER_BY_ID: (id: string) => `${SALES_SERVICE_BASE}/orders/${id}`,
+  CREATE_QUOTE: `${SALES_SERVICE_BASE}/orders/quote`,
+  CONFIRM_QUOTE: (id: string) => `${SALES_SERVICE_BASE}/orders/quote/${id}/confirm`,
+  CHECK_STOCK: `${SALES_SERVICE_BASE}/orders/check-stock`,
 } as const;
 
 export const PURCHASING_ENDPOINTS = {
   ORDERS: `${PURCHASING_SERVICE_BASE}/orders`,
   ORDER_BY_ID: (id: string) => `${PURCHASING_SERVICE_BASE}/orders/${id}`,
+  APPROVE: (id: string) => `${PURCHASING_SERVICE_BASE}/orders/${id}/approve`,
+  RECEIVE: (id: string) => `${PURCHASING_SERVICE_BASE}/orders/${id}/receive`,
 } as const;
 
 export const ORDERS_ENDPOINTS = {

@@ -5,6 +5,9 @@ import { SALES_ENDPOINTS } from '../api/endpoints.constants';
 import {
   SalesOrderDto,
   CreateUpdateSalesOrderDto,
+  CreateQuoteDto,
+  ConfirmQuoteDto,
+  StockAvailabilityCheckDto,
   PaginatedResponse,
   SearchParams
 } from '../types/api.types';
@@ -33,5 +36,20 @@ export class SalesOrdersService {
 
   deleteSalesOrder(id: string): Observable<void> {
     return this.apiClient.delete<void>(SALES_ENDPOINTS.ORDER_BY_ID(id));
+  }
+
+  createQuote(data: CreateQuoteDto): Observable<SalesOrderDto> {
+    return this.apiClient.post<SalesOrderDto>(SALES_ENDPOINTS.CREATE_QUOTE, data);
+  }
+
+  confirmQuote(id: string, data: ConfirmQuoteDto): Observable<SalesOrderDto> {
+    return this.apiClient.post<SalesOrderDto>(SALES_ENDPOINTS.CONFIRM_QUOTE(id), data);
+  }
+
+  checkStockAvailability(productIds: string[], quantities: number[]): Observable<StockAvailabilityCheckDto[]> {
+    return this.apiClient.post<StockAvailabilityCheckDto[]>(
+      SALES_ENDPOINTS.CHECK_STOCK, 
+      { productIds, quantities }
+    );
   }
 }

@@ -43,8 +43,7 @@ export class WarehouseDetailComponent implements OnInit {
   ) {
     this.warehouseForm = this.fb.group({
       name: ['', [Validators.required]],
-      location: [''],
-      isActive: [true]
+      location: [''] 
     });
   }
 
@@ -63,8 +62,7 @@ export class WarehouseDetailComponent implements OnInit {
       next: (warehouse) => {
         this.warehouseForm.patchValue({
           name: warehouse.name,
-          location: warehouse.location,
-          isActive: warehouse.isActive
+          location: warehouse.location
         });
         this.loading = false;
       },

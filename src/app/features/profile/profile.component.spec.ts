@@ -25,7 +25,7 @@ describe('ProfileComponent', () => {
     lastName: 'User',
     emailConfirmed: true,
     isExternalLogin: false,
-    isActive: true,
+    
     isAdmin: true,
     permissions: [],
     createdAt: new Date().toISOString(),
@@ -84,3 +84,4 @@ describe('ProfileComponent', () => {
     expect(messageServiceSpy.success).toHaveBeenCalled();
   });
 });
+

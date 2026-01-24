@@ -17,7 +17,7 @@ describe('ProductsListComponent', () => {
   let modalServiceSpy: jasmine.SpyObj<NzModalService>;
 
   const mockResponse = {
-    items: [{ id: '1', sku: 'SKU1', name: 'Product 1', unitPrice: 10, stock: 100, isActive: true }],
+    items: [{ id: '1', sku: 'SKU1', name: 'Product 1', unitPrice: 10, quantityInStock: 100, reorderLevel: 10, createdAt: '', createdBy: '' }],
     total: 1
   };
 

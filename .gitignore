@@ -8,8 +8,11 @@
 /playwright-report
 /test-results
 
-# Node
+# Dependencies
 /node_modules
+package-lock.json
+
+# Node
 npm-debug.log
 yarn-error.log
 

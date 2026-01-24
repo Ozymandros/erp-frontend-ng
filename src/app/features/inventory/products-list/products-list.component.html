@@ -37,10 +37,8 @@
       <tr>
         <th>SKU</th>
         <th>Name</th>
-        <th>Category</th>
         <th>Unit Price</th>
         <th>Stock</th>
-        <th>Status</th>
         <th nzWidth="150px">Actions</th>
       </tr>
     </thead>
@@ -48,16 +46,10 @@
       <tr *ngFor="let product of productsTable.data">
         <td><strong>{{ product.sku }}</strong></td>
         <td>{{ product.name }}</td>
-        <td>{{ product.category || '-' }}</td>
         <td>${{ product.unitPrice.toFixed(2) }}</td>
         <td>
-          <nz-tag [nzColor]="product.stock <= product.reorderLevel ? 'red' : 'green'">
-            {{ product.stock }}
-          </nz-tag>
-        </td>
-        <td>
-          <nz-tag [nzColor]="product.isActive ? 'success' : 'default'">
-            {{ product.isActive ? 'Active' : 'Inactive' }}
+          <nz-tag [nzColor]="product.quantityInStock <= product.reorderLevel ? 'red' : 'green'">
+            {{ product.quantityInStock }}
           </nz-tag>
         </td>
         <td>

@@ -4,7 +4,6 @@ import { ApiClientService } from '../api/http-client.service';
 import { SALES_ENDPOINTS } from '../api/endpoints.constants';
 import {
   CustomerDto,
-  CreateUpdateCustomerDto,
   PaginatedResponse,
   SearchParams
 } from '../types/api.types';
@@ -23,11 +22,11 @@ export class CustomersService {
     return this.apiClient.get<CustomerDto>(SALES_ENDPOINTS.CUSTOMER_BY_ID(id));
   }
 
-  createCustomer(data: CreateUpdateCustomerDto): Observable<CustomerDto> {
+  createCustomer(data: Partial<CustomerDto>): Observable<CustomerDto> {
     return this.apiClient.post<CustomerDto>(SALES_ENDPOINTS.CUSTOMERS, data);
   }
 
-  updateCustomer(id: string, data: CreateUpdateCustomerDto): Observable<CustomerDto> {
+  updateCustomer(id: string, data: Partial<CustomerDto>): Observable<CustomerDto> {
     return this.apiClient.put<CustomerDto>(SALES_ENDPOINTS.CUSTOMER_BY_ID(id), data);
   }
 

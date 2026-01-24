@@ -23,13 +23,6 @@
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-label [nzSpan]="4">Active Status</nz-form-label>
-        <nz-form-control [nzSpan]="14">
-          <nz-switch formControlName="isActive"></nz-switch>
-        </nz-form-control>
-      </nz-form-item>
-
-      <nz-form-item>
         <nz-form-control [nzOffset]="4" [nzSpan]="14">
           <button nz-button nzType="primary" [nzLoading]="saving" [disabled]="!warehouseForm.valid">
             {{ isEditMode ? 'Update' : 'Create' }}

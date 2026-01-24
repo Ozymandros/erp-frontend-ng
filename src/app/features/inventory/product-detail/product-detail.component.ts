@@ -49,12 +49,9 @@ export class ProductDetailComponent implements OnInit {
       sku: ['', [Validators.required]],
       name: ['', [Validators.required]],
       description: [''],
-      category: [''],
       unitPrice: [0, [Validators.required]],
-      stock: [0, [Validators.required]],
-      reorderLevel: [10],
-      barcode: [''],
-      isActive: [true]
+      quantityInStock: [0, [Validators.required]],
+      reorderLevel: [10]
     });
   }
 

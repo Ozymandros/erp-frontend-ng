@@ -36,15 +36,7 @@
       </nz-form-item>
 
       <div nz-row [nzGutter]="16">
-        <div nz-col [nzSpan]="12">
-          <nz-form-item>
-            <nz-form-label>Category</nz-form-label>
-            <nz-form-control>
-              <input nz-input formControlName="category" placeholder="Category" />
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div nz-col [nzSpan]="12">
+        <div nz-col [nzSpan]="24">
           <nz-form-item>
             <nz-form-label nzRequired>Unit Price</nz-form-label>
             <nz-form-control nzErrorTip="Please input unit price!">
@@ -59,7 +51,7 @@
           <nz-form-item>
             <nz-form-label nzRequired>Initial Stock</nz-form-label>
             <nz-form-control nzErrorTip="Please input initial stock!">
-              <nz-input-number formControlName="stock" [nzMin]="0" [nzPrecision]="0" style="width: 100%"></nz-input-number>
+              <nz-input-number formControlName="quantityInStock" [nzMin]="0" [nzPrecision]="0" style="width: 100%"></nz-input-number>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -73,24 +65,7 @@
         </div>
       </div>
 
-      <div nz-row [nzGutter]="16">
-        <div nz-col [nzSpan]="12">
-          <nz-form-item>
-            <nz-form-label>Barcode</nz-form-label>
-            <nz-form-control>
-              <input nz-input formControlName="barcode" placeholder="Barcode" />
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div nz-col [nzSpan]="12">
-          <nz-form-item>
-            <nz-form-label>Active</nz-form-label>
-            <nz-form-control>
-              <nz-switch formControlName="isActive"></nz-switch>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-      </div>
+
 
       <div class="form-actions">
         <button nz-button nzType="primary" [nzLoading]="saving" [disabled]="!productForm.valid">

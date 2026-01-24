@@ -5,6 +5,8 @@ import { PURCHASING_ENDPOINTS } from '../api/endpoints.constants';
 import {
   PurchaseOrderDto,
   CreateUpdatePurchaseOrderDto,
+  ApprovePurchaseOrderDto,
+  ReceivePurchaseOrderDto,
   PaginatedResponse,
   SearchParams
 } from '../types/api.types';
@@ -33,5 +35,19 @@ export class PurchaseOrdersService {
 
   deletePurchaseOrder(id: string): Observable<void> {
     return this.apiClient.delete<void>(PURCHASING_ENDPOINTS.ORDER_BY_ID(id));
+  }
+
+  approvePurchaseOrder(data: ApprovePurchaseOrderDto): Observable<PurchaseOrderDto> {
+    return this.apiClient.post<PurchaseOrderDto>(
+      PURCHASING_ENDPOINTS.APPROVE(data.purchaseOrderId), 
+      data
+    );
+  }
+
+  receivePurchaseOrder(data: ReceivePurchaseOrderDto): Observable<PurchaseOrderDto> {
+    return this.apiClient.post<PurchaseOrderDto>(
+      PURCHASING_ENDPOINTS.RECEIVE(data.purchaseOrderId), 
+      data
+    );
   }
 }

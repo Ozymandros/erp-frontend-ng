@@ -24,7 +24,7 @@ describe('HeaderComponent', () => {
     lastName: 'User',
     emailConfirmed: true,
     isExternalLogin: false,
-    isActive: true,
+    
     isAdmin: true,
     permissions: [],
     createdAt: new Date().toISOString(),
@@ -94,3 +94,4 @@ describe('HeaderComponent', () => {
   });
 
 });
+

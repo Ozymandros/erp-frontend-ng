@@ -52,8 +52,7 @@ export class UserDetailComponent implements OnInit {
       firstName: [''],
       lastName: [''],
       password: [''],
-      roleIds: [[]],
-      isActive: [true]
+      roleIds: [[]]
     });
   }
 
@@ -88,7 +87,6 @@ export class UserDetailComponent implements OnInit {
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
-          isActive: user.isActive,
           roleIds: user.roles.map((r: { id: string }) => r.id)
         });
         this.loading = false;

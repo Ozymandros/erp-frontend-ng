@@ -42,7 +42,6 @@ export class UserDto extends AuditableDto<string> {
   public emailConfirmed: boolean = false;
   public isExternalLogin: boolean = false;
   public externalProvider?: string;
-  public isActive: boolean = true;
   public isAdmin: boolean = false;
   public roles: RoleDto[] = [];
   public permissions: PermissionDto[] = [];
@@ -77,7 +76,6 @@ export class PermissionDto extends AuditableDto<string> {
   public module!: string;
   public action!: string;
   public description?: string;
-
   constructor(data?: Partial<PermissionDto>) {
     super(data);
   }
@@ -187,9 +185,7 @@ export interface User extends IAuditableDto<string> {
   emailConfirmed: boolean;
   isExternalLogin: boolean;
   externalProvider?: string;
-  isActive: boolean;
   isAdmin: boolean;
-  avatarUrl?: string;
   roles: Role[];
   permissions: Permission[];
 }
@@ -252,47 +248,36 @@ export interface UpdatePermissionRequest {
   description?: string;
 }
 
-// ==================== INVENTORY MODULE ====================
+// ==================== PRODUCTS MODULE ====================
 
 export interface ProductDto extends IAuditableDto<string> {
   sku: string;
   name: string;
   description?: string;
-  category?: string;
   unitPrice: number;
-  stock: number;
+  quantityInStock: number;
   reorderLevel: number;
-  isActive: boolean;
 }
 
 export interface CreateUpdateProductDto {
   sku: string;
   name: string;
   description?: string;
-  category?: string;
   unitPrice: number;
+  quantityInStock: number;
   reorderLevel: number;
-  isActive: boolean;
 }
+
+// ==================== WAREHOUSE MODULE ====================
 
 export interface WarehouseDto extends IAuditableDto<string> {
   name: string;
-  location?: string;
-  address?: string;
-  city?: string;
-  country?: string;
-  postalCode?: string;
-  isActive: boolean;
+  location: string;
 }
 
 export interface CreateUpdateWarehouseDto {
   name: string;
-  location?: string;
-  address?: string;
-  city?: string;
-  country?: string;
-  postalCode?: string;
-  isActive: boolean;
+  location: string;
 }
 
 export interface WarehouseStockDto {
@@ -339,18 +324,15 @@ export interface StockOperationRequest {
   adjustmentType?: AdjustmentType;
 }
 
-export interface InventoryTransactionDto extends IAuditableDto<string> {
-  transactionType: TransactionType;
+export interface InventoryTransactionDto {
+  id: string;
   productId: string;
-  productName?: string;
   warehouseId: string;
-  warehouseName?: string;
-  quantity: number;
-  referenceId?: string;
-  referenceType?: string;
-  referenceNumber?: string;
-  reason?: string;
+  quantityChange: number;
+  transactionType: TransactionType;
   transactionDate: string;
+  product?: ProductDto;
+  warehouse?: WarehouseDto;
 }
 
 // ==================== SALES MODULE ====================
@@ -359,23 +341,31 @@ export interface SalesOrderDto extends IAuditableDto<string> {
   orderNumber: string;
   customerId: string;
   customerName?: string;
-  status: SalesOrderStatus;
+  status: number;
   orderDate: string;
   totalAmount: number;
-  orderLines: SalesOrderLineDto[];
+  lines: SalesOrderLineDto[];
+  customer?: CustomerDto;
+  // Quote tracking
+  isQuote: boolean;
+  quoteExpiryDate?: string;
+  convertedToOrderId?: string;
 }
 
 export interface CreateUpdateSalesOrderDto {
+  orderNumber: string;
   customerId: string;
   orderDate: string;
-  orderLines: CreateUpdateSalesOrderLineDto[];
+  status?: number;
+  totalAmount?: number;
+  lines: CreateUpdateSalesOrderLineDto[];
 }
 
 export interface SalesOrderLineDto {
   productId: string;
   quantity: number;
   unitPrice: number;
-  totalPrice: number;
+  lineTotal: number;
 }
 
 export interface CreateUpdateSalesOrderLineDto {
@@ -384,26 +374,39 @@ export interface CreateUpdateSalesOrderLineDto {
   unitPrice: number;
 }
 
+export interface CreateQuoteDto {
+  orderNumber: string;
+  customerId: string;
+  orderDate: string;
+  validityDays?: number;
+  lines: CreateUpdateSalesOrderLineDto[];
+}
+
+export interface ConfirmQuoteDto {
+  quoteId: string;
+  warehouseId: string;
+  shippingAddress?: string;
+}
+
+export interface StockAvailabilityCheckDto {
+  productId: string;
+  requestedQuantity: number;
+  availableQuantity: number;
+  isAvailable: boolean;
+  warehouseStock: WarehouseAvailabilityDto[];
+}
+
+export interface WarehouseAvailabilityDto {
+  warehouseId: string;
+  warehouseName: string;
+  availableQuantity: number;
+}
+
 export interface CustomerDto extends IAuditableDto<string> {
   name: string;
   email: string;
-  phone?: string;
+  phoneNumber?: string;
   address?: string;
-  city?: string;
-  country?: string;
-  postalCode?: string;
-  isActive: boolean;
-}
-
-export interface CreateUpdateCustomerDto {
-  name: string;
-  email?: string;
-  phone?: string;
-  address?: string;
-  city?: string;
-  country?: string;
-  postalCode?: string;
-  isActive: boolean;
 }
 
 // ==================== PURCHASING MODULE ====================
@@ -412,25 +415,48 @@ export interface PurchaseOrderDto extends IAuditableDto<string> {
   orderNumber: string;
   supplierId: string;
   supplierName?: string;
-  status: PurchaseOrderStatus;
+  status: number;
   orderDate: string;
   expectedDeliveryDate?: string;
   totalAmount: number;
-  orderLines: PurchaseOrderLineDto[];
+  lines: PurchaseOrderLineDto[];
+  supplier?: SupplierDto;
 }
 
 export interface CreateUpdatePurchaseOrderDto {
+  orderNumber: string;
   supplierId: string;
   orderDate: string;
   expectedDeliveryDate?: string;
-  orderLines: PurchaseOrderLineDto[];
+  status?: number;
+  totalAmount?: number;
+  lines: PurchaseOrderLineDto[];
 }
 
 export interface PurchaseOrderLineDto {
   productId: string;
   quantity: number;
   unitPrice: number;
-  totalPrice: number;
+  lineTotal: number;
+}
+
+export interface ApprovePurchaseOrderDto {
+  purchaseOrderId: string;
+  notes?: string;
+}
+
+export interface ReceivePurchaseOrderDto {
+  purchaseOrderId: string;
+  warehouseId: string;
+  receivedDate: string;
+  notes?: string;
+  lines: ReceivePurchaseOrderLineDto[];
+}
+
+export interface ReceivePurchaseOrderLineDto {
+  purchaseOrderLineId: string;
+  receivedQuantity: number;
+  notes?: string;
 }
 
 export interface SupplierDto extends IAuditableDto<string> {
@@ -438,10 +464,6 @@ export interface SupplierDto extends IAuditableDto<string> {
   email: string;
   phone?: string;
   address?: string;
-  city?: string;
-  country?: string;
-  postalCode?: string;
-  isActive: boolean;
 }
 
 // ==================== ENUMS ====================
