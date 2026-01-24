@@ -36,17 +36,17 @@
     "@angular-devkit/build-angular": "^17.3.17",
     "@angular/cli": "^17.3.17",
     "@angular/compiler-cli": "^17.3.0",
-    "@playwright/test": "^1.57.0",
+    "@playwright/test": "^1.58.0",
     "@types/jasmine": "~5.1.0",
-    "@types/node": "^25.0.9",
+    "@types/node": "^25.0.10",
     "http-server": "^14.1.1",
-    "jasmine-core": "~5.1.0",
+    "jasmine-core": "~5.13.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "testcontainers": "^11.11.0",
-    "typescript": "~5.4.2"
+    "typescript": "~5.9.3"
   }
 }
