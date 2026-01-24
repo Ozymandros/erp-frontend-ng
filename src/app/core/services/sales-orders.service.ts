@@ -52,4 +52,12 @@ export class SalesOrdersService {
       { productIds, quantities }
     );
   }
+
+  exportToXlsx(): Observable<Blob> {
+    return this.apiClient.download(SALES_ENDPOINTS.ORDERS_EXPORT_XLSX);
+  }
+
+  exportToPdf(): Observable<Blob> {
+    return this.apiClient.download(SALES_ENDPOINTS.ORDERS_EXPORT_PDF);
+  }
 }

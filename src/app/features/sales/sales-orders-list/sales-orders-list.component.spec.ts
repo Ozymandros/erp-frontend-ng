@@ -4,8 +4,9 @@ import { SalesOrdersListComponent } from './sales-orders-list.component';
 import { SalesOrdersService } from '../../../core/services/sales-orders.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
+import { FileUtils } from '../../../core/utils/file-utils';
 
 describe('SalesOrdersListComponent', () => {
   let component: SalesOrdersListComponent;
@@ -19,7 +20,7 @@ describe('SalesOrdersListComponent', () => {
   };
 
   beforeEach(async () => {
-    salesOrdersServiceSpy = jasmine.createSpyObj('SalesOrdersService', ['getSalesOrders', 'deleteSalesOrder']);
+    salesOrdersServiceSpy = jasmine.createSpyObj('SalesOrdersService', ['getSalesOrders', 'deleteSalesOrder', 'exportToXlsx', 'exportToPdf']);
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
     salesOrdersServiceSpy.getSalesOrders.and.returnValue(of(mockResponse as any));
 
@@ -52,5 +53,48 @@ describe('SalesOrdersListComponent', () => {
     component.deleteOrder('1');
     expect(salesOrdersServiceSpy.getSalesOrders).toHaveBeenCalled();
     expect(messageServiceSpy.success).toHaveBeenCalled();
+    });
+
+  it('should export to XLSX', () => {
+    const mockBlob = new Blob(['data'], { type: 'application/octet-stream' });
+    salesOrdersServiceSpy.exportToXlsx.and.returnValue(of(mockBlob));
+    spyOn(FileUtils, 'saveFile');
+
+    component.exportToXlsx();
+
+    expect(salesOrdersServiceSpy.exportToXlsx).toHaveBeenCalled();
+    expect(FileUtils.saveFile).toHaveBeenCalledWith(mockBlob, 'sales-orders.xlsx');
+    expect(messageServiceSpy.success).toHaveBeenCalledWith('Orders exported to XLSX successfully');
+  });
+
+  it('should handle export to XLSX error', () => {
+    salesOrdersServiceSpy.exportToXlsx.and.returnValue(throwError(() => new Error('Error')));
+    
+    component.exportToXlsx();
+    
+    expect(salesOrdersServiceSpy.exportToXlsx).toHaveBeenCalled();
+    expect(messageServiceSpy.error).toHaveBeenCalledWith('Failed to export orders to XLSX');
+  });
+
+  it('should export to PDF', () => {
+    const mockBlob = new Blob(['data'], { type: 'application/pdf' });
+    salesOrdersServiceSpy.exportToPdf.and.returnValue(of(mockBlob));
+    spyOn(FileUtils, 'saveFile');
+
+    component.exportToPdf();
+
+    expect(salesOrdersServiceSpy.exportToPdf).toHaveBeenCalled();
+    expect(FileUtils.saveFile).toHaveBeenCalledWith(mockBlob, 'sales-orders.pdf');
+    expect(messageServiceSpy.success).toHaveBeenCalledWith('Orders exported to PDF successfully');
+  });
+
+  it('should handle export to PDF error', () => {
+    salesOrdersServiceSpy.exportToPdf.and.returnValue(throwError(() => new Error('Error')));
+    
+    component.exportToPdf();
+    
+    expect(salesOrdersServiceSpy.exportToPdf).toHaveBeenCalled();
+    expect(messageServiceSpy.error).toHaveBeenCalledWith('Failed to export orders to PDF');
   });
 });
+

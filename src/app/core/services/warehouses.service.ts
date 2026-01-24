@@ -34,4 +34,12 @@ export class WarehousesService {
   deleteWarehouse(id: string): Observable<void> {
     return this.apiClient.delete<void>(INVENTORY_ENDPOINTS.WAREHOUSE_BY_ID(id));
   }
+
+  exportToXlsx(): Observable<Blob> {
+    return this.apiClient.download(INVENTORY_ENDPOINTS.WAREHOUSES_EXPORT_XLSX);
+  }
+
+  exportToPdf(): Observable<Blob> {
+    return this.apiClient.download(INVENTORY_ENDPOINTS.WAREHOUSES_EXPORT_PDF);
+  }
 }

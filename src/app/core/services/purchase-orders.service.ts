@@ -50,4 +50,12 @@ export class PurchaseOrdersService {
       data
     );
   }
+
+  exportToXlsx(): Observable<Blob> {
+    return this.apiClient.download(PURCHASING_ENDPOINTS.EXPORT_XLSX);
+  }
+
+  exportToPdf(): Observable<Blob> {
+    return this.apiClient.download(PURCHASING_ENDPOINTS.EXPORT_PDF);
+  }
 }

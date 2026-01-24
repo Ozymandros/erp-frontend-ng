@@ -1,10 +1,18 @@
 <div class="customers-list">
   <div class="page-header">
     <h1>Customers Management</h1>
-    <button nz-button nzType="primary" routerLink="/sales/customers/new">
-      <span nz-icon nzType="plus"></span>
-      Add Customer
-    </button>
+    <div>
+      <button nz-button (click)="exportToXlsx()" style="margin-right: 8px;">
+        <span nz-icon nzType="file"></span> Export XLSX
+      </button>
+      <button nz-button (click)="exportToPdf()" style="margin-right: 8px;">
+        <span nz-icon nzType="file"></span> Export PDF
+      </button>
+      <button nz-button nzType="primary" routerLink="/sales/customers/new">
+        <span nz-icon nzType="plus"></span>
+        Add Customer
+      </button>
+    </div>
   </div>
 
   <div class="search-bar">

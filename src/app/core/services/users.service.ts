@@ -39,4 +39,12 @@ export class UsersService {
   assignRoles(userId: string, roleIds: string[]): Observable<User> {
     return this.apiClient.post<User>(USERS_ENDPOINTS.ROLES(userId), { roleIds });
   }
+
+  exportToXlsx(): Observable<Blob> {
+    return this.apiClient.download(USERS_ENDPOINTS.EXPORT_XLSX);
+  }
+
+  exportToPdf(): Observable<Blob> {
+    return this.apiClient.download(USERS_ENDPOINTS.EXPORT_PDF);
+  }
 }

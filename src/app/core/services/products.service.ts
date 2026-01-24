@@ -38,4 +38,12 @@ export class ProductsService {
   deleteProduct(id: string): Observable<void> {
     return this.apiClient.delete<void>(INVENTORY_ENDPOINTS.PRODUCT_BY_ID(id));
   }
+
+  exportToXlsx(): Observable<Blob> {
+    return this.apiClient.download(INVENTORY_ENDPOINTS.PRODUCTS_EXPORT_XLSX);
+  }
+
+  exportToPdf(): Observable<Blob> {
+    return this.apiClient.download(INVENTORY_ENDPOINTS.PRODUCTS_EXPORT_PDF);
+  }
 }

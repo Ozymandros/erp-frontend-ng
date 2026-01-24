@@ -12,6 +12,7 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { RolesService } from '../../../core/services/roles.service';
 import { Role } from '../../../types/api.types';
+import { FileUtils } from '../../../core/utils/file-utils';
 
 @Component({
   selector: 'app-roles-list',
@@ -84,6 +85,30 @@ export class RolesListComponent implements OnInit {
       },
       error: () => {
         this.message.error('Failed to delete role');
+      }
+    });
+  }
+
+  exportToXlsx(): void {
+    this.rolesService.exportToXlsx().subscribe({
+      next: (blob) => {
+        FileUtils.saveFile(blob, 'roles.xlsx');
+        this.message.success('Roles exported to XLSX successfully');
+      },
+      error: () => {
+        this.message.error('Failed to export roles to XLSX');
+      }
+    });
+  }
+
+  exportToPdf(): void {
+    this.rolesService.exportToPdf().subscribe({
+      next: (blob) => {
+        FileUtils.saveFile(blob, 'roles.pdf');
+        this.message.success('Roles exported to PDF successfully');
+      },
+      error: () => {
+        this.message.error('Failed to export roles to PDF');
       }
     });
   }

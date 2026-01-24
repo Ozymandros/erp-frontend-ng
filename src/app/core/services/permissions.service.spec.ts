@@ -9,7 +9,7 @@ describe('PermissionsService', () => {
   let apiClientSpy: jasmine.SpyObj<ApiClientService>;
 
   beforeEach(() => {
-    apiClientSpy = jasmine.createSpyObj('ApiClientService', ['get', 'post', 'put', 'delete']);
+    apiClientSpy = jasmine.createSpyObj('ApiClientService', ['get', 'post', 'put', 'delete', 'download']);
 
     TestBed.configureTestingModule({
       providers: [
@@ -22,7 +22,7 @@ describe('PermissionsService', () => {
 
   it('should fetch permissions', (done) => {
     const mockResult: PaginatedResponse<Permission> = {
-      items: [{ id: '1', module: 'Users', action: 'Read' } as Permission],
+      items: [{ id: '1', module: 'Users', action: 'Read' } as unknown as Permission],
       total: 1,
       page: 1,
       pageSize: 10,
@@ -44,6 +44,29 @@ describe('PermissionsService', () => {
 
     service.createPermission(perm).subscribe(result => {
       expect(result.id).toBe('2');
+      done();
+    });
+  });
+
+
+  it('should export to XLSX', (done) => {
+    const mockBlob = new Blob(['data'], { type: 'application/octet-stream' });
+    apiClientSpy.download.and.returnValue(of(mockBlob));
+
+    service.exportToXlsx().subscribe(blob => {
+      expect(blob).toEqual(mockBlob);
+      expect(apiClientSpy.download).toHaveBeenCalled();
+      done();
+    });
+  });
+
+  it('should export to PDF', (done) => {
+    const mockBlob = new Blob(['data'], { type: 'application/pdf' });
+    apiClientSpy.download.and.returnValue(of(mockBlob));
+
+    service.exportToPdf().subscribe(blob => {
+      expect(blob).toEqual(mockBlob);
+      expect(apiClientSpy.download).toHaveBeenCalled();
       done();
     });
   });

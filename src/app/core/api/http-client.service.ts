@@ -41,6 +41,19 @@ export class ApiClientService {
     );
   }
 
+  download(url: string, params?: any): Observable<Blob> {
+    const fullUrl = this.getFullUrl(url);
+    const options = {
+      headers: this.getHeaders(),
+      params: this.buildParams(params),
+      responseType: 'blob' as 'json'
+    };
+    
+    return this.http.get<Blob>(fullUrl, options).pipe(
+      catchError(error => this.handleError(error))
+    );
+  }
+
 
   post<T>(url: string, data?: any): Observable<T> {
     const fullUrl = this.getFullUrl(url);

@@ -17,4 +17,12 @@ export class InventoryTransactionsService {
   getInventoryTransactions(params?: SearchParams): Observable<PaginatedResponse<InventoryTransactionDto>> {
     return this.apiClient.get<PaginatedResponse<InventoryTransactionDto>>(INVENTORY_ENDPOINTS.TRANSACTIONS, params);
   }
+
+  exportToXlsx(): Observable<Blob> {
+    return this.apiClient.download(INVENTORY_ENDPOINTS.TRANSACTIONS_EXPORT_XLSX);
+  }
+
+  exportToPdf(): Observable<Blob> {
+    return this.apiClient.download(INVENTORY_ENDPOINTS.TRANSACTIONS_EXPORT_PDF);
+  }
 }

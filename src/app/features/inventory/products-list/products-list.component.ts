@@ -11,6 +11,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { ProductsService } from '../../../core/services/products.service';
 import { ProductDto } from '../../../types/api.types';
+import { FileUtils } from '../../../core/utils/file-utils';
 
 @Component({
   selector: 'app-products-list',
@@ -98,6 +99,30 @@ export class ProductsListComponent implements OnInit {
             this.message.error('Failed to delete product: ' + error.message);
           }
         });
+      }
+    });
+  }
+
+  exportToXlsx(): void {
+    this.productsService.exportToXlsx().subscribe({
+      next: (blob) => {
+        FileUtils.saveFile(blob, 'products.xlsx');
+        this.message.success('Products exported to XLSX successfully');
+      },
+      error: () => {
+        this.message.error('Failed to export products to XLSX');
+      }
+    });
+  }
+
+  exportToPdf(): void {
+    this.productsService.exportToPdf().subscribe({
+      next: (blob) => {
+        FileUtils.saveFile(blob, 'products.pdf');
+        this.message.success('Products exported to PDF successfully');
+      },
+      error: () => {
+        this.message.error('Failed to export products to PDF');
       }
     });
   }

@@ -12,6 +12,7 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { SalesOrdersService } from '../../../core/services/sales-orders.service';
 import { SalesOrderDto } from '../../../types/api.types';
+import { FileUtils } from '../../../core/utils/file-utils';
 
 @Component({
   selector: 'app-sales-orders-list',
@@ -94,5 +95,29 @@ export class SalesOrdersListComponent implements OnInit {
       case 'Cancelled': return 'red';
       default: return 'default';
     }
+  }
+
+  exportToXlsx(): void {
+    this.salesOrdersService.exportToXlsx().subscribe({
+      next: (blob) => {
+        FileUtils.saveFile(blob, 'sales-orders.xlsx');
+        this.message.success('Sales orders exported to XLSX successfully');
+      },
+      error: () => {
+        this.message.error('Failed to export sales orders to XLSX');
+      }
+    });
+  }
+
+  exportToPdf(): void {
+    this.salesOrdersService.exportToPdf().subscribe({
+      next: (blob) => {
+        FileUtils.saveFile(blob, 'sales-orders.pdf');
+        this.message.success('Sales orders exported to PDF successfully');
+      },
+      error: () => {
+        this.message.error('Failed to export sales orders to PDF');
+      }
+    });
   }
 }

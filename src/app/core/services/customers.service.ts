@@ -33,4 +33,12 @@ export class CustomersService {
   deleteCustomer(id: string): Observable<void> {
     return this.apiClient.delete<void>(SALES_ENDPOINTS.CUSTOMER_BY_ID(id));
   }
+
+  exportToXlsx(): Observable<Blob> {
+    return this.apiClient.download(SALES_ENDPOINTS.CUSTOMERS_EXPORT_XLSX);
+  }
+
+  exportToPdf(): Observable<Blob> {
+    return this.apiClient.download(SALES_ENDPOINTS.CUSTOMERS_EXPORT_PDF);
+  }
 }

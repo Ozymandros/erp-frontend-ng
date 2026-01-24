@@ -11,6 +11,7 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { PermissionsService } from '../../../core/services/permissions.service';
 import { Permission } from '../../../types/api.types';
+import { FileUtils } from '../../../core/utils/file-utils';
 
 @Component({
   selector: 'app-permissions-list',
@@ -29,6 +30,14 @@ import { Permission } from '../../../types/api.types';
   template: `
     <div class="page-header" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
       <h1>Permissions Management</h1>
+      <div>
+        <button nz-button (click)="exportToXlsx()" style="margin-right: 8px;">
+          <i nz-icon nzType="file"></i> Export XLSX
+        </button>
+        <button nz-button (click)="exportToPdf()" style="margin-right: 8px;">
+          <i nz-icon nzType="file"></i> Export PDF
+        </button>
+      </div>
     </div>
 
     <nz-card>
@@ -136,6 +145,30 @@ export class PermissionsListComponent implements OnInit {
       },
       error: () => {
         this.message.error('Failed to delete permission');
+      }
+    });
+  }
+
+  exportToXlsx(): void {
+    this.permissionsService.exportToXlsx().subscribe({
+      next: (blob) => {
+        FileUtils.saveFile(blob, 'permissions.xlsx');
+        this.message.success('Permissions exported to XLSX successfully');
+      },
+      error: () => {
+        this.message.error('Failed to export permissions to XLSX');
+      }
+    });
+  }
+
+  exportToPdf(): void {
+    this.permissionsService.exportToPdf().subscribe({
+      next: (blob) => {
+        FileUtils.saveFile(blob, 'permissions.pdf');
+        this.message.success('Permissions exported to PDF successfully');
+      },
+      error: () => {
+        this.message.error('Failed to export permissions to PDF');
       }
     });
   }

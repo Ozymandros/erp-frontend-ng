@@ -12,6 +12,7 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { UsersService } from '../../../core/services/users.service';
 import { User } from '../../../types/api.types';
+import { FileUtils } from '../../../core/utils/file-utils';
 
 @Component({
   selector: 'app-users-list',
@@ -83,6 +84,30 @@ export class UsersListComponent implements OnInit {
       error: () => {
         this.message.error('Failed to delete user');
       },
+    });
+  }
+
+  exportToXlsx(): void {
+    this.usersService.exportToXlsx().subscribe({
+      next: (blob) => {
+        FileUtils.saveFile(blob, 'users.xlsx');
+        this.message.success('Users exported to XLSX successfully');
+      },
+      error: () => {
+        this.message.error('Failed to export users to XLSX');
+      }
+    });
+  }
+
+  exportToPdf(): void {
+    this.usersService.exportToPdf().subscribe({
+      next: (blob) => {
+        FileUtils.saveFile(blob, 'users.pdf');
+        this.message.success('Users exported to PDF successfully');
+      },
+      error: () => {
+        this.message.error('Failed to export users to PDF');
+      }
     });
   }
 }

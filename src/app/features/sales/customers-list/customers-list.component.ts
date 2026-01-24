@@ -11,6 +11,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { CustomersService } from '../../../core/services/customers.service';
 import { CustomerDto } from '../../../types/api.types';
+import { FileUtils } from '../../../core/utils/file-utils';
 
 @Component({
   selector: 'app-customers-list',
@@ -98,6 +99,30 @@ export class CustomersListComponent implements OnInit {
             this.message.error('Failed to delete customer: ' + error.message);
           }
         });
+      }
+    });
+  }
+
+  exportToXlsx(): void {
+    this.customersService.exportToXlsx().subscribe({
+      next: (blob) => {
+        FileUtils.saveFile(blob, 'customers.xlsx');
+        this.message.success('Customers exported to XLSX successfully');
+      },
+      error: () => {
+        this.message.error('Failed to export customers to XLSX');
+      }
+    });
+  }
+
+  exportToPdf(): void {
+    this.customersService.exportToPdf().subscribe({
+      next: (blob) => {
+        FileUtils.saveFile(blob, 'customers.pdf');
+        this.message.success('Customers exported to PDF successfully');
+      },
+      error: () => {
+        this.message.error('Failed to export customers to PDF');
       }
     });
   }

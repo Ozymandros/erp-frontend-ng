@@ -1,8 +1,19 @@
 <div class="page-header" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
   <h1>Roles Management</h1>
-  <button nz-button nzType="primary" routerLink="/roles/new">
-    <i nz-icon nzType="plus"></i> Add Role
-  </button>
+  <div>
+    <button nz-button (click)="exportToXlsx()" style="margin-right: 8px;">
+      <span nz-icon nzType="file"></span> Export XLSX
+    </button>
+    <button nz-button (click)="exportToPdf()" style="margin-right: 8px;">
+      <span nz-icon nzType="file"></span> Export PDF
+    </button>
+    <button nz-button (click)="exportToXml()" style="margin-right: 8px;">
+      <span nz-icon nzType="file"></span> Export XML
+    </button>
+    <button nz-button nzType="primary" routerLink="/roles/new">
+      <i nz-icon nzType="plus"></i> Add Role
+    </button>
+  </div>
 </div>
 
 <nz-card>

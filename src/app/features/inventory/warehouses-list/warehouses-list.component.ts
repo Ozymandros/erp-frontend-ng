@@ -12,6 +12,7 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { WarehousesService } from '../../../core/services/warehouses.service';
 import { WarehouseDto } from '../../../types/api.types';
+import { FileUtils } from '../../../core/utils/file-utils';
 
 @Component({
   selector: 'app-warehouses-list',
@@ -31,9 +32,17 @@ import { WarehouseDto } from '../../../types/api.types';
   template: `
     <div class="page-header" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
       <h1>Warehouses Management</h1>
-      <button nz-button nzType="primary" routerLink="/inventory/warehouses/new">
-        <i nz-icon nzType="plus"></i> Add Warehouse
-      </button>
+      <div>
+        <button nz-button (click)="exportToXlsx()" style="margin-right: 8px;">
+          <i nz-icon nzType="file"></i> Export XLSX
+        </button>
+        <button nz-button (click)="exportToPdf()" style="margin-right: 8px;">
+          <i nz-icon nzType="file"></i> Export PDF
+        </button>
+        <button nz-button nzType="primary" routerLink="/inventory/warehouses/new">
+          <i nz-icon nzType="plus"></i> Add Warehouse
+        </button>
+      </div>
     </div>
 
     <nz-card>
@@ -146,6 +155,30 @@ export class WarehousesListComponent implements OnInit {
       },
       error: () => {
         this.message.error('Failed to delete warehouse');
+      }
+    });
+  }
+
+  exportToXlsx(): void {
+    this.warehousesService.exportToXlsx().subscribe({
+      next: (blob) => {
+        FileUtils.saveFile(blob, 'warehouses.xlsx');
+        this.message.success('Warehouses exported to XLSX successfully');
+      },
+      error: () => {
+        this.message.error('Failed to export warehouses to XLSX');
+      }
+    });
+  }
+
+  exportToPdf(): void {
+    this.warehousesService.exportToPdf().subscribe({
+      next: (blob) => {
+        FileUtils.saveFile(blob, 'warehouses.pdf');
+        this.message.success('Warehouses exported to PDF successfully');
+      },
+      error: () => {
+        this.message.error('Failed to export warehouses to PDF');
       }
     });
   }

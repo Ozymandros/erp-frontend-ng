@@ -36,6 +36,14 @@ export class RolesService {
     return this.apiClient.delete<void>(ROLES_ENDPOINTS.BY_ID(id));
   }
 
+  exportToXlsx(): Observable<Blob> {
+    return this.apiClient.download(ROLES_ENDPOINTS.EXPORT_XLSX);
+  }
+
+  exportToPdf(): Observable<Blob> {
+    return this.apiClient.download(ROLES_ENDPOINTS.EXPORT_PDF);
+  }
+
   assignPermissions(roleId: string, permissionIds: string[]): Observable<Role> {
     return this.apiClient.post<Role>(ROLES_ENDPOINTS.PERMISSIONS(roleId), { permissionIds });
   }

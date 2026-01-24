@@ -7,6 +7,7 @@ import { of, throwError } from 'rxjs';
 import { PaginatedResponse, User } from '../../../types/api.types';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
+import { FileUtils } from '../../../core/utils/file-utils';
 
 describe('UsersListComponent', () => {
   let component: UsersListComponent;
@@ -49,7 +50,7 @@ describe('UsersListComponent', () => {
   const mockResponse = { items: mockUsers.items, total: 1 };
 
   beforeEach(async () => {
-    usersServiceSpy = jasmine.createSpyObj('UsersService', ['getUsers', 'deleteUser']);
+    usersServiceSpy = jasmine.createSpyObj('UsersService', ['getUsers', 'deleteUser', 'exportToXlsx', 'exportToPdf']);
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
 
     usersServiceSpy.getUsers.and.returnValue(of(mockResponse as any));
@@ -97,5 +98,48 @@ describe('UsersListComponent', () => {
     usersServiceSpy.deleteUser.and.returnValue(throwError(() => new Error('Failed')));
     component.deleteUser('1');
     expect(messageServiceSpy.error).toHaveBeenCalled();
+    });
+
+  it('should export to XLSX', () => {
+    const mockBlob = new Blob(['data'], { type: 'application/octet-stream' });
+    usersServiceSpy.exportToXlsx.and.returnValue(of(mockBlob));
+    spyOn(FileUtils, 'saveFile');
+
+    component.exportToXlsx();
+
+    expect(usersServiceSpy.exportToXlsx).toHaveBeenCalled();
+    expect(FileUtils.saveFile).toHaveBeenCalledWith(mockBlob, 'users.xlsx');
+    expect(messageServiceSpy.success).toHaveBeenCalledWith('Users exported to XLSX successfully');
+  });
+
+  it('should handle export to XLSX error', () => {
+    usersServiceSpy.exportToXlsx.and.returnValue(throwError(() => new Error('Error')));
+    
+    component.exportToXlsx();
+    
+    expect(usersServiceSpy.exportToXlsx).toHaveBeenCalled();
+    expect(messageServiceSpy.error).toHaveBeenCalledWith('Failed to export users to XLSX');
+  });
+
+  it('should export to PDF', () => {
+    const mockBlob = new Blob(['data'], { type: 'application/pdf' });
+    usersServiceSpy.exportToPdf.and.returnValue(of(mockBlob));
+    spyOn(FileUtils, 'saveFile');
+
+    component.exportToPdf();
+
+    expect(usersServiceSpy.exportToPdf).toHaveBeenCalled();
+    expect(FileUtils.saveFile).toHaveBeenCalledWith(mockBlob, 'users.pdf');
+    expect(messageServiceSpy.success).toHaveBeenCalledWith('Users exported to PDF successfully');
+  });
+
+  it('should handle export to PDF error', () => {
+    usersServiceSpy.exportToPdf.and.returnValue(throwError(() => new Error('Error')));
+    
+    component.exportToPdf();
+    
+    expect(usersServiceSpy.exportToPdf).toHaveBeenCalled();
+    expect(messageServiceSpy.error).toHaveBeenCalledWith('Failed to export users to PDF');
   });
 });
+

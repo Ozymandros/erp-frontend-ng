@@ -35,4 +35,12 @@ export class PermissionsService {
   deletePermission(id: string): Observable<void> {
     return this.apiClient.delete<void>(PERMISSIONS_ENDPOINTS.BY_ID(id));
   }
+
+  exportToXlsx(): Observable<Blob> {
+    return this.apiClient.download(PERMISSIONS_ENDPOINTS.EXPORT_XLSX);
+  }
+
+  exportToPdf(): Observable<Blob> {
+    return this.apiClient.download(PERMISSIONS_ENDPOINTS.EXPORT_PDF);
+  }
 }

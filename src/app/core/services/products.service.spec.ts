@@ -1,11 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-import { RolesService } from './roles.service';
+import { ProductsService } from './products.service';
 import { ApiClientService } from '../api/http-client.service';
-import { Role, PaginatedResponse } from '../types/api.types';
+import { ProductDto, PaginatedResponse } from '../types/api.types';
 
-describe('RolesService', () => {
-  let service: RolesService;
+describe('ProductsService', () => {
+  let service: ProductsService;
   let apiClientSpy: jasmine.SpyObj<ApiClientService>;
 
   beforeEach(() => {
@@ -13,16 +13,20 @@ describe('RolesService', () => {
 
     TestBed.configureTestingModule({
       providers: [
-        RolesService,
+        ProductsService,
         { provide: ApiClientService, useValue: apiClientSpy }
       ]
     });
-    service = TestBed.inject(RolesService);
+    service = TestBed.inject(ProductsService);
   });
 
-  it('should fetch roles', (done) => {
-    const mockResult: PaginatedResponse<Role> = {
-      items: [{ id: '1', name: 'Admin' } as unknown as Role],
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+
+  it('should fetch products list', (done) => {
+    const mockProducts: PaginatedResponse<ProductDto> = {
+      items: [{ id: '1', name: 'prod1' } as unknown as ProductDto],
       total: 1,
       page: 1,
       pageSize: 10,
@@ -30,25 +34,15 @@ describe('RolesService', () => {
       hasPreviousPage: false,
       hasNextPage: false
     };
-    apiClientSpy.get.and.returnValue(of(mockResult));
 
-    service.getRoles().subscribe(result => {
-      expect(result).toEqual(mockResult);
+    apiClientSpy.get.and.returnValue(of(mockProducts));
+
+    service.getProducts().subscribe(response => {
+      expect(response).toEqual(mockProducts);
+      expect(apiClientSpy.get).toHaveBeenCalled();
       done();
     });
   });
-
-  it('should assign permissions to role', (done) => {
-    const role = { id: '1', name: 'Admin' } as Role;
-    apiClientSpy.post.and.returnValue(of(role));
-
-    service.assignPermissions('1', ['perm-1', 'perm-2']).subscribe(result => {
-      expect(result).toEqual(role);
-      expect(apiClientSpy.post).toHaveBeenCalledWith(jasmine.any(String), { permissionIds: ['perm-1', 'perm-2'] });
-      done();
-    });
-  });
-
 
   it('should export to XLSX', (done) => {
     const mockBlob = new Blob(['data'], { type: 'application/octet-stream' });

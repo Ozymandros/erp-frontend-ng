@@ -12,6 +12,7 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { PurchaseOrdersService } from '../../../core/services/purchase-orders.service';
 import { PurchaseOrderDto } from '../../../types/api.types';
+import { FileUtils } from '../../../core/utils/file-utils';
 
 @Component({
   selector: 'app-purchase-orders-list',
@@ -31,9 +32,17 @@ import { PurchaseOrderDto } from '../../../types/api.types';
   template: `
     <div class="page-header" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
       <h1>Purchase Orders</h1>
-      <button nz-button nzType="primary" routerLink="/purchasing/orders/new">
-        <i nz-icon nzType="plus"></i> New Purchase Order
-      </button>
+      <div>
+        <button nz-button (click)="exportToXlsx()" style="margin-right: 8px;">
+          <i nz-icon nzType="file"></i> Export XLSX
+        </button>
+        <button nz-button (click)="exportToPdf()" style="margin-right: 8px;">
+          <i nz-icon nzType="file"></i> Export PDF
+        </button>
+        <button nz-button nzType="primary" routerLink="/purchasing/orders/new">
+          <i nz-icon nzType="plus"></i> New Purchase Order
+        </button>
+      </div>
     </div>
 
     <nz-card>
@@ -161,5 +170,29 @@ export class PurchaseOrdersListComponent implements OnInit {
       case 'Cancelled': return 'red';
       default: return 'default';
     }
+  }
+
+  exportToXlsx(): void {
+    this.purchaseOrdersService.exportToXlsx().subscribe({
+      next: (blob) => {
+        FileUtils.saveFile(blob, 'purchase-orders.xlsx');
+        this.message.success('Purchase orders exported to XLSX successfully');
+      },
+      error: () => {
+        this.message.error('Failed to export purchase orders to XLSX');
+      }
+    });
+  }
+
+  exportToPdf(): void {
+    this.purchaseOrdersService.exportToPdf().subscribe({
+      next: (blob) => {
+        FileUtils.saveFile(blob, 'purchase-orders.pdf');
+        this.message.success('Purchase orders exported to PDF successfully');
+      },
+      error: () => {
+        this.message.error('Failed to export purchase orders to PDF');
+      }
+    });
   }
 }

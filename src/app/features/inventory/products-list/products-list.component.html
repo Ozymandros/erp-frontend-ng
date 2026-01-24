@@ -1,10 +1,18 @@
 <div class="products-list">
   <div class="page-header">
     <h1>Products Management</h1>
-    <button nz-button nzType="primary" routerLink="/inventory/products/new">
-      <span nz-icon nzType="plus"></span>
-      Add Product
-    </button>
+    <div>
+      <button nz-button (click)="exportToXlsx()" style="margin-right: 8px;">
+        <span nz-icon nzType="file"></span> Export XLSX
+      </button>
+      <button nz-button (click)="exportToPdf()" style="margin-right: 8px;">
+        <span nz-icon nzType="file"></span> Export PDF
+      </button>
+      <button nz-button nzType="primary" routerLink="/inventory/products/new">
+        <span nz-icon nzType="plus"></span>
+        Add Product
+      </button>
+    </div>
   </div>
 
   <div class="search-bar">
