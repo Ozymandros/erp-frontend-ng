@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -12,6 +12,7 @@ import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { ProductsService } from '../../../core/services/products.service';
 import { ProductDto } from '../../../types/api.types';
 import { FileUtils } from '../../../core/utils/file-utils';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-products-list',
@@ -41,7 +42,8 @@ export class ProductsListComponent implements OnInit {
   constructor(
     private productsService: ProductsService,
     private message: NzMessageService,
-    private modal: NzModalService
+    private modal: NzModalService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -54,18 +56,24 @@ export class ProductsListComponent implements OnInit {
       page: this.pageIndex,
       pageSize: this.pageSize,
       search: this.searchText
-    }).subscribe({
-      next: (response) => {
-        this.products = response.items;
-        this.total = response.total;
+    })
+    .pipe(
+      finalize(() => {
         this.loading = false;
+        this.cdr.detectChanges();
+      })
+    )
+    .subscribe({
+      next: (response: any) => {
+        this.products = response?.items || (Array.isArray(response) ? response : []);
+        this.total = response?.total || (Array.isArray(response) ? response.length : 0);
       },
       error: (error) => {
         this.message.error('Failed to load products: ' + error.message);
-        this.loading = false;
       }
     });
   }
+
 
   onSearch(): void {
     this.pageIndex = 1;

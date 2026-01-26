@@ -87,7 +87,7 @@ export class UserDetailComponent implements OnInit {
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
-          roleIds: user.roles.map((r: { id: string }) => r.id)
+          roleIds: user.roles?.map((r: { id: string }) => r.id)
         });
         this.loading = false;
       },

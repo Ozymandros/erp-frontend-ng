@@ -1,19 +1,21 @@
 <div class="customers-list">
-  <div class="page-header">
-    <h1>Customers Management</h1>
-    <div>
-      <button nz-button (click)="exportToXlsx()" style="margin-right: 8px;">
-        <span nz-icon nzType="file"></span> Export XLSX
+  <div class="page-header" style="flex-wrap: wrap; gap: 16px;">
+    <h1 style="margin: 0;">Customers Management</h1>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <button nz-button (click)="exportToXlsx()">
+        <span nz-icon nzType="file-excel"></span> Export XLSX
       </button>
-      <button nz-button (click)="exportToPdf()" style="margin-right: 8px;">
-        <span nz-icon nzType="file"></span> Export PDF
+      <button nz-button (click)="exportToPdf()">
+        <span nz-icon nzType="file-pdf"></span> Export PDF
       </button>
+
       <button nz-button nzType="primary" routerLink="/sales/customers/new">
         <span nz-icon nzType="plus"></span>
         Add Customer
       </button>
     </div>
   </div>
+
 
   <div class="search-bar">
     <nz-input-group [nzSuffix]="suffixIconSearch">
@@ -40,15 +42,15 @@
     [nzFrontPagination]="false"
     (nzPageIndexChange)="onPageChange($event)"
     (nzPageSizeChange)="onPageSizeChange($event)"
+    [nzScroll]="{ x: '1200px', y: 'calc(100vh - 350px)' }"
   >
+
+
     <thead>
       <tr>
         <th>Name</th>
         <th>Email</th>
-        <th>Phone</th>
-        <th>City</th>
-        <th>Country</th>
-        <th>Status</th>
+        <th>Address</th>
         <th nzWidth="150px">Actions</th>
       </tr>
     </thead>
@@ -56,15 +58,9 @@
       <tr *ngFor="let customer of customersTable.data">
         <td><strong>{{ customer.name }}</strong></td>
         <td>{{ customer.email || '-' }}</td>
-        <td>{{ customer.phone || '-' }}</td>
-        <td>{{ customer.city || '-' }}</td>
-        <td>{{ customer.country || '-' }}</td>
+        <td>{{ customer.address || '-' }}</td>
         <td>
-          <nz-tag [nzColor]="customer.isActive ? 'success' : 'default'">
-            {{ customer.isActive ? 'Active' : 'Inactive' }}
-          </nz-tag>
-        </td>
-        <td>
+
           <button 
             nz-button 
             nzType="link" 

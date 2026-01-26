@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -12,6 +12,7 @@ import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { CustomersService } from '../../../core/services/customers.service';
 import { CustomerDto } from '../../../types/api.types';
 import { FileUtils } from '../../../core/utils/file-utils';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-customers-list',
@@ -41,7 +42,8 @@ export class CustomersListComponent implements OnInit {
   constructor(
     private customersService: CustomersService,
     private message: NzMessageService,
-    private modal: NzModalService
+    private modal: NzModalService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -49,23 +51,29 @@ export class CustomersListComponent implements OnInit {
   }
 
   loadCustomers(): void {
-    this.loading = true;
-    this.customersService.getCustomers({
-      page: this.pageIndex,
-      pageSize: this.pageSize,
-      search: this.searchText
-    }).subscribe({
-      next: (response) => {
-        this.customers = response.items;
-        this.total = response.total;
-        this.loading = false;
-      },
-      error: (error) => {
-        this.message.error('Failed to load customers: ' + error.message);
-        this.loading = false;
-      }
+    setTimeout(() => {
+      this.loading = true;
+      this.customersService.getCustomers({
+        page: this.pageIndex,
+        pageSize: this.pageSize,
+        search: this.searchText
+      }).pipe(
+        finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        })
+      ).subscribe({
+        next: (response: any) => {
+          this.customers = response?.items || (Array.isArray(response) ? response : []);
+          this.total = response?.total || (Array.isArray(response) ? response.length : 0);
+        },
+        error: (error) => {
+          this.message.error('Failed to load customers: ' + error.message);
+        }
+      });
     });
   }
+
 
   onSearch(): void {
     this.pageIndex = 1;

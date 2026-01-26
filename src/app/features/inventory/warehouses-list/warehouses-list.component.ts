@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -13,6 +13,7 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { WarehousesService } from '../../../core/services/warehouses.service';
 import { WarehouseDto } from '../../../types/api.types';
 import { FileUtils } from '../../../core/utils/file-utils';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-warehouses-list',
@@ -30,15 +31,17 @@ import { FileUtils } from '../../../core/utils/file-utils';
     NzCardModule
   ],
   template: `
-    <div class="page-header" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
-      <h1>Warehouses Management</h1>
-      <div>
-        <button nz-button (click)="exportToXlsx()" style="margin-right: 8px;">
-          <i nz-icon nzType="file"></i> Export XLSX
+    <div class="page-header" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+      <h1 style="margin: 0;">Warehouses Management</h1>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <button nz-button (click)="exportToXlsx()">
+          <i nz-icon nzType="file-excel"></i> Export XLSX
         </button>
-        <button nz-button (click)="exportToPdf()" style="margin-right: 8px;">
-          <i nz-icon nzType="file"></i> Export PDF
+        <button nz-button (click)="exportToPdf()">
+          <i nz-icon nzType="file-pdf"></i> Export PDF
         </button>
+
+
         <button nz-button nzType="primary" routerLink="/inventory/warehouses/new">
           <i nz-icon nzType="plus"></i> Add Warehouse
         </button>
@@ -46,7 +49,7 @@ import { FileUtils } from '../../../core/utils/file-utils';
     </div>
 
     <nz-card>
-      <div style="margin-bottom: 16px; display: flex; gap: 16px;">
+      <div style="margin-bottom: 16px; display: flex; gap: 16px; max-width: 400px;">
         <nz-input-group [nzPrefix]="prefixIconSearch">
           <input type="text" nz-input placeholder="Search warehouses..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" />
         </nz-input-group>
@@ -65,27 +68,24 @@ import { FileUtils } from '../../../core/utils/file-utils';
         [nzFrontPagination]="false"
         (nzPageIndexChange)="loadWarehouses()"
         (nzPageSizeChange)="loadWarehouses()"
+        [nzScroll]="{ x: '800px', y: 'calc(100vh - 400px)' }"
       >
+
         <thead>
           <tr>
             <th>Name</th>
             <th>Location</th>
-            <th>Status</th>
             <th>Created At</th>
-            <th>Actions</th>
+            <th nzWidth="150px">Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let data of basicTable.data">
             <td><strong>{{ data.name }}</strong></td>
             <td>{{ data.location || '-' }}</td>
-            <td>
-              <nz-tag [nzColor]="data.isActive ? 'success' : 'error'">
-                {{ data.isActive ? 'Active' : 'Inactive' }}
-              </nz-tag>
-            </td>
             <td>{{ data.createdAt | date:'short' }}</td>
             <td>
+
               <a [routerLink]="['/inventory/warehouses', data.id]" style="margin-right: 8px;">Edit</a>
               <a
                 nz-popconfirm
@@ -100,11 +100,7 @@ import { FileUtils } from '../../../core/utils/file-utils';
       </nz-table>
     </nz-card>
   `,
-  styles: [`
-    h1 {
-      margin: 0;
-    }
-  `]
+  styles: []
 })
 export class WarehousesListComponent implements OnInit {
   warehouses: WarehouseDto[] = [];
@@ -116,7 +112,8 @@ export class WarehousesListComponent implements OnInit {
 
   constructor(
     private warehousesService: WarehousesService,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -124,23 +121,30 @@ export class WarehousesListComponent implements OnInit {
   }
 
   loadWarehouses(): void {
-    this.loading = true;
-    this.warehousesService.getWarehouses({
-      page: this.pageIndex,
-      pageSize: this.pageSize,
-      search: this.searchTerm
-    }).subscribe({
-      next: (response) => {
-        this.warehouses = response.items;
-        this.total = response.total;
-        this.loading = false;
-      },
-      error: () => {
-        this.message.error('Failed to load warehouses');
-        this.loading = false;
-      }
+    setTimeout(() => {
+      this.loading = true;
+      this.warehousesService.getWarehouses({
+        page: this.pageIndex,
+        pageSize: this.pageSize,
+        search: this.searchTerm
+      }).pipe(
+        finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        })
+      ).subscribe({
+        next: (response: any) => {
+          this.warehouses = response?.items || (Array.isArray(response) ? response : []);
+          this.total = response?.total || (Array.isArray(response) ? response.length : 0);
+        },
+        error: () => {
+          this.message.error('Failed to load warehouses');
+        }
+      });
     });
   }
+
+
 
   onSearch(): void {
     this.pageIndex = 1;

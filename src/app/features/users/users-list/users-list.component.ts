@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -13,6 +13,7 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { UsersService } from '../../../core/services/users.service';
 import { User } from '../../../types/api.types';
 import { FileUtils } from '../../../core/utils/file-utils';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-users-list',
@@ -42,7 +43,8 @@ export class UsersListComponent implements OnInit {
 
   constructor(
     private usersService: UsersService,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -57,18 +59,23 @@ export class UsersListComponent implements OnInit {
         pageSize: this.pageSize,
         search: this.searchTerm,
       })
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        })
+      )
       .subscribe({
         next: (response: any) => {
-          this.users = response.items;
-          this.total = response.total;
-          this.loading = false;
+          this.users = response?.items || (Array.isArray(response) ? response : []);
+          this.total = response?.total || (Array.isArray(response) ? response.length : 0);
         },
         error: () => {
           this.message.error('Failed to load users');
-          this.loading = false;
         },
       });
   }
+
 
   onSearch(): void {
     this.pageIndex = 1;

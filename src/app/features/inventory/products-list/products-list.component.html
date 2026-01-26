@@ -3,11 +3,12 @@
     <h1>Products Management</h1>
     <div>
       <button nz-button (click)="exportToXlsx()" style="margin-right: 8px;">
-        <span nz-icon nzType="file"></span> Export XLSX
+        <span nz-icon nzType="file-excel"></span> Export XLSX
       </button>
       <button nz-button (click)="exportToPdf()" style="margin-right: 8px;">
-        <span nz-icon nzType="file"></span> Export PDF
+        <span nz-icon nzType="file-pdf"></span> Export PDF
       </button>
+
       <button nz-button nzType="primary" routerLink="/inventory/products/new">
         <span nz-icon nzType="plus"></span>
         Add Product
@@ -40,7 +41,10 @@
     [nzFrontPagination]="false"
     (nzPageIndexChange)="onPageChange($event)"
     (nzPageSizeChange)="onPageSizeChange($event)"
+    [nzScroll]="{ x: '800px', y: 'calc(100vh - 350px)' }"
   >
+
+
     <thead>
       <tr>
         <th>SKU</th>

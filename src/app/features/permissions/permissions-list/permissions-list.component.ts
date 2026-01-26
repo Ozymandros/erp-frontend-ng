@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -12,6 +12,7 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { PermissionsService } from '../../../core/services/permissions.service';
 import { Permission } from '../../../types/api.types';
 import { FileUtils } from '../../../core/utils/file-utils';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-permissions-list',
@@ -32,11 +33,13 @@ import { FileUtils } from '../../../core/utils/file-utils';
       <h1>Permissions Management</h1>
       <div>
         <button nz-button (click)="exportToXlsx()" style="margin-right: 8px;">
-          <i nz-icon nzType="file"></i> Export XLSX
+          <i nz-icon nzType="file-excel"></i> Export XLSX
         </button>
         <button nz-button (click)="exportToPdf()" style="margin-right: 8px;">
-          <i nz-icon nzType="file"></i> Export PDF
+          <i nz-icon nzType="file-pdf"></i> Export PDF
         </button>
+
+
       </div>
     </div>
 
@@ -60,7 +63,10 @@ import { FileUtils } from '../../../core/utils/file-utils';
         [nzFrontPagination]="false"
         (nzPageIndexChange)="loadPermissions()"
         (nzPageSizeChange)="loadPermissions()"
+        [nzScroll]="{ x: '800px', y: 'calc(100vh - 400px)' }"
       >
+
+
         <thead>
           <tr>
             <th>Module</th>
@@ -106,7 +112,8 @@ export class PermissionsListComponent implements OnInit {
 
   constructor(
     private permissionsService: PermissionsService,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -119,18 +126,24 @@ export class PermissionsListComponent implements OnInit {
       page: this.pageIndex,
       pageSize: this.pageSize,
       search: this.searchTerm
-    }).subscribe({
-      next: (response) => {
-        this.permissions = response.items;
-        this.total = response.total;
+    })
+    .pipe(
+      finalize(() => {
         this.loading = false;
+        this.cdr.detectChanges();
+      })
+    )
+    .subscribe({
+      next: (response: any) => {
+        this.permissions = response?.items || (Array.isArray(response) ? response : []);
+        this.total = response?.total || (Array.isArray(response) ? response.length : 0);
       },
       error: () => {
         this.message.error('Failed to load permissions');
-        this.loading = false;
       }
     });
   }
+
 
   onSearch(): void {
     this.pageIndex = 1;

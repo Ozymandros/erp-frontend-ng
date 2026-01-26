@@ -10,7 +10,7 @@
   <nz-card [nzLoading]="loading">
     <form nz-form [formGroup]="productForm" (ngSubmit)="save()">
       <div nz-row [nzGutter]="16">
-        <div nz-col [nzSpan]="12">
+        <div nz-col [nzXs]="24" [nzSm]="12">
           <nz-form-item>
             <nz-form-label nzRequired>SKU</nz-form-label>
             <nz-form-control nzErrorTip="Please input SKU!">
@@ -18,7 +18,7 @@
             </nz-form-control>
           </nz-form-item>
         </div>
-        <div nz-col [nzSpan]="12">
+        <div nz-col [nzXs]="24" [nzSm]="12">
           <nz-form-item>
             <nz-form-label nzRequired>Name</nz-form-label>
             <nz-form-control nzErrorTip="Please input product name!">
@@ -47,7 +47,7 @@
       </div>
 
       <div nz-row [nzGutter]="16">
-        <div nz-col [nzSpan]="12">
+        <div nz-col [nzXs]="24" [nzSm]="12">
           <nz-form-item>
             <nz-form-label nzRequired>Initial Stock</nz-form-label>
             <nz-form-control nzErrorTip="Please input initial stock!">
@@ -55,7 +55,7 @@
             </nz-form-control>
           </nz-form-item>
         </div>
-        <div nz-col [nzSpan]="12">
+        <div nz-col [nzXs]="24" [nzSm]="12">
           <nz-form-item>
             <nz-form-label>Reorder Level</nz-form-label>
             <nz-form-control>

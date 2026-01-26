@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -13,6 +13,7 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { RolesService } from '../../../core/services/roles.service';
 import { Role } from '../../../types/api.types';
 import { FileUtils } from '../../../core/utils/file-utils';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-roles-list',
@@ -46,7 +47,8 @@ export class RolesListComponent implements OnInit {
 
   constructor(
     private rolesService: RolesService,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -59,18 +61,24 @@ export class RolesListComponent implements OnInit {
       page: this.pageIndex,
       pageSize: this.pageSize,
       search: this.searchTerm
-    }).subscribe({
-      next: (response) => {
-        this.roles = response.items;
-        this.total = response.total;
+    })
+    .pipe(
+      finalize(() => {
         this.loading = false;
+        this.cdr.detectChanges();
+      })
+    )
+    .subscribe({
+      next: (response: any) => {
+        this.roles = response?.items || (Array.isArray(response) ? response : []);
+        this.total = response?.total || (Array.isArray(response) ? response.length : 0);
       },
       error: () => {
         this.message.error('Failed to load roles');
-        this.loading = false;
       }
     });
   }
+
 
   onSearch(): void {
     this.pageIndex = 1;

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -13,6 +13,7 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { PurchaseOrdersService } from '../../../core/services/purchase-orders.service';
 import { PurchaseOrderDto } from '../../../types/api.types';
 import { FileUtils } from '../../../core/utils/file-utils';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-purchase-orders-list',
@@ -30,15 +31,17 @@ import { FileUtils } from '../../../core/utils/file-utils';
     NzCardModule
   ],
   template: `
-    <div class="page-header" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
-      <h1>Purchase Orders</h1>
-      <div>
-        <button nz-button (click)="exportToXlsx()" style="margin-right: 8px;">
-          <i nz-icon nzType="file"></i> Export XLSX
+    <div class="page-header" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+      <h1 style="margin: 0;">Purchase Orders</h1>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <button nz-button (click)="exportToXlsx()">
+          <i nz-icon nzType="file-excel"></i> Export XLSX
         </button>
-        <button nz-button (click)="exportToPdf()" style="margin-right: 8px;">
-          <i nz-icon nzType="file"></i> Export PDF
+        <button nz-button (click)="exportToPdf()">
+          <i nz-icon nzType="file-pdf"></i> Export PDF
         </button>
+
+
         <button nz-button nzType="primary" routerLink="/purchasing/orders/new">
           <i nz-icon nzType="plus"></i> New Purchase Order
         </button>
@@ -46,7 +49,7 @@ import { FileUtils } from '../../../core/utils/file-utils';
     </div>
 
     <nz-card>
-      <div style="margin-bottom: 16px; display: flex; gap: 16px;">
+      <div style="margin-bottom: 16px; display: flex; gap: 16px; max-width: 400px;">
         <nz-input-group [nzPrefix]="prefixIconSearch">
           <input type="text" nz-input placeholder="Search purchase orders..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" />
         </nz-input-group>
@@ -65,7 +68,9 @@ import { FileUtils } from '../../../core/utils/file-utils';
         [nzFrontPagination]="false"
         (nzPageIndexChange)="loadOrders()"
         (nzPageSizeChange)="loadOrders()"
+        [nzScroll]="{ x: '1000px', y: 'calc(100vh - 400px)' }"
       >
+
         <thead>
           <tr>
             <th>Order #</th>
@@ -73,7 +78,7 @@ import { FileUtils } from '../../../core/utils/file-utils';
             <th>Date</th>
             <th>Total Amount</th>
             <th>Status</th>
-            <th>Actions</th>
+            <th nzWidth="150px">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -102,11 +107,7 @@ import { FileUtils } from '../../../core/utils/file-utils';
       </nz-table>
     </nz-card>
   `,
-  styles: [`
-    h1 {
-      margin: 0;
-    }
-  `]
+  styles: []
 })
 export class PurchaseOrdersListComponent implements OnInit {
   orders: PurchaseOrderDto[] = [];
@@ -118,7 +119,8 @@ export class PurchaseOrdersListComponent implements OnInit {
 
   constructor(
     private purchaseOrdersService: PurchaseOrdersService,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -131,18 +133,22 @@ export class PurchaseOrdersListComponent implements OnInit {
       page: this.pageIndex,
       pageSize: this.pageSize,
       search: this.searchTerm
-    }).subscribe({
-      next: (response) => {
-        this.orders = response.items;
-        this.total = response.total;
+    }).pipe(
+      finalize(() => {
         this.loading = false;
+        this.cdr.detectChanges();
+      })
+    ).subscribe({
+      next: (response: any) => {
+        this.orders = response?.items || (Array.isArray(response) ? response : []);
+        this.total = response?.total || (Array.isArray(response) ? response.length : 0);
       },
       error: () => {
         this.message.error('Failed to load purchase orders');
-        this.loading = false;
       }
     });
   }
+
 
   onSearch(): void {
     this.pageIndex = 1;
@@ -161,16 +167,22 @@ export class PurchaseOrdersListComponent implements OnInit {
     });
   }
 
-  getStatusColor(status: string): string {
+  getStatusColor(status: any): string {
     switch (status) {
-      case 'Draft': return 'default';
-      case 'Pending': return 'orange';
-      case 'Confirmed': return 'blue';
-      case 'Received': return 'green';
-      case 'Cancelled': return 'red';
+      case 'Draft': 
+      case 0: return 'default';
+      case 'Pending':
+      case 1: return 'orange';
+      case 'Confirmed':
+      case 2: return 'blue';
+      case 'Received':
+      case 3: return 'green';
+      case 'Cancelled':
+      case 4: return 'red';
       default: return 'default';
     }
   }
+
 
   exportToXlsx(): void {
     this.purchaseOrdersService.exportToXlsx().subscribe({

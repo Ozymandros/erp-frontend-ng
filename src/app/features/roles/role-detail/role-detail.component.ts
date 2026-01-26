@@ -83,7 +83,7 @@ export class RoleDetailComponent implements OnInit {
         this.roleForm.patchValue({
           name: role.name,
           description: role.description,
-          permissionIds: role.permissions.map((p: Permission) => p.id)
+          permissionIds: role.permissions?.map((p: Permission) => p.id)
         });
         this.loading = false;
       },

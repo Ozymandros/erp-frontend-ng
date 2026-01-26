@@ -153,7 +153,7 @@ export class ApiClientService {
       // Handle validation errors (ASP.NET Core ProblemDetails)
       if (errorBody.errors && typeof errorBody.errors === 'object') {
         const validationMessages = Object.entries(errorBody.errors)
-          .map(([field, messages]) => {
+          ?.map(([field, messages]) => {
             const fieldMsgs = Array.isArray(messages) ? messages : [messages];
             return `${field}: ${fieldMsgs.join(', ')}`;
           })

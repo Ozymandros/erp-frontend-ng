@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -11,6 +11,7 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { WarehouseStocksService } from '../../../core/services/warehouse-stocks.service';
 import { WarehouseStockDto } from '../../../types/api.types';
 import { FileUtils } from '../../../core/utils/file-utils';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-warehouse-stocks-list',
@@ -26,20 +27,22 @@ import { FileUtils } from '../../../core/utils/file-utils';
     NzCardModule
   ],
   template: `
-    <div class="page-header" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
-      <h1>Warehouse Stocks</h1>
-      <div>
-        <button nz-button (click)="exportToXlsx()" style="margin-right: 8px;">
-          <i nz-icon nzType="file"></i> Export XLSX
+    <div class="page-header" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+      <h1 style="margin: 0;">Warehouse Stocks</h1>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <button nz-button (click)="exportToXlsx()">
+          <i nz-icon nzType="file-excel"></i> Export XLSX
         </button>
-        <button nz-button (click)="exportToPdf()" style="margin-right: 8px;">
-          <i nz-icon nzType="file"></i> Export PDF
+        <button nz-button (click)="exportToPdf()">
+          <i nz-icon nzType="file-pdf"></i> Export PDF
         </button>
+
+
       </div>
     </div>
 
     <nz-card>
-      <div style="margin-bottom: 16px; display: flex; gap: 16px;">
+      <div style="margin-bottom: 16px; display: flex; gap: 16px; max-width: 400px;">
         <nz-input-group [nzPrefix]="prefixIconSearch">
           <input type="text" nz-input placeholder="Search products in warehouses..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" />
         </nz-input-group>
@@ -58,7 +61,9 @@ import { FileUtils } from '../../../core/utils/file-utils';
         [nzFrontPagination]="false"
         (nzPageIndexChange)="loadStocks()"
         (nzPageSizeChange)="loadStocks()"
+        [nzScroll]="{ x: '1000px', y: 'calc(100vh - 400px)' }"
       >
+
         <thead>
           <tr>
             <th>Warehouse</th>
@@ -84,11 +89,7 @@ import { FileUtils } from '../../../core/utils/file-utils';
       </nz-table>
     </nz-card>
   `,
-  styles: [`
-    h1 {
-      margin: 0;
-    }
-  `]
+  styles: []
 })
 export class WarehouseStocksListComponent implements OnInit {
   stocks: WarehouseStockDto[] = [];
@@ -100,7 +101,8 @@ export class WarehouseStocksListComponent implements OnInit {
 
   constructor(
     private warehouseStocksService: WarehouseStocksService,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -113,18 +115,22 @@ export class WarehouseStocksListComponent implements OnInit {
       page: this.pageIndex,
       pageSize: this.pageSize,
       search: this.searchTerm
-    }).subscribe({
-      next: (response) => {
-        this.stocks = response.items;
-        this.total = response.total;
+    }).pipe(
+      finalize(() => {
         this.loading = false;
+        this.cdr.detectChanges();
+      })
+    ).subscribe({
+      next: (response: any) => {
+        this.stocks = response?.items || (Array.isArray(response) ? response : []);
+        this.total = response?.total || (Array.isArray(response) ? response.length : 0);
       },
       error: () => {
         this.message.error('Failed to load warehouse stocks');
-        this.loading = false;
       }
     });
   }
+
 
   onSearch(): void {
     this.pageIndex = 1;

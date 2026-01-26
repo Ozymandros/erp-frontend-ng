@@ -48,7 +48,7 @@ describe('SidebarComponent', () => {
      // Check a few links
      const links = fixture.debugElement.queryAll(By.css('[routerLink]'));
      // linkPaths might be null/undefined in some setups if attribute binding is dynamic
-     const linkPaths = links.map((l: any) => l.properties['routerLink'] || l.attributes['routerLink']);
+     const linkPaths = links?.map((l: any) => l.properties['routerLink'] || l.attributes['routerLink']);
      // Note: Just check if any element has the routerLink
      const hasUsers = links.some((l: any) => {
          const path = l.context?.routerLink || l.attributes['routerLink'];

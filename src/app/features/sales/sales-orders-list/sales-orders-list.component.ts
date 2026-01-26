@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -13,6 +13,7 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { SalesOrdersService } from '../../../core/services/sales-orders.service';
 import { SalesOrderDto } from '../../../types/api.types';
 import { FileUtils } from '../../../core/utils/file-utils';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-sales-orders-list',
@@ -42,7 +43,8 @@ export class SalesOrdersListComponent implements OnInit {
 
   constructor(
     private salesOrdersService: SalesOrdersService,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -55,18 +57,22 @@ export class SalesOrdersListComponent implements OnInit {
       page: this.pageIndex,
       pageSize: this.pageSize,
       search: this.searchTerm
-    }).subscribe({
-      next: (response) => {
-        this.orders = response.items;
-        this.total = response.total;
+    }).pipe(
+      finalize(() => {
         this.loading = false;
+        this.cdr.detectChanges();
+      })
+    ).subscribe({
+      next: (response: any) => {
+        this.orders = response?.items || (Array.isArray(response) ? response : []);
+        this.total = response?.total || (Array.isArray(response) ? response.length : 0);
       },
       error: () => {
         this.message.error('Failed to load sales orders');
-        this.loading = false;
       }
     });
   }
+
 
   onSearch(): void {
     this.pageIndex = 1;
@@ -85,17 +91,24 @@ export class SalesOrdersListComponent implements OnInit {
     });
   }
 
-  getStatusColor(status: string): string {
+  getStatusColor(status: any): string {
     switch (status) {
-      case 'Draft': return 'default';
-      case 'Pending': return 'orange';
-      case 'Confirmed': return 'blue';
-      case 'Shipped': return 'cyan';
-      case 'Delivered': return 'green';
-      case 'Cancelled': return 'red';
+      case 'Draft': 
+      case 0: return 'default';
+      case 'Pending':
+      case 1: return 'orange';
+      case 'Confirmed':
+      case 2: return 'blue';
+      case 'Shipped':
+      case 3: return 'cyan';
+      case 'Delivered':
+      case 4: return 'green';
+      case 'Cancelled':
+      case 5: return 'red';
       default: return 'default';
     }
   }
+
 
   exportToXlsx(): void {
     this.salesOrdersService.exportToXlsx().subscribe({

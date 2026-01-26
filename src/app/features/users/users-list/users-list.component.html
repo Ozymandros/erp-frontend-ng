@@ -2,11 +2,12 @@
   <h1>Users Management</h1>
   <div class="header-actions">
     <button nz-button (click)="exportToXlsx()" style="margin-right: 8px;">
-      <span nz-icon nzType="file"></span> Export XLSX
+      <span nz-icon nzType="file-excel"></span> Export XLSX
     </button>
     <button nz-button (click)="exportToPdf()" style="margin-right: 8px;">
-      <span nz-icon nzType="file"></span> Export PDF
+      <span nz-icon nzType="file-pdf"></span> Export PDF
     </button>
+
     <button nz-button nzType="primary" routerLink="/users/new">
       <i nz-icon nzType="plus"></i> Add User
     </button>
@@ -33,7 +34,10 @@
     [nzFrontPagination]="false"
     (nzPageIndexChange)="loadUsers()"
     (nzPageSizeChange)="loadUsers()"
+    [nzScroll]="{ x: '1000px', y: 'calc(100vh - 400px)' }"
   >
+
+
     <thead>
       <tr>
         <th>Username</th>

@@ -1,4 +1,4 @@
-<nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" nzWidth="250px" class="sidebar">
+<nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzWidth]="250" nzBreakpoint="lg" [nzCollapsedWidth]="80" class="sidebar">
   <div class="logo">
     <h2 *ngIf="!isCollapsed">ERP Admin</h2>
     <span *ngIf="isCollapsed" nz-icon nzType="appstore"></span>

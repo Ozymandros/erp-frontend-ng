@@ -2,11 +2,12 @@
   <h1>Roles Management</h1>
   <div>
     <button nz-button (click)="exportToXlsx()" style="margin-right: 8px;">
-      <span nz-icon nzType="file"></span> Export XLSX
+      <span nz-icon nzType="file-excel"></span> Export XLSX
     </button>
     <button nz-button (click)="exportToPdf()" style="margin-right: 8px;">
-      <span nz-icon nzType="file"></span> Export PDF
+      <span nz-icon nzType="file-pdf"></span> Export PDF
     </button>
+
 
     <button nz-button nzType="primary" routerLink="/roles/new">
       <i nz-icon nzType="plus"></i> Add Role
@@ -34,7 +35,10 @@
     [nzFrontPagination]="false"
     (nzPageIndexChange)="loadRoles()"
     (nzPageSizeChange)="loadRoles()"
+    [nzScroll]="{ x: '1000px', y: 'calc(100vh - 400px)' }"
   >
+
+
     <thead>
       <tr>
         <th>Name</th>
@@ -49,11 +53,12 @@
         <td><strong>{{ data.name }}</strong></td>
         <td>{{ data.description || '-' }}</td>
         <td>
-          <nz-tag *ngFor="let perm of data.permissions | slice:0:3" [nzColor]="'orange'">
+          <nz-tag *ngFor="let perm of (data.permissions || []) | slice:0:3" [nzColor]="'orange'">
             {{ perm.module }}:{{ perm.action }}
           </nz-tag>
-          <span *ngIf="data.permissions.length > 3">...</span>
+          <span *ngIf="(data.permissions?.length || 0) > 3">...</span>
         </td>
+
         <td>{{ data.createdAt | date:'short' }}</td>
         <td>
           <a [routerLink]="['/roles', data.id]" style="margin-right: 8px;">Edit</a>
