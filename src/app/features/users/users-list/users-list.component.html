@@ -1,77 +1,79 @@
-<div class="page-header users-list-header">
-  <h1>Users Management</h1>
-  <div class="header-actions">
-    <button nz-button (click)="exportToXlsx()" style="margin-right: 8px;">
-      <span nz-icon nzType="file-excel"></span> Export XLSX
-    </button>
-    <button nz-button (click)="exportToPdf()" style="margin-right: 8px;">
-      <span nz-icon nzType="file-pdf"></span> Export PDF
-    </button>
+<div *ngIf="permissions$ | async as p">
+  <div class="page-header users-list-header">
+    <h1>Users Management</h1>
+    <div class="header-actions">
+      <button *ngIf="p.canExport" nz-button (click)="exportToXlsx('users.xlsx')" style="margin-right: 8px;">
+        <span nz-icon nzType="file-excel"></span> Export XLSX
+      </button>
+      <button *ngIf="p.canExport" nz-button (click)="exportToPdf('users.pdf')" style="margin-right: 8px;">
+        <span nz-icon nzType="file-pdf"></span> Export PDF
+      </button>
 
-    <button nz-button nzType="primary" routerLink="/users/new">
-      <i nz-icon nzType="plus"></i> Add User
-    </button>
+      <button *ngIf="p.canCreate" nz-button nzType="primary" routerLink="/users/new">
+        <i nz-icon nzType="plus"></i> Add User
+      </button>
+    </div>
   </div>
+
+  <nz-card>
+    <div class="users-list-search-bar">
+      <nz-input-group [nzPrefix]="prefixIconSearch">
+        <input type="text" nz-input placeholder="Search users..." [(ngModel)]="searchTerm" (ngModelChange)="loadData()" />
+      </nz-input-group>
+      <ng-template #prefixIconSearch>
+        <i nz-icon nzType="search"></i>
+      </ng-template>
+    </div>
+
+    <nz-table
+      #basicTable
+      [nzData]="users"
+      [nzLoading]="loading"
+      [nzTotal]="total"
+      [(nzPageIndex)]="pageIndex"
+      [(nzPageSize)]="pageSize"
+      [nzFrontPagination]="false"
+      (nzPageIndexChange)="loadUsers()"
+      (nzPageSizeChange)="loadUsers()"
+      [nzScroll]="{ x: '1000px', y: 'calc(100vh - 400px)' }"
+    >
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Roles</th>
+          <th>Status</th>
+          <th>Created At</th>
+          <th *ngIf="p.canUpdate || p.canDelete">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of basicTable.data">
+          <td>{{ data.username }}</td>
+          <td>{{ data.email }}</td>
+          <td>
+            <nz-tag *ngFor="let role of data.roles" [nzColor]="'blue'">{{ role.name }}</nz-tag>
+          </td>
+          <td>
+            <nz-tag [nzColor]="data.isActive ? 'success' : 'error'">
+              {{ data.isActive ? 'Active' : 'Inactive' }}
+            </nz-tag>
+          </td>
+          <td>{{ data.createdAt | date:'short' }}</td>
+          <td *ngIf="p.canUpdate || p.canDelete">
+            <a *ngIf="p.canUpdate" [routerLink]="['/users', data.id]" class="edit-link">Edit</a>
+            <a
+              *ngIf="p.canDelete"
+              nz-popconfirm
+              nzPopconfirmTitle="Are you sure delete this user?"
+              (nzOnConfirm)="deleteUser(data.id)"
+              nzPopconfirmPlacement="left"
+              class="delete-link"
+              style="margin-left: 8px;"
+            >Delete</a>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-card>
 </div>
-
-<nz-card>
-  <div class="users-list-search-bar">
-    <nz-input-group [nzPrefix]="prefixIconSearch">
-      <input type="text" nz-input placeholder="Search users..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" />
-    </nz-input-group>
-    <ng-template #prefixIconSearch>
-      <i nz-icon nzType="search"></i>
-    </ng-template>
-  </div>
-
-  <nz-table
-    #basicTable
-    [nzData]="users"
-    [nzLoading]="loading"
-    [nzTotal]="total"
-    [(nzPageIndex)]="pageIndex"
-    [(nzPageSize)]="pageSize"
-    [nzFrontPagination]="false"
-    (nzPageIndexChange)="loadUsers()"
-    (nzPageSizeChange)="loadUsers()"
-    [nzScroll]="{ x: '1000px', y: 'calc(100vh - 400px)' }"
-  >
-
-
-    <thead>
-      <tr>
-        <th>Username</th>
-        <th>Email</th>
-        <th>Roles</th>
-        <th>Status</th>
-        <th>Created At</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let data of basicTable.data">
-        <td>{{ data.username }}</td>
-        <td>{{ data.email }}</td>
-        <td>
-          <nz-tag *ngFor="let role of data.roles" [nzColor]="'blue'">{{ role.name }}</nz-tag>
-        </td>
-        <td>
-          <nz-tag [nzColor]="data.isActive ? 'success' : 'error'">
-            {{ data.isActive ? 'Active' : 'Inactive' }}
-          </nz-tag>
-        </td>
-        <td>{{ data.createdAt | date:'short' }}</td>
-        <td>
-          <a [routerLink]="['/users', data.id]" class="edit-link">Edit</a>
-          <a
-            nz-popconfirm
-            nzPopconfirmTitle="Are you sure delete this user?"
-            (nzOnConfirm)="deleteUser(data.id)"
-            nzPopconfirmPlacement="left"
-            class="delete-link"
-          >Delete</a>
-        </td>
-      </tr>
-    </tbody>
-  </nz-table>
-</nz-card>

@@ -5,12 +5,16 @@ import { WarehouseStocksService } from '../../../core/services/warehouse-stocks.
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
+import { FileService } from '../../../core/services/file.service';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 describe('WarehouseStocksListComponent', () => {
   let component: WarehouseStocksListComponent;
   let fixture: ComponentFixture<WarehouseStocksListComponent>;
   let warehouseStocksServiceSpy: jasmine.SpyObj<WarehouseStocksService>;
   let messageServiceSpy: jasmine.SpyObj<NzMessageService>;
+  let fileServiceSpy: jasmine.SpyObj<FileService>;
+  let modalServiceSpy: jasmine.SpyObj<NzModalService>;
 
   const mockResponse = {
     items: [{ warehouseName: 'W1', productName: 'P1', quantity: 10, reorderLevel: 5 }],
@@ -19,14 +23,19 @@ describe('WarehouseStocksListComponent', () => {
 
   beforeEach(async () => {
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
-    warehouseStocksServiceSpy = jasmine.createSpyObj('WarehouseStocksService', ['getWarehouseStocks']);
-    warehouseStocksServiceSpy.getWarehouseStocks.and.returnValue(of(mockResponse as any));
+    warehouseStocksServiceSpy = jasmine.createSpyObj('WarehouseStocksService', ['getAll']);
+    fileServiceSpy = jasmine.createSpyObj('FileService', ['saveFile']);
+    modalServiceSpy = jasmine.createSpyObj('NzModalService', ['confirm']);
+
+    warehouseStocksServiceSpy.getAll.and.returnValue(of(mockResponse as any));
 
     await TestBed.configureTestingModule({
       imports: [ WarehouseStocksListComponent, BrowserAnimationsModule, HttpClientTestingModule ],
       providers: [
         { provide: WarehouseStocksService, useValue: warehouseStocksServiceSpy },
-        { provide: NzMessageService, useValue: messageServiceSpy }
+        { provide: NzMessageService, useValue: messageServiceSpy },
+        { provide: FileService, useValue: fileServiceSpy },
+        { provide: NzModalService, useValue: modalServiceSpy }
       ]
     })
     .compileComponents();
@@ -41,13 +50,13 @@ describe('WarehouseStocksListComponent', () => {
   });
 
   it('should load stocks', () => {
-    expect(component.stocks.length).toBe(1);
+    expect(component.data.length).toBe(1);
     expect(component.total).toBe(1);
   });
   
   it('should search stocks', () => {
     component.searchTerm = 'query';
     component.onSearch();
-    expect(warehouseStocksServiceSpy.getWarehouseStocks).toHaveBeenCalledWith(jasmine.objectContaining({ search: 'query' }));
+    expect(warehouseStocksServiceSpy.getAll).toHaveBeenCalledWith(jasmine.objectContaining({ search: 'query' }));
   });
 });

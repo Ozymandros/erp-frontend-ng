@@ -10,7 +10,8 @@ describe('authGuard', () => {
 
   beforeEach(() => {
     authServiceSpy = jasmine.createSpyObj('AuthService', [], {
-      isAuthenticated$: of(false)
+      isAuthenticated$: of(false),
+      isLoading$: of(false)
     });
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 

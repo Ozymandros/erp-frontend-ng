@@ -1,6 +1,6 @@
 <div *ngIf="permissions$ | async as p">
   <div class="page-header" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
-    <h1 style="margin: 0;">Sales Orders</h1>
+    <h1 style="margin: 0;">Warehouse Stock Levels</h1>
     <div style="display: flex; gap: 8px; flex-wrap: wrap;">
       <button *ngIf="p.canExport" nz-button (click)="exportToXlsx()">
         <i nz-icon nzType="file-excel"></i> Export XLSX
@@ -8,17 +8,13 @@
       <button *ngIf="p.canExport" nz-button (click)="exportToPdf()">
         <i nz-icon nzType="file-pdf"></i> Export PDF
       </button>
-
-      <button *ngIf="p.canCreate" nz-button nzType="primary" routerLink="/sales/orders/new">
-        <i nz-icon nzType="plus"></i> New Order
-      </button>
     </div>
   </div>
 
   <nz-card>
     <div style="margin-bottom: 16px; display: flex; gap: 16px; max-width: 400px;">
       <nz-input-group [nzPrefix]="prefixIconSearch">
-        <input type="text" nz-input placeholder="Search orders..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" />
+        <input type="text" nz-input placeholder="Search products in warehouses..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" />
       </nz-input-group>
       <ng-template #prefixIconSearch>
         <i nz-icon nzType="search"></i>
@@ -39,35 +35,23 @@
     >
       <thead>
         <tr>
-          <th>Order #</th>
-          <th>Customer</th>
-          <th>Date</th>
-          <th>Total Amount</th>
+          <th>Warehouse</th>
+          <th>Product</th>
+          <th>Current Stock</th>
+          <th>Reorder Level</th>
           <th>Status</th>
-          <th *ngIf="p.canRead || p.canDelete">Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let data of basicTable.data">
-          <td><strong>{{ data.orderNumber }}</strong></td>
-          <td>{{ data.customerName }}</td>
-          <td>{{ data.orderDate | date:'shortDate' }}</td>
-          <td>${{ data.totalAmount.toFixed(2) }}</td>
+        <tr *ngFor="let item of basicTable.data">
+          <td>{{ item.warehouseName }}</td>
+          <td><strong>{{ item.productName }}</strong> ({{ item.productSku }})</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.reorderLevel }}</td>
           <td>
-            <nz-tag [nzColor]="getStatusColor(data.status)">
-              {{ data.status }}
+            <nz-tag [nzColor]="item.quantity <= item.reorderLevel ? 'warning' : 'success'">
+              {{ item.quantity <= item.reorderLevel ? 'Low Stock' : 'In Stock' }}
             </nz-tag>
-          </td>
-          <td *ngIf="p.canRead || p.canDelete">
-            <a *ngIf="p.canRead" [routerLink]="['/sales/orders', data.id]" style="margin-right: 8px;">View</a>
-            <a
-              *ngIf="p.canDelete"
-              nz-popconfirm
-              nzPopconfirmTitle="Are you sure cancel this order?"
-              (nzOnConfirm)="deleteOrder(data.id)"
-              nzPopconfirmPlacement="left"
-              style="color: #ff4d4f; margin-left: 8px;"
-            >Cancel</a>
           </td>
         </tr>
       </tbody>

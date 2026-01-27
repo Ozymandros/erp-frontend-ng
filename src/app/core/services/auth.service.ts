@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ApiClientService } from '../api/http-client.service';
 import { AUTH_ENDPOINTS, USERS_ENDPOINTS, PERMISSIONS_ENDPOINTS } from '../api/endpoints.constants';
@@ -10,7 +10,8 @@ import {
   AuthResponse,
   User,
   PermissionCheckRequest,
-  PermissionCheckResponse
+  PermissionCheckResponse,
+  ModulePermissions
 } from '../types/api.types';
 
 const ACCESS_TOKEN_KEY = 'access_token';
@@ -84,9 +85,53 @@ export class AuthService {
   }
 
   checkPermission(module: string, action: string): Observable<boolean> {
+    const user = this.currentUserSubject.value;
+    
+    // 1. Check if user is loaded and perform local check
+    if (user) {
+      if (user.isAdmin) {
+        return of(true);
+      }
+      
+      const hasPermission = user.permissions?.some(
+        p => p.module.toLowerCase() === module.toLowerCase() && 
+             p.action.toLowerCase() === action.toLowerCase()
+      );
+      
+      if (hasPermission) {
+        return of(true);
+      }
+    }
+
+    // 2. Fallback to API if user not loaded or permission not found locally (double-check with server)
     const request: PermissionCheckRequest = { module, action };
     return this.apiClient.post<PermissionCheckResponse>(PERMISSIONS_ENDPOINTS.CHECK, request).pipe(
       map(response => response.allowed)
+    );
+  }
+
+  getModulePermissions(module: string): Observable<ModulePermissions> {
+    return this.currentUser$.pipe(
+      map(user => {
+        if (!user) {
+          return { canRead: false, canCreate: false, canUpdate: false, canDelete: false, canExport: false };
+        }
+        
+        if (user.isAdmin) {
+          return { canRead: true, canCreate: true, canUpdate: true, canDelete: true, canExport: true };
+        }
+
+        const perms = user.permissions || [];
+        const modulePerms = perms.filter(p => p.module.toLowerCase() === module.toLowerCase());
+        
+        return {
+          canRead: modulePerms.some(p => ['read', 'view', 'list'].includes(p.action.toLowerCase())),
+          canCreate: modulePerms.some(p => ['create', 'add', 'new'].includes(p.action.toLowerCase())),
+          canUpdate: modulePerms.some(p => ['update', 'edit', 'modify'].includes(p.action.toLowerCase())),
+          canDelete: modulePerms.some(p => ['delete', 'remove'].includes(p.action.toLowerCase())),
+          canExport: modulePerms.some(p => ['export', 'download'].includes(p.action.toLowerCase()))
+        };
+      })
     );
   }
 

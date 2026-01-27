@@ -7,22 +7,17 @@ import {
   PaginatedResponse,
   SearchParams
 } from '../types/api.types';
+import { BaseApiService } from '../base/base-api.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class InventoryTransactionsService {
-  constructor(private apiClient: ApiClientService) {}
-
-  getInventoryTransactions(params?: SearchParams): Observable<PaginatedResponse<InventoryTransactionDto>> {
-    return this.apiClient.get<PaginatedResponse<InventoryTransactionDto>>(INVENTORY_ENDPOINTS.TRANSACTIONS, params);
+export class InventoryTransactionsService extends BaseApiService<InventoryTransactionDto> {
+  protected getEndpoint(): string {
+    return INVENTORY_ENDPOINTS.TRANSACTIONS;
   }
 
-  exportToXlsx(): Observable<Blob> {
-    return this.apiClient.download(INVENTORY_ENDPOINTS.TRANSACTIONS_EXPORT_XLSX);
-  }
-
-  exportToPdf(): Observable<Blob> {
-    return this.apiClient.download(INVENTORY_ENDPOINTS.TRANSACTIONS_EXPORT_PDF);
+  constructor(protected override apiClient: ApiClientService) {
+    super(apiClient);
   }
 }

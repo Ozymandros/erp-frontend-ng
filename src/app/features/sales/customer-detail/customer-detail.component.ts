@@ -58,7 +58,7 @@ export class CustomerDetailComponent implements OnInit {
 
   loadCustomer(id: string): void {
     this.loading = true;
-    this.customersService.getCustomerById(id).subscribe({
+    this.customersService.getById(id).subscribe({
       next: (customer) => {
         this.customerForm.patchValue(customer);
         this.loading = false;
@@ -76,8 +76,9 @@ export class CustomerDetailComponent implements OnInit {
       const data = this.customerForm.value;
 
       const observable = this.isEditMode && this.customerId
-        ? this.customersService.updateCustomer(this.customerId, data)
-        : this.customersService.createCustomer(data);
+        ? this.customersService.update(this.customerId, data)
+        : this.customersService.create(data);
+
 
       observable.subscribe({
         next: () => {

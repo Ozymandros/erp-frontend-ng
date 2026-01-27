@@ -6,12 +6,16 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { FileService } from '../../../core/services/file.service';
 
 describe('RolesListComponent', () => {
   let component: RolesListComponent;
   let fixture: ComponentFixture<RolesListComponent>;
   let rolesServiceSpy: jasmine.SpyObj<RolesService>;
   let messageServiceSpy: jasmine.SpyObj<NzMessageService>;
+  let modalServiceSpy: jasmine.SpyObj<NzModalService>;
+  let fileServiceSpy: jasmine.SpyObj<FileService>;
 
   const mockResponse = {
     items: [{ id: '1', name: 'Admin', description: 'Desc', permissions: [], createdAt: new Date() }],
@@ -19,17 +23,29 @@ describe('RolesListComponent', () => {
   };
 
   beforeEach(async () => {
-    rolesServiceSpy = jasmine.createSpyObj('RolesService', ['getRoles', 'deleteRole']);
+    rolesServiceSpy = jasmine.createSpyObj('RolesService', ['getAll', 'delete', 'exportToXlsx', 'exportToPdf']);
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
-    rolesServiceSpy.getRoles.and.returnValue(of(mockResponse as any));
+    modalServiceSpy = jasmine.createSpyObj('NzModalService', ['confirm']);
+    fileServiceSpy = jasmine.createSpyObj('FileService', ['saveFile']);
+
+    rolesServiceSpy.getAll.and.returnValue(of(mockResponse as any));
 
     await TestBed.configureTestingModule({
       imports: [ RolesListComponent, BrowserAnimationsModule, HttpClientTestingModule ],
       providers: [
         { provide: RolesService, useValue: rolesServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
+        { provide: NzModalService, useValue: modalServiceSpy },
+        { provide: FileService, useValue: fileServiceSpy },
         { provide: ActivatedRoute, useValue: {} }
       ]
+    })
+    .overrideComponent(RolesListComponent, {
+      set: {
+        providers: [
+          { provide: NzModalService, useValue: modalServiceSpy }
+        ]
+      }
     })
     .compileComponents();
 
@@ -48,9 +64,14 @@ describe('RolesListComponent', () => {
   });
 
   it('should delete role', () => {
-    rolesServiceSpy.deleteRole.and.returnValue(of(undefined));
+    modalServiceSpy.confirm.and.callFake((options: any) => {
+      options.nzOnOk();
+      return undefined as any;
+    });
+    rolesServiceSpy.delete.and.returnValue(of(undefined));
     component.deleteRole('1');
-    expect(rolesServiceSpy.deleteRole).toHaveBeenCalledWith('1');
+    expect(rolesServiceSpy.delete).toHaveBeenCalledWith('1');
     expect(messageServiceSpy.success).toHaveBeenCalled();
   });
 });
+

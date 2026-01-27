@@ -5,12 +5,17 @@ import { PermissionsService } from '../../../core/services/permissions.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { FileService } from '../../../core/services/file.service';
+import { ActivatedRoute } from '@angular/router';
 
 describe('PermissionsListComponent', () => {
   let component: PermissionsListComponent;
   let fixture: ComponentFixture<PermissionsListComponent>;
   let permissionsServiceSpy: jasmine.SpyObj<PermissionsService>;
   let messageServiceSpy: jasmine.SpyObj<NzMessageService>;
+  let modalServiceSpy: jasmine.SpyObj<NzModalService>;
+  let fileServiceSpy: jasmine.SpyObj<FileService>;
 
   const mockResponse = {
     items: [{ id: '1', module: 'Users', action: 'Read', description: 'Desc', createdAt: new Date() }],
@@ -18,16 +23,29 @@ describe('PermissionsListComponent', () => {
   };
 
   beforeEach(async () => {
-    permissionsServiceSpy = jasmine.createSpyObj('PermissionsService', ['getPermissions', 'deletePermission']);
+    permissionsServiceSpy = jasmine.createSpyObj('PermissionsService', ['getAll', 'delete', 'exportToXlsx', 'exportToPdf']);
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
-    permissionsServiceSpy.getPermissions.and.returnValue(of(mockResponse as any));
+    modalServiceSpy = jasmine.createSpyObj('NzModalService', ['confirm']);
+    fileServiceSpy = jasmine.createSpyObj('FileService', ['saveFile']);
+
+    permissionsServiceSpy.getAll.and.returnValue(of(mockResponse as any));
 
     await TestBed.configureTestingModule({
       imports: [ PermissionsListComponent, BrowserAnimationsModule, HttpClientTestingModule ],
       providers: [
         { provide: PermissionsService, useValue: permissionsServiceSpy },
-        { provide: NzMessageService, useValue: messageServiceSpy }
+        { provide: NzMessageService, useValue: messageServiceSpy },
+        { provide: NzModalService, useValue: modalServiceSpy },
+        { provide: FileService, useValue: fileServiceSpy },
+        { provide: ActivatedRoute, useValue: {} }
       ]
+    })
+    .overrideComponent(PermissionsListComponent, {
+      set: {
+        providers: [
+          { provide: NzModalService, useValue: modalServiceSpy }
+        ]
+      }
     })
     .compileComponents();
 
@@ -46,8 +64,14 @@ describe('PermissionsListComponent', () => {
   });
   
   it('should delete permission', () => {
-    permissionsServiceSpy.deletePermission.and.returnValue(of(undefined));
+    modalServiceSpy.confirm.and.callFake((options: any) => {
+      options.nzOnOk();
+      return undefined as any;
+    });
+    permissionsServiceSpy.delete.and.returnValue(of(undefined));
     component.deletePermission('1');
-    expect(permissionsServiceSpy.deletePermission).toHaveBeenCalledWith('1');
+    expect(permissionsServiceSpy.delete).toHaveBeenCalledWith('1');
+
   });
 });
+

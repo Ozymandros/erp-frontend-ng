@@ -26,7 +26,9 @@ test.describe('Authentication Flow', () => {
     await page.click('button[type="submit"]');
 
     // Should redirect to dashboard
-    await expect(page).toHaveURL(/.*dashboard/);
+    // Should redirect to dashboard (root path)
+    await expect(page).toHaveURL(/.*\/$/);
+    await expect(page.locator('h1.dashboard-title')).toHaveText('Dashboard Overview');
   });
 
   test('should show validation errors for empty fields', async ({ page }) => {

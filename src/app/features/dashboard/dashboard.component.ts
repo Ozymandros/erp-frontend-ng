@@ -42,10 +42,13 @@ export class DashboardComponent implements OnInit {
   loadStats(): void {
     this.loading = true;
     forkJoin({
-      users: this.usersService.getUsers({ pageSize: 1 }),
-      products: this.productsService.getProducts({ pageSize: 1 }),
-      customers: this.customersService.getCustomers({ pageSize: 1 }),
-      warehouses: this.warehousesService.getWarehouses({ pageSize: 1 })
+      users: this.usersService.getAll({ pageSize: 1 }),
+
+      products: this.productsService.getAll({ pageSize: 1 }),
+
+      customers: this.customersService.getAll({ pageSize: 1 }),
+      warehouses: this.warehousesService.getAll({ pageSize: 1 })
+
     })
     .pipe(
       finalize(() => {

@@ -9,38 +9,20 @@ import {
   PaginatedResponse,
   SearchParams
 } from '../types/api.types';
+import { BaseApiService } from '../base/base-api.service';
+
 
 @Injectable({
   providedIn: 'root'
 })
-export class PermissionsService {
-  constructor(private apiClient: ApiClientService) {}
+export class PermissionsService extends BaseApiService<Permission, CreatePermissionRequest, UpdatePermissionRequest> {
 
-  getPermissions(params?: SearchParams): Observable<PaginatedResponse<Permission>> {
-    return this.apiClient.get<PaginatedResponse<Permission>>(PERMISSIONS_ENDPOINTS.BASE, params);
+  constructor(apiClient: ApiClientService) {
+    super(apiClient);
   }
 
-  getPermissionById(id: string): Observable<Permission> {
-    return this.apiClient.get<Permission>(PERMISSIONS_ENDPOINTS.BY_ID(id));
-  }
-
-  createPermission(data: CreatePermissionRequest): Observable<Permission> {
-    return this.apiClient.post<Permission>(PERMISSIONS_ENDPOINTS.BASE, data);
-  }
-
-  updatePermission(id: string, data: UpdatePermissionRequest): Observable<Permission> {
-    return this.apiClient.put<Permission>(PERMISSIONS_ENDPOINTS.BY_ID(id), data);
-  }
-
-  deletePermission(id: string): Observable<void> {
-    return this.apiClient.delete<void>(PERMISSIONS_ENDPOINTS.BY_ID(id));
-  }
-
-  exportToXlsx(): Observable<Blob> {
-    return this.apiClient.download(PERMISSIONS_ENDPOINTS.EXPORT_XLSX);
-  }
-
-  exportToPdf(): Observable<Blob> {
-    return this.apiClient.download(PERMISSIONS_ENDPOINTS.EXPORT_PDF);
+  protected getEndpoint(): string {
+    return PERMISSIONS_ENDPOINTS.BASE;
   }
 }
+

@@ -69,7 +69,7 @@ export class RoleDetailComponent implements OnInit {
   }
 
   loadPermissions(): void {
-    this.permissionsService.getPermissions({ pageSize: 1000 }).subscribe({
+    this.permissionsService.getAll({ pageSize: 1000 }).subscribe({
       next: (response) => {
         this.allPermissions = response.items;
       }
@@ -78,7 +78,7 @@ export class RoleDetailComponent implements OnInit {
 
   loadRole(id: string): void {
     this.loading = true;
-    this.rolesService.getRoleById(id).subscribe({
+    this.rolesService.getById(id).subscribe({
       next: (role) => {
         this.roleForm.patchValue({
           name: role.name,
@@ -100,8 +100,9 @@ export class RoleDetailComponent implements OnInit {
       const data = this.roleForm.value;
 
       const obs = this.isEditMode && this.roleId
-        ? this.rolesService.updateRole(this.roleId, data)
-        : this.rolesService.createRole(data);
+        ? this.rolesService.update(this.roleId, data)
+        : this.rolesService.create(data);
+
 
       obs.subscribe({
         next: () => {

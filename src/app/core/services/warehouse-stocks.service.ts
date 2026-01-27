@@ -7,22 +7,17 @@ import {
   PaginatedResponse,
   SearchParams
 } from '../types/api.types';
+import { BaseApiService } from '../base/base-api.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class WarehouseStocksService {
-  constructor(private apiClient: ApiClientService) {}
-
-  getWarehouseStocks(params?: SearchParams): Observable<PaginatedResponse<WarehouseStockDto>> {
-    return this.apiClient.get<PaginatedResponse<WarehouseStockDto>>(INVENTORY_ENDPOINTS.WAREHOUSE_STOCKS, params);
+export class WarehouseStocksService extends BaseApiService<WarehouseStockDto> {
+  protected getEndpoint(): string {
+    return INVENTORY_ENDPOINTS.WAREHOUSE_STOCKS;
   }
 
-  exportToXlsx(): Observable<Blob> {
-    return this.apiClient.download(INVENTORY_ENDPOINTS.WAREHOUSE_STOCKS_EXPORT_XLSX);
-  }
-
-  exportToPdf(): Observable<Blob> {
-    return this.apiClient.download(INVENTORY_ENDPOINTS.WAREHOUSE_STOCKS_EXPORT_PDF);
+  constructor(protected override apiClient: ApiClientService) {
+    super(apiClient);
   }
 }

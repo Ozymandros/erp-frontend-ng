@@ -1,20 +1,30 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SidebarComponent } from './sidebar.component';
 import { provideRouter } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { By } from '@angular/platform-browser';
+import { AuthService } from '../../core/services/auth.service';
+import { of } from 'rxjs';
+import { NZ_ICONS, NzIconModule } from 'ng-zorro-antd/icon';
+import { icons } from '../../ant-design-icons';
 
 describe('SidebarComponent', () => {
   let component: SidebarComponent;
   let fixture: ComponentFixture<SidebarComponent>;
+  let mockAuthService: any;
 
   beforeEach(async () => {
+    mockAuthService = {
+      checkPermission: jasmine.createSpy('checkPermission').and.returnValue(of(true))
+    };
+
     await TestBed.configureTestingModule({
-      imports: [ SidebarComponent, BrowserAnimationsModule, HttpClientTestingModule, RouterTestingModule ],
+      imports: [ SidebarComponent, BrowserAnimationsModule, RouterTestingModule, NzIconModule ],
       providers: [
-        provideRouter([])
+        provideRouter([]),
+        { provide: AuthService, useValue: mockAuthService },
+        { provide: NZ_ICONS, useValue: icons }
       ]
     })
     .compileComponents();

@@ -9,9 +9,12 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { PermissionsService } from '../../../core/services/permissions.service';
 import { Permission } from '../../../types/api.types';
-import { FileUtils } from '../../../core/utils/file-utils';
+import { BaseListComponent } from '../../../core/base/base-list.component';
+import { FileService } from '../../../core/services/file.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { finalize } from 'rxjs';
 
 @Component({
@@ -26,75 +29,74 @@ import { finalize } from 'rxjs';
     NzIconModule,
     NzTagModule,
     NzPopconfirmModule,
-    NzCardModule
+    NzCardModule,
+    NzModalModule
   ],
   template: `
-    <div class="page-header" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
-      <h1>Permissions Management</h1>
-      <div>
-        <button nz-button (click)="exportToXlsx()" style="margin-right: 8px;">
-          <i nz-icon nzType="file-excel"></i> Export XLSX
-        </button>
-        <button nz-button (click)="exportToPdf()" style="margin-right: 8px;">
-          <i nz-icon nzType="file-pdf"></i> Export PDF
-        </button>
-
-
+    <div class="permissions-container" *ngIf="permissions$ | async as p">
+      <div class="page-header" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+        <h1>Permissions Management</h1>
+        <div>
+          <button *ngIf="p.canExport" nz-button (click)="exportToXlsx('permissions.xlsx')" style="margin-right: 8px;">
+            <i nz-icon nzType="file-excel"></i> Export XLSX
+          </button>
+          <button *ngIf="p.canExport" nz-button (click)="exportToPdf('permissions.pdf')" style="margin-right: 8px;">
+            <i nz-icon nzType="file-pdf"></i> Export PDF
+          </button>
+        </div>
       </div>
+
+      <nz-card>
+        <div style="margin-bottom: 16px; display: flex; gap: 16px;">
+          <nz-input-group [nzPrefix]="prefixIconSearch">
+            <input type="text" nz-input placeholder="Search permissions..." [(ngModel)]="searchTerm" (ngModelChange)="loadData()" />
+          </nz-input-group>
+          <ng-template #prefixIconSearch>
+            <i nz-icon nzType="search"></i>
+          </ng-template>
+        </div>
+
+        <nz-table
+          #basicTable
+          [nzData]="permissions"
+          [nzLoading]="loading"
+          [nzTotal]="total"
+          [(nzPageIndex)]="pageIndex"
+          [(nzPageSize)]="pageSize"
+          [nzFrontPagination]="false"
+          (nzPageIndexChange)="loadPermissions()"
+          (nzPageSizeChange)="loadPermissions()"
+          [nzScroll]="{ x: '800px', y: 'calc(100vh - 400px)' }"
+        >
+          <thead>
+            <tr>
+              <th>Module</th>
+              <th>Action</th>
+              <th>Description</th>
+              <th>Created At</th>
+              <th *ngIf="p.canDelete">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of basicTable.data">
+              <td><nz-tag [nzColor]="'cyan'">{{ data.module }}</nz-tag></td>
+              <td><nz-tag [nzColor]="'purple'">{{ data.action }}</nz-tag></td>
+              <td>{{ data.description || '-' }}</td>
+              <td>{{ data.createdAt | date:'short' }}</td>
+              <td *ngIf="p.canDelete">
+                <a
+                  nz-popconfirm
+                  nzPopconfirmTitle="Are you sure delete this permission?"
+                  (nzOnConfirm)="deletePermission(data.id)"
+                  nzPopconfirmPlacement="left"
+                  style="color: #ff4d4f;"
+                >Delete</a>
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </nz-card>
     </div>
-
-    <nz-card>
-      <div style="margin-bottom: 16px; display: flex; gap: 16px;">
-        <nz-input-group [nzPrefix]="prefixIconSearch">
-          <input type="text" nz-input placeholder="Search permissions..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" />
-        </nz-input-group>
-        <ng-template #prefixIconSearch>
-          <i nz-icon nzType="search"></i>
-        </ng-template>
-      </div>
-
-      <nz-table
-        #basicTable
-        [nzData]="permissions"
-        [nzLoading]="loading"
-        [nzTotal]="total"
-        [(nzPageIndex)]="pageIndex"
-        [(nzPageSize)]="pageSize"
-        [nzFrontPagination]="false"
-        (nzPageIndexChange)="loadPermissions()"
-        (nzPageSizeChange)="loadPermissions()"
-        [nzScroll]="{ x: '800px', y: 'calc(100vh - 400px)' }"
-      >
-
-
-        <thead>
-          <tr>
-            <th>Module</th>
-            <th>Action</th>
-            <th>Description</th>
-            <th>Created At</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let data of basicTable.data">
-            <td><nz-tag [nzColor]="'cyan'">{{ data.module }}</nz-tag></td>
-            <td><nz-tag [nzColor]="'purple'">{{ data.action }}</nz-tag></td>
-            <td>{{ data.description || '-' }}</td>
-            <td>{{ data.createdAt | date:'short' }}</td>
-            <td>
-              <a
-                nz-popconfirm
-                nzPopconfirmTitle="Are you sure delete this permission?"
-                (nzOnConfirm)="deletePermission(data.id)"
-                nzPopconfirmPlacement="left"
-                style="color: #ff4d4f;"
-              >Delete</a>
-            </td>
-          </tr>
-        </tbody>
-      </nz-table>
-    </nz-card>
   `,
   styles: [`
     h1 {
@@ -102,87 +104,32 @@ import { finalize } from 'rxjs';
     }
   `]
 })
-export class PermissionsListComponent implements OnInit {
-  permissions: Permission[] = [];
-  loading = true;
-  total = 0;
-  pageIndex = 1;
-  pageSize = 10;
-  searchTerm = '';
+export class PermissionsListComponent extends BaseListComponent<Permission> {
+  protected get moduleName(): string {
+    return 'permissions';
+  }
 
   constructor(
-    private permissionsService: PermissionsService,
-    private message: NzMessageService,
-    private cdr: ChangeDetectorRef
-  ) {}
+    permissionsService: PermissionsService,
+    message: NzMessageService,
+    modal: NzModalService,
+    fileService: FileService,
+    cdr: ChangeDetectorRef,
+    authService: AuthService
+  ) {
+    super(permissionsService, message, modal, fileService, cdr, authService);
+  }
 
-  ngOnInit(): void {
-    this.loadPermissions();
+  get permissions(): Permission[] {
+    return this.data;
   }
 
   loadPermissions(): void {
-    this.loading = true;
-    this.permissionsService.getPermissions({
-      page: this.pageIndex,
-      pageSize: this.pageSize,
-      search: this.searchTerm
-    })
-    .pipe(
-      finalize(() => {
-        this.loading = false;
-        this.cdr.detectChanges();
-      })
-    )
-    .subscribe({
-      next: (response: any) => {
-        this.permissions = response?.items || (Array.isArray(response) ? response : []);
-        this.total = response?.total || (Array.isArray(response) ? response.length : 0);
-      },
-      error: () => {
-        this.message.error('Failed to load permissions');
-      }
-    });
-  }
-
-
-  onSearch(): void {
-    this.pageIndex = 1;
-    this.loadPermissions();
+    this.loadData();
   }
 
   deletePermission(id: string): void {
-    this.permissionsService.deletePermission(id).subscribe({
-      next: () => {
-        this.message.success('Permission deleted successfully');
-        this.loadPermissions();
-      },
-      error: () => {
-        this.message.error('Failed to delete permission');
-      }
-    });
-  }
-
-  exportToXlsx(): void {
-    this.permissionsService.exportToXlsx().subscribe({
-      next: (blob) => {
-        FileUtils.saveFile(blob, 'permissions.xlsx');
-        this.message.success('Permissions exported to XLSX successfully');
-      },
-      error: () => {
-        this.message.error('Failed to export permissions to XLSX');
-      }
-    });
-  }
-
-  exportToPdf(): void {
-    this.permissionsService.exportToPdf().subscribe({
-      next: (blob) => {
-        FileUtils.saveFile(blob, 'permissions.pdf');
-        this.message.success('Permissions exported to PDF successfully');
-      },
-      error: () => {
-        this.message.error('Failed to export permissions to PDF');
-      }
-    });
+    super.deleteItem(id, 'permission');
   }
 }
+

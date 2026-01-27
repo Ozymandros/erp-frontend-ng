@@ -52,6 +52,7 @@ export class UserDetailComponent implements OnInit {
       firstName: [''],
       lastName: [''],
       password: [''],
+      isActive: [true],
       roleIds: [[]]
     });
   }
@@ -71,7 +72,7 @@ export class UserDetailComponent implements OnInit {
   }
 
   loadRoles(): void {
-    this.rolesService.getRoles({ pageSize: 100 }).subscribe({
+    this.rolesService.getAll({ pageSize: 100 }).subscribe({
       next: (response) => {
         this.allRoles = response.items;
       }
@@ -80,13 +81,14 @@ export class UserDetailComponent implements OnInit {
 
   loadUser(id: string): void {
     this.loading = true;
-    this.usersService.getUserById(id).subscribe({
+    this.usersService.getById(id).subscribe({
       next: (user) => {
         this.userForm.patchValue({
           username: user.username,
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
+          isActive: user.isActive,
           roleIds: user.roles?.map((r: { id: string }) => r.id)
         });
         this.loading = false;
@@ -104,8 +106,9 @@ export class UserDetailComponent implements OnInit {
       const data = this.userForm.value;
 
       const observable = this.isEditMode && this.userId
-        ? this.usersService.updateUser(this.userId, data)
-        : this.usersService.createUser(data);
+        ? this.usersService.update(this.userId, data)
+        : this.usersService.create(data);
+
 
       observable.subscribe({
         next: () => {

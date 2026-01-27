@@ -32,7 +32,7 @@ describe('PermissionsService', () => {
     };
     apiClientSpy.get.and.returnValue(of(mockResult));
 
-    service.getPermissions().subscribe(result => {
+    service.getAll().subscribe(result => {
       expect(result).toEqual(mockResult);
       done();
     });
@@ -42,11 +42,12 @@ describe('PermissionsService', () => {
     const perm = { module: 'Inventory', action: 'Write' } as any;
     apiClientSpy.post.and.returnValue(of({ ...perm, id: '2' }));
 
-    service.createPermission(perm).subscribe(result => {
+    service.create(perm).subscribe(result => {
       expect(result.id).toBe('2');
       done();
     });
   });
+
 
 
   it('should export to XLSX', (done) => {

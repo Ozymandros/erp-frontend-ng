@@ -37,11 +37,12 @@ describe('WarehousesService', () => {
 
     apiClientSpy.get.and.returnValue(of(mockData));
 
-    service.getWarehouses().subscribe(response => {
+    service.getAll().subscribe(response => {
       expect(response).toEqual(mockData);
       expect(apiClientSpy.get).toHaveBeenCalled();
       done();
     });
+
   });
 
   it('should export to XLSX', (done) => {

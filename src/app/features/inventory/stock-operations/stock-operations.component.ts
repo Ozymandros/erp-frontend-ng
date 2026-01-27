@@ -57,8 +57,10 @@ export class StockOperationsComponent implements OnInit {
 
   loadData(): void {
     forkJoin({
-      products: this.productsService.getProducts(),
-      warehouses: this.warehousesService.getWarehouses()
+      products: this.productsService.getAll(),
+
+      warehouses: this.warehousesService.getAll()
+
     }).subscribe({
       next: (results) => {
         this.products = results.products.items;

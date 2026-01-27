@@ -66,7 +66,7 @@ export class ProductDetailComponent implements OnInit {
 
   loadProduct(id: string): void {
     this.loading = true;
-    this.productsService.getProductById(id).subscribe({
+    this.productsService.getById(id).subscribe({
       next: (product) => {
         this.productForm.patchValue(product);
         this.loading = false;
@@ -84,8 +84,9 @@ export class ProductDetailComponent implements OnInit {
       const data = this.productForm.value;
 
       const observable = this.isEditMode && this.productId
-        ? this.productsService.updateProduct(this.productId, data)
-        : this.productsService.createProduct(data);
+        ? this.productsService.update(this.productId, data)
+        : this.productsService.create(data);
+
 
       observable.subscribe({
         next: () => {

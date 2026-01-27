@@ -9,6 +9,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of, throwError } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { FileUtils } from '../../../core/utils/file-utils';
+import { FileService } from '../../../core/services/file.service';
+
 
 describe('ProductsListComponent', () => {
   let component: ProductsListComponent;
@@ -16,6 +18,7 @@ describe('ProductsListComponent', () => {
   let productsServiceSpy: jasmine.SpyObj<ProductsService>;
   let messageServiceSpy: jasmine.SpyObj<NzMessageService>;
   let modalServiceSpy: jasmine.SpyObj<NzModalService>;
+  let fileServiceSpy: jasmine.SpyObj<FileService>;
 
   const mockResponse = {
     items: [{ id: '1', sku: 'SKU1', name: 'Product 1', unitPrice: 10, quantityInStock: 100, reorderLevel: 10, createdAt: '', createdBy: '' }],
@@ -23,12 +26,13 @@ describe('ProductsListComponent', () => {
   };
 
   beforeEach(async () => {
-    productsServiceSpy = jasmine.createSpyObj('ProductsService', ['getProducts', 'deleteProduct', 'exportToXlsx', 'exportToPdf']);
-    productsServiceSpy.getProducts.and.returnValue(of({ items: [], total: 0 } as any));
+    productsServiceSpy = jasmine.createSpyObj('ProductsService', ['getAll', 'delete', 'exportToXlsx', 'exportToPdf']);
+    productsServiceSpy.getAll.and.returnValue(of({ items: [], total: 0 } as any));
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
     modalServiceSpy = jasmine.createSpyObj('NzModalService', ['confirm', 'create', 'info', 'success', 'error', 'warning', 'open']);
+    fileServiceSpy = jasmine.createSpyObj('FileService', ['saveFile']);
 
-    productsServiceSpy.getProducts.and.returnValue(of({
+    productsServiceSpy.getAll.and.returnValue(of({
       items: mockResponse.items,
       total: mockResponse.total,
       page: 1,
@@ -44,6 +48,7 @@ describe('ProductsListComponent', () => {
         { provide: ProductsService, useValue: productsServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
         { provide: NzModalService, useValue: modalServiceSpy },
+        { provide: FileService, useValue: fileServiceSpy },
         { provide: ActivatedRoute, useValue: {} }
       ]
     })
@@ -61,6 +66,7 @@ describe('ProductsListComponent', () => {
     fixture.detectChanges();
   });
 
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
@@ -71,14 +77,14 @@ describe('ProductsListComponent', () => {
   });
 
   it('should search products', () => {
-    component.searchText = 'query';
+    component.searchTerm = 'query';
     component.onSearch();
-    expect(productsServiceSpy.getProducts).toHaveBeenCalledWith(jasmine.objectContaining({ search: 'query', page: 1 }));
+    expect(productsServiceSpy.getAll).toHaveBeenCalledWith(jasmine.objectContaining({ search: 'query', page: 1 }));
   });
 
   it('should change page', () => {
     component.onPageChange(2);
-    expect(productsServiceSpy.getProducts).toHaveBeenCalledWith(jasmine.objectContaining({ page: 2 }));
+    expect(productsServiceSpy.getAll).toHaveBeenCalledWith(jasmine.objectContaining({ page: 2 }));
   });
 
   it('should delete product via modal', () => {
@@ -86,56 +92,57 @@ describe('ProductsListComponent', () => {
       options.nzOnOk();
       return undefined as any;
     });
-    productsServiceSpy.deleteProduct.and.returnValue(of(void 0));
-    productsServiceSpy.getProducts.and.returnValue(of({ items: [], total: 0 } as any));
+    productsServiceSpy.delete.and.returnValue(of(void 0));
+    productsServiceSpy.getAll.and.returnValue(of({ items: [], total: 0 } as any));
     
     component.deleteProduct(mockResponse.items[0] as any);
     
     expect(modalServiceSpy.confirm).toHaveBeenCalled();
-    expect(productsServiceSpy.deleteProduct).toHaveBeenCalledWith('1');
+    expect(productsServiceSpy.delete).toHaveBeenCalledWith('1');
     expect(messageServiceSpy.success).toHaveBeenCalled();
     });
+
 
   it('should export to XLSX', () => {
     const mockBlob = new Blob(['data'], { type: 'application/octet-stream' });
     productsServiceSpy.exportToXlsx.and.returnValue(of(mockBlob));
-    spyOn(FileUtils, 'saveFile');
 
-    component.exportToXlsx();
+    component.exportToXlsx('products.xlsx');
 
     expect(productsServiceSpy.exportToXlsx).toHaveBeenCalled();
-    expect(FileUtils.saveFile).toHaveBeenCalledWith(mockBlob, 'products.xlsx');
-    expect(messageServiceSpy.success).toHaveBeenCalledWith('Products exported to XLSX successfully');
+    expect(fileServiceSpy.saveFile).toHaveBeenCalledWith(mockBlob, 'products.xlsx');
+    expect(messageServiceSpy.success).toHaveBeenCalledWith('Exported to XLSX successfully');
   });
 
   it('should handle export to XLSX error', () => {
+    spyOn(console, 'error');
     productsServiceSpy.exportToXlsx.and.returnValue(throwError(() => new Error('Error')));
     
     component.exportToXlsx();
     
     expect(productsServiceSpy.exportToXlsx).toHaveBeenCalled();
-    expect(messageServiceSpy.error).toHaveBeenCalledWith('Failed to export products to XLSX');
+    expect(messageServiceSpy.error).toHaveBeenCalledWith('Failed to export to XLSX');
   });
 
   it('should export to PDF', () => {
     const mockBlob = new Blob(['data'], { type: 'application/pdf' });
     productsServiceSpy.exportToPdf.and.returnValue(of(mockBlob));
-    spyOn(FileUtils, 'saveFile');
 
-    component.exportToPdf();
+    component.exportToPdf('products.pdf');
 
     expect(productsServiceSpy.exportToPdf).toHaveBeenCalled();
-    expect(FileUtils.saveFile).toHaveBeenCalledWith(mockBlob, 'products.pdf');
-    expect(messageServiceSpy.success).toHaveBeenCalledWith('Products exported to PDF successfully');
+    expect(fileServiceSpy.saveFile).toHaveBeenCalledWith(mockBlob, 'products.pdf');
+    expect(messageServiceSpy.success).toHaveBeenCalledWith('Exported to PDF successfully');
   });
 
   it('should handle export to PDF error', () => {
+    spyOn(console, 'error');
     productsServiceSpy.exportToPdf.and.returnValue(throwError(() => new Error('Error')));
     
     component.exportToPdf();
     
     expect(productsServiceSpy.exportToPdf).toHaveBeenCalled();
-    expect(messageServiceSpy.error).toHaveBeenCalledWith('Failed to export products to PDF');
+    expect(messageServiceSpy.error).toHaveBeenCalledWith('Failed to export to PDF');
   });
 });
 

@@ -17,8 +17,9 @@ describe('CustomerDetailComponent', () => {
   const mockCustomer = { id: '1', name: 'Customer 1', email: 'c@c.com', isActive: true };
 
   beforeEach(async () => {
-    customersServiceSpy = jasmine.createSpyObj('CustomersService', ['getCustomerById', 'createCustomer', 'updateCustomer']);
+    customersServiceSpy = jasmine.createSpyObj('CustomersService', ['getById', 'create', 'update']);
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
+
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
@@ -35,7 +36,7 @@ describe('CustomerDetailComponent', () => {
 
   function createComponent(id: string | null) {
       if (id && id !== 'new') {
-        customersServiceSpy.getCustomerById.and.returnValue(of(mockCustomer as any));
+        customersServiceSpy.getById.and.returnValue(of(mockCustomer as any));
       }
       const route = TestBed.inject(ActivatedRoute);
       spyOn(route.snapshot.paramMap, 'get').and.returnValue(id);
@@ -52,16 +53,17 @@ describe('CustomerDetailComponent', () => {
 
   it('should load customer in edit mode', () => {
     createComponent('1');
-    expect(customersServiceSpy.getCustomerById).toHaveBeenCalledWith('1');
+    expect(customersServiceSpy.getById).toHaveBeenCalledWith('1');
     expect(component.customerForm.value.name).toBe('Customer 1');
   });
 
   it('should save new customer', () => {
     createComponent('new');
-    customersServiceSpy.createCustomer.and.returnValue(of(mockCustomer as any));
+    customersServiceSpy.create.and.returnValue(of(mockCustomer as any));
     component.customerForm.patchValue({ name: 'New C', email: 'n@n.com' });
     component.save();
-    expect(customersServiceSpy.createCustomer).toHaveBeenCalled();
+    expect(customersServiceSpy.create).toHaveBeenCalled();
+
     expect(messageServiceSpy.success).toHaveBeenCalled();
   });
 });

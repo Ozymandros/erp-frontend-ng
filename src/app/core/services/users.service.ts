@@ -9,42 +9,24 @@ import {
   PaginatedResponse,
   SearchParams
 } from '../types/api.types';
+import { BaseApiService } from '../base/base-api.service';
+
 
 @Injectable({
   providedIn: 'root'
 })
-export class UsersService {
-  constructor(private apiClient: ApiClientService) {}
+export class UsersService extends BaseApiService<User, CreateUserRequest, UpdateUserRequest> {
 
-  getUsers(params?: SearchParams): Observable<PaginatedResponse<User>> {
-    return this.apiClient.get<PaginatedResponse<User>>(USERS_ENDPOINTS.BASE, params);
+  constructor(apiClient: ApiClientService) {
+    super(apiClient);
   }
 
-  getUserById(id: string): Observable<User> {
-    return this.apiClient.get<User>(USERS_ENDPOINTS.BY_ID(id));
-  }
-
-  createUser(data: CreateUserRequest): Observable<User> {
-    return this.apiClient.post<User>(USERS_ENDPOINTS.BASE, data);
-  }
-
-  updateUser(id: string, data: UpdateUserRequest): Observable<User> {
-    return this.apiClient.put<User>(USERS_ENDPOINTS.BY_ID(id), data);
-  }
-
-  deleteUser(id: string): Observable<void> {
-    return this.apiClient.delete<void>(USERS_ENDPOINTS.BY_ID(id));
+  protected getEndpoint(): string {
+    return USERS_ENDPOINTS.BASE;
   }
 
   assignRoles(userId: string, roleIds: string[]): Observable<User> {
     return this.apiClient.post<User>(USERS_ENDPOINTS.ROLES(userId), { roleIds });
   }
-
-  exportToXlsx(): Observable<Blob> {
-    return this.apiClient.download(USERS_ENDPOINTS.EXPORT_XLSX);
-  }
-
-  exportToPdf(): Observable<Blob> {
-    return this.apiClient.download(USERS_ENDPOINTS.EXPORT_PDF);
-  }
 }
+

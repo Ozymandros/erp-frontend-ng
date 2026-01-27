@@ -9,42 +9,24 @@ import {
   PaginatedResponse,
   SearchParams
 } from '../types/api.types';
+import { BaseApiService } from '../base/base-api.service';
+
 
 @Injectable({
   providedIn: 'root'
 })
-export class RolesService {
-  constructor(private apiClient: ApiClientService) {}
+export class RolesService extends BaseApiService<Role, CreateRoleRequest, UpdateRoleRequest> {
 
-  getRoles(params?: SearchParams): Observable<PaginatedResponse<Role>> {
-    return this.apiClient.get<PaginatedResponse<Role>>(ROLES_ENDPOINTS.BASE, params);
+  constructor(apiClient: ApiClientService) {
+    super(apiClient);
   }
 
-  getRoleById(id: string): Observable<Role> {
-    return this.apiClient.get<Role>(ROLES_ENDPOINTS.BY_ID(id));
-  }
-
-  createRole(data: CreateRoleRequest): Observable<Role> {
-    return this.apiClient.post<Role>(ROLES_ENDPOINTS.BASE, data);
-  }
-
-  updateRole(id: string, data: UpdateRoleRequest): Observable<Role> {
-    return this.apiClient.put<Role>(ROLES_ENDPOINTS.BY_ID(id), data);
-  }
-
-  deleteRole(id: string): Observable<void> {
-    return this.apiClient.delete<void>(ROLES_ENDPOINTS.BY_ID(id));
-  }
-
-  exportToXlsx(): Observable<Blob> {
-    return this.apiClient.download(ROLES_ENDPOINTS.EXPORT_XLSX);
-  }
-
-  exportToPdf(): Observable<Blob> {
-    return this.apiClient.download(ROLES_ENDPOINTS.EXPORT_PDF);
+  protected getEndpoint(): string {
+    return ROLES_ENDPOINTS.BASE;
   }
 
   assignPermissions(roleId: string, permissionIds: string[]): Observable<Role> {
     return this.apiClient.post<Role>(ROLES_ENDPOINTS.PERMISSIONS(roleId), { permissionIds });
   }
 }
+

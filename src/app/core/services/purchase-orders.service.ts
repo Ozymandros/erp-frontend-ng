@@ -10,31 +10,18 @@ import {
   PaginatedResponse,
   SearchParams
 } from '../types/api.types';
+import { BaseApiService } from '../base/base-api.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PurchaseOrdersService {
-  constructor(private apiClient: ApiClientService) {}
-
-  getPurchaseOrders(params?: SearchParams): Observable<PaginatedResponse<PurchaseOrderDto>> {
-    return this.apiClient.get<PaginatedResponse<PurchaseOrderDto>>(PURCHASING_ENDPOINTS.ORDERS, params);
+export class PurchaseOrdersService extends BaseApiService<PurchaseOrderDto, CreateUpdatePurchaseOrderDto, CreateUpdatePurchaseOrderDto> {
+  protected getEndpoint(): string {
+    return PURCHASING_ENDPOINTS.ORDERS;
   }
 
-  getPurchaseOrderById(id: string): Observable<PurchaseOrderDto> {
-    return this.apiClient.get<PurchaseOrderDto>(PURCHASING_ENDPOINTS.ORDER_BY_ID(id));
-  }
-
-  createPurchaseOrder(data: CreateUpdatePurchaseOrderDto): Observable<PurchaseOrderDto> {
-    return this.apiClient.post<PurchaseOrderDto>(PURCHASING_ENDPOINTS.ORDERS, data);
-  }
-
-  updatePurchaseOrder(id: string, data: CreateUpdatePurchaseOrderDto): Observable<PurchaseOrderDto> {
-    return this.apiClient.put<PurchaseOrderDto>(PURCHASING_ENDPOINTS.ORDER_BY_ID(id), data);
-  }
-
-  deletePurchaseOrder(id: string): Observable<void> {
-    return this.apiClient.delete<void>(PURCHASING_ENDPOINTS.ORDER_BY_ID(id));
+  constructor(protected override apiClient: ApiClientService) {
+    super(apiClient);
   }
 
   approvePurchaseOrder(data: ApprovePurchaseOrderDto): Observable<PurchaseOrderDto> {
@@ -49,13 +36,5 @@ export class PurchaseOrdersService {
       PURCHASING_ENDPOINTS.RECEIVE(data.purchaseOrderId), 
       data
     );
-  }
-
-  exportToXlsx(): Observable<Blob> {
-    return this.apiClient.download(PURCHASING_ENDPOINTS.EXPORT_XLSX);
-  }
-
-  exportToPdf(): Observable<Blob> {
-    return this.apiClient.download(PURCHASING_ENDPOINTS.EXPORT_PDF);
   }
 }

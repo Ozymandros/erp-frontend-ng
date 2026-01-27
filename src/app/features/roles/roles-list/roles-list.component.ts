@@ -10,9 +10,12 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { RolesService } from '../../../core/services/roles.service';
 import { Role } from '../../../types/api.types';
-import { FileUtils } from '../../../core/utils/file-utils';
+import { BaseListComponent } from '../../../core/base/base-list.component';
+import { FileService } from '../../../core/services/file.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { finalize } from 'rxjs';
 
 @Component({
@@ -28,7 +31,8 @@ import { finalize } from 'rxjs';
     NzIconModule,
     NzTagModule,
     NzPopconfirmModule,
-    NzCardModule
+    NzCardModule,
+    NzModalModule
   ],
   templateUrl: './roles-list.component.html',
   styles: [`
@@ -37,87 +41,32 @@ import { finalize } from 'rxjs';
     }
   `]
 })
-export class RolesListComponent implements OnInit {
-  roles: Role[] = [];
-  loading = true;
-  total = 0;
-  pageIndex = 1;
-  pageSize = 10;
-  searchTerm = '';
+export class RolesListComponent extends BaseListComponent<Role> {
+  protected get moduleName(): string {
+    return 'roles';
+  }
 
   constructor(
-    private rolesService: RolesService,
-    private message: NzMessageService,
-    private cdr: ChangeDetectorRef
-  ) {}
+    rolesService: RolesService,
+    message: NzMessageService,
+    modal: NzModalService,
+    fileService: FileService,
+    cdr: ChangeDetectorRef,
+    authService: AuthService
+  ) {
+    super(rolesService, message, modal, fileService, cdr, authService);
+  }
 
-  ngOnInit(): void {
-    this.loadRoles();
+  get roles(): Role[] {
+    return this.data;
   }
 
   loadRoles(): void {
-    this.loading = true;
-    this.rolesService.getRoles({
-      page: this.pageIndex,
-      pageSize: this.pageSize,
-      search: this.searchTerm
-    })
-    .pipe(
-      finalize(() => {
-        this.loading = false;
-        this.cdr.detectChanges();
-      })
-    )
-    .subscribe({
-      next: (response: any) => {
-        this.roles = response?.items || (Array.isArray(response) ? response : []);
-        this.total = response?.total || (Array.isArray(response) ? response.length : 0);
-      },
-      error: () => {
-        this.message.error('Failed to load roles');
-      }
-    });
-  }
-
-
-  onSearch(): void {
-    this.pageIndex = 1;
-    this.loadRoles();
+    this.loadData();
   }
 
   deleteRole(id: string): void {
-    this.rolesService.deleteRole(id).subscribe({
-      next: () => {
-        this.message.success('Role deleted successfully');
-        this.loadRoles();
-      },
-      error: () => {
-        this.message.error('Failed to delete role');
-      }
-    });
-  }
-
-  exportToXlsx(): void {
-    this.rolesService.exportToXlsx().subscribe({
-      next: (blob) => {
-        FileUtils.saveFile(blob, 'roles.xlsx');
-        this.message.success('Roles exported to XLSX successfully');
-      },
-      error: () => {
-        this.message.error('Failed to export roles to XLSX');
-      }
-    });
-  }
-
-  exportToPdf(): void {
-    this.rolesService.exportToPdf().subscribe({
-      next: (blob) => {
-        FileUtils.saveFile(blob, 'roles.pdf');
-        this.message.success('Roles exported to PDF successfully');
-      },
-      error: () => {
-        this.message.error('Failed to export roles to PDF');
-      }
-    });
+    super.deleteItem(id, 'role');
   }
 }
+

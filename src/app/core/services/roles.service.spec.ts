@@ -32,11 +32,12 @@ describe('RolesService', () => {
     };
     apiClientSpy.get.and.returnValue(of(mockResult));
 
-    service.getRoles().subscribe(result => {
+    service.getAll().subscribe(result => {
       expect(result).toEqual(mockResult);
       done();
     });
   });
+
 
   it('should assign permissions to role', (done) => {
     const role = { id: '1', name: 'Admin' } as Role;
