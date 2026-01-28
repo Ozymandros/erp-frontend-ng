@@ -29,7 +29,7 @@ import { AuthService } from '../../../core/services/auth.service';
     NzCardModule
   ],
   templateUrl: './warehouse-stocks-list.component.html',
-  styles: []
+  styleUrls: ['./warehouse-stocks-list.component.css']
 })
 export class WarehouseStocksListComponent extends BaseListComponent<WarehouseStockDto> implements OnInit {
   protected get moduleName(): string {

@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { AuthService } from '../../core/services/auth.service';
-import { Observable } from 'rxjs';
+import { PermissionService } from '../../core/services/permission.service';
+import { NAV_ITEMS_CONFIG, NavItemConfig } from '../../core/config/routes.config';
 
 @Component({
   selector: 'app-sidebar',
@@ -16,11 +17,31 @@ import { Observable } from 'rxjs';
 })
 export class SidebarComponent {
   isCollapsed = false;
+  currentUser = this.authService.currentUser;
 
-  constructor(private authService: AuthService) {}
+  // Filter navigation items based on permissions
+  visibleNavItems = computed(() => {
+    const user = this.authService.currentUser();
+    if (!user) return [];
+        
+    return NAV_ITEMS_CONFIG.filter(item => {
+      // If no permission required, show the item
+      if (!item.permission) return true;
+            
+      // Admin has full access
+      if (user.isAdmin) return true;
+            
+      // Check against cached permissions (client-side, no API call)
+      return this.permissionService.hasPermission(
+        item.permission.module,
+        item.permission.action
+      );
+    });
+  });
 
-  can(module: string, action: string = 'read'): Observable<boolean> {
-    return this.authService.checkPermission(module, action);
-  }
+  constructor(
+    private authService: AuthService,
+    private permissionService: PermissionService
+  ) {}
 }
 

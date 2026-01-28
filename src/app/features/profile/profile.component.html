@@ -1,16 +1,18 @@
 <div class="profile-container">
-  <div class="page-header" style="margin-bottom: 24px;">
+  <div class="page-header">
     <h1>User Profile</h1>
   </div>
 
   <div nz-row [nzGutter]="24">
     <div nz-col [nzSpan]="8">
-      <nz-card style="text-align: center;">
+      <nz-card class="avatar-card">
         <nz-avatar [nzSize]="128" nzIcon="user"></nz-avatar>
-        <h2 style="margin-top: 16px;">{{ currentUser?.username }}</h2>
+        <h2 class="avatar-title">{{ currentUser?.username }}</h2>
         <p>{{ currentUser?.email }}</p>
-        <div style="margin-top: 16px;">
-          <nz-tag *ngFor="let role of currentUser?.roles" [nzColor]="'blue'">{{ role.name }}</nz-tag>
+        <div class="roles-container">
+          @for (role of currentUser?.roles || []; track role.id) {
+            <nz-tag [nzColor]="'blue'">{{ role.name }}</nz-tag>
+          }
         </div>
       </nz-card>
     </div>
@@ -56,7 +58,7 @@
         </form>
       </nz-card>
 
-      <nz-card nzTitle="Security" style="margin-top: 24px;">
+      <nz-card nzTitle="Security" class="security-card">
         <form nz-form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
           <nz-form-item>
             <nz-form-label [nzSpan]="6" nzRequired>New Password</nz-form-label>

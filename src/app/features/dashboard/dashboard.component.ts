@@ -18,7 +18,8 @@ import { forkJoin, finalize } from 'rxjs';
     NzStatisticModule,
     NzGridModule
   ],
-  templateUrl: './dashboard.component.html'
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
   userCount = 0;

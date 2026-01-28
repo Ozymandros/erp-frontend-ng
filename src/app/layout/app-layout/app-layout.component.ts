@@ -38,6 +38,8 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
     .app-layout {
       height: 100vh;
       overflow: hidden;
+      display: flex;
+      flex-direction: row;
     }
 
     .inner-layout {

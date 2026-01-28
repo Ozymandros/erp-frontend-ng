@@ -1,6 +1,6 @@
 <div class="warehouse-detail">
-  <div class="page-header" style="margin-bottom: 24px;">
-    <button nz-button nzType="default" routerLink="/inventory/warehouses" style="margin-right: 16px;">
+  <div class="page-header">
+    <button nz-button nzType="default" routerLink="/inventory/warehouses" class="back-button">
       <i nz-icon nzType="arrow-left"></i> Back
     </button>
     <h1>{{ isEditMode ? 'Edit Warehouse' : 'Create Warehouse' }}</h1>
@@ -27,7 +27,7 @@
           <button nz-button nzType="primary" [nzLoading]="saving" [disabled]="!warehouseForm.valid">
             {{ isEditMode ? 'Update' : 'Create' }}
           </button>
-          <button nz-button nzType="default" type="button" routerLink="/inventory/warehouses" style="margin-left: 8px;">Cancel</button>
+          <button nz-button nzType="default" type="button" routerLink="/inventory/warehouses" class="cancel-button">Cancel</button>
         </nz-form-control>
       </nz-form-item>
     </form>

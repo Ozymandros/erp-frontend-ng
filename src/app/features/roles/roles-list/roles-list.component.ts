@@ -35,11 +35,7 @@ import { finalize } from 'rxjs';
     NzModalModule
   ],
   templateUrl: './roles-list.component.html',
-  styles: [`
-    h1 {
-      margin: 0;
-    }
-  `]
+  styleUrls: ['./roles-list.component.css']
 })
 export class RolesListComponent extends BaseListComponent<Role> {
   protected get moduleName(): string {

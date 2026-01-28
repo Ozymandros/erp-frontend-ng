@@ -1,22 +1,87 @@
-.user-detail {
-  padding: 24px;
-}
-
 .page-header {
-  display: flex;
-  align-items: center;
-  gap: 16px;
   margin-bottom: 24px;
 }
 
 .page-header h1 {
   margin: 0;
-  font-size: 24px;
-  font-weight: 500;
 }
 
 .form-actions {
   margin-top: 24px;
+}
+
+.manage-roles-card {
+  margin-top: 16px;
+}
+
+.manage-roles-header {
+  margin-bottom: 16px;
   display: flex;
+  justify-content: space-between;
+  align-items: middle;
+}
+
+.manage-roles-title {
+  margin: 0;
+}
+
+.manage-roles-subtitle {
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.roles-permissions-card {
+  margin-top: 16px;
+}
+
+.roles-permissions-title {
+  margin-bottom: 16px;
+}
+
+.role-card {
+  margin-bottom: 12px;
+}
+
+.role-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+}
+
+.role-name {
+  margin: 0 0 8px 0;
+}
+
+.role-description {
+  margin: 0;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.permissions-section {
+  margin-top: 12px;
+}
+
+.permissions-list {
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
+  margin-top: 8px;
+}
+
+.manage-roles-card {
+  margin-top: 16px;
+}
+
+.manage-roles-header {
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: middle;
+}
+
+.manage-roles-title {
+  margin: 0;
+}
+
+.manage-roles-subtitle {
+  color: rgba(0, 0, 0, 0.65);
 }

@@ -33,27 +33,27 @@ import { finalize } from 'rxjs';
     NzModalModule
   ],
   template: `
-    <div class="permissions-container" *ngIf="permissions$ | async as p">
-      <div class="page-header" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+    @if (permissions$ | async; as p) {
+    <div class="permissions-container">
+      <div class="page-header">
         <h1>Permissions Management</h1>
-        <div>
-          <button *ngIf="p.canExport" nz-button (click)="exportToXlsx('permissions.xlsx')" style="margin-right: 8px;">
-            <i nz-icon nzType="file-excel"></i> Export XLSX
-          </button>
-          <button *ngIf="p.canExport" nz-button (click)="exportToPdf('permissions.pdf')" style="margin-right: 8px;">
-            <i nz-icon nzType="file-pdf"></i> Export PDF
-          </button>
+        <div class="header-actions">
+          @if (p.canExport) {
+            <button nz-button (click)="exportToXlsx('permissions.xlsx')" class="export-button">
+              <i nz-icon nzType="file-excel"></i> Export XLSX
+            </button>
+          }
+          @if (p.canExport) {
+            <button nz-button (click)="exportToPdf('permissions.pdf')" class="export-button">
+              <i nz-icon nzType="file-pdf"></i> Export PDF
+            </button>
+          }
         </div>
       </div>
 
       <nz-card>
-        <div style="margin-bottom: 16px; display: flex; gap: 16px;">
-          <nz-input-group [nzPrefix]="prefixIconSearch">
-            <input type="text" nz-input placeholder="Search permissions..." [(ngModel)]="searchTerm" (ngModelChange)="loadData()" />
-          </nz-input-group>
-          <ng-template #prefixIconSearch>
-            <i nz-icon nzType="search"></i>
-          </ng-template>
+        <div class="search-container">
+          <input type="text" nz-input placeholder="Search permissions..." [(ngModel)]="searchTerm" (ngModelChange)="loadData()" [nzPrefixIcon]="'search'" />
         </div>
 
         <nz-table
@@ -74,33 +74,61 @@ import { finalize } from 'rxjs';
               <th>Action</th>
               <th>Description</th>
               <th>Created At</th>
-              <th *ngIf="p.canDelete">Actions</th>
+              @if (p.canDelete) {
+                <th>Actions</th>
+              }
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let data of basicTable.data">
-              <td><nz-tag [nzColor]="'cyan'">{{ data.module }}</nz-tag></td>
-              <td><nz-tag [nzColor]="'purple'">{{ data.action }}</nz-tag></td>
-              <td>{{ data.description || '-' }}</td>
-              <td>{{ data.createdAt | date:'short' }}</td>
-              <td *ngIf="p.canDelete">
-                <a
-                  nz-popconfirm
-                  nzPopconfirmTitle="Are you sure delete this permission?"
-                  (nzOnConfirm)="deletePermission(data.id)"
-                  nzPopconfirmPlacement="left"
-                  style="color: #ff4d4f;"
-                >Delete</a>
-              </td>
-            </tr>
+            @for (data of basicTable.data; track data.id) {
+              <tr>
+                <td><nz-tag [nzColor]="'cyan'">{{ data.module }}</nz-tag></td>
+                <td><nz-tag [nzColor]="'purple'">{{ data.action }}</nz-tag></td>
+                <td>{{ data.description || '-' }}</td>
+                <td>{{ data.createdAt | date:'short' }}</td>
+                @if (p.canDelete) {
+                  <td>
+                    <a
+                      nz-popconfirm
+                      nzPopconfirmTitle="Are you sure delete this permission?"
+                      (nzOnConfirm)="deletePermission(data.id)"
+                      nzPopconfirmPlacement="left"
+                      class="delete-link"
+                    >Delete</a>
+                  </td>
+                }
+              </tr>
+            }
           </tbody>
         </nz-table>
       </nz-card>
     </div>
+    }
   `,
   styles: [`
     h1 {
       margin: 0;
+    }
+    .page-header {
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .export-button {
+      margin-right: 8px;
+    }
+    .search-container {
+      margin-bottom: 16px;
+      display: flex;
+      gap: 16px;
+    }
+    .delete-link {
+      color: #ff4d4f;
     }
   `]
 })

@@ -29,7 +29,7 @@ import { AuthService } from '../../../core/services/auth.service';
     NzCardModule
   ],
   templateUrl: './inventory-transactions-list.component.html',
-  styles: []
+  styleUrls: ['./inventory-transactions-list.component.css']
 })
 export class InventoryTransactionsListComponent extends BaseListComponent<InventoryTransactionDto> implements OnInit {
   protected get moduleName(): string {

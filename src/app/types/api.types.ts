@@ -224,7 +224,7 @@ export interface UpdateUserRequest {
 export interface Role extends IAuditableDto<string> {
   name: string;
   description?: string;
-  permissions: Permission[];
+  permissions?: Permission[];
 }
 
 export interface CreateRoleRequest {

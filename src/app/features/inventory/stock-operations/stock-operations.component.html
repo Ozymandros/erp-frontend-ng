@@ -11,7 +11,9 @@
             <nz-form-label [nzSpan]="6" nzRequired>Product</nz-form-label>
             <nz-form-control [nzSpan]="18" nzErrorTip="Please select a product!">
               <nz-select formControlName="productId" nzShowSearch nzPlaceHolder="Search product">
-                <nz-option *ngFor="let p of products" [nzValue]="p.id" [nzLabel]="p.name + ' (' + p.sku + ')'"></nz-option>
+                @for (p of products; track p.id) {
+                  <nz-option [nzValue]="p.id" [nzLabel]="p.name + ' (' + p.sku + ')'"></nz-option>
+                }
               </nz-select>
             </nz-form-control>
           </nz-form-item>
@@ -20,7 +22,9 @@
             <nz-form-label [nzSpan]="6" nzRequired>Warehouse</nz-form-label>
             <nz-form-control [nzSpan]="18" nzErrorTip="Please select a warehouse!">
               <nz-select formControlName="warehouseId" nzPlaceHolder="Select warehouse">
-                <nz-option *ngFor="let w of warehouses" [nzValue]="w.id" [nzLabel]="w.name"></nz-option>
+                @for (w of warehouses; track w.id) {
+                  <nz-option [nzValue]="w.id" [nzLabel]="w.name"></nz-option>
+                }
               </nz-select>
             </nz-form-control>
           </nz-form-item>

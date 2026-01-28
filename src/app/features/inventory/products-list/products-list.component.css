@@ -25,3 +25,12 @@
 nz-tag {
   margin-right: 4px;
 }
+
+.export-button {
+  margin-right: 8px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+}

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -7,9 +7,13 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { RolesService } from '../../../core/services/roles.service';
 import { PermissionsService } from '../../../core/services/permissions.service';
+import { PermissionService } from '../../../core/services/permission.service';
+import { PERMISSION_MODULES, PERMISSION_ACTIONS } from '../../../core/constants/permissions';
+import { PermissionSelectorComponent } from '../components/permission-selector/permission-selector.component';
 import { Role, Permission } from '../../../types/api.types';
 
 @Component({
@@ -23,16 +27,12 @@ import { Role, Permission } from '../../../types/api.types';
     NzInputModule,
     NzButtonModule,
     NzCardModule,
-    NzSelectModule
+    NzSelectModule,
+    NzBadgeModule,
+    PermissionSelectorComponent
   ],
   templateUrl: './role-detail.component.html',
-  styles: [`
-    h1 {
-      display: inline-block;
-      margin: 0;
-      vertical-align: middle;
-    }
-  `]
+  styleUrls: ['./role-detail.component.css']
 })
 export class RoleDetailComponent implements OnInit {
   roleForm: FormGroup;
@@ -40,50 +40,50 @@ export class RoleDetailComponent implements OnInit {
   isEditMode = false;
   loading = false;
   saving = false;
-  allPermissions: Permission[] = [];
+  role: Role | null = null;
+  rolePermissions: Permission[] = [];
+
+  // Permission checks
+  canUpdate = computed(() => {
+    return this.permissionService.hasPermission(
+      PERMISSION_MODULES.ROLES,
+      PERMISSION_ACTIONS.UPDATE
+    );
+  });
 
   constructor(
     private fb: FormBuilder,
     private rolesService: RolesService,
     private permissionsService: PermissionsService,
+    private permissionService: PermissionService,
     private route: ActivatedRoute,
     private router: Router,
     private message: NzMessageService
   ) {
     this.roleForm = this.fb.group({
       name: ['', [Validators.required]],
-      description: [''],
-      permissionIds: [[]]
+      description: ['']
     });
   }
 
   ngOnInit(): void {
     this.roleId = this.route.snapshot.paramMap.get('id');
     this.isEditMode = !!this.roleId && this.roleId !== 'new';
-    
-    this.loadPermissions();
 
     if (this.isEditMode && this.roleId) {
       this.loadRole(this.roleId);
     }
   }
 
-  loadPermissions(): void {
-    this.permissionsService.getAll({ pageSize: 1000 }).subscribe({
-      next: (response) => {
-        this.allPermissions = response.items;
-      }
-    });
-  }
-
   loadRole(id: string): void {
     this.loading = true;
     this.rolesService.getById(id).subscribe({
       next: (role) => {
+        this.role = role;
+        this.rolePermissions = role.permissions || [];
         this.roleForm.patchValue({
           name: role.name,
-          description: role.description,
-          permissionIds: role.permissions?.map((p: Permission) => p.id)
+          description: role.description
         });
         this.loading = false;
       },
@@ -92,6 +92,19 @@ export class RoleDetailComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  onPermissionsChange(permissions: Permission[]): void {
+    this.rolePermissions = permissions;
+    // Refresh role data to get updated permissions
+    if (this.roleId) {
+      this.rolesService.getById(this.roleId).subscribe({
+        next: (role) => {
+          this.role = role;
+          this.rolePermissions = role.permissions || [];
+        }
+      });
+    }
   }
 
   save(): void {

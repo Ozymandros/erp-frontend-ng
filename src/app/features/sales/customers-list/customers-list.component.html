@@ -1,34 +1,37 @@
-<div class="customers-list" *ngIf="permissions$ | async as p">
-  <div class="page-header" style="flex-wrap: wrap; gap: 16px;">
-    <h1 style="margin: 0;">Customers Management</h1>
-    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-      <button *ngIf="p.canExport" nz-button (click)="exportToXlsx('customers.xlsx')">
-        <span nz-icon nzType="file-excel"></span> Export XLSX
-      </button>
-      <button *ngIf="p.canExport" nz-button (click)="exportToPdf('customers.pdf')">
-        <span nz-icon nzType="file-pdf"></span> Export PDF
-      </button>
+@if (permissions$ | async; as p) {
+<div class="customers-list">
+  <div class="page-header">
+    <h1>Customers Management</h1>
+    <div class="header-actions">
+      @if (p.canExport) {
+        <button nz-button (click)="exportToXlsx('customers.xlsx')">
+          <span nz-icon nzType="file-excel"></span> Export XLSX
+        </button>
+      }
+      @if (p.canExport) {
+        <button nz-button (click)="exportToPdf('customers.pdf')">
+          <span nz-icon nzType="file-pdf"></span> Export PDF
+        </button>
+      }
 
-      <button *ngIf="p.canCreate" nz-button nzType="primary" routerLink="/sales/customers/new">
-        <span nz-icon nzType="plus"></span>
-        Add Customer
-      </button>
+      @if (p.canCreate) {
+        <button nz-button nzType="primary" routerLink="/sales/customers/new">
+          <span nz-icon nzType="plus"></span>
+          Add Customer
+        </button>
+      }
     </div>
   </div>
 
   <div class="search-bar">
-    <nz-input-group [nzSuffix]="suffixIconSearch">
-      <input 
-        type="text" 
-        nz-input 
-        placeholder="Search customers..." 
-        [(ngModel)]="searchTerm"
-        (ngModelChange)="onSearch()"
-      />
-    </nz-input-group>
-    <ng-template #suffixIconSearch>
-      <span nz-icon nzType="search"></span>
-    </ng-template>
+    <input 
+      type="text" 
+      nz-input 
+      placeholder="Search customers..." 
+      [(ngModel)]="searchTerm"
+      (ngModelChange)="onSearch()"
+      [nzSuffixIcon]="'search'"
+    />
   </div>
 
   <nz-table
@@ -48,38 +51,47 @@
         <th>Name</th>
         <th>Email</th>
         <th>Address</th>
-        <th nzWidth="150px" *ngIf="p.canUpdate || p.canDelete">Actions</th>
+        @if (p.canUpdate || p.canDelete) {
+          <th nzWidth="150px">Actions</th>
+        }
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let customer of customersTable.data">
-        <td><strong>{{ customer.name }}</strong></td>
-        <td>{{ customer.email || '-' }}</td>
-        <td>{{ customer.address || '-' }}</td>
-        <td *ngIf="p.canUpdate || p.canDelete">
-          <button 
-            *ngIf="p.canUpdate"
-            nz-button 
-            nzType="link" 
-            nzSize="small"
-            [routerLink]="['/sales/customers', customer.id]"
-          >
-            <span nz-icon nzType="edit"></span>
-            Edit
-          </button>
-          <button 
-            *ngIf="p.canDelete"
-            nz-button 
-            nzType="link" 
-            nzSize="small"
-            nzDanger
-            (click)="deleteCustomer(customer)"
-          >
-            <span nz-icon nzType="delete"></span>
-            Delete
-          </button>
-        </td>
-      </tr>
+      @for (customer of customersTable.data; track customer.id) {
+        <tr>
+          <td><strong>{{ customer.name }}</strong></td>
+          <td>{{ customer.email || '-' }}</td>
+          <td>{{ customer.address || '-' }}</td>
+          @if (p.canUpdate || p.canDelete) {
+            <td>
+              @if (p.canUpdate) {
+                <button 
+                  nz-button 
+                  nzType="link" 
+                  nzSize="small"
+                  [routerLink]="['/sales/customers', customer.id]"
+                >
+                  <span nz-icon nzType="edit"></span>
+                  Edit
+                </button>
+              }
+              @if (p.canDelete) {
+                <button 
+                  nz-button 
+                  nzType="link" 
+                  nzSize="small"
+                  nzDanger
+                  (click)="deleteCustomer(customer)"
+                >
+                  <span nz-icon nzType="delete"></span>
+                  Delete
+                </button>
+              }
+            </td>
+          }
+        </tr>
+      }
     </tbody>
   </nz-table>
 </div>
+}

@@ -47,16 +47,18 @@
         </div>
       </div>
 
-      <div nz-row [nzGutter]="16" *ngIf="!isEditMode">
-        <div nz-col [nzXs]="24" [nzSm]="12">
-          <nz-form-item>
-            <nz-form-label nzRequired>Password</nz-form-label>
-            <nz-form-control nzErrorTip="Password is required!">
-              <input nz-input formControlName="password" type="password" placeholder="Password" />
-            </nz-form-control>
-          </nz-form-item>
+      @if (!isEditMode) {
+        <div nz-row [nzGutter]="16">
+          <div nz-col [nzXs]="24" [nzSm]="12">
+            <nz-form-item>
+              <nz-form-label nzRequired>Password</nz-form-label>
+              <nz-form-control nzErrorTip="Password is required!">
+                <input nz-input formControlName="password" type="password" placeholder="Password" />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
         </div>
-      </div>
+      }
 
       <div nz-row [nzGutter]="16">
         <div nz-col [nzSpan]="12">
@@ -64,19 +66,6 @@
             <nz-form-label>Active Status</nz-form-label>
             <nz-form-control>
               <nz-switch formControlName="isActive"></nz-switch>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-      </div>
-
-      <div nz-row [nzGutter]="16">
-        <div nz-col [nzSpan]="12">
-          <nz-form-item>
-            <nz-form-label>Roles</nz-form-label>
-            <nz-form-control>
-              <nz-select formControlName="roleIds" nzMode="multiple" nzPlaceHolder="Select roles">
-                <nz-option *ngFor="let role of allRoles" [nzValue]="role.id" [nzLabel]="role.name"></nz-option>
-              </nz-select>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -90,4 +79,53 @@
       </div>
     </form>
   </nz-card>
+
+  <!-- Role Management Card (if canUpdate and in edit mode) -->
+  @if (isEditMode && userId && canUpdate()) {
+    <nz-card id="manage-roles" class="manage-roles-card">
+      <div nz-row nzJustify="space-between" nzAlign="middle" class="manage-roles-header">
+        <h3 class="manage-roles-title">Manage Roles</h3>
+        <span class="manage-roles-subtitle">Assign or unassign roles to this user</span>
+      </div>
+      <app-role-selector
+        [userId]="userId"
+        [initialRoles]="userRoles"
+        [readonly]="!canUpdate()"
+        (rolesChange)="onRolesChange($event)"
+      />
+    </nz-card>
+  }
+
+  <!-- Assigned Roles & Permissions View -->
+  @if (isEditMode && user) {
+    <nz-card class="roles-permissions-card">
+      <h3 class="roles-permissions-title">Roles & Permissions</h3>
+      @if (userRoles.length === 0) {
+        <p>No roles assigned to this user.</p>
+      } @else {
+        @for (role of userRoles; track role.id) {
+          <nz-card class="role-card">
+            <div class="role-card-header">
+              <div>
+                <h4 class="role-name">{{ role.name }}</h4>
+                @if (role.description) {
+                  <p class="role-description">{{ role.description }}</p>
+                }
+              </div>
+            </div>
+            @if (role.permissions && role.permissions.length > 0) {
+              <div class="permissions-section">
+                <strong>Permissions:</strong>
+                <div class="permissions-list">
+                  @for (perm of role.permissions; track perm.id) {
+                    <nz-badge [nzStatus]="'success'" [nzText]="perm.module + '.' + perm.action"></nz-badge>
+                  }
+                </div>
+              </div>
+            }
+          </nz-card>
+        }
+      }
+    </nz-card>
+  }
 </div>

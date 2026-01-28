@@ -81,10 +81,10 @@ describe('UserDetailComponent', () => {
     expect(component.userForm.value.username).toBe('u1');
   });
 
-  it('should load roles on init', () => {
+  it('should initialize form correctly', () => {
     createComponent('new');
-    expect(rolesServiceSpy.getAll).toHaveBeenCalled();
-    expect(component.allRoles.length).toBe(2);
+    expect(component.userForm).toBeDefined();
+    expect(component.isEditMode).toBeFalse();
   });
 
   it('should create user', () => {

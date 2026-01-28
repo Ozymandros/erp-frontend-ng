@@ -37,31 +37,33 @@ import { finalize } from 'rxjs';
     NzCardModule
   ],
   template: `
-<div *ngIf="permissions$ | async as p">
-  <div class="page-header" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
-    <h1 style="margin: 0;">Warehouses Management</h1>
-    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-      <button *ngIf="p.canExport" nz-button (click)="exportToXlsx('warehouses.xlsx')">
-        <i nz-icon nzType="file-excel"></i> Export XLSX
-      </button>
-      <button *ngIf="p.canExport" nz-button (click)="exportToPdf('warehouses.pdf')">
-        <i nz-icon nzType="file-pdf"></i> Export PDF
-      </button>
+@if (permissions$ | async; as p) {
+<div>
+  <div class="page-header">
+    <h1>Warehouses Management</h1>
+    <div class="header-actions">
+      @if (p.canExport) {
+        <button nz-button (click)="exportToXlsx('warehouses.xlsx')">
+          <i nz-icon nzType="file-excel"></i> Export XLSX
+        </button>
+      }
+      @if (p.canExport) {
+        <button nz-button (click)="exportToPdf('warehouses.pdf')">
+          <i nz-icon nzType="file-pdf"></i> Export PDF
+        </button>
+      }
 
-      <button *ngIf="p.canCreate" nz-button nzType="primary" routerLink="/inventory/warehouses/new">
-        <i nz-icon nzType="plus"></i> Add Warehouse
-      </button>
+      @if (p.canCreate) {
+        <button nz-button nzType="primary" routerLink="/inventory/warehouses/new">
+          <i nz-icon nzType="plus"></i> Add Warehouse
+        </button>
+      }
     </div>
   </div>
 
   <nz-card>
-    <div style="margin-bottom: 16px; display: flex; gap: 16px; max-width: 400px;">
-      <nz-input-group [nzPrefix]="prefixIconSearch">
-        <input type="text" nz-input placeholder="Search warehouses..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" />
-      </nz-input-group>
-      <ng-template #prefixIconSearch>
-        <i nz-icon nzType="search"></i>
-      </ng-template>
+    <div class="search-container">
+      <input type="text" nz-input placeholder="Search warehouses..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" [nzPrefixIcon]="'search'" />
     </div>
 
     <nz-table
@@ -81,32 +83,72 @@ import { finalize } from 'rxjs';
           <th>Name</th>
           <th>Location</th>
           <th>Created At</th>
-          <th nzWidth="150px" *ngIf="p.canUpdate || p.canDelete">Actions</th>
+          @if (p.canUpdate || p.canDelete) {
+            <th nzWidth="150px">Actions</th>
+          }
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let data of basicTable.data">
-          <td><strong>{{ data.name }}</strong></td>
-          <td>{{ data.location || '-' }}</td>
-          <td>{{ data.createdAt | date:'short' }}</td>
-          <td *ngIf="p.canUpdate || p.canDelete">
-            <a *ngIf="p.canUpdate" [routerLink]="['/inventory/warehouses', data.id]" style="margin-right: 8px;">Edit</a>
-            <a
-              *ngIf="p.canDelete"
-              nz-popconfirm
-              nzPopconfirmTitle="Are you sure delete this warehouse?"
-              (nzOnConfirm)="deleteWarehouse(data.id)"
-              nzPopconfirmPlacement="left"
-              style="color: #ff4d4f; margin-left: 8px;"
-            >Delete</a>
-          </td>
-        </tr>
+        @for (data of basicTable.data; track data.id) {
+          <tr>
+            <td><strong>{{ data.name }}</strong></td>
+            <td>{{ data.location || '-' }}</td>
+            <td>{{ data.createdAt | date:'short' }}</td>
+            @if (p.canUpdate || p.canDelete) {
+              <td>
+                @if (p.canUpdate) {
+                  <a [routerLink]="['/inventory/warehouses', data.id]" class="edit-link">Edit</a>
+                }
+                @if (p.canDelete) {
+                  <a
+                    nz-popconfirm
+                    nzPopconfirmTitle="Are you sure delete this warehouse?"
+                    (nzOnConfirm)="deleteWarehouse(data.id)"
+                    nzPopconfirmPlacement="left"
+                    class="delete-link"
+                  >Delete</a>
+                }
+              </td>
+            }
+          </tr>
+        }
       </tbody>
     </nz-table>
   </nz-card>
 </div>
+}
   `,
-  styles: []
+  styles: [`
+    .page-header {
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .page-header h1 {
+      margin: 0;
+    }
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .search-container {
+      margin-bottom: 16px;
+      display: flex;
+      gap: 16px;
+      max-width: 400px;
+    }
+    .edit-link {
+      margin-right: 8px;
+    }
+    .delete-link {
+      color: #ff4d4f;
+      margin-left: 8px;
+    }
+  `]
 })
 export class WarehousesListComponent extends BaseListComponent<WarehouseDto> {
   protected get moduleName(): string {

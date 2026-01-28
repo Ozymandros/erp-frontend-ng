@@ -7,7 +7,8 @@ import {
   CreateRoleRequest,
   UpdateRoleRequest,
   PaginatedResponse,
-  SearchParams
+  SearchParams,
+  Permission
 } from '../types/api.types';
 import { BaseApiService } from '../base/base-api.service';
 
@@ -25,8 +26,33 @@ export class RolesService extends BaseApiService<Role, CreateRoleRequest, Update
     return ROLES_ENDPOINTS.BASE;
   }
 
-  assignPermissions(roleId: string, permissionIds: string[]): Observable<Role> {
-    return this.apiClient.post<Role>(ROLES_ENDPOINTS.PERMISSIONS(roleId), { permissionIds });
+  /**
+   * Add a permission to a role
+   * POST /auth/api/roles/{roleId}/permissions?permissionId={permissionId}
+   */
+  addPermissionToRole(roleId: string, permissionId: string): Observable<void> {
+    return this.apiClient.post<void>(
+      `${ROLES_ENDPOINTS.BASE}/${roleId}/permissions?permissionId=${permissionId}`,
+      null
+    );
+  }
+
+  /**
+   * Remove a permission from a role
+   * DELETE /auth/api/roles/{roleId}/permissions/{permissionId}
+   */
+  removePermissionFromRole(roleId: string, permissionId: string): Observable<void> {
+    return this.apiClient.delete<void>(
+      `${ROLES_ENDPOINTS.BASE}/${roleId}/permissions/${permissionId}`
+    );
+  }
+
+  /**
+   * Get all permissions assigned to a role
+   * GET /auth/api/roles/{roleId}/permissions
+   */
+  getRolePermissions(roleId: string): Observable<Permission[]> {
+    return this.apiClient.get<Permission[]>(ROLES_ENDPOINTS.PERMISSIONS(roleId));
   }
 }
 

@@ -39,13 +39,20 @@ describe('RolesService', () => {
   });
 
 
-  it('should assign permissions to role', (done) => {
-    const role = { id: '1', name: 'Admin' } as Role;
-    apiClientSpy.post.and.returnValue(of(role));
+  it('should add permission to role', (done) => {
+    apiClientSpy.post.and.returnValue(of(void 0));
 
-    service.assignPermissions('1', ['perm-1', 'perm-2']).subscribe(result => {
-      expect(result).toEqual(role);
-      expect(apiClientSpy.post).toHaveBeenCalledWith(jasmine.any(String), { permissionIds: ['perm-1', 'perm-2'] });
+    service.addPermissionToRole('1', 'perm-1').subscribe(() => {
+      expect(apiClientSpy.post).toHaveBeenCalledWith(jasmine.stringContaining('/roles/1/permissions'), null);
+      done();
+    });
+  });
+
+  it('should remove permission from role', (done) => {
+    apiClientSpy.delete.and.returnValue(of(void 0));
+
+    service.removePermissionFromRole('1', 'perm-1').subscribe(() => {
+      expect(apiClientSpy.delete).toHaveBeenCalledWith(jasmine.stringContaining('/roles/1/permissions/perm-1'));
       done();
     });
   });

@@ -1,24 +1,24 @@
-<div *ngIf="permissions$ | async as p">
-  <div class="page-header" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
-    <h1 style="margin: 0;">Inventory Transactions</h1>
-    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-      <button *ngIf="p.canExport" nz-button (click)="exportToXlsx()">
-        <i nz-icon nzType="file-excel"></i> Export XLSX
-      </button>
-      <button *ngIf="p.canExport" nz-button (click)="exportToPdf()">
-        <i nz-icon nzType="file-pdf"></i> Export PDF
-      </button>
+@if (permissions$ | async; as p) {
+<div>
+  <div class="page-header">
+    <h1>Inventory Transactions</h1>
+    <div class="header-actions">
+      @if (p.canExport) {
+        <button nz-button (click)="exportToXlsx()">
+          <i nz-icon nzType="file-excel"></i> Export XLSX
+        </button>
+      }
+      @if (p.canExport) {
+        <button nz-button (click)="exportToPdf()">
+          <i nz-icon nzType="file-pdf"></i> Export PDF
+        </button>
+      }
     </div>
   </div>
 
   <nz-card>
-    <div style="margin-bottom: 16px; display: flex; gap: 16px; max-width: 400px;">
-      <nz-input-group [nzPrefix]="prefixIconSearch">
-        <input type="text" nz-input placeholder="Search transactions..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" />
-      </nz-input-group>
-      <ng-template #prefixIconSearch>
-        <i nz-icon nzType="search"></i>
-      </ng-template>
+    <div class="search-container">
+      <input type="text" nz-input placeholder="Search transactions..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" [nzPrefixIcon]="'search'" />
     </div>
 
     <nz-table
@@ -45,27 +45,33 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let item of basicTable.data">
-          <td>
-            <nz-tag [nzColor]="getTransactionColor(item.transactionType)">
-              {{ item.transactionType }}
-            </nz-tag>
-          </td>
-          <td><strong>{{ item.product?.name || item.productId }}</strong></td>
-          <td>{{ item.warehouse?.name || item.warehouseId }}</td>
-          <td [style.color]="item.quantityChange < 0 ? '#cf1322' : '#3f8600'">
-            {{ (item.quantityChange > 0 ? '+' : '') + item.quantityChange }}
-          </td>
-          <td>{{ item.transactionDate | date:'short' }}</td>
-          <td>
-             <span *ngIf="item.orderId">
-               <i nz-icon nzType="file-text"></i> {{ item.orderId }}
-             </span>
-             <span *ngIf="!item.orderId" style="color: #bfbfbf;">N/A</span>
-          </td>
-          <td><small>{{ item.id }}</small></td>
-        </tr>
+        @for (item of basicTable.data; track item.id) {
+          <tr>
+            <td>
+              <nz-tag [nzColor]="getTransactionColor(item.transactionType)">
+                {{ item.transactionType }}
+              </nz-tag>
+            </td>
+            <td><strong>{{ item.product?.name || item.productId }}</strong></td>
+            <td>{{ item.warehouse?.name || item.warehouseId }}</td>
+            <td [class.quantity-negative]="item.quantityChange < 0" [class.quantity-positive]="item.quantityChange >= 0">
+              {{ (item.quantityChange > 0 ? '+' : '') + item.quantityChange }}
+            </td>
+            <td>{{ item.transactionDate | date:'short' }}</td>
+            <td>
+               @if (item.orderId) {
+                 <span>
+                   <i nz-icon nzType="file-text"></i> {{ item.orderId }}
+                 </span>
+               } @else {
+                 <span class="na-text">N/A</span>
+               }
+            </td>
+            <td><small>{{ item.id }}</small></td>
+          </tr>
+        }
       </tbody>
     </nz-table>
   </nz-card>
 </div>
+}

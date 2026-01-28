@@ -22,4 +22,14 @@ h1 {
 
 .delete-link {
   color: #ff4d4f;
+  margin-left: 8px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.export-button {
+  margin-right: 8px;
 }

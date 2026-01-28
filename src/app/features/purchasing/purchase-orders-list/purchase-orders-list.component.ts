@@ -33,7 +33,7 @@ import { AuthService } from '../../../core/services/auth.service';
     NzCardModule
   ],
   templateUrl: './purchase-orders-list.component.html',
-  styles: []
+  styleUrls: ['./purchase-orders-list.component.css']
 })
 export class PurchaseOrdersListComponent extends BaseListComponent<PurchaseOrderDto> implements OnInit {
   protected get moduleName(): string {

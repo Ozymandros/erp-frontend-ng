@@ -3,7 +3,8 @@
     <div class="header-title">
       <h1>Enterprise Resource Planning</h1>
     </div>
-    <div class="header-actions" *ngIf="currentUser$ | async as user">
+    @if (currentUser$ | async; as user) {
+      <div class="header-actions">
       <nz-avatar [nzText]="getUserInitials(user)" nz-dropdown [nzDropdownMenu]="menu"></nz-avatar>
       <nz-dropdown-menu #menu="nzDropdownMenu">
         <ul nz-menu>
@@ -18,6 +19,7 @@
           </li>
         </ul>
       </nz-dropdown-menu>
-    </div>
+      </div>
+    }
   </div>
 </nz-header>

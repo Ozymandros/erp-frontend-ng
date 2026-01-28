@@ -1,0 +1,118 @@
+<div class="permission-selector">
+  <div class="filters-container">
+    <input
+      nz-input
+      [(ngModel)]="searchTerm"
+      placeholder="Search permissions..."
+      [disabled]="readonly || loading"
+      class="search-input"
+    />
+    <nz-select
+      [(ngModel)]="selectedModule"
+      [nzPlaceHolder]="'Filter by module'"
+      [nzAllowClear]="true"
+      [disabled]="readonly || loading"
+      class="module-filter"
+    >
+      <nz-option [nzValue]="null" nzLabel="All Modules"></nz-option>
+      @for (module of modules; track module) {
+        <nz-option [nzValue]="module" [nzLabel]="module"></nz-option>
+      }
+    </nz-select>
+  </div>
+
+  @if (!loading) {
+    <div class="summary">
+      <span>{{ assignedCount }} of {{ totalCount }} permissions selected</span>
+    </div>
+  }
+
+  <nz-spin [nzSpinning]="loading">
+    @if (error) {
+      <div class="error-message">
+        {{ error }}
+      </div>
+    }
+
+    @if (!loading) {
+      <div class="modules-container">
+      @for (group of groupedPermissions; track group.module) {
+        <nz-card class="module-card">
+          <div class="module-header">
+            <h3>{{ group.module }}</h3>
+            <div class="module-actions">
+              <button
+                nz-button
+                nzType="link"
+                nzSize="small"
+                [nzLoading]="saving"
+                [disabled]="readonly"
+                (click)="selectAllInModule(group.module)"
+              >
+                Select All
+              </button>
+              <button
+                nz-button
+                nzType="link"
+                nzSize="small"
+                nzDanger
+                [nzLoading]="saving"
+                [disabled]="readonly"
+                (click)="deselectAllInModule(group.module)"
+              >
+                Deselect All
+              </button>
+            </div>
+          </div>
+          
+          <div class="permissions-grid">
+            @for (permission of group.permissions; track permission.id) {
+              <nz-card class="permission-card" [class.assigned]="isAssigned(permission.id)">
+                <div class="permission-header">
+                  <nz-badge [nzStatus]="isAssigned(permission.id) ? 'success' : 'default'" [nzText]="permission.action"></nz-badge>
+                  @if (isAssigned(permission.id)) {
+                    <span nz-icon nzType="check-circle" nzTheme="fill" class="check-icon"></span>
+                  }
+                </div>
+                @if (permission.description) {
+                  <p class="permission-description">{{ permission.description }}</p>
+                }
+                <div class="permission-actions">
+                  @if (isAssigned(permission.id)) {
+                    <button
+                      nz-button
+                      nzType="default"
+                      nzDanger
+                      nzSize="small"
+                      [nzLoading]="saving"
+                      [disabled]="readonly"
+                      (click)="unassignPermission(permission)"
+                      class="action-button"
+                    >
+                      <span nz-icon nzType="close"></span>
+                      Unassign
+                    </button>
+                  } @else {
+                    <button
+                      nz-button
+                      nzType="primary"
+                      nzSize="small"
+                      [nzLoading]="saving"
+                      [disabled]="readonly"
+                      (click)="assignPermission(permission)"
+                      class="action-button"
+                    >
+                      <span nz-icon nzType="plus"></span>
+                      Assign
+                    </button>
+                  }
+                </div>
+              </nz-card>
+            }
+          </div>
+        </nz-card>
+      }
+      </div>
+    }
+  </nz-spin>
+</div>

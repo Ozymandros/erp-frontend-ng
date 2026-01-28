@@ -1,0 +1,47 @@
+.page-header {
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.back-button {
+  margin-right: 16px;
+}
+
+.page-header h1 {
+  margin: 0;
+}
+
+.cancel-button {
+  margin-left: 8px;
+}
+
+.manage-permissions-card {
+  margin-top: 16px;
+}
+
+.manage-permissions-header {
+  margin-bottom: 16px;
+}
+
+.manage-permissions-title {
+  margin: 0 0 8px 0;
+}
+
+.manage-permissions-subtitle {
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.permissions-view-card {
+  margin-top: 16px;
+}
+
+.permissions-view-title {
+  margin-bottom: 16px;
+}
+
+.permissions-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}

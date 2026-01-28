@@ -101,7 +101,9 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
       nzOkText: 'Delete',
       nzOkDanger: true,
       nzOnOk: () => {
-        this.service.delete(id).subscribe({
+        this.service.delete(id).pipe(
+          takeUntil(this.destroy$)
+        ).subscribe({
           next: () => {
             this.message.success(`${name} deleted successfully`);
             this.loadData();
@@ -116,7 +118,9 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
   }
 
   exportToXlsx(fileName: string = 'export.xlsx'): void {
-    this.service.exportToXlsx().subscribe({
+    this.service.exportToXlsx().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
       next: (blob) => {
         this.fileService.saveFile(blob, fileName);
         this.message.success('Exported to XLSX successfully');
@@ -129,7 +133,9 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
   }
 
   exportToPdf(fileName: string = 'export.pdf'): void {
-    this.service.exportToPdf().subscribe({
+    this.service.exportToPdf().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
       next: (blob) => {
         this.fileService.saveFile(blob, fileName);
         this.message.success('Exported to PDF successfully');

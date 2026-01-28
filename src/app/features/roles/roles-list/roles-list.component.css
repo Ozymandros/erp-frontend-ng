@@ -1,0 +1,34 @@
+.page-header {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.page-header h1 {
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.export-button {
+  margin-right: 8px;
+}
+
+.search-container {
+  margin-bottom: 16px;
+  display: flex;
+  gap: 16px;
+}
+
+.edit-link {
+  margin-right: 8px;
+}
+
+.delete-link {
+  color: #ff4d4f;
+  margin-left: 8px;
+}

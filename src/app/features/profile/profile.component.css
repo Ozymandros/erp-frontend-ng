@@ -1,4 +1,28 @@
 .profile-container {
   padding: 24px;
 }
-h1 { margin: 0; }
+
+.page-header {
+  margin-bottom: 24px;
+}
+
+.page-header h1 {
+  margin: 0;
+}
+
+.avatar-card {
+  text-align: center;
+}
+
+.avatar-title {
+  margin-top: 16px;
+}
+
+.roles-container {
+  margin-top: 16px;
+}
+
+.security-card {
+  margin-top: 24px;
+}
+

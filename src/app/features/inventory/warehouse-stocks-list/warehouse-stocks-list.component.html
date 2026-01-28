@@ -1,24 +1,24 @@
-<div *ngIf="permissions$ | async as p">
-  <div class="page-header" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
-    <h1 style="margin: 0;">Warehouse Stock Levels</h1>
-    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-      <button *ngIf="p.canExport" nz-button (click)="exportToXlsx()">
-        <i nz-icon nzType="file-excel"></i> Export XLSX
-      </button>
-      <button *ngIf="p.canExport" nz-button (click)="exportToPdf()">
-        <i nz-icon nzType="file-pdf"></i> Export PDF
-      </button>
+@if (permissions$ | async; as p) {
+<div>
+  <div class="page-header">
+    <h1>Warehouse Stock Levels</h1>
+    <div class="header-actions">
+      @if (p.canExport) {
+        <button nz-button (click)="exportToXlsx()">
+          <i nz-icon nzType="file-excel"></i> Export XLSX
+        </button>
+      }
+      @if (p.canExport) {
+        <button nz-button (click)="exportToPdf()">
+          <i nz-icon nzType="file-pdf"></i> Export PDF
+        </button>
+      }
     </div>
   </div>
 
   <nz-card>
-    <div style="margin-bottom: 16px; display: flex; gap: 16px; max-width: 400px;">
-      <nz-input-group [nzPrefix]="prefixIconSearch">
-        <input type="text" nz-input placeholder="Search products in warehouses..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" />
-      </nz-input-group>
-      <ng-template #prefixIconSearch>
-        <i nz-icon nzType="search"></i>
-      </ng-template>
+    <div class="search-container">
+      <input type="text" nz-input placeholder="Search products in warehouses..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" [nzPrefixIcon]="'search'" />
     </div>
 
     <nz-table
@@ -43,18 +43,21 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let item of basicTable.data">
-          <td>{{ item.warehouseName }}</td>
-          <td><strong>{{ item.productName }}</strong> ({{ item.productSku }})</td>
-          <td>{{ item.quantity }}</td>
-          <td>{{ item.reorderLevel }}</td>
-          <td>
-            <nz-tag [nzColor]="item.quantity <= item.reorderLevel ? 'warning' : 'success'">
-              {{ item.quantity <= item.reorderLevel ? 'Low Stock' : 'In Stock' }}
-            </nz-tag>
-          </td>
-        </tr>
+        @for (item of basicTable.data; track item.productId + item.warehouseId) {
+          <tr>
+            <td>{{ item.warehouseName }}</td>
+            <td><strong>{{ item.productName }}</strong> ({{ item.productSku }})</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.reorderLevel }}</td>
+            <td>
+              <nz-tag [nzColor]="item.quantity <= item.reorderLevel ? 'warning' : 'success'">
+                {{ item.quantity <= item.reorderLevel ? 'Low Stock' : 'In Stock' }}
+              </nz-tag>
+            </td>
+          </tr>
+        }
       </tbody>
     </nz-table>
   </nz-card>
 </div>
+}

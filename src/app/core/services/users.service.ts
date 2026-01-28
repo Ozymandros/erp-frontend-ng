@@ -7,7 +7,8 @@ import {
   CreateUserRequest,
   UpdateUserRequest,
   PaginatedResponse,
-  SearchParams
+  SearchParams,
+  Role
 } from '../types/api.types';
 import { BaseApiService } from '../base/base-api.service';
 
@@ -25,8 +26,33 @@ export class UsersService extends BaseApiService<User, CreateUserRequest, Update
     return USERS_ENDPOINTS.BASE;
   }
 
-  assignRoles(userId: string, roleIds: string[]): Observable<User> {
-    return this.apiClient.post<User>(USERS_ENDPOINTS.ROLES(userId), { roleIds });
+  /**
+   * Assign a role to a user
+   * POST /auth/api/users/{userId}/roles/{roleName}
+   */
+  assignRole(userId: string, roleName: string): Observable<void> {
+    return this.apiClient.post<void>(
+      `${USERS_ENDPOINTS.BASE}/${userId}/roles/${roleName}`,
+      null
+    );
+  }
+
+  /**
+   * Remove a role from a user
+   * DELETE /auth/api/users/{userId}/roles/{roleName}
+   */
+  removeRole(userId: string, roleName: string): Observable<void> {
+    return this.apiClient.delete<void>(
+      `${USERS_ENDPOINTS.BASE}/${userId}/roles/${roleName}`
+    );
+  }
+
+  /**
+   * Get all roles assigned to a user
+   * GET /auth/api/users/{userId}/roles
+   */
+  getUserRoles(userId: string): Observable<Role[]> {
+    return this.apiClient.get<Role[]>(USERS_ENDPOINTS.ROLES(userId));
   }
 }
 
