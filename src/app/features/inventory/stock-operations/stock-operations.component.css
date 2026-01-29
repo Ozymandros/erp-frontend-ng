@@ -1,51 +1,28 @@
-.select-host {
-  display: contents;
-}
-
 .stock-operations {
   padding: 24px;
 }
 
-.stock-operations-header {
+.page-header {
   margin-bottom: 24px;
 }
 
-.stock-operations-header h1 {
+.page-header h1 {
   margin: 0;
+  font-size: 24px;
+  font-weight: 500;
 }
 
-.full-width-input {
+.select-host {
+  display: contents;
+}
+
+/* Keep current widths: inputs and selects full width of form */
+.full-width-input,
+.stock-operations .ant-select,
+.stock-operations .ant-input-number,
+.stock-operations textarea.ant-input {
   width: 100%;
 }
 
-/* Align selects and text input with list-search look: same size, radius, hover/focus */
-.adjustment-form .search-like-control .ant-select,
-.adjustment-form .search-like-control .ant-input-affix-wrapper,
-.adjustment-form .search-like-control .ant-input {
-  border-radius: 8px;
-  font-size: 14px;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.adjustment-form .search-like-control .ant-select .ant-select-selector {
-  border-radius: 8px;
-  font-size: 14px;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.adjustment-form .search-like-control .ant-select:hover .ant-select-selector,
-.adjustment-form .search-like-control .ant-input-affix-wrapper:hover,
-.adjustment-form .search-like-control .ant-input:hover {
-  border-color: #40a9ff;
-}
-
-.adjustment-form .search-like-control .ant-select-focused .ant-select-selector,
-.adjustment-form .search-like-control .ant-input-affix-wrapper-focused,
-.adjustment-form .search-like-control .ant-input:focus {
-  border-color: #1890ff;
-  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.15);
-}
-
-.adjustment-form .search-like-control .ant-input::placeholder {
-  color: rgba(0, 0, 0, 0.35);
-}
+/* Default heights via ant design (no size=large): standard control height */
+/* Textarea height from nzAutosize minRows/maxRows in template */
