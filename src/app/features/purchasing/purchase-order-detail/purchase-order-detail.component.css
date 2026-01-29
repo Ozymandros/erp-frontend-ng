@@ -1,0 +1,94 @@
+.purchase-order-detail {
+  padding: 24px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.back-button {
+  margin-right: 16px;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.order-info {
+  margin-bottom: 24px;
+}
+
+.info-row {
+  margin-bottom: 8px;
+}
+
+.info-label {
+  display: inline-block;
+  min-width: 100px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.load-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  color: var(--ant-error-color);
+  background: var(--ant-error-color-deprecated-bg);
+  border-radius: 8px;
+}
+
+.lines-title {
+  margin: 24px 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  padding: 16px;
+  background: #fafafa;
+  border-radius: 4px;
+}
+
+.total-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.total-label {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.total-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1890ff;
+}
+
+.submit-section {
+  margin-top: 24px;
+  text-align: right;
+}
+
+.submit-section button {
+  min-width: 150px;
+}
+
+nz-form-item {
+  margin-bottom: 0;
+}

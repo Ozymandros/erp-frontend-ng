@@ -16,7 +16,9 @@ export const ROUTE_PERMISSIONS: Record<string, RoutePermission> = {
   '/sales/customers': createPermission(PERMISSION_MODULES.SALES, PERMISSION_ACTIONS.READ),
   '/sales/customers/:id': createPermission(PERMISSION_MODULES.SALES, PERMISSION_ACTIONS.READ),
   '/sales/orders': createPermission(PERMISSION_MODULES.SALES, PERMISSION_ACTIONS.READ),
+  '/sales/orders/:id': createPermission(PERMISSION_MODULES.SALES, PERMISSION_ACTIONS.READ),
   '/purchasing/orders': createPermission(PERMISSION_MODULES.PURCHASING, PERMISSION_ACTIONS.READ),
+  '/purchasing/orders/:id': createPermission(PERMISSION_MODULES.PURCHASING, PERMISSION_ACTIONS.READ),
 };
 
 export function getRoutePermission(path: string): RoutePermission | undefined {

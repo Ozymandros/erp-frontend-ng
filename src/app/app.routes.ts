@@ -115,10 +115,34 @@ export const routes: Routes = [
         loadComponent: () => import('./features/sales/sales-orders-list/sales-orders-list.component').then(m => m.SalesOrdersListComponent)
       },
       {
+        path: 'sales/orders/:id',
+        canActivate: [permissionGuard],
+        data: { module: 'sales', action: 'read' },
+        loadComponent: () => import('./features/sales/sales-order-detail/sales-order-detail.component').then(m => m.SalesOrderDetailComponent)
+      },
+      {
         path: 'purchasing/orders',
         canActivate: [permissionGuard],
         data: { module: 'purchasing', action: 'read' },
         loadComponent: () => import('./features/purchasing/purchase-orders-list/purchase-orders-list.component').then(m => m.PurchaseOrdersListComponent)
+      },
+      {
+        path: 'purchasing/orders/:id',
+        canActivate: [permissionGuard],
+        data: { module: 'purchasing', action: 'read' },
+        loadComponent: () => import('./features/purchasing/purchase-order-detail/purchase-order-detail.component').then(m => m.PurchaseOrderDetailComponent)
+      },
+      {
+        path: 'purchases',
+        redirectTo: 'purchasing/orders'
+      },
+      {
+        path: 'purchases/orders',
+        redirectTo: 'purchasing/orders'
+      },
+      {
+        path: 'purchases/orders/new',
+        redirectTo: 'purchasing/orders/new'
       }
     ]
   },
