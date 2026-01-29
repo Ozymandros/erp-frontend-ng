@@ -59,6 +59,10 @@ export class ApiClientService {
     const fullUrl = this.getFullUrl(url);
     const options = { headers: this.getHeaders() };
     
+    // #region agent log
+    fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'http-client.service.ts:post',message:'POST request',data:{url,fullUrl,hasBody:data!==undefined,bodyType:Array.isArray(data)?'array':typeof data,bodyLength:Array.isArray(data)?data.length:undefined},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'API'})}).catch(()=>{});
+    // #endregion
+    
     return this.http.post<any>(fullUrl, data, options).pipe(
       map(response => this.handleResponse<T>(response)),
       catchError(error => this.handleError(error))
@@ -75,11 +79,18 @@ export class ApiClientService {
     );
   }
 
-  delete<T>(url: string): Observable<T> {
+  delete<T>(url: string, options?: { body?: any }): Observable<T> {
     const fullUrl = this.getFullUrl(url);
-    const options = { headers: this.getHeaders() };
+    const httpOptions: any = { 
+      headers: this.getHeaders(),
+      ...(options?.body !== undefined && { body: options.body })
+    };
     
-    return this.http.delete<any>(fullUrl, options).pipe(
+    // #region agent log
+    fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'http-client.service.ts:delete',message:'DELETE request',data:{url,fullUrl,hasBody:options?.body!==undefined,bodyType:Array.isArray(options?.body)?'array':typeof options?.body,bodyLength:Array.isArray(options?.body)?options.body.length:undefined},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'API'})}).catch(()=>{});
+    // #endregion
+    
+    return this.http.delete<any>(fullUrl, httpOptions).pipe(
       map(response => this.handleResponse<T>(response)),
       catchError(error => this.handleError(error))
     );

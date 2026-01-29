@@ -31,47 +31,17 @@
     @if (!loading) {
       <div class="modules-container">
       @for (group of groupedPermissions; track group.module) {
-        <nz-card class="module-card">
-          <div class="module-header">
-            <h3>{{ group.module }}</h3>
-            <div class="module-actions">
-              <button
-                nz-button
-                nzType="link"
-                nzSize="small"
-                [nzLoading]="saving"
-                [disabled]="readonly"
-                (click)="selectAllInModule(group.module)"
-              >
-                Select All
-              </button>
-              <button
-                nz-button
-                nzType="link"
-                nzSize="small"
-                nzDanger
-                [nzLoading]="saving"
-                [disabled]="readonly"
-                (click)="deselectAllInModule(group.module)"
-              >
-                Deselect All
-              </button>
-            </div>
-          </div>
-          
-          <div class="permissions-grid">
-            @for (permission of group.permissions; track permission.id) {
-              <app-permission-card
-                [permission]="permission"
-                [isAssigned]="isAssigned(permission.id)"
-                [saving]="saving"
-                [readonly]="readonly"
-                (assign)="assignPermission($event)"
-                (unassign)="unassignPermission($event)"
-              />
-            }
-          </div>
-        </nz-card>
+        <app-permission-group
+          [group]="group"
+          [assignedPermissionIds]="assignedPermissions"
+          [savingPermissionId]="savingPermissionId"
+          [savingModule]="savingModule"
+          [readonly]="readonly"
+          (assign)="assignPermission($event)"
+          (unassign)="unassignPermission($event)"
+          (selectAll)="selectAllInModule($event)"
+          (deselectAll)="deselectAllInModule($event)"
+        />
       }
       </div>
     }

@@ -43,7 +43,22 @@ describe('RolesService', () => {
     apiClientSpy.post.and.returnValue(of(void 0));
 
     service.addPermissionToRole('1', 'perm-1').subscribe(() => {
-      expect(apiClientSpy.post).toHaveBeenCalledWith(jasmine.stringContaining('/roles/1/permissions'), null);
+      expect(apiClientSpy.post).toHaveBeenCalledWith(
+        jasmine.stringContaining('/roles/1/permissions?permissionId=perm-1'),
+        null
+      );
+      done();
+    });
+  });
+
+  it('should add multiple permissions to role (bulk)', (done) => {
+    apiClientSpy.post.and.returnValue(of(void 0));
+
+    service.addPermissionToRole('1', ['perm-1', 'perm-2', 'perm-3']).subscribe(() => {
+      expect(apiClientSpy.post).toHaveBeenCalledWith(
+        jasmine.stringContaining('/roles/1/permissions/bulk'),
+        ['perm-1', 'perm-2', 'perm-3']
+      );
       done();
     });
   });
@@ -52,7 +67,22 @@ describe('RolesService', () => {
     apiClientSpy.delete.and.returnValue(of(void 0));
 
     service.removePermissionFromRole('1', 'perm-1').subscribe(() => {
-      expect(apiClientSpy.delete).toHaveBeenCalledWith(jasmine.stringContaining('/roles/1/permissions/perm-1'));
+      expect(apiClientSpy.delete).toHaveBeenCalledWith(
+        jasmine.stringContaining('/roles/1/permissions/perm-1'),
+        undefined
+      );
+      done();
+    });
+  });
+
+  it('should remove multiple permissions from role (bulk)', (done) => {
+    apiClientSpy.delete.and.returnValue(of(void 0));
+
+    service.removePermissionFromRole('1', ['perm-1', 'perm-2', 'perm-3']).subscribe(() => {
+      expect(apiClientSpy.delete).toHaveBeenCalledWith(
+        jasmine.stringContaining('/roles/1/permissions/bulk'),
+        { body: ['perm-1', 'perm-2', 'perm-3'] }
+      );
       done();
     });
   });
