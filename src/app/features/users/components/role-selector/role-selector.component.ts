@@ -1,6 +1,7 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Subject, debounceTime, takeUntil } from 'rxjs';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -36,22 +37,49 @@ export class RoleSelectorComponent implements OnInit {
   @Input() readonly = false;
   @Output() rolesChange = new EventEmitter<Role[]>();
 
+  private static readonly SEARCH_MIN_LENGTH = 3;
+  private static readonly SEARCH_DEBOUNCE_MS = 300;
+
   allRoles: Role[] = [];
   assignedRoles: Set<string> = new Set();
   searchTerm = '';
+  /** Effective search term used for filtering (debounced, min 3 chars). */
+  effectiveSearchTerm = '';
   loading = false;
   saving = false;
   error: string | null = null;
+  private searchTerm$ = new Subject<string>();
+  private destroy$ = new Subject<void>();
 
   constructor(
     private usersService: UsersService,
     private rolesService: RolesService,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.assignedRoles = new Set(this.initialRoles.map(r => r.id));
     this.loadRoles();
+    this.searchTerm$
+      .pipe(
+        debounceTime(RoleSelectorComponent.SEARCH_DEBOUNCE_MS),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((term) => {
+        const t = (term || '').trim();
+        this.effectiveSearchTerm = t.length >= RoleSelectorComponent.SEARCH_MIN_LENGTH ? t : '';
+        this.cdr.markForCheck();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  onSearchInput(): void {
+    this.searchTerm$.next(this.searchTerm);
   }
 
   loadRoles(): void {
@@ -120,10 +148,10 @@ export class RoleSelectorComponent implements OnInit {
   }
 
   get filteredRoles(): Role[] {
-    if (!this.searchTerm.trim()) {
+    if (!this.effectiveSearchTerm.trim()) {
       return this.allRoles || [];
     }
-    const term = this.searchTerm.toLowerCase();
+    const term = this.effectiveSearchTerm.toLowerCase();
     return this.allRoles?.filter((role: Role) =>
       role.name.toLowerCase().includes(term) ||
       role.description?.toLowerCase().includes(term)

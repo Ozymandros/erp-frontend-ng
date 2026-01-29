@@ -5,6 +5,7 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Output,
   SimpleChanges,
@@ -16,7 +17,8 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
-import { finalize } from 'rxjs';
+import { Subject } from 'rxjs';
+import { debounceTime, takeUntil, finalize } from 'rxjs';
 import { PermissionsService } from '../../../../core/services/permissions.service';
 import { RolesService } from '../../../../core/services/roles.service';
 import { Permission } from '../../../../types/api.types';
@@ -24,6 +26,9 @@ import {
   PermissionGroup,
   PermissionGroupComponent,
 } from './permission-group.component';
+
+const SEARCH_MIN_LENGTH = 3;
+const SEARCH_DEBOUNCE_MS = 300;
 
 @Component({
   selector: 'app-permission-selector',
@@ -41,7 +46,7 @@ import {
   templateUrl: './permission-selector.component.html',
   styleUrls: ['./permission-selector.component.css'],
 })
-export class PermissionSelectorComponent implements OnInit, OnChanges {
+export class PermissionSelectorComponent implements OnInit, OnChanges, OnDestroy {
   @Input() roleId!: string;
   @Input() initialPermissions: Permission[] = [];
   @Input() readonly = false;
@@ -50,6 +55,8 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
   allPermissions: Permission[] = [];
   assignedPermissions: Set<string> = new Set();
   searchTerm = '';
+  /** Effective search term used for filtering (debounced, min 3 chars). */
+  effectiveSearchTerm = '';
   selectedModule: string | null = null;
   loading = false;
   savingPermissionId: string | null = null; // Track which specific permission is being saved
@@ -61,6 +68,8 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
   private _lastSearchTerm = '';
   private _lastSelectedModule: string | null = null;
   private _lastAllPermissionsLength = 0;
+  private searchTerm$ = new Subject<string>();
+  private destroy$ = new Subject<void>();
 
   constructor(
     private rolesService: RolesService,
@@ -70,9 +79,26 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
   ) {}
 
   ngOnInit(): void {
-    // Update assignedPermissions Set - this ensures we have the latest value even if ngOnChanges ran first
     this.updateAssignedPermissions();
     this.loadPermissions();
+    this.searchTerm$
+      .pipe(debounceTime(SEARCH_DEBOUNCE_MS), takeUntil(this.destroy$))
+      .subscribe((term) => {
+        this.applySearchTerm(term);
+        this._filteredPermissions = null;
+        this._groupedPermissions = null;
+        this.cdr.markForCheck();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private applySearchTerm(term: string): void {
+    const t = (term || '').trim();
+    this.effectiveSearchTerm = t.length >= SEARCH_MIN_LENGTH ? t : '';
   }
 
   private updateAssignedPermissions(): void {
@@ -369,7 +395,9 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
   onSearchOrModuleChange(): void {
     this._filteredPermissions = null;
     this._groupedPermissions = null;
-    this.cdr.detectChanges();
+    this.applySearchTerm(this.searchTerm);
+    this.searchTerm$.next(this.searchTerm);
+    this.cdr.markForCheck();
   }
 
   getModulePermissions(module: string): Permission[] {
@@ -377,8 +405,7 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
   }
 
   get filteredPermissions(): Permission[] {
-    // Check if cache is still valid
-    const searchChanged = this._lastSearchTerm !== this.searchTerm;
+    const searchChanged = this._lastSearchTerm !== this.effectiveSearchTerm;
     const moduleChanged = this._lastSelectedModule !== this.selectedModule;
     const permissionsChanged =
       this._lastAllPermissionsLength !== this.allPermissions.length;
@@ -390,7 +417,7 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
       permissionsChanged
     ) {
       let filtered = this.allPermissions;
-      const term = (this.searchTerm || '').trim();
+      const term = (this.effectiveSearchTerm || '').trim();
 
       if (term) {
         const termLower = term.toLowerCase();
@@ -408,7 +435,7 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
       }
 
       this._filteredPermissions = filtered;
-      this._lastSearchTerm = this.searchTerm;
+      this._lastSearchTerm = this.effectiveSearchTerm;
       this._lastSelectedModule = this.selectedModule;
       this._lastAllPermissionsLength = this.allPermissions.length;
       // Clear grouped cache when filtered changes

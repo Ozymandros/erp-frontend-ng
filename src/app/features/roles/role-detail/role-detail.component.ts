@@ -6,7 +6,6 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
-import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { RolesService } from '../../../core/services/roles.service';
 import { PermissionsService } from '../../../core/services/permissions.service';
@@ -28,7 +27,6 @@ import { forkJoin, finalize } from 'rxjs';
     NzInputModule,
     NzButtonModule,
     NzCardModule,
-    NzSelectModule,
     PermissionSelectorComponent,
     AssignedPermissionsViewComponent
   ],

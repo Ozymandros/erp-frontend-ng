@@ -1,12 +1,17 @@
 import { Component, ChangeDetectorRef, OnInit, OnDestroy } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { Subject, takeUntil, finalize } from 'rxjs';
+import { Subject, takeUntil, finalize, debounceTime } from 'rxjs';
 import { BaseApiService } from './base-api.service';
 import { FileService } from '../services/file.service';
 import { AuthService } from '../services/auth.service';
 import { ModulePermissions } from '../types/api.types';
 import { Observable, of } from 'rxjs';
+
+/** Min characters before search is sent to the API; fewer means no SearchTerm param (show all). */
+const SEARCH_MIN_LENGTH = 3;
+/** Debounce delay (ms) for search input before triggering API. */
+const SEARCH_DEBOUNCE_MS = 300;
 
 @Component({
   template: ''
@@ -18,7 +23,9 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
   pageIndex = 1;
   pageSize = 10;
   searchTerm = '';
-  
+
+  /** Triggers a debounced load when search input changes. */
+  private searchTrigger$ = new Subject<void>();
   protected destroy$ = new Subject<void>();
 
   // Explicit orchestration: components define which module they belong to
@@ -44,6 +51,10 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.permissions$ = this.authService.getModulePermissions(this.moduleName);
+    this.searchTrigger$.pipe(
+      debounceTime(SEARCH_DEBOUNCE_MS),
+      takeUntil(this.destroy$)
+    ).subscribe(() => this.loadData());
     this.loadData();
   }
 
@@ -59,10 +70,11 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
       pageSize: this.pageSize
     };
     
-    // Add search parameter if provided
+    // Add search parameter only when at least SEARCH_MIN_LENGTH characters
     // Backend API expects SearchTerm (capital S) for search functionality
-    if (this.searchTerm && this.searchTerm.trim()) {
-      params.SearchTerm = this.searchTerm.trim();
+    const term = (this.searchTerm || '').trim();
+    if (term.length >= SEARCH_MIN_LENGTH) {
+      params.SearchTerm = term;
     }
     
     this.service.getAll(params).pipe(
@@ -87,7 +99,7 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
 
   onSearch(): void {
     this.pageIndex = 1;
-    this.loadData();
+    this.searchTrigger$.next();
   }
 
   onPageChange(page: number): void {

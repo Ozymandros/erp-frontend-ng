@@ -8,6 +8,7 @@
           type="text"
           nz-input
           [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearchInput()"
           placeholder="By role name..."
           [disabled]="readonly || loading"
         />
