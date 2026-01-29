@@ -5,6 +5,7 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
@@ -27,6 +28,7 @@ import { finalize } from 'rxjs';
     NzButtonModule,
     NzInputModule,
     NzIconModule,
+    NzSpaceModule,
     NzTagModule,
     NzPopconfirmModule,
     NzCardModule,
@@ -53,10 +55,13 @@ import { finalize } from 'rxjs';
 
       <nz-card>
         <div class="list-search">
-          <span class="list-search__label">Search</span>
-          <nz-input-wrapper [nzPrefix]="'search'">
-            <input type="text" nz-input nzSize="large" placeholder="By module or action..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" />
-          </nz-input-wrapper>
+          <!--<span class="list-search__label">Search</span>-->
+          <nz-space-compact nzSize="large" class="list-search__compact">
+            <nz-input-wrapper>
+              <nz-icon nzInputAddonBefore nzType="search" />
+              <input type="text" nz-input placeholder="By module or action..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" />
+            </nz-input-wrapper>
+          </nz-space-compact>
         </div>
 
         <nz-table

@@ -3,20 +3,21 @@
 }
 
 .filters-container {
-  display: flex;
-  gap: 12px;
   margin-bottom: 16px;
-  align-items: flex-end;
 }
 
-.filters-container .list-search {
-  flex: 1;
+.filters-container-search.list-search {
   max-width: none;
   margin-bottom: 0;
 }
 
-.module-filter {
-  width: 200px;
+.filters-container .list-search__compact.filters-compact {
+  width: 100%;
+  display: flex;
+}
+
+.filters-container .list-search__compact .module-filter {
+  min-width: 180px;
 }
 
 .summary {

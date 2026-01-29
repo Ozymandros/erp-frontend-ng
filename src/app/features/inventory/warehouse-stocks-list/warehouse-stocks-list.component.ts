@@ -5,6 +5,7 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzCardModule } from 'ng-zorro-antd/card';
@@ -25,6 +26,7 @@ import { AuthService } from '../../../core/services/auth.service';
     NzButtonModule,
     NzInputModule,
     NzIconModule,
+    NzSpaceModule,
     NzTagModule,
     NzCardModule
   ],

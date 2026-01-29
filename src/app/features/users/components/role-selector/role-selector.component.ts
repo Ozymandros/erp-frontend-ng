@@ -5,6 +5,7 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -22,6 +23,7 @@ import { Role } from '../../../../types/api.types';
     NzButtonModule,
     NzInputModule,
     NzIconModule,
+    NzSpaceModule,
     NzBadgeModule,
     NzSpinModule
   ],

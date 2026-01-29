@@ -1,16 +1,18 @@
 <div class="role-selector">
   <div class="list-search">
-    <span class="list-search__label">Search</span>
-    <nz-input-wrapper [nzPrefix]="'search'">
-      <input
-        type="text"
-        nz-input
-        nzSize="large"
-        [(ngModel)]="searchTerm"
-        placeholder="By role name..."
-        [disabled]="readonly || loading"
-      />
-    </nz-input-wrapper>
+    <!--<span class="list-search__label">Search</span>-->
+    <nz-space-compact nzSize="large" class="list-search__compact">
+      <nz-input-wrapper>
+        <nz-icon nzInputAddonBefore nzType="search" />
+        <input
+          type="text"
+          nz-input
+          [(ngModel)]="searchTerm"
+          placeholder="By role name..."
+          [disabled]="readonly || loading"
+        />
+      </nz-input-wrapper>
+    </nz-space-compact>
   </div>
 
   @if (!loading) {

@@ -23,17 +23,19 @@
 
   <nz-card>
     <div class="list-search">
-      <span class="list-search__label">Search</span>
-      <nz-input-wrapper [nzPrefix]="'search'">
-        <input
-          type="text"
-          nz-input
-          nzSize="large"
-          placeholder="By order number or reference..."
-          [(ngModel)]="searchTerm"
-          (ngModelChange)="onSearch()"
-        />
-      </nz-input-wrapper>
+      <!--<span class="list-search__label">Search</span>-->
+      <nz-space-compact nzSize="large" class="list-search__compact">
+        <nz-input-wrapper>
+          <nz-icon nzInputAddonBefore nzType="search" />
+          <input
+            type="text"
+            nz-input
+            placeholder="By order number or reference..."
+            [(ngModel)]="searchTerm"
+            (ngModelChange)="onSearch()"
+          />
+        </nz-input-wrapper>
+      </nz-space-compact>
     </div>
 
     <nz-table
