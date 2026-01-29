@@ -53,7 +53,9 @@ import { finalize } from 'rxjs';
 
       <nz-card>
         <div class="search-container">
-          <input type="text" nz-input placeholder="Search permissions..." [(ngModel)]="searchTerm" (ngModelChange)="loadData()" [nzPrefixIcon]="'search'" />
+          <nz-input-wrapper [nzPrefix]="'search'">
+            <input type="text" nz-input placeholder="Search permissions..." [(ngModel)]="searchTerm" (ngModelChange)="loadData()" />
+          </nz-input-wrapper>
         </div>
 
         <nz-table

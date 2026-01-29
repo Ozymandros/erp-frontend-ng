@@ -1,91 +1,115 @@
 @if (permissions$ | async; as p) {
-<div>
-  <div class="page-header">
-    <h1>Roles Management</h1>
-    <div class="header-actions">
-      @if (p.canExport) {
-        <button nz-button (click)="exportToXlsx('roles.xlsx')" class="export-button">
-          <span nz-icon nzType="file-excel"></span> Export XLSX
-        </button>
-      }
-      @if (p.canExport) {
-        <button nz-button (click)="exportToPdf('roles.pdf')" class="export-button">
-          <span nz-icon nzType="file-pdf"></span> Export PDF
-        </button>
-      }
+  <div>
+    <div class="page-header">
+      <h1>Roles Management</h1>
+      <div class="header-actions">
+        @if (p.canExport) {
+          <button
+            nz-button
+            (click)="exportToXlsx('roles.xlsx')"
+            class="export-button"
+          >
+            <span nz-icon nzType="file-excel"></span> Export XLSX
+          </button>
+        }
+        @if (p.canExport) {
+          <button
+            nz-button
+            (click)="exportToPdf('roles.pdf')"
+            class="export-button"
+          >
+            <span nz-icon nzType="file-pdf"></span> Export PDF
+          </button>
+        }
 
-      @if (p.canCreate) {
-        <button nz-button nzType="primary" routerLink="/roles/new">
-          <i nz-icon nzType="plus"></i> Add Role
-        </button>
-      }
+        @if (p.canCreate) {
+          <button nz-button nzType="primary" routerLink="/roles/new">
+            <i nz-icon nzType="plus"></i> Add Role
+          </button>
+        }
+      </div>
     </div>
-  </div>
 
-  <nz-card>
-    <div class="search-container">
-      <input type="text" nz-input placeholder="Search roles..." [(ngModel)]="searchTerm" (ngModelChange)="loadData()" [nzPrefixIcon]="'search'" />
-    </div>
+    <nz-card>
+      <div class="search-container">
+        <nz-input-wrapper [nzPrefix]="'search'">
+          <input
+            type="text"
+            nz-input
+            placeholder="Search roles..."
+            [(ngModel)]="searchTerm"
+            (ngModelChange)="loadData()"
+          />
+        </nz-input-wrapper>
+      </div>
 
-    <nz-table
-      #basicTable
-      [nzData]="roles"
-      [nzLoading]="loading"
-      [nzTotal]="total"
-      [(nzPageIndex)]="pageIndex"
-      [(nzPageSize)]="pageSize"
-      [nzFrontPagination]="false"
-      (nzPageIndexChange)="loadRoles()"
-      (nzPageSizeChange)="loadRoles()"
-      [nzScroll]="{ x: '1000px', y: 'calc(100vh - 400px)' }"
-    >
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Description</th>
-          <th>Permissions</th>
-          <th>Created At</th>
-          @if (p.canUpdate || p.canDelete) {
-            <th>Actions</th>
-          }
-        </tr>
-      </thead>
-      <tbody>
-        @for (data of basicTable.data; track data.id) {
+      <nz-table
+        #basicTable
+        [nzData]="roles"
+        [nzLoading]="loading"
+        [nzTotal]="total"
+        [(nzPageIndex)]="pageIndex"
+        [(nzPageSize)]="pageSize"
+        [nzFrontPagination]="false"
+        (nzPageIndexChange)="loadRoles()"
+        (nzPageSizeChange)="loadRoles()"
+        [nzScroll]="{ x: '1000px', y: 'calc(100vh - 400px)' }"
+      >
+        <thead>
           <tr>
-            <td><strong>{{ data.name }}</strong></td>
-            <td>{{ data.description || '-' }}</td>
-            <td>
-              @for (perm of (data.permissions || []) | slice:0:3; track perm.id) {
-                <nz-tag [nzColor]="'orange'">
-                  {{ perm.module }}:{{ perm.action }}
-                </nz-tag>
-              }
-              @if ((data.permissions?.length || 0) > 3) {
-                <span>...</span>
-              }
-            </td>
-            <td>{{ data.createdAt | date:'short' }}</td>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Permissions</th>
+            <th>Created At</th>
             @if (p.canUpdate || p.canDelete) {
-              <td>
-                @if (p.canUpdate) {
-                  <a [routerLink]="['/roles', data.id]" class="edit-link">Edit</a>
-                }
-                @if (p.canDelete) {
-                  <a
-                    nz-popconfirm
-                    nzPopconfirmTitle="Are you sure delete this role?"
-                    (nzOnConfirm)="deleteRole(data.id)"
-                    nzPopconfirmPlacement="left"
-                    class="delete-link"
-                  >Delete</a>
-                }
-              </td>
+              <th>Actions</th>
             }
           </tr>
-        }
-      </tbody>
-    </nz-table>
-  </nz-card>
-</div>
+        </thead>
+        <tbody>
+          @for (data of basicTable.data; track data.id) {
+            <tr>
+              <td>
+                <strong>{{ data.name }}</strong>
+              </td>
+              <td>{{ data.description || "-" }}</td>
+              <td>
+                @for (
+                  perm of data.permissions || [] | slice: 0 : 3;
+                  track perm.id
+                ) {
+                  <nz-tag [nzColor]="'orange'">
+                    {{ perm.module }}:{{ perm.action }}
+                  </nz-tag>
+                }
+                @if ((data.permissions?.length || 0) > 3) {
+                  <span>...</span>
+                }
+              </td>
+              <td>{{ data.createdAt | date: "short" }}</td>
+              @if (p.canUpdate || p.canDelete) {
+                <td>
+                  @if (p.canUpdate) {
+                    <a [routerLink]="['/roles', data.id]" class="edit-link"
+                      >Edit</a
+                    >
+                  }
+                  @if (p.canDelete) {
+                    <a
+                      nz-popconfirm
+                      nzPopconfirmTitle="Are you sure delete this role?"
+                      (nzOnConfirm)="deleteRole(data.id)"
+                      nzPopconfirmPlacement="left"
+                      class="delete-link"
+                      >Delete</a
+                    >
+                  }
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </nz-table>
+    </nz-card>
+  </div>
 }

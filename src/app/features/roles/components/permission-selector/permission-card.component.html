@@ -1,0 +1,41 @@
+<nz-card class="permission-card" [class.assigned]="isAssigned">
+  <div class="permission-header">
+    <nz-badge [nzStatus]="isAssigned ? 'success' : 'default'" [nzText]="permission.action"></nz-badge>
+    @if (isAssigned) {
+      <span nz-icon nzType="check-circle" nzTheme="fill" class="check-icon"></span>
+    }
+  </div>
+  @if (permission.description) {
+    <p class="permission-description">{{ permission.description }}</p>
+  }
+  <div class="permission-actions">
+    @if (isAssigned) {
+      <button
+        nz-button
+        nzType="default"
+        nzDanger
+        nzSize="small"
+        [nzLoading]="saving"
+        [disabled]="readonly"
+        (click)="onUnassign()"
+        class="action-button"
+      >
+        <span nz-icon nzType="close"></span>
+        Unassign
+      </button>
+    } @else {
+      <button
+        nz-button
+        nzType="primary"
+        nzSize="small"
+        [nzLoading]="saving"
+        [disabled]="readonly"
+        (click)="onAssign()"
+        class="action-button"
+      >
+        <span nz-icon nzType="plus"></span>
+        Assign
+      </button>
+    }
+  </div>
+</nz-card>

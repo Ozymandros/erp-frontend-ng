@@ -1,0 +1,36 @@
+.permission-card {
+  transition: all 0.3s;
+}
+
+.permission-card.assigned {
+  border-color: #52c41a;
+  background-color: #f6ffed;
+}
+
+.permission-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.check-icon {
+  color: #52c41a;
+  font-size: 18px;
+}
+
+.permission-description {
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 13px;
+  margin-bottom: 12px;
+  min-height: 36px;
+}
+
+.permission-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.action-button {
+  width: 100%;
+}

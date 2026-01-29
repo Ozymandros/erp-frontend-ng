@@ -9,8 +9,6 @@ import {
   RegisterRequest,
   AuthResponse,
   User,
-  PermissionCheckRequest,
-  PermissionCheckResponse,
   ModulePermissions
 } from '../types/api.types';
 
@@ -136,9 +134,8 @@ export class AuthService {
       }
       
       // If found in cache, still call backend to verify (for route guards)
-      const request: PermissionCheckRequest = { module, action };
-      return this.apiClient.post<PermissionCheckResponse>(PERMISSIONS_ENDPOINTS.CHECK, request).pipe(
-        map(response => response.allowed),
+      return this.apiClient.get<boolean>(PERMISSIONS_ENDPOINTS.CHECK, { module, action }).pipe(
+        map(allowed => allowed),
         catchError(() => of(false))
       );
     }
@@ -153,9 +150,8 @@ export class AuthService {
           if (loadedUser?.isAdmin) return of(true);
           
           // Call backend API for verification
-          const request: PermissionCheckRequest = { module, action };
-          return this.apiClient.post<PermissionCheckResponse>(PERMISSIONS_ENDPOINTS.CHECK, request).pipe(
-            map(response => response.allowed),
+          return this.apiClient.get<boolean>(PERMISSIONS_ENDPOINTS.CHECK, { module, action }).pipe(
+            map(allowed => allowed),
             catchError(() => of(false))
           );
         })
@@ -163,9 +159,8 @@ export class AuthService {
     }
 
     // Fallback to API if not loading and no user
-    const request: PermissionCheckRequest = { module, action };
-    return this.apiClient.post<PermissionCheckResponse>(PERMISSIONS_ENDPOINTS.CHECK, request).pipe(
-      map(response => response.allowed),
+    return this.apiClient.get<boolean>(PERMISSIONS_ENDPOINTS.CHECK, { module, action }).pipe(
+      map(allowed => allowed),
       catchError(() => of(false))
     );
   }

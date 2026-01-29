@@ -63,7 +63,9 @@ import { finalize } from 'rxjs';
 
   <nz-card>
     <div class="search-container">
-      <input type="text" nz-input placeholder="Search warehouses..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" [nzPrefixIcon]="'search'" />
+      <nz-input-wrapper [nzPrefix]="'search'">
+        <input type="text" nz-input placeholder="Search warehouses..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" />
+      </nz-input-wrapper>
     </div>
 
     <nz-table

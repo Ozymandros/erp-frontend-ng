@@ -24,14 +24,15 @@
   </div>
 
   <div class="search-bar">
-    <input 
-      type="text" 
-      nz-input 
-      placeholder="Search customers..." 
-      [(ngModel)]="searchTerm"
-      (ngModelChange)="onSearch()"
-      [nzSuffixIcon]="'search'"
-    />
+    <nz-input-wrapper [nzSuffix]="'search'">
+      <input 
+        type="text" 
+        nz-input 
+        placeholder="Search customers..." 
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearch()"
+      />
+    </nz-input-wrapper>
   </div>
 
   <nz-table

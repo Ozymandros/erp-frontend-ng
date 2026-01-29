@@ -15,6 +15,7 @@ import { PermissionService } from '../../../core/services/permission.service';
 import { PERMISSION_MODULES, PERMISSION_ACTIONS } from '../../../core/constants/permissions';
 import { PermissionSelectorComponent } from '../components/permission-selector/permission-selector.component';
 import { Role, Permission } from '../../../types/api.types';
+import { forkJoin, finalize } from 'rxjs';
 
 @Component({
   selector: 'app-role-detail',
@@ -77,33 +78,63 @@ export class RoleDetailComponent implements OnInit {
 
   loadRole(id: string): void {
     this.loading = true;
-    this.rolesService.getById(id).subscribe({
-      next: (role) => {
+    
+    // Load role data and permissions in parallel
+    forkJoin({
+      role: this.rolesService.getById(id),
+      permissions: this.rolesService.getRolePermissions(id)
+    }).pipe(
+      finalize(() => {
+        this.loading = false;
+      })
+    ).subscribe({
+      next: ({ role, permissions }) => {
+        // #region agent log
+        fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'role-detail.component.ts:85',message:'loadRole: received role and permissions',data:{roleId:role.id,permissionsCount:permissions.length,permissionsIds:permissions.map(p=>p.id)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+        // #endregion
         this.role = role;
-        this.rolePermissions = role.permissions || [];
+        this.rolePermissions = permissions;
+        // #region agent log
+        fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'role-detail.component.ts:89',message:'loadRole: rolePermissions set',data:{rolePermissionsCount:this.rolePermissions.length,rolePermissionsIds:this.rolePermissions.map(p=>p.id)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+        // #endregion
         this.roleForm.patchValue({
           name: role.name,
           description: role.description
         });
-        this.loading = false;
       },
-      error: () => {
+      error: (err) => {
+        // #region agent log
+        fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'role-detail.component.ts:97',message:'loadRole: error loading',data:{errorMessage:err?.message},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+        // #endregion
         this.message.error('Failed to load role');
-        this.loading = false;
       }
     });
   }
 
   onPermissionsChange(permissions: Permission[]): void {
-    this.rolePermissions = permissions;
-    // Refresh role data to get updated permissions
-    if (this.roleId) {
-      this.rolesService.getById(this.roleId).subscribe({
-        next: (role) => {
-          this.role = role;
-          this.rolePermissions = role.permissions || [];
-        }
+    // #region agent log
+    fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'role-detail.component.ts:114',message:'onPermissionsChange: received permissions',data:{permissionsCount:permissions.length,permissionsIds:permissions.map(p=>p.id),oldRolePermissionsCount:this.rolePermissions.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'G'})}).catch(()=>{});
+    // #endregion
+    // Compare IDs to avoid unnecessary updates that cause re-renders
+    const oldIds = this.rolePermissions.map(p => p.id).sort().join(',');
+    const newIds = permissions.map(p => p.id).sort().join(',');
+    
+    if (oldIds !== newIds) {
+      // Only update if IDs actually changed
+      // #region agent log
+      fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'role-detail.component.ts:120',message:'onPermissionsChange: IDs changed, updating rolePermissions',data:{oldIds,newIds},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'G'})}).catch(()=>{});
+      // #endregion
+      // Use requestAnimationFrame to defer update to next animation frame, avoiding interruption of current change detection
+      requestAnimationFrame(() => {
+        this.rolePermissions = permissions;
+        // #region agent log
+        fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'role-detail.component.ts:124',message:'onPermissionsChange: rolePermissions updated',data:{rolePermissionsCount:this.rolePermissions.length,rolePermissionsIds:this.rolePermissions.map(p=>p.id)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'G'})}).catch(()=>{});
+        // #endregion
       });
+    } else {
+      // #region agent log
+      fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'role-detail.component.ts:128',message:'onPermissionsChange: IDs unchanged, skipping update',data:{oldIds,newIds},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'G'})}).catch(()=>{});
+      // #endregion
     }
   }
 
