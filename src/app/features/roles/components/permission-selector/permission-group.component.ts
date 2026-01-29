@@ -1,7 +1,16 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NzCardModule } from 'ng-zorro-antd/card';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzCardModule } from 'ng-zorro-antd/card';
 import { Permission } from '../../../../types/api.types';
 import { PermissionCardComponent } from './permission-card.component';
 
@@ -17,11 +26,11 @@ export interface PermissionGroup {
     CommonModule,
     NzCardModule,
     NzButtonModule,
-    PermissionCardComponent
+    PermissionCardComponent,
   ],
   templateUrl: './permission-group.component.html',
   styleUrls: ['./permission-group.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PermissionGroupComponent implements OnChanges {
   @Input() group!: PermissionGroup;
@@ -29,7 +38,7 @@ export class PermissionGroupComponent implements OnChanges {
   @Input() savingPermissionId: string | null = null; // Track which specific permission is being saved
   @Input() savingModule: string | null = null; // Track which module is being saved (for selectAll/deselectAll)
   @Input() readonly = false;
-  
+
   @Output() assign = new EventEmitter<Permission>();
   @Output() unassign = new EventEmitter<Permission>();
   @Output() selectAll = new EventEmitter<string>();
@@ -49,7 +58,7 @@ export class PermissionGroupComponent implements OnChanges {
       }
       return; // Group change always requires full update
     }
-    
+
     // Handle assignedPermissionIds reference changes (though Set mutations won't trigger this)
     // When parent marks for check, we need to ensure cards can update BUT NOT the header
     // Note: This block is kept for completeness, but Set mutations don't trigger ngOnChanges
@@ -59,12 +68,12 @@ export class PermissionGroupComponent implements OnChanges {
       // Header doesn't need to re-render when assignment state changes
       return;
     }
-    
+
     // Only update if savingPermissionId or savingModule changed AND it's relevant to this group
     if (changes['savingPermissionId'] || changes['savingModule']) {
       const wasSaving = this._isSaving;
       this._isSaving = this.calculateIsSaving();
-      
+
       // Only trigger change detection if the saving state actually changed for this group
       if (wasSaving !== this._isSaving) {
         // Only update header if savingModule changed (SelectAll/DeselectAll)
@@ -101,7 +110,7 @@ export class PermissionGroupComponent implements OnChanges {
   private calculateIsSaving(): boolean {
     if (this.savingModule === this.group.module) return true;
     if (!this.savingPermissionId) return false;
-    return this.group.permissions.some(p => p.id === this.savingPermissionId);
+    return this.group.permissions.some((p) => p.id === this.savingPermissionId);
   }
 
   /**

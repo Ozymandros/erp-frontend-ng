@@ -3,12 +3,14 @@
     <input
       nz-input
       [(ngModel)]="searchTerm"
+      (ngModelChange)="onSearchOrModuleChange()"
       placeholder="Search permissions..."
       [disabled]="readonly || loading"
       class="search-input"
     />
     <nz-select
       [(ngModel)]="selectedModule"
+      (ngModelChange)="onSearchOrModuleChange()"
       [nzPlaceHolder]="'Filter by module'"
       [nzAllowClear]="true"
       [disabled]="readonly || loading"

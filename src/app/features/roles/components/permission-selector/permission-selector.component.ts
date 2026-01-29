@@ -316,6 +316,13 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
     return this.assignedPermissions.has(permissionId);
   }
 
+  /** Called when search or module filter changes to ensure view updates */
+  onSearchOrModuleChange(): void {
+    this._filteredPermissions = null;
+    this._groupedPermissions = null;
+    this.cdr.detectChanges();
+  }
+
   getModulePermissions(module: string): Permission[] {
     return this.filteredPermissions.filter(p => p.module === module);
   }
@@ -328,13 +335,14 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
     
     if (this._filteredPermissions === null || searchChanged || moduleChanged || permissionsChanged) {
       let filtered = this.allPermissions;
+      const term = (this.searchTerm || '').trim();
       
-      if (this.searchTerm.trim()) {
-        const term = this.searchTerm.toLowerCase();
+      if (term) {
+        const termLower = term.toLowerCase();
         filtered = filtered.filter(p =>
-          p.module.toLowerCase().includes(term) ||
-          p.action.toLowerCase().includes(term) ||
-          (p.description && p.description.toLowerCase().includes(term))
+          (p.module && p.module.toLowerCase().includes(termLower)) ||
+          (p.action && p.action.toLowerCase().includes(termLower)) ||
+          (p.description != null && String(p.description).toLowerCase().includes(termLower))
         );
       }
       
