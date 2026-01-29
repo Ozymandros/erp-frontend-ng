@@ -6,15 +6,9 @@ import { catchError, throwError } from 'rxjs';
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
 
-  // Add Authorization header if token exists
-  const token = sessionStorage.getItem('access_token');
-  if (token) {
-    req = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-  }
+  // Note: Authorization header is already added by ApiClientService.getHeaders()
+  // which uses the centralized token management via setAuthToken().
+  // This interceptor only handles 401 errors to avoid duplicate headers.
 
   return next(req).pipe(
     catchError(error => {

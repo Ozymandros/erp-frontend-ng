@@ -1,13 +1,19 @@
 <div class="permission-selector">
   <div class="filters-container">
-    <input
-      nz-input
-      [(ngModel)]="searchTerm"
-      (ngModelChange)="onSearchOrModuleChange()"
-      placeholder="Search permissions..."
-      [disabled]="readonly || loading"
-      class="search-input"
-    />
+    <div class="list-search">
+      <span class="list-search__label">Search</span>
+      <nz-input-wrapper [nzPrefix]="'search'">
+        <input
+          type="text"
+          nz-input
+          nzSize="large"
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearchOrModuleChange()"
+          placeholder="By permission or module..."
+          [disabled]="readonly || loading"
+        />
+      </nz-input-wrapper>
+    </div>
     <nz-select
       [(ngModel)]="selectedModule"
       (ngModelChange)="onSearchOrModuleChange()"

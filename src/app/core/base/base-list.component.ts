@@ -54,11 +54,18 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
 
   loadData(): void {
     this.loading = true;
-    this.service.getAll({
+    const params: any = {
       page: this.pageIndex,
-      pageSize: this.pageSize,
-      search: this.searchTerm
-    }).pipe(
+      pageSize: this.pageSize
+    };
+    
+    // Add search parameter if provided
+    // Backend API expects SearchTerm (capital S) for search functionality
+    if (this.searchTerm && this.searchTerm.trim()) {
+      params.SearchTerm = this.searchTerm.trim();
+    }
+    
+    this.service.getAll(params).pipe(
       takeUntil(this.destroy$),
       finalize(() => {
         this.loading = false;

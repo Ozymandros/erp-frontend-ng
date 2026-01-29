@@ -1,0 +1,19 @@
+<nz-card class="permissions-view-card">
+  <h3 class="permissions-view-title">Assigned Permissions</h3>
+  @if (permissions.length === 0) {
+    <p>No permissions assigned to this role.</p>
+  } @else {
+    <div class="permissions-groups">
+      @for (module of getSortedModules(); track module) {
+        <div class="permission-group">
+          <h4 class="module-title">{{ module }}</h4>
+          <div class="permissions-badges">
+            @for (perm of groupedPermissions.get(module); track perm.id) {
+              <nz-badge [nzStatus]="'success'" [nzText]="perm.module + '.' + perm.action"></nz-badge>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</nz-card>

@@ -32,16 +32,3 @@
   color: rgba(0, 0, 0, 0.65);
 }
 
-.permissions-view-card {
-  margin-top: 16px;
-}
-
-.permissions-view-title {
-  margin-bottom: 16px;
-}
-
-.permissions-badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}

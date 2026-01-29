@@ -17,13 +17,6 @@
   flex-wrap: wrap;
 }
 
-.search-container {
-  margin-bottom: 16px;
-  display: flex;
-  gap: 16px;
-  max-width: 400px;
-}
-
 .quantity-positive {
   color: #3f8600;
 }

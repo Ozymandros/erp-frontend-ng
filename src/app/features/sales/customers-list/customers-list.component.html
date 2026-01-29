@@ -23,12 +23,14 @@
     </div>
   </div>
 
-  <div class="search-bar">
-    <nz-input-wrapper [nzSuffix]="'search'">
-      <input 
-        type="text" 
-        nz-input 
-        placeholder="Search customers..." 
+  <div class="list-search">
+    <span class="list-search__label">Search</span>
+    <nz-input-wrapper [nzPrefix]="'search'">
+      <input
+        type="text"
+        nz-input
+        nzSize="large"
+        placeholder="By name or email..."
         [(ngModel)]="searchTerm"
         (ngModelChange)="onSearch()"
       />

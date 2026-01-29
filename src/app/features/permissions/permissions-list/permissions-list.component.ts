@@ -52,9 +52,10 @@ import { finalize } from 'rxjs';
       </div>
 
       <nz-card>
-        <div class="search-container">
+        <div class="list-search">
+          <span class="list-search__label">Search</span>
           <nz-input-wrapper [nzPrefix]="'search'">
-            <input type="text" nz-input placeholder="Search permissions..." [(ngModel)]="searchTerm" (ngModelChange)="loadData()" />
+            <input type="text" nz-input nzSize="large" placeholder="By module or action..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" />
           </nz-input-wrapper>
         </div>
 
@@ -123,11 +124,6 @@ import { finalize } from 'rxjs';
     }
     .export-button {
       margin-right: 8px;
-    }
-    .search-container {
-      margin-bottom: 16px;
-      display: flex;
-      gap: 16px;
     }
     .delete-link {
       color: #ff4d4f;

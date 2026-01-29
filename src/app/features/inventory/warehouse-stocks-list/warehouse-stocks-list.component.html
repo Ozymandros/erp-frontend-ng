@@ -17,9 +17,17 @@
   </div>
 
   <nz-card>
-    <div class="search-container">
+    <div class="list-search">
+      <span class="list-search__label">Search</span>
       <nz-input-wrapper [nzPrefix]="'search'">
-        <input type="text" nz-input placeholder="Search products in warehouses..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" />
+        <input
+          type="text"
+          nz-input
+          nzSize="large"
+          placeholder="By product name or SKU..."
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearch()"
+        />
       </nz-input-wrapper>
     </div>
 

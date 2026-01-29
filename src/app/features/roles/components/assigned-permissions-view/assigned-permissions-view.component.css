@@ -1,0 +1,34 @@
+.permissions-view-card {
+  margin-top: 16px;
+}
+
+.permissions-view-title {
+  margin-bottom: 16px;
+}
+
+.permissions-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.permission-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.module-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.85);
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.permissions-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}

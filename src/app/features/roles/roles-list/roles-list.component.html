@@ -31,14 +31,16 @@
     </div>
 
     <nz-card>
-      <div class="search-container">
+      <div class="list-search">
+        <span class="list-search__label">Search</span>
         <nz-input-wrapper [nzPrefix]="'search'">
           <input
             type="text"
             nz-input
-            placeholder="Search roles..."
+            nzSize="large"
+            placeholder="By name or description..."
             [(ngModel)]="searchTerm"
-            (ngModelChange)="loadData()"
+            (ngModelChange)="onSearch()"
           />
         </nz-input-wrapper>
       </div>

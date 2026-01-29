@@ -6,10 +6,13 @@
   display: flex;
   gap: 12px;
   margin-bottom: 16px;
+  align-items: flex-end;
 }
 
-.search-input {
+.filters-container .list-search {
   flex: 1;
+  max-width: none;
+  margin-bottom: 0;
 }
 
 .module-filter {

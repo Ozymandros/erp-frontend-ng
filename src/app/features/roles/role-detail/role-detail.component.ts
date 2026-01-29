@@ -7,13 +7,13 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzSelectModule } from 'ng-zorro-antd/select';
-import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { RolesService } from '../../../core/services/roles.service';
 import { PermissionsService } from '../../../core/services/permissions.service';
 import { PermissionService } from '../../../core/services/permission.service';
 import { PERMISSION_MODULES, PERMISSION_ACTIONS } from '../../../core/constants/permissions';
 import { PermissionSelectorComponent } from '../components/permission-selector/permission-selector.component';
+import { AssignedPermissionsViewComponent } from '../components/assigned-permissions-view/assigned-permissions-view.component';
 import { Role, Permission } from '../../../types/api.types';
 import { forkJoin, finalize } from 'rxjs';
 
@@ -29,8 +29,8 @@ import { forkJoin, finalize } from 'rxjs';
     NzButtonModule,
     NzCardModule,
     NzSelectModule,
-    NzBadgeModule,
-    PermissionSelectorComponent
+    PermissionSelectorComponent,
+    AssignedPermissionsViewComponent
   ],
   templateUrl: './role-detail.component.html',
   styleUrls: ['./role-detail.component.css']
@@ -51,6 +51,7 @@ export class RoleDetailComponent implements OnInit {
       PERMISSION_ACTIONS.UPDATE
     );
   });
+
 
   constructor(
     private fb: FormBuilder,

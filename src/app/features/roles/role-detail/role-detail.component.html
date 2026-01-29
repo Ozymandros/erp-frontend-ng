@@ -51,17 +51,6 @@
 
   <!-- Assigned Permissions View -->
   @if (isEditMode && role) {
-    <nz-card class="permissions-view-card">
-      <h3 class="permissions-view-title">Assigned Permissions</h3>
-      @if (rolePermissions.length === 0) {
-        <p>No permissions assigned to this role.</p>
-      } @else {
-        <div class="permissions-badges">
-          @for (perm of rolePermissions; track perm.id) {
-            <nz-badge [nzStatus]="'success'" [nzText]="perm.module + '.' + perm.action"></nz-badge>
-          }
-        </div>
-      }
-    </nz-card>
+    <app-assigned-permissions-view [permissions]="rolePermissions" />
   }
 </div>

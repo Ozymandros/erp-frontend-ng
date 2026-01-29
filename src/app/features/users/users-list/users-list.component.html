@@ -23,9 +23,17 @@
   </div>
 
   <nz-card>
-    <div class="users-list-search-bar">
+    <div class="list-search">
+      <span class="list-search__label">Search</span>
       <nz-input-wrapper [nzPrefix]="'search'">
-        <input type="text" nz-input placeholder="Search users..." [(ngModel)]="searchTerm" (ngModelChange)="loadData()" />
+        <input
+          type="text"
+          nz-input
+          nzSize="large"
+          placeholder="By username or email..."
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearch()"
+        />
       </nz-input-wrapper>
     </div>
 

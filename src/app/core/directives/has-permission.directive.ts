@@ -15,6 +15,9 @@ export class HasPermissionDirective implements OnChanges {
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
+    // Always clear the view container first to prevent duplicate views
+    this.viewContainer.clear();
+
     if (!this.appHasPermission) {
       this.viewContainer.createEmbeddedView(this.templateRef);
       return;
@@ -27,8 +30,6 @@ export class HasPermissionDirective implements OnChanges {
 
     if (hasPermission) {
       this.viewContainer.createEmbeddedView(this.templateRef);
-    } else {
-      this.viewContainer.clear();
     }
   }
 }

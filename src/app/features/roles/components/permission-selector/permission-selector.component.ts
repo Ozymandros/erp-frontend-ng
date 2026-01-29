@@ -1,19 +1,27 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NzCardModule } from 'ng-zorro-antd/card';
-import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzSelectModule } from 'ng-zorro-antd/select';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzBadgeModule } from 'ng-zorro-antd/badge';
-import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { finalize, tap } from 'rxjs';
-import { RolesService } from '../../../../core/services/roles.service';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { finalize } from 'rxjs';
 import { PermissionsService } from '../../../../core/services/permissions.service';
+import { RolesService } from '../../../../core/services/roles.service';
 import { Permission } from '../../../../types/api.types';
-import { PermissionGroupComponent, PermissionGroup } from './permission-group.component';
+import {
+  PermissionGroup,
+  PermissionGroupComponent,
+} from './permission-group.component';
 
 @Component({
   selector: 'app-permission-selector',
@@ -24,10 +32,10 @@ import { PermissionGroupComponent, PermissionGroup } from './permission-group.co
     NzInputModule,
     NzSelectModule,
     NzSpinModule,
-    PermissionGroupComponent
+    PermissionGroupComponent,
   ],
   templateUrl: './permission-selector.component.html',
-  styleUrls: ['./permission-selector.component.css']
+  styleUrls: ['./permission-selector.component.css'],
 })
 export class PermissionSelectorComponent implements OnInit, OnChanges {
   @Input() roleId!: string;
@@ -42,7 +50,7 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
   loading = false;
   savingPermissionId: string | null = null; // Track which specific permission is being saved
   savingModule: string | null = null; // Track which module is being saved (for selectAll/deselectAll)
-  
+
   // Cache for computed properties to avoid re-rendering all items
   private _filteredPermissions: Permission[] | null = null;
   private _groupedPermissions: PermissionGroup[] | null = null;
@@ -54,7 +62,7 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
     private rolesService: RolesService,
     private permissionsService: PermissionsService,
     private message: NzMessageService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -64,7 +72,7 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
   }
 
   private updateAssignedPermissions(): void {
-    const newIds = new Set(this.initialPermissions.map(p => p.id));
+    const newIds = new Set(this.initialPermissions.map((p) => p.id));
     // Only update if contents actually changed to avoid unnecessary re-renders
     const oldIds = Array.from(this.assignedPermissions).sort().join(',');
     const newIdsStr = Array.from(newIds).sort().join(',');
@@ -79,15 +87,21 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
     if (changes['initialPermissions'] && this.allPermissions.length > 0) {
       const previousValue = changes['initialPermissions'].previousValue || [];
       const currentValue = changes['initialPermissions'].currentValue || [];
-      const previousIds = previousValue.map((p: Permission) => p.id).sort().join(',');
-      const currentIds = currentValue.map((p: Permission) => p.id).sort().join(',');
-      
+      const previousIds = previousValue
+        .map((p: Permission) => p.id)
+        .sort()
+        .join(',');
+      const currentIds = currentValue
+        .map((p: Permission) => p.id)
+        .sort()
+        .join(',');
+
       // Only update if IDs actually changed
       if (previousIds !== currentIds) {
         this.updateAssignedPermissions();
       }
     }
-    
+
     // ✅ ONLY recalc grouping when STRUCTURE changes (filteredPermissions, allPermissions, etc.)
     // Critical: Do NOT recalculate groupedPermissions when only assignment state changes
     // The groupedPermissions getter already handles caching - we only need to clear cache on structural changes
@@ -100,216 +114,247 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
 
   loadPermissions(): void {
     this.loading = true;
-    
-    this.permissionsService.getAll({ pageSize: 1000 }).pipe(
-      finalize(() => {
-        // Always reset loading flag and trigger change detection
-        this.loading = false;
-        this.cdr.detectChanges();
-      })
-    ).subscribe({
-      next: (response) => {
-        // Handle both array response and paginated response formats
-        if (Array.isArray(response)) {
-          this.allPermissions = response;
-        } else if (response && typeof response === 'object' && 'items' in response) {
-          this.allPermissions = response.items;
-        } else {
-          this.allPermissions = [];
-        }
-        // Initialize isAssigned property on each permission
-        this.updateAssignedPermissions();
-        // Clear caches when allPermissions changes
-        this._filteredPermissions = null;
-        this._groupedPermissions = null;
-      },
-      error: (err) => {
-        const errorMsg = `Failed to load permissions: ${err.message || 'Unknown error'}`;
-        this.message.error(errorMsg);
-      }
-    });
+
+    this.permissionsService
+      .getAll({ pageSize: 1000 })
+      .pipe(
+        finalize(() => {
+          // Always reset loading flag and trigger change detection
+          this.loading = false;
+          this.cdr.detectChanges();
+        }),
+      )
+      .subscribe({
+        next: (response) => {
+          // Handle both array response and paginated response formats
+          if (Array.isArray(response)) {
+            this.allPermissions = response;
+          } else if (
+            response &&
+            typeof response === 'object' &&
+            'items' in response
+          ) {
+            this.allPermissions = response.items;
+          } else {
+            this.allPermissions = [];
+          }
+          // Initialize isAssigned property on each permission
+          this.updateAssignedPermissions();
+          // Clear caches when allPermissions changes
+          this._filteredPermissions = null;
+          this._groupedPermissions = null;
+        },
+        error: (err) => {
+          const errorMsg = `Failed to load permissions: ${err.message || 'Unknown error'}`;
+          this.message.error(errorMsg);
+        },
+      });
   }
 
   assignPermission(permission: Permission): void {
     if (this.readonly || this.savingPermissionId || this.savingModule) return;
-    
+
     this.savingPermissionId = permission.id; // Track which specific permission is being saved
-    
-    this.rolesService.addPermissionToRole(this.roleId, permission.id).pipe(
-      finalize(() => {
-        // Always reset saving flags, even if error handler throws
-        // Defer to next tick to avoid ExpressionChangedAfterItHasBeenCheckedError
-        setTimeout(() => {
-          this.savingPermissionId = null;
-          this.cdr.markForCheck();
-        }, 0);
-      })
-    ).subscribe({
-      next: () => {
-        try {
-          // Add permission to assignedPermissions Set
-          this.assignedPermissions.add(permission.id);
-          this.message.success(`Permission "${permission.module}.${permission.action}" assigned successfully`);
-          // Emit after change detection to avoid circular updates
-          this.emitPermissionsChange();
-          // Don't call markForCheck() - cards will update independently via their OnPush change detection
-          // This prevents group headers from re-rendering unnecessarily
-        } catch (e) {
-          console.error('Error in assignPermission next handler:', e);
-        }
-      },
-      error: (err) => {
-        try {
-          const errorMsg = err?.message || `Failed to assign permission "${permission.module}.${permission.action}"`;
-          this.message.error(errorMsg);
-        } catch (e) {
-          console.error('Error in assignPermission error handler:', e);
-        }
-      }
-    });
+
+    this.rolesService
+      .addPermissionToRole(this.roleId, permission.id)
+      .pipe(
+        finalize(() => {
+          // Always reset saving flags, even if error handler throws
+          // Defer to next tick to avoid ExpressionChangedAfterItHasBeenCheckedError
+          setTimeout(() => {
+            this.savingPermissionId = null;
+            this.cdr.markForCheck();
+          }, 0);
+        }),
+      )
+      .subscribe({
+        next: () => {
+          try {
+            // Add permission to assignedPermissions Set
+            this.assignedPermissions.add(permission.id);
+            this.message.success(
+              `Permission "${permission.module}.${permission.action}" assigned successfully`,
+            );
+            // Emit after change detection to avoid circular updates
+            this.emitPermissionsChange();
+            // Don't call markForCheck() - cards will update independently via their OnPush change detection
+            // This prevents group headers from re-rendering unnecessarily
+          } catch (e) {
+            console.error('Error in assignPermission next handler:', e);
+          }
+        },
+        error: (err) => {
+          try {
+            const errorMsg =
+              err?.message ||
+              `Failed to assign permission "${permission.module}.${permission.action}"`;
+            this.message.error(errorMsg);
+          } catch (e) {
+            console.error('Error in assignPermission error handler:', e);
+          }
+        },
+      });
   }
 
   unassignPermission(permission: Permission): void {
     if (this.readonly || this.savingPermissionId || this.savingModule) return;
-    
-    this.savingPermissionId = permission.id; // Track which specific permission is being saved
-    
-    this.rolesService.removePermissionFromRole(this.roleId, permission.id).pipe(
-      finalize(() => {
-        // Always reset saving flags, even if error handler throws
-        // Defer to next tick to avoid ExpressionChangedAfterItHasBeenCheckedError
-        setTimeout(() => {
-          this.savingPermissionId = null;
-          this.cdr.markForCheck();
-        }, 0);
-      })
-    ).subscribe({
-      next: () => {
-        try {
-          this.assignedPermissions.delete(permission.id);
-          this.message.success(`Permission "${permission.module}.${permission.action}" unassigned successfully`);
-          // Emit after change detection to avoid circular updates
-          this.emitPermissionsChange();
-          // Don't call markForCheck() here - let cards update independently via their OnPush change detection
-          // This prevents group headers from re-rendering unnecessarily
-        } catch (e) {
-          console.error('Error in unassignPermission next handler:', e);
-        }
-      },
-      error: (err) => {
-        try {
-          const errorMsg = err?.message || `Failed to unassign permission "${permission.module}.${permission.action}"`;
-          this.message.error(errorMsg);
-        } catch (e) {
-          console.error('Error in unassignPermission error handler:', e);
-        }
-      }
-    });
-  }
 
+    this.savingPermissionId = permission.id; // Track which specific permission is being saved
+
+    this.rolesService
+      .removePermissionFromRole(this.roleId, permission.id)
+      .pipe(
+        finalize(() => {
+          // Always reset saving flags, even if error handler throws
+          // Defer to next tick to avoid ExpressionChangedAfterItHasBeenCheckedError
+          setTimeout(() => {
+            this.savingPermissionId = null;
+            this.cdr.markForCheck();
+          }, 0);
+        }),
+      )
+      .subscribe({
+        next: () => {
+          try {
+            this.assignedPermissions.delete(permission.id);
+            this.message.success(
+              `Permission "${permission.module}.${permission.action}" unassigned successfully`,
+            );
+            // Emit after change detection to avoid circular updates
+            this.emitPermissionsChange();
+            // Don't call markForCheck() here - let cards update independently via their OnPush change detection
+            // This prevents group headers from re-rendering unnecessarily
+          } catch (e) {
+            console.error('Error in unassignPermission next handler:', e);
+          }
+        },
+        error: (err) => {
+          try {
+            const errorMsg =
+              err?.message ||
+              `Failed to unassign permission "${permission.module}.${permission.action}"`;
+            this.message.error(errorMsg);
+          } catch (e) {
+            console.error('Error in unassignPermission error handler:', e);
+          }
+        },
+      });
+  }
 
   selectAllInModule(module: string): void {
     if (this.readonly || this.savingModule) return;
-    
+
     // Set savingModule IMMEDIATELY to prevent multiple calls
     this.savingModule = module;
-    
+
     // Use allPermissions, not filteredPermissions, to get ALL permissions in the module
-    const modulePermissions = this.allPermissions.filter(p => p.module === module);
-    const unassigned = modulePermissions.filter(p => !this.isAssigned(p.id));
-    
+    const modulePermissions = this.allPermissions.filter(
+      (p) => p.module === module,
+    );
+    const unassigned = modulePermissions.filter((p) => !this.isAssigned(p.id));
+
     if (unassigned.length === 0) {
       // Reset savingModule if nothing to do
       this.savingModule = null;
       return;
     }
-    
+
     // Use bulk API endpoint for better performance
-    const permissionIds = unassigned.map(p => p.id);
-    this.rolesService.addPermissionToRole(this.roleId, permissionIds).subscribe({
-      next: () => {
-        // Add all permissions to assignedPermissions Set
-        permissionIds.forEach(id => this.assignedPermissions.add(id));
-        this.emitPermissionsChange();
-        this.message.success(`All permissions in "${module}" assigned`);
-        // Defer to next tick to avoid ExpressionChangedAfterItHasBeenCheckedError
-        setTimeout(() => {
-          this.savingModule = null;
-          this.cdr.markForCheck();
-        }, 0);
-      },
-      error: (err) => {
-        // Even if some permissions fail, add successfully assigned ones
-        // The backend may return partial success
-        permissionIds.forEach(id => {
-          // If error is not 409 (already assigned), we can't be sure it was added
-          // But for 409, we know it's already assigned
-          if (err?.status === 409) {
-            this.assignedPermissions.add(id);
-          }
-        });
-        this.emitPermissionsChange();
-        const errorMsg = err?.message || `Failed to assign some permissions in "${module}"`;
-        this.message.error(errorMsg);
-        // Defer to next tick to avoid ExpressionChangedAfterItHasBeenCheckedError
-        setTimeout(() => {
-          this.savingModule = null;
-          this.cdr.markForCheck();
-        }, 0);
-      }
-    });
+    const permissionIds = unassigned.map((p) => p.id);
+    this.rolesService
+      .addPermissionToRole(this.roleId, permissionIds)
+      .subscribe({
+        next: () => {
+          // Add all permissions to assignedPermissions Set
+          permissionIds.forEach((id) => this.assignedPermissions.add(id));
+          this.emitPermissionsChange();
+          this.message.success(`All permissions in "${module}" assigned`);
+          // Defer to next tick to avoid ExpressionChangedAfterItHasBeenCheckedError
+          setTimeout(() => {
+            this.savingModule = null;
+            this.cdr.markForCheck();
+          }, 0);
+        },
+        error: (err) => {
+          // Even if some permissions fail, add successfully assigned ones
+          // The backend may return partial success
+          permissionIds.forEach((id) => {
+            // If error is not 409 (already assigned), we can't be sure it was added
+            // But for 409, we know it's already assigned
+            if (err?.status === 409) {
+              this.assignedPermissions.add(id);
+            }
+          });
+          this.emitPermissionsChange();
+          const errorMsg =
+            err?.message || `Failed to assign some permissions in "${module}"`;
+          this.message.error(errorMsg);
+          // Defer to next tick to avoid ExpressionChangedAfterItHasBeenCheckedError
+          setTimeout(() => {
+            this.savingModule = null;
+            this.cdr.markForCheck();
+          }, 0);
+        },
+      });
   }
 
   deselectAllInModule(module: string): void {
     if (this.readonly || this.savingModule) return;
-    
+
     // Set savingModule IMMEDIATELY to prevent multiple calls
     this.savingModule = module;
-    
+
     // Use allPermissions, not filteredPermissions, to get ALL permissions in the module
-    const modulePermissions = this.allPermissions.filter(p => p.module === module);
-    const assigned = modulePermissions.filter(p => this.isAssigned(p.id));
-    
+    const modulePermissions = this.allPermissions.filter(
+      (p) => p.module === module,
+    );
+    const assigned = modulePermissions.filter((p) => this.isAssigned(p.id));
+
     if (assigned.length === 0) {
       // Reset savingModule if nothing to do
       this.savingModule = null;
       return;
     }
-    
+
     // Use bulk API endpoint for better performance
-    const permissionIds = assigned.map(p => p.id);
-    this.rolesService.removePermissionFromRole(this.roleId, permissionIds).subscribe({
-      next: () => {
-        // Remove all permissions from assignedPermissions Set
-        permissionIds.forEach(id => this.assignedPermissions.delete(id));
-        this.emitPermissionsChange();
-        this.message.success(`All permissions in "${module}" unassigned`);
-        // Defer to next tick to avoid ExpressionChangedAfterItHasBeenCheckedError
-        setTimeout(() => {
-          this.savingModule = null;
-          this.cdr.markForCheck();
-        }, 0);
-      },
-      error: (err) => {
-        // Even if some permissions fail, remove successfully unassigned ones
-        // The backend may return partial success
-        permissionIds.forEach(id => {
-          // If error is not 404 (not found), we can't be sure it was removed
-          // But for 404, we know it's already unassigned
-          if (err?.status === 404) {
-            this.assignedPermissions.delete(id);
-          }
-        });
-        this.emitPermissionsChange();
-        const errorMsg = err?.message || `Failed to unassign some permissions in "${module}"`;
-        this.message.error(errorMsg);
-        // Defer to next tick to avoid ExpressionChangedAfterItHasBeenCheckedError
-        setTimeout(() => {
-          this.savingModule = null;
-          this.cdr.markForCheck();
-        }, 0);
-      }
-    });
+    const permissionIds = assigned.map((p) => p.id);
+    this.rolesService
+      .removePermissionFromRole(this.roleId, permissionIds)
+      .subscribe({
+        next: () => {
+          // Remove all permissions from assignedPermissions Set
+          permissionIds.forEach((id) => this.assignedPermissions.delete(id));
+          this.emitPermissionsChange();
+          this.message.success(`All permissions in "${module}" unassigned`);
+          // Defer to next tick to avoid ExpressionChangedAfterItHasBeenCheckedError
+          setTimeout(() => {
+            this.savingModule = null;
+            this.cdr.markForCheck();
+          }, 0);
+        },
+        error: (err) => {
+          // Even if some permissions fail, remove successfully unassigned ones
+          // The backend may return partial success
+          permissionIds.forEach((id) => {
+            // If error is not 404 (not found), we can't be sure it was removed
+            // But for 404, we know it's already unassigned
+            if (err?.status === 404) {
+              this.assignedPermissions.delete(id);
+            }
+          });
+          this.emitPermissionsChange();
+          const errorMsg =
+            err?.message ||
+            `Failed to unassign some permissions in "${module}"`;
+          this.message.error(errorMsg);
+          // Defer to next tick to avoid ExpressionChangedAfterItHasBeenCheckedError
+          setTimeout(() => {
+            this.savingModule = null;
+            this.cdr.markForCheck();
+          }, 0);
+        },
+      });
   }
 
   isAssigned(permissionId: string): boolean {
@@ -324,32 +369,40 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
   }
 
   getModulePermissions(module: string): Permission[] {
-    return this.filteredPermissions.filter(p => p.module === module);
+    return this.filteredPermissions.filter((p) => p.module === module);
   }
 
   get filteredPermissions(): Permission[] {
     // Check if cache is still valid
     const searchChanged = this._lastSearchTerm !== this.searchTerm;
     const moduleChanged = this._lastSelectedModule !== this.selectedModule;
-    const permissionsChanged = this._lastAllPermissionsLength !== this.allPermissions.length;
-    
-    if (this._filteredPermissions === null || searchChanged || moduleChanged || permissionsChanged) {
+    const permissionsChanged =
+      this._lastAllPermissionsLength !== this.allPermissions.length;
+
+    if (
+      this._filteredPermissions === null ||
+      searchChanged ||
+      moduleChanged ||
+      permissionsChanged
+    ) {
       let filtered = this.allPermissions;
       const term = (this.searchTerm || '').trim();
-      
+
       if (term) {
         const termLower = term.toLowerCase();
-        filtered = filtered.filter(p =>
-          (p.module && p.module.toLowerCase().includes(termLower)) ||
-          (p.action && p.action.toLowerCase().includes(termLower)) ||
-          (p.description != null && String(p.description).toLowerCase().includes(termLower))
+        filtered = filtered.filter(
+          (p) =>
+            (p.module && p.module.toLowerCase().includes(termLower)) ||
+            (p.action && p.action.toLowerCase().includes(termLower)) ||
+            (p.description != null &&
+              String(p.description).toLowerCase().includes(termLower)),
         );
       }
-      
+
       if (this.selectedModule) {
-        filtered = filtered.filter(p => p.module === this.selectedModule);
+        filtered = filtered.filter((p) => p.module === this.selectedModule);
       }
-      
+
       this._filteredPermissions = filtered;
       this._lastSearchTerm = this.searchTerm;
       this._lastSelectedModule = this.selectedModule;
@@ -357,7 +410,7 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
       // Clear grouped cache when filtered changes
       this._groupedPermissions = null;
     }
-    
+
     return this._filteredPermissions;
   }
 
@@ -365,25 +418,29 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
     // Use cached value if available (cleared when filteredPermissions changes)
     if (this._groupedPermissions === null) {
       const groups = new Map<string, Permission[]>();
-      
-      this.filteredPermissions.forEach(permission => {
+
+      this.filteredPermissions.forEach((permission) => {
         if (!groups.has(permission.module)) {
           groups.set(permission.module, []);
         }
         groups.get(permission.module)!.push(permission);
       });
-      
-      this._groupedPermissions = Array.from(groups.entries()).map(([module, permissions]): PermissionGroup => ({
-        module,
-        permissions: permissions.sort((a, b) => a.action.localeCompare(b.action))
-      }));
+
+      this._groupedPermissions = Array.from(groups.entries()).map(
+        ([module, permissions]): PermissionGroup => ({
+          module,
+          permissions: permissions.sort((a, b) =>
+            a.action.localeCompare(b.action),
+          ),
+        }),
+      );
     }
-    
+
     return this._groupedPermissions;
   }
 
   get modules(): string[] {
-    const moduleSet = new Set(this.allPermissions.map(p => p.module));
+    const moduleSet = new Set(this.allPermissions.map((p) => p.module));
     return Array.from(moduleSet).sort();
   }
 
@@ -396,7 +453,9 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
   }
 
   private emitPermissionsChange(): void {
-    const permissions = this.allPermissions.filter(p => this.assignedPermissions.has(p.id));
+    const permissions = this.allPermissions.filter((p) =>
+      this.assignedPermissions.has(p.id),
+    );
     this.permissionsChange.emit(permissions);
   }
 }

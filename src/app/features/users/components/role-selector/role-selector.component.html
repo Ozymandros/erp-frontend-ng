@@ -1,12 +1,16 @@
 <div class="role-selector">
-  <div class="search-container">
-    <input
-      nz-input
-      [(ngModel)]="searchTerm"
-      placeholder="Search roles..."
-      [disabled]="readonly || loading"
-      class="search-input"
-    />
+  <div class="list-search">
+    <span class="list-search__label">Search</span>
+    <nz-input-wrapper [nzPrefix]="'search'">
+      <input
+        type="text"
+        nz-input
+        nzSize="large"
+        [(ngModel)]="searchTerm"
+        placeholder="By role name..."
+        [disabled]="readonly || loading"
+      />
+    </nz-input-wrapper>
   </div>
 
   @if (!loading) {
