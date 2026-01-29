@@ -32,9 +32,7 @@ export class PermissionCardComponent implements OnChanges {
   constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    // #region agent log
-    fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'permission-card.component.ts:ngOnChanges',message:'Card ngOnChanges',data:{permissionId:this.permission?.id,changedKeys:Object.keys(changes),isAssignedChanged:!!changes['isAssigned'],isAssignedValue:this.isAssigned,savingChanged:!!changes['saving'],savingValue:this.saving},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
-    // #endregion
+    // Component uses OnPush change detection strategy
   }
 
   onAssign(): void {

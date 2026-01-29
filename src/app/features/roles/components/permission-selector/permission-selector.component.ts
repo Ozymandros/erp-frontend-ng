@@ -58,9 +58,6 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
   ) {}
 
   ngOnInit(): void {
-    // #region agent log
-    fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'permission-selector.component.ts:62',message:'ngOnInit: executing',data:{initialPermissionsCount:this.initialPermissions.length,initialPermissionsIds:this.initialPermissions.map(p=>p.id)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-    // #endregion
     // Update assignedPermissions Set - this ensures we have the latest value even if ngOnChanges ran first
     this.updateAssignedPermissions();
     this.loadPermissions();
@@ -102,61 +99,31 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
   }
 
   loadPermissions(): void {
-    // #region agent log
-    fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'permission-selector.component.ts:65',message:'loadPermissions: setting loading=true',data:{loadingBefore:this.loading},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-    // #endregion
     this.loading = true;
     
-    // #region agent log
-    fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'permission-selector.component.ts:68',message:'loadPermissions: calling getAll',data:{loading:this.loading},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
-    // #endregion
     this.permissionsService.getAll({ pageSize: 1000 }).pipe(
       finalize(() => {
         // Always reset loading flag and trigger change detection
-        // #region agent log
-        fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'permission-selector.component.ts:113',message:'loadPermissions finalize: executing',data:{loadingBefore:this.loading},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-        // #endregion
         this.loading = false;
-        // #region agent log
-        fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'permission-selector.component.ts:115',message:'loadPermissions finalize: loading set to false, calling detectChanges',data:{loadingAfter:this.loading},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-        // #endregion
         this.cdr.detectChanges();
       })
     ).subscribe({
       next: (response) => {
-        // #region agent log
-        fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'permission-selector.component.ts:120',message:'loadPermissions next: received response',data:{loading:this.loading,isArray:Array.isArray(response),hasItems:response&&typeof response==='object'&&'items' in response,responseType:typeof response,responseKeys:response&&typeof response==='object'?Object.keys(response):null},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
-        // #endregion
         // Handle both array response and paginated response formats
         if (Array.isArray(response)) {
           this.allPermissions = response;
-          // #region agent log
-          fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'permission-selector.component.ts:124',message:'loadPermissions: array path taken',data:{permissionsCount:response.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
-          // #endregion
         } else if (response && typeof response === 'object' && 'items' in response) {
           this.allPermissions = response.items;
-          // #region agent log
-          fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'permission-selector.component.ts:127',message:'loadPermissions: paginated path taken',data:{permissionsCount:response.items?.length||0},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
-          // #endregion
         } else {
           this.allPermissions = [];
-          // #region agent log
-          fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'permission-selector.component.ts:130',message:'loadPermissions: empty array path taken',data:{responseType:typeof response},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
-          // #endregion
         }
         // Initialize isAssigned property on each permission
         this.updateAssignedPermissions();
         // Clear caches when allPermissions changes
         this._filteredPermissions = null;
         this._groupedPermissions = null;
-        // Clear caches when allPermissions changes
-        this._filteredPermissions = null;
-        this._groupedPermissions = null;
       },
       error: (err) => {
-        // #region agent log
-        fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'permission-selector.component.ts:135',message:'loadPermissions error: handler executing',data:{loading:this.loading,errorMessage:err?.message,errorStatus:err?.status,errorName:err?.name},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
-        // #endregion
         const errorMsg = `Failed to load permissions: ${err.message || 'Unknown error'}`;
         this.message.error(errorMsg);
       }
@@ -166,9 +133,6 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
   assignPermission(permission: Permission): void {
     if (this.readonly || this.savingPermissionId || this.savingModule) return;
     
-    // #region agent log
-    fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'permission-selector.component.ts:158',message:'assignPermission: starting',data:{permissionId:permission.id,isAssignedBefore:this.isAssigned(permission.id)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'F'})}).catch(()=>{});
-    // #endregion
     this.savingPermissionId = permission.id; // Track which specific permission is being saved
     
     this.rolesService.addPermissionToRole(this.roleId, permission.id).pipe(
@@ -185,15 +149,9 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
         try {
           // Add permission to assignedPermissions Set
           this.assignedPermissions.add(permission.id);
-          // #region agent log
-          fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'permission-selector.component.ts:190',message:'assignPermission next: added to Set, before emit',data:{permissionId:permission.id,assignedPermissionsSize:this.assignedPermissions.size},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'F'})}).catch(()=>{});
-          // #endregion
           this.message.success(`Permission "${permission.module}.${permission.action}" assigned successfully`);
           // Emit after change detection to avoid circular updates
           this.emitPermissionsChange();
-          // #region agent log
-          fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'permission-selector.component.ts:196',message:'assignPermission next: after emit',data:{permissionId:permission.id},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'F'})}).catch(()=>{});
-          // #endregion
           // Don't call markForCheck() - cards will update independently via their OnPush change detection
           // This prevents group headers from re-rendering unnecessarily
         } catch (e) {
@@ -214,9 +172,6 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
   unassignPermission(permission: Permission): void {
     if (this.readonly || this.savingPermissionId || this.savingModule) return;
     
-    // #region agent log
-    fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'permission-selector.component.ts:192',message:'unassignPermission: starting',data:{permissionId:permission.id,isAssignedBefore:this.isAssigned(permission.id)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'F'})}).catch(()=>{});
-    // #endregion
     this.savingPermissionId = permission.id; // Track which specific permission is being saved
     
     this.rolesService.removePermissionFromRole(this.roleId, permission.id).pipe(
@@ -232,9 +187,6 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
       next: () => {
         try {
           this.assignedPermissions.delete(permission.id);
-          // #region agent log
-          fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'permission-selector.component.ts:206',message:'unassignPermission next: removed from Set',data:{permissionId:permission.id,isAssignedAfter:this.isAssigned(permission.id)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'F'})}).catch(()=>{});
-          // #endregion
           this.message.success(`Permission "${permission.module}.${permission.action}" unassigned successfully`);
           // Emit after change detection to avoid circular updates
           this.emitPermissionsChange();
@@ -265,10 +217,6 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
     // Use allPermissions, not filteredPermissions, to get ALL permissions in the module
     const modulePermissions = this.allPermissions.filter(p => p.module === module);
     const unassigned = modulePermissions.filter(p => !this.isAssigned(p.id));
-    
-    // #region agent log
-    fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'permission-selector.component.ts:selectAllInModule',message:'selectAllInModule: starting',data:{module,modulePermissionsCount:modulePermissions.length,unassignedCount:unassigned.length,unassignedIds:unassigned.map(p=>p.id)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H'})}).catch(()=>{});
-    // #endregion
     
     if (unassigned.length === 0) {
       // Reset savingModule if nothing to do
@@ -322,10 +270,6 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
     const modulePermissions = this.allPermissions.filter(p => p.module === module);
     const assigned = modulePermissions.filter(p => this.isAssigned(p.id));
     
-    // #region agent log
-    fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'permission-selector.component.ts:deselectAllInModule',message:'deselectAllInModule: starting',data:{module,modulePermissionsCount:modulePermissions.length,assignedCount:assigned.length,assignedIds:assigned.map(p=>p.id)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H'})}).catch(()=>{});
-    // #endregion
-    
     if (assigned.length === 0) {
       // Reset savingModule if nothing to do
       this.savingModule = null;
@@ -369,11 +313,7 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
   }
 
   isAssigned(permissionId: string): boolean {
-    const result = this.assignedPermissions.has(permissionId);
-    // #region agent log
-    fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'permission-selector.component.ts:345',message:'isAssigned called',data:{permissionId,result,assignedPermissionsSize:this.assignedPermissions.size},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-    // #endregion
-    return result;
+    return this.assignedPermissions.has(permissionId);
   }
 
   getModulePermissions(module: string): Permission[] {
@@ -385,10 +325,6 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
     const searchChanged = this._lastSearchTerm !== this.searchTerm;
     const moduleChanged = this._lastSelectedModule !== this.selectedModule;
     const permissionsChanged = this._lastAllPermissionsLength !== this.allPermissions.length;
-    
-    // #region agent log
-    fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'permission-selector.component.ts:filteredPermissions',message:'filteredPermissions getter called',data:{searchTerm:this.searchTerm,selectedModule:this.selectedModule,searchChanged,moduleChanged,permissionsChanged,cacheValid:this._filteredPermissions!==null,allPermissionsCount:this.allPermissions.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'I'})}).catch(()=>{});
-    // #endregion
     
     if (this._filteredPermissions === null || searchChanged || moduleChanged || permissionsChanged) {
       let filtered = this.allPermissions;
@@ -412,10 +348,6 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
       this._lastAllPermissionsLength = this.allPermissions.length;
       // Clear grouped cache when filtered changes
       this._groupedPermissions = null;
-      
-      // #region agent log
-      fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'permission-selector.component.ts:filteredPermissions',message:'filteredPermissions: cache updated',data:{filteredCount:filtered.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'I'})}).catch(()=>{});
-      // #endregion
     }
     
     return this._filteredPermissions;
@@ -424,9 +356,6 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
   get groupedPermissions(): PermissionGroup[] {
     // Use cached value if available (cleared when filteredPermissions changes)
     if (this._groupedPermissions === null) {
-      // #region agent log
-      fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'permission-selector.component.ts:groupedPermissions',message:'groupedPermissions: recalculating',data:{filteredPermissionsCount:this.filteredPermissions.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
-      // #endregion
       const groups = new Map<string, Permission[]>();
       
       this.filteredPermissions.forEach(permission => {
@@ -440,10 +369,6 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
         module,
         permissions: permissions.sort((a, b) => a.action.localeCompare(b.action))
       }));
-      
-      // #region agent log
-      fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'permission-selector.component.ts:groupedPermissions',message:'groupedPermissions: calculated',data:{groupsCount:this._groupedPermissions.length,groups:this._groupedPermissions.map(g=>({module:g.module,count:g.permissions.length}))},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
-      // #endregion
     }
     
     return this._groupedPermissions;
@@ -455,11 +380,7 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
   }
 
   get assignedCount(): number {
-    const count = this.assignedPermissions.size;
-    // #region agent log
-    fetch('http://127.0.0.1:7244/ingest/e29febe2-c049-45a2-b934-1123e1e94a05',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'permission-selector.component.ts:420',message:'assignedCount getter called',data:{count},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
-    // #endregion
-    return count;
+    return this.assignedPermissions.size;
   }
 
   get totalCount(): number {
