@@ -10,40 +10,46 @@
           <nz-form-item>
             <nz-form-label [nzSpan]="6" nzRequired>Product</nz-form-label>
             <nz-form-control [nzSpan]="18" nzErrorTip="Please select a product!" class="search-like-control">
-              <nz-select
-                formControlName="productId"
-                nzSize="large"
-                nzShowSearch
-                nzServerSearch
-                nzPlaceHolder="Type at least 3 characters to search..."
-                [nzLoading]="productSearching"
-                [nzNotFoundContent]="notFoundProductText"
-                (nzOnSearch)="onProductSearch($event)"
-                (nzOpenChange)="onProductOpenChange($event)">
-                @for (p of products; track p.id) {
-                  <nz-option [nzValue]="p.id" [nzLabel]="p.name + ' (' + p.sku + ')'"></nz-option>
-                }
-              </nz-select>
+              <div #productSelectHost class="select-host">
+                <nz-select
+                  formControlName="productId"
+                  nzSize="large"
+                  nzShowSearch
+                  nzServerSearch
+                  nzPlaceHolder="Type at least 3 characters to search..."
+                  [nzOpen]="productDropdownOpen"
+                  [nzLoading]="productSearching"
+                  [nzNotFoundContent]="notFoundProductText"
+                  (nzOnSearch)="onProductSearch($event)"
+                  (nzOpenChange)="onProductOpenChange($event)">
+                  @for (p of products; track p.id) {
+                    <nz-option [nzValue]="p.id" [nzLabel]="p.name + ' (' + p.sku + ')'"></nz-option>
+                  }
+                </nz-select>
+              </div>
             </nz-form-control>
           </nz-form-item>
 
           <nz-form-item>
             <nz-form-label [nzSpan]="6" nzRequired>Warehouse</nz-form-label>
             <nz-form-control [nzSpan]="18" nzErrorTip="Please select a warehouse!" class="search-like-control">
-              <nz-select
-                formControlName="warehouseId"
-                nzSize="large"
-                nzShowSearch
-                nzServerSearch
-                nzPlaceHolder="Type at least 3 characters to search..."
-                [nzLoading]="warehouseSearching"
-                [nzNotFoundContent]="notFoundWarehouseText"
-                (nzOnSearch)="onWarehouseSearch($event)"
-                (nzOpenChange)="onWarehouseOpenChange($event)">
-                @for (w of warehouses; track w.id) {
-                  <nz-option [nzValue]="w.id" [nzLabel]="w.name"></nz-option>
-                }
-              </nz-select>
+              <div #warehouseSelectHost class="select-host">
+                <nz-select
+                  formControlName="warehouseId"
+                  nzSize="large"
+                  nzShowSearch
+                  nzServerSearch
+                  nzPlaceHolder="Type at least 3 characters to search..."
+                  [nzOpen]="warehouseDropdownOpen"
+                  [nzLoading]="warehouseSearching"
+                  [nzNotFoundContent]="notFoundWarehouseText"
+                  (nzOnSearch)="onWarehouseSearch($event)"
+                  (nzOpenChange)="onWarehouseOpenChange($event)">
+                  @for (w of warehouses; track w.id) {
+                    <nz-option [nzValue]="w.id" [nzLabel]="w.name"></nz-option>
+                  }
+                </nz-select>
+              </div>
             </nz-form-control>
           </nz-form-item>
 
