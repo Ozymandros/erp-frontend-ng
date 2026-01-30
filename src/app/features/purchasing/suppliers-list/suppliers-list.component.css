@@ -1,0 +1,26 @@
+.page-header {
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.page-header h1 {
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.list-search {
+  margin-bottom: 16px;
+}
+
+.list-search__compact {
+  max-width: 320px;
+}

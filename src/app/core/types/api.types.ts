@@ -477,6 +477,8 @@ export interface SupplierDto extends IAuditableDto<string> {
   email: string;
   phone?: string;
   address?: string;
+  contactName?: string;
+  phoneNumber?: string;
 }
 
 // ==================== ENUMS ====================

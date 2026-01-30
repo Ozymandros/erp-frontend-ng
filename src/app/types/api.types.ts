@@ -477,6 +477,10 @@ export interface SupplierDto extends IAuditableDto<string> {
   email: string;
   phone?: string;
   address?: string;
+  /** Contact person name (required by API on create/update) */
+  contactName?: string;
+  /** Phone number (required by API on create/update) */
+  phoneNumber?: string;
 }
 
 // ==================== ENUMS ====================

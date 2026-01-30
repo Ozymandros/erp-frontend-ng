@@ -17,6 +17,8 @@ export const ROUTE_PERMISSIONS: Record<string, RoutePermission> = {
   '/sales/customers/:id': createPermission(PERMISSION_MODULES.SALES, PERMISSION_ACTIONS.READ),
   '/sales/orders': createPermission(PERMISSION_MODULES.SALES, PERMISSION_ACTIONS.READ),
   '/sales/orders/:id': createPermission(PERMISSION_MODULES.SALES, PERMISSION_ACTIONS.READ),
+  '/purchasing/suppliers': createPermission(PERMISSION_MODULES.PURCHASING, PERMISSION_ACTIONS.READ),
+  '/purchasing/suppliers/:id': createPermission(PERMISSION_MODULES.PURCHASING, PERMISSION_ACTIONS.READ),
   '/purchasing/orders': createPermission(PERMISSION_MODULES.PURCHASING, PERMISSION_ACTIONS.READ),
   '/purchasing/orders/:id': createPermission(PERMISSION_MODULES.PURCHASING, PERMISSION_ACTIONS.READ),
 };
@@ -105,6 +107,12 @@ export const NAV_ITEMS_CONFIG: NavItemConfig[] = [
     href: '/sales/orders',
     icon: 'shopping-cart',
     permission: createPermission(PERMISSION_MODULES.SALES, PERMISSION_ACTIONS.READ),
+  },
+  {
+    title: 'Suppliers',
+    href: '/purchasing/suppliers',
+    icon: 'team',
+    permission: createPermission(PERMISSION_MODULES.PURCHASING, PERMISSION_ACTIONS.READ),
   },
   {
     title: 'Purchase Orders',

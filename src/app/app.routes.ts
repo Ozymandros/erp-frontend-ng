@@ -121,6 +121,18 @@ export const routes: Routes = [
         loadComponent: () => import('./features/sales/sales-order-detail/sales-order-detail.component').then(m => m.SalesOrderDetailComponent)
       },
       {
+        path: 'purchasing/suppliers',
+        canActivate: [permissionGuard],
+        data: { module: 'purchasing', action: 'read' },
+        loadComponent: () => import('./features/purchasing/suppliers-list/suppliers-list.component').then(m => m.SuppliersListComponent)
+      },
+      {
+        path: 'purchasing/suppliers/:id',
+        canActivate: [permissionGuard],
+        data: { module: 'purchasing', action: 'read' },
+        loadComponent: () => import('./features/purchasing/supplier-detail/supplier-detail.component').then(m => m.SupplierDetailComponent)
+      },
+      {
         path: 'purchasing/orders',
         canActivate: [permissionGuard],
         data: { module: 'purchasing', action: 'read' },

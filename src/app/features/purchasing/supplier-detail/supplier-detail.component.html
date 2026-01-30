@@ -1,0 +1,75 @@
+<div class="supplier-detail">
+  <div class="page-header">
+    <button
+      type="button"
+      nz-button
+      nzType="default"
+      routerLink="/purchasing/suppliers"
+      aria-label="Back to suppliers list"
+    >
+      <span nz-icon nzType="arrow-left"></span>
+      Back to List
+    </button>
+    <h1>{{ isEditMode ? 'Edit Supplier' : 'Create Supplier' }}</h1>
+  </div>
+
+  <nz-card [nzLoading]="loading">
+    <form nz-form [formGroup]="supplierForm" (ngSubmit)="save()">
+      <div nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzRequired>Company name</nz-form-label>
+            <nz-form-control nzErrorTip="Please enter supplier name">
+              <input nz-input formControlName="name" placeholder="Acme Supplies" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzRequired>Contact name</nz-form-label>
+            <nz-form-control nzErrorTip="Please enter contact name">
+              <input nz-input formControlName="contactName" placeholder="John Doe" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+
+      <div nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzRequired>Email</nz-form-label>
+            <nz-form-control nzErrorTip="Please enter a valid email">
+              <input nz-input formControlName="email" type="email" placeholder="contact@supplier.com" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzRequired>Phone number</nz-form-label>
+            <nz-form-control nzErrorTip="Enter a valid phone number (e.g. +44 20 7123 4567, +33 1 23 45 67 89, 8–15 digits)">
+              <input nz-input formControlName="phoneNumber" placeholder="+44 20 7123 4567 or +33 1 23 45 67 89" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+
+      <div nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label>Address</nz-form-label>
+            <nz-form-control>
+              <input nz-input formControlName="address" placeholder="123 Main St, City" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" nz-button nzType="primary" [nzLoading]="saving" [attr.aria-label]="isEditMode ? 'Update supplier' : 'Create supplier'">
+          {{ isEditMode ? 'Update' : 'Create' }}
+        </button>
+        <button type="button" nz-button nzType="default" routerLink="/purchasing/suppliers" aria-label="Cancel">Cancel</button>
+      </div>
+    </form>
+  </nz-card>
+</div>
