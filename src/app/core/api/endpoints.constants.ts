@@ -84,6 +84,8 @@ export const PURCHASING_ENDPOINTS = {
   RECEIVE: (id: string) => `${PURCHASING_SERVICE_BASE}/orders/${id}/receive`,
   EXPORT_XLSX: `${PURCHASING_SERVICE_BASE}/orders/export-xlsx`,
   EXPORT_PDF: `${PURCHASING_SERVICE_BASE}/orders/export-pdf`,
+  SUPPLIERS: `${PURCHASING_SERVICE_BASE}/suppliers`,
+  SUPPLIER_BY_ID: (id: string) => `${PURCHASING_SERVICE_BASE}/suppliers/${id}`,
 } as const;
 
 export const ORDERS_ENDPOINTS = {

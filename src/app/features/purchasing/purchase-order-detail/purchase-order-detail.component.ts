@@ -13,11 +13,13 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { Subscription } from 'rxjs';
 import { timeout, catchError, finalize } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { PurchaseOrdersService } from '../../../core/services/purchase-orders.service';
 import { ProductsService } from '../../../core/services/products.service';
-import { PurchaseOrderDto, ProductDto } from '../../../types/api.types';
+import { SuppliersService } from '../../../core/services/suppliers.service';
+import { PurchaseOrderDto, ProductDto, SupplierDto } from '../../../types/api.types';
 
 @Component({
   selector: 'app-purchase-order-detail',
@@ -50,7 +52,9 @@ export class PurchaseOrderDetailComponent implements OnInit {
   orderForm!: FormGroup;
   
   products: ProductDto[] = [];
+  suppliers: SupplierDto[] = [];
   submitting = false;
+  private lineProductSubs: Subscription[] = [];
 
   private fb = inject(FormBuilder);
   private message = inject(NzMessageService);
@@ -60,6 +64,7 @@ export class PurchaseOrderDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private purchaseOrdersService: PurchaseOrdersService,
     private productsService: ProductsService,
+    private suppliersService: SuppliersService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -97,23 +102,22 @@ export class PurchaseOrderDetailComponent implements OnInit {
       unitPrice: [0, [Validators.required, Validators.min(0)]]
     });
     this.lines.push(line);
+    const sub = line.get('productId')?.valueChanges.subscribe(productId => {
+      const product = this.products.find(p => p.id === productId);
+      if (product) {
+        line.patchValue({ unitPrice: product.unitPrice }, { emitEvent: false });
+      }
+    });
+    if (sub) this.lineProductSubs.push(sub);
   }
 
   removeLine(index: number): void {
     if (this.lines.length > 1) {
+      this.lineProductSubs[index]?.unsubscribe();
+      this.lineProductSubs.splice(index, 1);
       this.lines.removeAt(index);
     } else {
       this.message.warning('At least one order line is required');
-    }
-  }
-
-  onProductChange(index: number): void {
-    const productId = this.lines.at(index).get('productId')?.value;
-    const product = this.products.find(p => p.id === productId);
-    if (product) {
-      this.lines.at(index).patchValue({
-        unitPrice: product.unitPrice
-      });
     }
   }
 
@@ -129,7 +133,9 @@ export class PurchaseOrderDetailComponent implements OnInit {
     this.productsService.getAll({ pageSize: 100 }).subscribe(res => {
       this.products = res.items;
     });
-    // Suppliers fetch would go here if service existed
+    this.suppliersService.getAll({ pageSize: 500 }).subscribe(res => {
+      this.suppliers = res.items;
+    });
   }
 
   loadOrder(id: string): void {

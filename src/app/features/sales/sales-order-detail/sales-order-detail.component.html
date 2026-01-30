@@ -1,21 +1,43 @@
 <div class="sales-order-detail">
   <div class="page-header">
-    <button nz-button nzType="default" routerLink="/sales/orders" class="back-button">
+    <button
+      type="button"
+      nz-button
+      nzType="default"
+      routerLink="/sales/orders"
+      class="back-button"
+      aria-label="Back to orders list"
+    >
       <span nz-icon nzType="arrow-left"></span>
       Back to List
     </button>
-    <h1>{{ isNewOrder ? 'Create New Sales Order' : 'Order ' + (order?.orderNumber ?? '—') }}</h1>
+    <h1>
+      {{
+        isNewOrder
+          ? "Create New Sales Order"
+          : "Order " + (order?.orderNumber ?? "—")
+      }}
+    </h1>
   </div>
 
   <nz-card [nzLoading]="loading">
     @if (isNewOrder) {
-      <form nz-form [formGroup]="orderForm" (ngSubmit)="submitOrder()" nzLayout="vertical">
+      <form
+        nz-form
+        [formGroup]="orderForm"
+        (ngSubmit)="submitOrder()"
+        nzLayout="vertical"
+      >
         <div nz-row [nzGutter]="24">
           <div nz-col [nzSpan]="8">
             <nz-form-item>
               <nz-form-label nzRequired>Order #</nz-form-label>
               <nz-form-control nzErrorTip="Please enter order number">
-                <input nz-input formControlName="orderNumber" placeholder="SO-0001" />
+                <input
+                  nz-input
+                  formControlName="orderNumber"
+                  placeholder="SO-0001"
+                />
               </nz-form-control>
             </nz-form-item>
           </div>
@@ -23,9 +45,17 @@
             <nz-form-item>
               <nz-form-label nzRequired>Customer</nz-form-label>
               <nz-form-control nzErrorTip="Please select a customer">
-                <nz-select formControlName="customerId" nzShowSearch nzAllowClear placeholder="Select customer">
+                <nz-select
+                  formControlName="customerId"
+                  nzShowSearch
+                  nzAllowClear
+                  placeholder="Select customer"
+                >
                   @for (customer of customers; track customer.id) {
-                    <nz-option [nzLabel]="customer.name" [nzValue]="customer.id"></nz-option>
+                    <nz-option
+                      [nzLabel]="customer.name"
+                      [nzValue]="customer.id"
+                    ></nz-option>
                   }
                 </nz-select>
               </nz-form-control>
@@ -35,14 +65,22 @@
             <nz-form-item>
               <nz-form-label nzRequired>Order Date</nz-form-label>
               <nz-form-control nzErrorTip="Please select order date">
-                <nz-date-picker formControlName="orderDate" class="full-width"></nz-date-picker>
+                <nz-date-picker
+                  formControlName="orderDate"
+                  class="full-width"
+                ></nz-date-picker>
               </nz-form-control>
             </nz-form-item>
           </div>
         </div>
 
         <h3 class="lines-title">Order Lines</h3>
-        <nz-table #linesTable [nzData]="lines.controls" [nzShowPagination]="false" [nzSize]="'small'">
+        <nz-table
+          #linesTable
+          [nzData]="lines.controls"
+          [nzShowPagination]="false"
+          [nzSize]="'small'"
+        >
           <thead>
             <tr>
               <th nzWidth="40%">Product</th>
@@ -58,9 +96,17 @@
                 <td>
                   <nz-form-item>
                     <nz-form-control nzErrorTip="Product required">
-                      <nz-select formControlName="productId" (ngModelChange)="onProductChange($index)" nzShowSearch nzAllowClear placeholder="Select product">
+                      <nz-select
+                        formControlName="productId"
+                        nzShowSearch
+                        nzAllowClear
+                        placeholder="Select product"
+                      >
                         @for (product of products; track product.id) {
-                          <nz-option [nzLabel]="product.name" [nzValue]="product.id"></nz-option>
+                          <nz-option
+                            [nzLabel]="product.name"
+                            [nzValue]="product.id"
+                          ></nz-option>
                         }
                       </nz-select>
                     </nz-form-control>
@@ -69,22 +115,42 @@
                 <td>
                   <nz-form-item>
                     <nz-form-control nzErrorTip="Min 1">
-                      <nz-input-number formControlName="quantity" [nzMin]="1"></nz-input-number>
+                      <nz-input-number
+                        formControlName="quantity"
+                        [nzMin]="1"
+                      ></nz-input-number>
                     </nz-form-control>
                   </nz-form-item>
                 </td>
                 <td>
                   <nz-form-item>
                     <nz-form-control nzErrorTip="Required">
-                      <nz-input-number formControlName="unitPrice" [nzMin]="0" [nzStep]="0.01"></nz-input-number>
+                      <nz-input-number
+                        formControlName="unitPrice"
+                        [nzMin]="0"
+                        [nzStep]="0.01"
+                      ></nz-input-number>
                     </nz-form-control>
                   </nz-form-item>
                 </td>
                 <td>
-                  ${{ ((control.get('quantity')?.value || 0) * (control.get('unitPrice')?.value || 0)).toFixed(2) }}
+                  ${{
+                    (
+                      (control.get("quantity")?.value || 0) *
+                      (control.get("unitPrice")?.value || 0)
+                    ).toFixed(2)
+                  }}
                 </td>
                 <td>
-                  <button type="button" nz-button nzDanger nzShape="circle" (click)="removeLine($index)">
+                  <button
+                    type="button"
+                    nz-button
+                    nzDanger
+                    nzShape="circle"
+                    (click)="removeLine($index)"
+                    title="Remove line"
+                    aria-label="Remove line"
+                  >
                     <span nz-icon nzType="minus"></span>
                   </button>
                 </td>
@@ -94,10 +160,17 @@
         </nz-table>
 
         <div class="form-actions">
-          <button type="button" nz-button nzType="dashed" (click)="addLine()" class="add-line-btn">
+          <button
+            type="button"
+            nz-button
+            nzType="dashed"
+            (click)="addLine()"
+            class="add-line-btn"
+            aria-label="Add order line"
+          >
             <span nz-icon nzType="plus"></span> Add Line
           </button>
-          
+
           <div class="total-section">
             <span class="total-label">Grand Total:</span>
             <span class="total-value">${{ calculateTotal().toFixed(2) }}</span>
@@ -105,7 +178,15 @@
         </div>
 
         <div class="submit-section">
-          <button nz-button nzType="primary" [nzLoading]="submitting">Create Order</button>
+          <button
+            type="submit"
+            nz-button
+            nzType="primary"
+            [nzLoading]="submitting"
+            aria-label="Create order"
+          >
+            Create Order
+          </button>
         </div>
       </form>
     } @else {
@@ -123,7 +204,7 @@
           </div>
           <div class="info-row">
             <span class="info-label">Date</span>
-            <span>{{ o.orderDate | date:'shortDate' }}</span>
+            <span>{{ o.orderDate | date: "shortDate" }}</span>
           </div>
           <div class="info-row">
             <span class="info-label">Status</span>
@@ -140,7 +221,8 @@
           #linesTable
           [nzData]="o.lines || []"
           [nzShowPagination]="false"
-          [nzSize]="'small'">
+          [nzSize]="'small'"
+        >
           <thead>
             <tr>
               <th>Product</th>

@@ -13,6 +13,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { Subscription } from 'rxjs';
 import { timeout, catchError, finalize } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { SalesOrdersService } from '../../../core/services/sales-orders.service';
@@ -53,6 +54,7 @@ export class SalesOrderDetailComponent implements OnInit {
   customers: CustomerDto[] = [];
   products: ProductDto[] = [];
   submitting = false;
+  private lineProductSubs: Subscription[] = [];
 
   private fb = inject(FormBuilder);
   private message = inject(NzMessageService);
@@ -100,23 +102,22 @@ export class SalesOrderDetailComponent implements OnInit {
       unitPrice: [0, [Validators.required, Validators.min(0)]]
     });
     this.lines.push(line);
+    const sub = line.get('productId')?.valueChanges.subscribe(productId => {
+      const product = this.products.find(p => p.id === productId);
+      if (product) {
+        line.patchValue({ unitPrice: product.unitPrice }, { emitEvent: false });
+      }
+    });
+    if (sub) this.lineProductSubs.push(sub);
   }
 
   removeLine(index: number): void {
     if (this.lines.length > 1) {
+      this.lineProductSubs[index]?.unsubscribe();
+      this.lineProductSubs.splice(index, 1);
       this.lines.removeAt(index);
     } else {
       this.message.warning('At least one order line is required');
-    }
-  }
-
-  onProductChange(index: number): void {
-    const productId = this.lines.at(index).get('productId')?.value;
-    const product = this.products.find(p => p.id === productId);
-    if (product) {
-      this.lines.at(index).patchValue({
-        unitPrice: product.unitPrice
-      });
     }
   }
 
