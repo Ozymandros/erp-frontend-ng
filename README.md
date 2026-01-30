@@ -28,10 +28,10 @@
 ### 🛠️ Tech Stack
 
 ![Node](https://img.shields.io/badge/node-20.x-green)
-![pnpm](https://img.shields.io/badge/pnpm-9.x-blue)
+![pnpm](https://img.shields.io/badge/pnpm-10.28.1-blue)
 
-![Angular](https://img.shields.io/badge/Angular-17-dd0031?logo=angular)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue?logo=typescript)
+![Angular](https://img.shields.io/badge/Angular-21-dd0031?logo=angular)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue?logo=typescript)
 ![RxJS](https://img.shields.io/badge/RxJS-7.8-B7178C?logo=rxjs)
 
 ![NG-Zorro](https://img.shields.io/badge/NG%20Zorro-17.4-1890ff?logo=ant-design)
@@ -58,10 +58,10 @@ A modern, type-safe ERP admin portal built with **Angular** and **TypeScript**. 
 - **🧪 Testing**: Comprehensive test suite with Jasmine/Karma (unit) and Playwright (E2E).
 - **🚀 CI/CD**: Automated testing, code quality checks, and dependency updates via GitHub Actions.
 
-## 🛠️ Tech Stack
+## ⚙️ Technical Details
 
-- **Framework**: Angular 17 (Standalone Components)
-- **Language**: TypeScript 5.4
+- **Framework**: Angular 21 (Standalone Components)
+- **Language**: TypeScript 5.5
 - **Styling**: SCSS, NG-Zorro (Ant Design), TailwindCSS
 - **Routing**: Angular Router
 - **HTTP Client**: Angular HttpClient (with Interceptors)
@@ -74,7 +74,7 @@ A modern, type-safe ERP admin portal built with **Angular** and **TypeScript**. 
 ## 📋 Prerequisites
 
 - **Node.js**: 20.x or higher
-- **pnpm**: 9.x or higher ([Install pnpm](https://pnpm.io/installation))
+- **pnpm**: 10.28.1 or higher ([Install pnpm](https://pnpm.io/installation))
 
 ## 🚀 Quick Start
 
@@ -97,8 +97,10 @@ The application will be available at `http://localhost:4200`.
 ### Environment Variables
 
 The application uses standard Angular environment files (`src/environments`).
-*   `environment.ts`: Development configuration.
-*   `environment.prod.ts`: Production configuration.
+
+- `environment.ts`: Development configuration.
+
+- `environment.prod.ts`: Production configuration.
 
 Ensure `apiBaseUrl` points to your backend (default: `http://localhost:5000`).
 
@@ -149,7 +151,7 @@ pnpm exec playwright test --ui
 
 ## 🏗️ Project Structure
 
-```
+```text
 src/
 ├── app/
 │   ├── core/
