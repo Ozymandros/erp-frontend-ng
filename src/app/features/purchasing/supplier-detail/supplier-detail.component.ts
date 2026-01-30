@@ -15,7 +15,7 @@ import { SupplierDto } from '../../../types/api.types';
 function phoneNumberValidator(control: AbstractControl): ValidationErrors | null {
   const v = (control.value ?? '').trim();
   if (!v) return null; // required is handled separately
-  const digitsOnly = v.replace(/\D/g, '');
+  const digitsOnly = v.replaceAll(/\D/g, '');
   if (digitsOnly.length < 8 || digitsOnly.length > 15) return { phoneNumber: true };
   if (!/^[\d\s\-+().]{8,25}$/.test(v)) return { phoneNumber: true };
   return null;

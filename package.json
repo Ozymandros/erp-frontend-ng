@@ -60,7 +60,14 @@
       "webpack-dev-server": ">=5.2.1",
       "tmp": ">=0.2.4",
       "tar": ">=7.5.4",
-      "lodash": ">=4.17.23"
+      "lodash": ">=4.17.23",
+      "hono": ">=4.11.7",
+      "tar@<7.5.7": ">=7.5.7"
+    },
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "hono": ">=4.11.7"
+      }
     }
   }
 }

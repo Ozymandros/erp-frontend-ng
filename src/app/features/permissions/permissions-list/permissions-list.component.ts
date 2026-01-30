@@ -78,12 +78,12 @@ import { finalize } from 'rxjs';
         >
           <thead>
             <tr>
-              <th>Module</th>
-              <th>Action</th>
-              <th>Description</th>
-              <th>Created At</th>
+              <th scope="col">Module</th>
+              <th scope="col">Action</th>
+              <th scope="col">Description</th>
+              <th scope="col">Created At</th>
               @if (p.canDelete) {
-                <th>Actions</th>
+                <th scope="col">Actions</th>
               }
             </tr>
           </thead>

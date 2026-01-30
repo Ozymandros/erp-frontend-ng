@@ -37,6 +37,6 @@ export class AssignedPermissionsViewComponent {
 
   // Get sorted module names for display
   getSortedModules(): string[] {
-    return Array.from(this.groupedPermissions.keys()).sort();
+    return Array.from(this.groupedPermissions.keys()).sort((a, b) => a.localeCompare(b));
   }
 }

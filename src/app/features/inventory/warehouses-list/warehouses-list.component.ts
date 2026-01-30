@@ -82,11 +82,11 @@ import { finalize } from 'rxjs';
     >
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Location</th>
-          <th>Created At</th>
+          <th scope="col">Name</th>
+          <th scope="col">Location</th>
+          <th scope="col">Created At</th>
           @if (p.canUpdate || p.canDelete) {
-            <th nzWidth="150px">Actions</th>
+            <th scope="col" nzWidth="150px">Actions</th>
           }
         </tr>
       </thead>

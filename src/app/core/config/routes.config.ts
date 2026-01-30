@@ -1,26 +1,27 @@
 import { PERMISSION_MODULES, PERMISSION_ACTIONS, createPermission, RoutePermission } from '../constants/permissions';
+import { APP_ROUTES, APP_PATHS } from '../constants/routes.constants';
 
 export const ROUTE_PERMISSIONS: Record<string, RoutePermission> = {
-  '/users': createPermission(PERMISSION_MODULES.USERS, PERMISSION_ACTIONS.READ),
-  '/users/:id': createPermission(PERMISSION_MODULES.USERS, PERMISSION_ACTIONS.READ),
-  '/roles': createPermission(PERMISSION_MODULES.ROLES, PERMISSION_ACTIONS.READ),
-  '/roles/:id': createPermission(PERMISSION_MODULES.ROLES, PERMISSION_ACTIONS.READ),
-  '/permissions': createPermission(PERMISSION_MODULES.PERMISSIONS, PERMISSION_ACTIONS.READ),
-  '/inventory/products': createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.READ),
-  '/inventory/products/:id': createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.READ),
-  '/inventory/warehouses': createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.READ),
-  '/inventory/warehouses/:id': createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.READ),
-  '/inventory/warehouse-stocks': createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.READ),
-  '/inventory/transactions': createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.READ),
-  '/inventory/stock-operations': createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.CREATE),
-  '/sales/customers': createPermission(PERMISSION_MODULES.SALES, PERMISSION_ACTIONS.READ),
-  '/sales/customers/:id': createPermission(PERMISSION_MODULES.SALES, PERMISSION_ACTIONS.READ),
-  '/sales/orders': createPermission(PERMISSION_MODULES.SALES, PERMISSION_ACTIONS.READ),
-  '/sales/orders/:id': createPermission(PERMISSION_MODULES.SALES, PERMISSION_ACTIONS.READ),
-  '/purchasing/suppliers': createPermission(PERMISSION_MODULES.PURCHASING, PERMISSION_ACTIONS.READ),
-  '/purchasing/suppliers/:id': createPermission(PERMISSION_MODULES.PURCHASING, PERMISSION_ACTIONS.READ),
-  '/purchasing/orders': createPermission(PERMISSION_MODULES.PURCHASING, PERMISSION_ACTIONS.READ),
-  '/purchasing/orders/:id': createPermission(PERMISSION_MODULES.PURCHASING, PERMISSION_ACTIONS.READ),
+  [APP_PATHS.USERS.ROOT]: createPermission(PERMISSION_MODULES.USERS, PERMISSION_ACTIONS.READ),
+  [`/${APP_ROUTES.USERS.DETAIL}`]: createPermission(PERMISSION_MODULES.USERS, PERMISSION_ACTIONS.READ),
+  [APP_PATHS.ROLES.ROOT]: createPermission(PERMISSION_MODULES.ROLES, PERMISSION_ACTIONS.READ),
+  [`/${APP_ROUTES.ROLES.DETAIL}`]: createPermission(PERMISSION_MODULES.ROLES, PERMISSION_ACTIONS.READ),
+  [APP_PATHS.PERMISSIONS.ROOT]: createPermission(PERMISSION_MODULES.PERMISSIONS, PERMISSION_ACTIONS.READ),
+  [APP_PATHS.INVENTORY.PRODUCTS]: createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.READ),
+  [`/${APP_ROUTES.INVENTORY.PRODUCT_DETAIL}`]: createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.READ),
+  [APP_PATHS.INVENTORY.WAREHOUSES]: createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.READ),
+  [`/${APP_ROUTES.INVENTORY.WAREHOUSE_DETAIL}`]: createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.READ),
+  [APP_PATHS.INVENTORY.WAREHOUSE_STOCKS]: createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.READ),
+  [APP_PATHS.INVENTORY.TRANSACTIONS]: createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.READ),
+  [APP_PATHS.INVENTORY.STOCK_OPERATIONS]: createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.CREATE),
+  [APP_PATHS.SALES.CUSTOMERS]: createPermission(PERMISSION_MODULES.SALES, PERMISSION_ACTIONS.READ),
+  [`/${APP_ROUTES.SALES.CUSTOMER_DETAIL}`]: createPermission(PERMISSION_MODULES.SALES, PERMISSION_ACTIONS.READ),
+  [APP_PATHS.SALES.ORDERS]: createPermission(PERMISSION_MODULES.SALES, PERMISSION_ACTIONS.READ),
+  [`/${APP_ROUTES.SALES.ORDER_DETAIL}`]: createPermission(PERMISSION_MODULES.SALES, PERMISSION_ACTIONS.READ),
+  [APP_PATHS.PURCHASING.SUPPLIERS]: createPermission(PERMISSION_MODULES.PURCHASING, PERMISSION_ACTIONS.READ),
+  [`/${APP_ROUTES.PURCHASING.SUPPLIER_DETAIL}`]: createPermission(PERMISSION_MODULES.PURCHASING, PERMISSION_ACTIONS.READ),
+  [APP_PATHS.PURCHASING.ORDERS]: createPermission(PERMISSION_MODULES.PURCHASING, PERMISSION_ACTIONS.READ),
+  [`/${APP_ROUTES.PURCHASING.ORDER_DETAIL}`]: createPermission(PERMISSION_MODULES.PURCHASING, PERMISSION_ACTIONS.READ),
 };
 
 export function getRoutePermission(path: string): RoutePermission | undefined {
@@ -51,7 +52,7 @@ export interface NavItemConfig {
 export const NAV_ITEMS_CONFIG: NavItemConfig[] = [
   {
     title: 'Dashboard',
-    href: '/',
+    href: APP_PATHS.DASHBOARD,
     icon: 'appstore',
   },
   {
@@ -60,19 +61,19 @@ export const NAV_ITEMS_CONFIG: NavItemConfig[] = [
     children: [
       {
         title: 'Users',
-        href: '/users',
+        href: APP_PATHS.USERS.ROOT,
         icon: 'team',
         permission: createPermission(PERMISSION_MODULES.USERS, PERMISSION_ACTIONS.READ),
       },
       {
         title: 'Roles',
-        href: '/roles',
+        href: APP_PATHS.ROLES.ROOT,
         icon: 'safety-certificate',
         permission: createPermission(PERMISSION_MODULES.ROLES, PERMISSION_ACTIONS.READ),
       },
       {
         title: 'Permissions',
-        href: '/permissions',
+        href: APP_PATHS.PERMISSIONS.ROOT,
         icon: 'key',
         permission: createPermission(PERMISSION_MODULES.PERMISSIONS, PERMISSION_ACTIONS.READ),
       },
@@ -84,31 +85,31 @@ export const NAV_ITEMS_CONFIG: NavItemConfig[] = [
     children: [
       {
         title: 'Products',
-        href: '/inventory/products',
+        href: APP_PATHS.INVENTORY.PRODUCTS,
         icon: 'inbox',
         permission: createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.READ),
       },
       {
         title: 'Warehouses',
-        href: '/inventory/warehouses',
+        href: APP_PATHS.INVENTORY.WAREHOUSES,
         icon: 'home',
         permission: createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.READ),
       },
       {
         title: 'Warehouse Stocks',
-        href: '/inventory/warehouse-stocks',
+        href: APP_PATHS.INVENTORY.WAREHOUSE_STOCKS,
         icon: 'line-chart',
         permission: createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.READ),
       },
       {
         title: 'Transactions',
-        href: '/inventory/transactions',
+        href: APP_PATHS.INVENTORY.TRANSACTIONS,
         icon: 'file-text',
         permission: createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.READ),
       },
       {
         title: 'Stock Operations',
-        href: '/inventory/stock-operations',
+        href: APP_PATHS.INVENTORY.STOCK_OPERATIONS,
         icon: 'sync',
         permission: createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.CREATE),
       },
@@ -120,13 +121,13 @@ export const NAV_ITEMS_CONFIG: NavItemConfig[] = [
     children: [
       {
         title: 'Customers',
-        href: '/sales/customers',
+        href: APP_PATHS.SALES.CUSTOMERS,
         icon: 'dollar',
         permission: createPermission(PERMISSION_MODULES.SALES, PERMISSION_ACTIONS.READ),
       },
       {
         title: 'Sales Orders',
-        href: '/sales/orders',
+        href: APP_PATHS.SALES.ORDERS,
         icon: 'shopping-cart',
         permission: createPermission(PERMISSION_MODULES.SALES, PERMISSION_ACTIONS.READ),
       },
@@ -138,13 +139,13 @@ export const NAV_ITEMS_CONFIG: NavItemConfig[] = [
     children: [
       {
         title: 'Suppliers',
-        href: '/purchasing/suppliers',
+        href: APP_PATHS.PURCHASING.SUPPLIERS,
         icon: 'team',
         permission: createPermission(PERMISSION_MODULES.PURCHASING, PERMISSION_ACTIONS.READ),
       },
       {
         title: 'Purchase Orders',
-        href: '/purchasing/orders',
+        href: APP_PATHS.PURCHASING.ORDERS,
         icon: 'shopping',
         permission: createPermission(PERMISSION_MODULES.PURCHASING, PERMISSION_ACTIONS.READ),
       },
@@ -156,7 +157,7 @@ export const NAV_ITEMS_CONFIG: NavItemConfig[] = [
     children: [
       {
         title: 'Orders',
-        href: '/sales/orders', // Reusing sales orders for generic "Orders" group as in image
+        href: APP_PATHS.SALES.ORDERS, // Reusing sales orders for generic "Orders" group as in image
         icon: 'ordered-list',
         permission: createPermission(PERMISSION_MODULES.SALES, PERMISSION_ACTIONS.READ),
       }

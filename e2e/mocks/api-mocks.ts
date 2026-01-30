@@ -19,6 +19,7 @@ export async function mockApiSuccess<T>(
   const { status = 200, delay = 0, contentType = 'application/json' } = options;
   
   await page.route(urlPattern, async (route: Route) => {
+    console.log(`[Mock] Hit: ${route.request().url()} (Pattern: ${urlPattern})`);
     if (delay > 0) {
       await new Promise(resolve => setTimeout(resolve, delay));
     }
@@ -94,47 +95,47 @@ export async function mockGetCurrentUser(page: Page, user: any): Promise<void> {
 }
 
 export async function mockGetProducts(page: Page, products: any[]): Promise<void> {
-  await mockPaginatedResponse(page, '**/inventory/api/inventory/products**', products);
+  await mockPaginatedResponse(page, /\/inventory\/api\/inventory\/products(\?.*)?$/, products);
 }
 
 export async function mockGetUsers(page: Page, users: any[]): Promise<void> {
-  await mockPaginatedResponse(page, '**/auth/api/users**', users);
+  await mockPaginatedResponse(page, /\/auth\/api\/users(\?.*)?$/, users);
 }
 
 export async function mockGetRoles(page: Page, roles: any[]): Promise<void> {
-  await mockPaginatedResponse(page, '**/auth/api/roles**', roles);
+  await mockPaginatedResponse(page, /\/auth\/api\/roles(\?.*)?$/, roles);
 }
 
 export async function mockGetPermissions(page: Page, permissions: any[]): Promise<void> {
-  await mockPaginatedResponse(page, '**/auth/api/permissions**', permissions);
+  await mockPaginatedResponse(page, /\/auth\/api\/permissions(\?.*)?$/, permissions);
 }
 
 export async function mockGetInventoryTransactions(page: Page, transactions: any[]): Promise<void> {
-  await mockPaginatedResponse(page, '**/inventory/api/inventory/transactions**', transactions);
+  await mockPaginatedResponse(page, /\/inventory\/api\/inventory\/transactions(\?.*)?$/, transactions);
 }
 
 export async function mockGetWarehouses(page: Page, warehouses: any[]): Promise<void> {
-  await mockPaginatedResponse(page, '**/inventory/api/inventory/warehouses**', warehouses);
+  await mockPaginatedResponse(page, /\/inventory\/api\/inventory\/warehouses(\?.*)?$/, warehouses);
 }
 
 export async function mockGetWarehouseStocks(page: Page, stocks: any[]): Promise<void> {
-  await mockPaginatedResponse(page, '**/inventory/api/inventory/warehouse-stocks**', stocks);
+  await mockPaginatedResponse(page, /\/inventory\/api\/inventory\/warehouse-stocks(\?.*)?$/, stocks);
 }
 
 export async function mockGetCustomers(page: Page, customers: any[]): Promise<void> {
-  await mockPaginatedResponse(page, '**/sales/api/sales/customers**', customers);
+  await mockPaginatedResponse(page, /\/sales\/api\/sales\/customers(\?.*)?$/, customers);
 }
 
 export async function mockGetSalesOrders(page: Page, orders: any[]): Promise<void> {
-  await mockPaginatedResponse(page, '**/sales/api/sales/orders**', orders);
+  await mockPaginatedResponse(page, /\/sales\/api\/sales\/orders(\?.*)?$/, orders);
 }
 
 export async function mockGetPurchaseOrders(page: Page, orders: any[]): Promise<void> {
-  await mockPaginatedResponse(page, '**/purchasing/api/purchasing/orders**', orders);
+  await mockPaginatedResponse(page, /\/purchasing\/api\/purchasing\/orders(\?.*)?$/, orders);
 }
 
 export async function mockGetSuppliers(page: Page, suppliers: any[]): Promise<void> {
-  await mockPaginatedResponse(page, '**/purchasing/api/purchasing/suppliers**', suppliers);
+  await mockPaginatedResponse(page, /\/purchasing\/api\/purchasing\/suppliers(\?.*)?$/, suppliers);
 }
 
 export async function mockLogout(page: Page): Promise<void> {

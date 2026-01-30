@@ -17,7 +17,7 @@ export default defineConfig({
   workers: process.env['CI'] ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:4200',
+    baseURL: 'http://localhost:4201',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
@@ -39,9 +39,9 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: 'npx serve -s dist/temp-ng-project/browser -p 4200',
-    url: 'http://localhost:4200',
-    reuseExistingServer: true,
+    command: 'npx serve -s dist/temp-ng-project/browser -p 4201',
+    url: 'http://localhost:4201',
+    reuseExistingServer: false,
     timeout: 60 * 1000,
   },
 });

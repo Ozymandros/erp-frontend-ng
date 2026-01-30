@@ -16,6 +16,8 @@ const ACCESS_TOKEN_KEY = 'access_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
 const TOKEN_EXPIRY_KEY = 'token_expiry';
 
+import { APP_PATHS } from '../constants/routes.constants';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -74,7 +76,7 @@ export class AuthService {
         this.storeTokens(response.accessToken, response.refreshToken, response.expiresIn);
         this.currentUserSubject.next(response.user);
         this.currentUserSignal.set(response.user);
-        this.router.navigate(['/']);
+        this.router.navigate([APP_PATHS.DASHBOARD]);
       })
     );
   }
@@ -85,7 +87,7 @@ export class AuthService {
         this.storeTokens(response.accessToken, response.refreshToken, response.expiresIn);
         this.currentUserSubject.next(response.user);
         this.currentUserSignal.set(response.user);
-        this.router.navigate(['/']);
+        this.router.navigate([APP_PATHS.DASHBOARD]);
       })
     );
   }
@@ -96,7 +98,7 @@ export class AuthService {
         this.clearTokens();
         this.currentUserSubject.next(null);
         this.currentUserSignal.set(null);
-        this.router.navigate(['/login']);
+        this.router.navigate([APP_PATHS.AUTH.LOGIN]);
       })
     );
   }
@@ -225,6 +227,6 @@ export class AuthService {
   private isTokenExpired(): boolean {
     const expiryTime = sessionStorage.getItem(TOKEN_EXPIRY_KEY);
     if (!expiryTime) return true;
-    return Date.now() >= parseInt(expiryTime, 10);
+    return Date.now() >= Number.parseInt(expiryTime, 10);
   }
 }
