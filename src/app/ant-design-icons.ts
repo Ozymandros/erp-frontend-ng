@@ -1,5 +1,6 @@
 import {
   PlusOutline,
+  MinusOutline,
   UserOutline,
   LogoutOutline,
   AppstoreOutline,
@@ -27,6 +28,7 @@ import {
 
 export const icons = [
   PlusOutline,
+  MinusOutline,
   UserOutline,
   LogoutOutline,
   AppstoreOutline,
