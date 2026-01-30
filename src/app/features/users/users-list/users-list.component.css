@@ -10,16 +10,20 @@ h1 {
   align-items: center;
 }
 
-.users-list-search-bar {
-  margin-bottom: 16px;
-  display: flex;
-  gap: 16px;
-}
-
 .edit-link {
   margin-right: 8px;
 }
 
 .delete-link {
   color: #ff4d4f;
+  margin-left: 8px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.export-button {
+  margin-right: 8px;
 }

@@ -37,11 +37,12 @@ describe('ProductsService', () => {
 
     apiClientSpy.get.and.returnValue(of(mockProducts));
 
-    service.getProducts().subscribe(response => {
+    service.getAll().subscribe(response => {
       expect(response).toEqual(mockProducts);
       expect(apiClientSpy.get).toHaveBeenCalled();
       done();
     });
+
   });
 
   it('should export to XLSX', (done) => {

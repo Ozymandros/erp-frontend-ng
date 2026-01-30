@@ -11,31 +11,18 @@ import {
   PaginatedResponse,
   SearchParams
 } from '../types/api.types';
+import { BaseApiService } from '../base/base-api.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SalesOrdersService {
-  constructor(private apiClient: ApiClientService) {}
-
-  getSalesOrders(params?: SearchParams): Observable<PaginatedResponse<SalesOrderDto>> {
-    return this.apiClient.get<PaginatedResponse<SalesOrderDto>>(SALES_ENDPOINTS.ORDERS, params);
+export class SalesOrdersService extends BaseApiService<SalesOrderDto, CreateUpdateSalesOrderDto, CreateUpdateSalesOrderDto> {
+  protected getEndpoint(): string {
+    return SALES_ENDPOINTS.ORDERS;
   }
 
-  getSalesOrderById(id: string): Observable<SalesOrderDto> {
-    return this.apiClient.get<SalesOrderDto>(SALES_ENDPOINTS.ORDER_BY_ID(id));
-  }
-
-  createSalesOrder(data: CreateUpdateSalesOrderDto): Observable<SalesOrderDto> {
-    return this.apiClient.post<SalesOrderDto>(SALES_ENDPOINTS.ORDERS, data);
-  }
-
-  updateSalesOrder(id: string, data: CreateUpdateSalesOrderDto): Observable<SalesOrderDto> {
-    return this.apiClient.put<SalesOrderDto>(SALES_ENDPOINTS.ORDER_BY_ID(id), data);
-  }
-
-  deleteSalesOrder(id: string): Observable<void> {
-    return this.apiClient.delete<void>(SALES_ENDPOINTS.ORDER_BY_ID(id));
+  constructor(protected override apiClient: ApiClientService) {
+    super(apiClient);
   }
 
   createQuote(data: CreateQuoteDto): Observable<SalesOrderDto> {
@@ -51,13 +38,5 @@ export class SalesOrdersService {
       SALES_ENDPOINTS.CHECK_STOCK, 
       { productIds, quantities }
     );
-  }
-
-  exportToXlsx(): Observable<Blob> {
-    return this.apiClient.download(SALES_ENDPOINTS.ORDERS_EXPORT_XLSX);
-  }
-
-  exportToPdf(): Observable<Blob> {
-    return this.apiClient.download(SALES_ENDPOINTS.ORDERS_EXPORT_PDF);
   }
 }

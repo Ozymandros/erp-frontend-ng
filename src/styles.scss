@@ -28,3 +28,59 @@ html, body {
   height: 100%;
   margin: 0;
 }
+
+// Shared list search box — nz-space-compact + nz-input-wrapper with icon addon
+.list-search {
+  margin-bottom: 20px;
+  max-width: 420px;
+
+  .list-search__label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.65);
+    margin-bottom: 8px;
+  }
+
+  .list-search__compact {
+    display: inline-flex;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .ant-space-compact {
+    .ant-input-affix-wrapper,
+    .ant-input-group-addon {
+      border-radius: 0;
+    }
+    .ant-input-affix-wrapper:only-child {
+      border-radius: 6px;
+    }
+    .ant-input-affix-wrapper:first-child:not(:only-child) {
+      border-radius: 6px 0 0 6px;
+    }
+    .ant-input-affix-wrapper:last-child:not(:first-child),
+    .ant-select:last-child .ant-select-selector {
+      border-radius: 0 6px 6px 0;
+    }
+    .ant-input,
+    .ant-input-affix-wrapper {
+      font-size: 14px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .ant-input-affix-wrapper:hover,
+    .ant-input-affix-wrapper-focused {
+      border-color: #40a9ff;
+      z-index: 1;
+    }
+    .ant-input-affix-wrapper-focused {
+      box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.15);
+    }
+    .ant-input::placeholder {
+      color: rgba(0, 0, 0, 0.35);
+    }
+    .ant-input-group-addon {
+      color: rgba(0, 0, 0, 0.45);
+    }
+  }
+}

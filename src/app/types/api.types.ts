@@ -177,6 +177,14 @@ export interface PermissionCheckResponse {
   reason?: string;
 }
 
+export interface ModulePermissions {
+  canRead: boolean;
+  canCreate: boolean;
+  canUpdate: boolean;
+  canDelete: boolean;
+  canExport: boolean;
+}
+
 // User Types
 export interface User extends IAuditableDto<string> {
   username?: string;
@@ -216,7 +224,7 @@ export interface UpdateUserRequest {
 export interface Role extends IAuditableDto<string> {
   name: string;
   description?: string;
-  permissions: Permission[];
+  permissions?: Permission[];
 }
 
 export interface CreateRoleRequest {
@@ -303,10 +311,12 @@ export interface StockAvailabilityDto {
 export interface OrderDto extends IAuditableDto<string> {
   orderNumber: string;
   status: OrderStatus;
+  orderType: OrderType;
   orderDate: string;
-  customerId: string;
+  sourceId: string;
+  targetId: string;
+  externalOrderId?: string;
   orderLines: OrderLineDto[];
-  totalAmount: number;
 }
 
 export interface OrderLineDto {
@@ -333,6 +343,7 @@ export interface InventoryTransactionDto {
   quantityChange: number;
   transactionType: TransactionType;
   transactionDate: string;
+  orderId?: string; // Reference to Order (Operational)
   product?: ProductDto;
   warehouse?: WarehouseDto;
 }
@@ -466,6 +477,10 @@ export interface SupplierDto extends IAuditableDto<string> {
   email: string;
   phone?: string;
   address?: string;
+  /** Contact person name (required by API on create/update) */
+  contactName?: string;
+  /** Phone number (required by API on create/update) */
+  phoneNumber?: string;
 }
 
 // ==================== ENUMS ====================
@@ -507,6 +522,13 @@ export enum PurchaseOrderStatus {
   PartiallyReceived = "PartiallyReceived",
   Received = "Received",
   Cancelled = "Cancelled",
+}
+
+export enum OrderType {
+  Inbound = "Inbound",
+  Outbound = "Outbound",
+  Transfer = "Transfer",
+  Return = "Return",
 }
 
 export enum AdjustmentType {

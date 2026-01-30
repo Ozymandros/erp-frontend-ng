@@ -6,12 +6,16 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
+import { FileService } from '../../../core/services/file.service';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 describe('PurchaseOrdersListComponent', () => {
   let component: PurchaseOrdersListComponent;
   let fixture: ComponentFixture<PurchaseOrdersListComponent>;
   let purchaseOrdersServiceSpy: jasmine.SpyObj<PurchaseOrdersService>;
   let messageServiceSpy: jasmine.SpyObj<NzMessageService>;
+  let fileServiceSpy: jasmine.SpyObj<FileService>;
+  let modalServiceSpy: jasmine.SpyObj<NzModalService>;
 
   const mockResponse = {
     items: [{ id: '1', orderNumber: 'PO-1', supplierName: 'S1', totalAmount: 100, status: 'Pending', orderDate: new Date() }],
@@ -19,20 +23,20 @@ describe('PurchaseOrdersListComponent', () => {
   };
 
   beforeEach(async () => {
-    // The original code had a typo using 'purchasingServiceSpy' instead of 'purchaseOrdersServiceSpy'
-    // The instruction adds the correct initialization for 'purchaseOrdersServiceSpy'
-    // and updates the mock return value for 'getPurchaseOrders' using the correct spy.
-    // The 'purchasingServiceSpy' line is left as is, but it's not used later.
-    let purchasingServiceSpy = jasmine.createSpyObj('PurchasingService', ['getPurchaseOrders', 'deletePurchaseOrder']); // This line was in the original code
-    purchaseOrdersServiceSpy = jasmine.createSpyObj('PurchaseOrdersService', ['getPurchaseOrders', 'deletePurchaseOrder']);
+    purchaseOrdersServiceSpy = jasmine.createSpyObj('PurchaseOrdersService', ['getAll', 'delete', 'exportToXlsx', 'exportToPdf']);
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
-    purchaseOrdersServiceSpy.getPurchaseOrders.and.returnValue(of({ items: [], total: 0 } as any));
+    fileServiceSpy = jasmine.createSpyObj('FileService', ['saveFile']);
+    modalServiceSpy = jasmine.createSpyObj('NzModalService', ['confirm']);
+
+    purchaseOrdersServiceSpy.getAll.and.returnValue(of(mockResponse as any));
 
     await TestBed.configureTestingModule({
       imports: [ PurchaseOrdersListComponent, BrowserAnimationsModule, HttpClientTestingModule ],
       providers: [
         { provide: PurchaseOrdersService, useValue: purchaseOrdersServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
+        { provide: FileService, useValue: fileServiceSpy },
+        { provide: NzModalService, useValue: modalServiceSpy },
         { provide: ActivatedRoute, useValue: {} }
       ]
     })
@@ -48,16 +52,14 @@ describe('PurchaseOrdersListComponent', () => {
   });
 
   it('should load orders', () => {
-    // After the change in beforeEach, getPurchaseOrders now returns an empty array.
-    // So, the component's orders and total will be 0 initially.
-    expect(component.orders.length).toBe(0);
-    expect(component.total).toBe(0);
+    expect(component.data.length).toBe(1);
+    expect(component.total).toBe(1);
   });
 
   it('should delete order', () => {
-    purchaseOrdersServiceSpy.deletePurchaseOrder.and.returnValue(of(void 0));
+    purchaseOrdersServiceSpy.delete.and.returnValue(of(void 0));
     component.deleteOrder('1');
-    expect(purchaseOrdersServiceSpy.deletePurchaseOrder).toHaveBeenCalledWith('1');
+    expect(purchaseOrdersServiceSpy.delete).toHaveBeenCalledWith('1');
     expect(messageServiceSpy.success).toHaveBeenCalled();
   });
 });

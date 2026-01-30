@@ -1,47 +1,98 @@
 <div class="stock-operations">
-  <div class="page-header stock-operations-header">
+  <div class="page-header">
     <h1>Inventory Operations</h1>
   </div>
 
   <div nz-row [nzGutter]="16">
     <div nz-col [nzSpan]="12">
       <nz-card nzTitle="Manual Stock Adjustment">
-        <form nz-form [formGroup]="adjustmentForm" (ngSubmit)="submitAdjustment()">
+        <form
+          nz-form
+          [formGroup]="adjustmentForm"
+          (ngSubmit)="submitAdjustment()"
+          nzLayout="vertical"
+        >
           <nz-form-item>
-            <nz-form-label [nzSpan]="6" nzRequired>Product</nz-form-label>
-            <nz-form-control [nzSpan]="18" nzErrorTip="Please select a product!">
-              <nz-select formControlName="productId" nzShowSearch nzPlaceHolder="Search product">
-                <nz-option *ngFor="let p of products" [nzValue]="p.id" [nzLabel]="p.name + ' (' + p.sku + ')'"></nz-option>
-              </nz-select>
+            <nz-form-label nzRequired>Product</nz-form-label>
+            <nz-form-control nzErrorTip="Please select a product!">
+              <div #productSelectHost class="select-host">
+                <nz-select
+                  formControlName="productId"
+                  nzShowSearch
+                  nzServerSearch
+                  nzPlaceHolder="Type at least 3 characters to search..."
+                  [nzOpen]="productDropdownOpen"
+                  [nzLoading]="productSearching"
+                  [nzNotFoundContent]="notFoundProductText"
+                  (nzOnSearch)="onProductSearch($event)"
+                  (nzOpenChange)="onProductOpenChange($event)"
+                >
+                  @for (p of products; track p.id) {
+                    <nz-option
+                      [nzValue]="p.id"
+                      [nzLabel]="p.name + ' (' + p.sku + ')'"
+                    ></nz-option>
+                  }
+                </nz-select>
+              </div>
             </nz-form-control>
           </nz-form-item>
 
           <nz-form-item>
-            <nz-form-label [nzSpan]="6" nzRequired>Warehouse</nz-form-label>
-            <nz-form-control [nzSpan]="18" nzErrorTip="Please select a warehouse!">
-              <nz-select formControlName="warehouseId" nzPlaceHolder="Select warehouse">
-                <nz-option *ngFor="let w of warehouses" [nzValue]="w.id" [nzLabel]="w.name"></nz-option>
-              </nz-select>
+            <nz-form-label nzRequired>Warehouse</nz-form-label>
+            <nz-form-control nzErrorTip="Please select a warehouse!">
+              <div #warehouseSelectHost class="select-host">
+                <nz-select
+                  formControlName="warehouseId"
+                  nzShowSearch
+                  nzServerSearch
+                  nzPlaceHolder="Type at least 3 characters to search..."
+                  [nzOpen]="warehouseDropdownOpen"
+                  [nzLoading]="warehouseSearching"
+                  [nzNotFoundContent]="notFoundWarehouseText"
+                  (nzOnSearch)="onWarehouseSearch($event)"
+                  (nzOpenChange)="onWarehouseOpenChange($event)"
+                >
+                  @for (w of warehouses; track w.id) {
+                    <nz-option [nzValue]="w.id" [nzLabel]="w.name"></nz-option>
+                  }
+                </nz-select>
+              </div>
             </nz-form-control>
           </nz-form-item>
 
           <nz-form-item>
-            <nz-form-label [nzSpan]="6" nzRequired>Adjustment</nz-form-label>
-            <nz-form-control [nzSpan]="18" nzExtra="Use negative numbers for stock removals">
-              <nz-input-number formControlName="quantity" [nzStep]="1" class="full-width-input"></nz-input-number>
+            <nz-form-label nzRequired>Adjustment</nz-form-label>
+            <nz-form-control nzExtra="Use negative numbers for stock removals">
+              <nz-input-number
+                formControlName="quantity"
+                [nzStep]="1"
+                class="full-width-input"
+              ></nz-input-number>
             </nz-form-control>
           </nz-form-item>
 
           <nz-form-item>
-            <nz-form-label [nzSpan]="6">Reference/Reason</nz-form-label>
-            <nz-form-control [nzSpan]="18">
-              <input nz-input formControlName="reason" placeholder="e.g. Damage, Correcting count" />
+            <nz-form-label>Reference / Reason</nz-form-label>
+            <nz-form-control>
+              <textarea
+                nz-input
+                formControlName="reason"
+                [nzAutosize]="{ minRows: 3, maxRows: 6 }"
+                placeholder="e.g. Damage, count correction"
+              ></textarea>
             </nz-form-control>
           </nz-form-item>
 
           <nz-form-item>
-            <nz-form-control [nzOffset]="6" [nzSpan]="18">
-              <button nz-button nzType="primary" type="submit" [nzLoading]="submitting" [disabled]="!adjustmentForm.valid">
+            <nz-form-control>
+              <button
+                nz-button
+                nzType="primary"
+                type="submit"
+                [nzLoading]="submitting"
+                [disabled]="!adjustmentForm.valid"
+              >
                 Apply Adjustment
               </button>
             </nz-form-control>

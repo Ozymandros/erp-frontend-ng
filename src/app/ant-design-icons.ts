@@ -1,5 +1,6 @@
 import {
   PlusOutline,
+  MinusOutline,
   UserOutline,
   LogoutOutline,
   AppstoreOutline,
@@ -21,11 +22,13 @@ import {
   EyeOutline,
   FileExcelOutline,
   FilePdfOutline,
-  ArrowLeftOutline
+  ArrowLeftOutline,
+  TeamOutline
 } from '@ant-design/icons-angular/icons';
 
 export const icons = [
   PlusOutline,
+  MinusOutline,
   UserOutline,
   LogoutOutline,
   AppstoreOutline,
@@ -47,5 +50,6 @@ export const icons = [
   EyeOutline,
   FileExcelOutline,
   FilePdfOutline,
-  ArrowLeftOutline
+  ArrowLeftOutline,
+  TeamOutline
 ];

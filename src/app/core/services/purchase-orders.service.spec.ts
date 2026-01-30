@@ -37,7 +37,7 @@ describe('PurchaseOrdersService', () => {
 
     apiClientSpy.get.and.returnValue(of(mockOrders));
 
-    service.getPurchaseOrders().subscribe(response => {
+    service.getAll().subscribe(response => {
       expect(response).toEqual(mockOrders);
       expect(apiClientSpy.get).toHaveBeenCalled();
       done();

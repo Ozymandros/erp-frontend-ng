@@ -70,9 +70,10 @@ export class ProfileComponent implements OnInit {
   updateProfile(): void {
     if (this.profileForm.valid && this.currentUser) {
       this.saving = true;
-      this.usersService.updateUser(this.currentUser.id, this.profileForm.value).subscribe({
+      this.usersService.update(this.currentUser.id, this.profileForm.value).subscribe({
         next: () => {
           this.message.success('Profile updated successfully');
+          this.authService.refreshUserData().subscribe(); // Refresh cache
           this.saving = false;
         },
         error: (err) => {
@@ -87,7 +88,9 @@ export class ProfileComponent implements OnInit {
     if (this.passwordForm.valid && this.currentUser) {
       this.updatingPassword = true;
       // Assume a specific endpoint or just update via user service
-      this.usersService.updateUser(this.currentUser.id, { password: this.passwordForm.value.password }).subscribe({
+      this.usersService.update(this.currentUser.id, { password: this.passwordForm.value.password } as any).subscribe({
+
+
         next: () => {
           this.message.success('Password changed successfully');
           this.passwordForm.reset();

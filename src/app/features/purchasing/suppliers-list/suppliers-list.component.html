@@ -1,0 +1,106 @@
+@if (permissions$ | async; as p) {
+<div class="suppliers-list">
+  <div class="page-header">
+    <h1>Suppliers</h1>
+    <div class="header-actions">
+      @if (p.canExport) {
+        <button type="button" nz-button (click)="exportToXlsx('suppliers.xlsx')" aria-label="Export to Excel">
+          <span nz-icon nzType="file-excel"></span> Export XLSX
+        </button>
+      }
+      @if (p.canExport) {
+        <button type="button" nz-button (click)="exportToPdf('suppliers.pdf')" aria-label="Export to PDF">
+          <span nz-icon nzType="file-pdf"></span> Export PDF
+        </button>
+      }
+      @if (p.canCreate) {
+        <button type="button" nz-button nzType="primary" routerLink="/purchasing/suppliers/new" aria-label="Add supplier">
+          <span nz-icon nzType="plus"></span>
+          Add Supplier
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="list-search">
+    <nz-space-compact nzSize="large" class="list-search__compact">
+      <nz-input-wrapper>
+        <nz-icon nzInputAddonBefore nzType="search" />
+        <input
+          type="text"
+          nz-input
+          placeholder="By name or email..."
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearch()"
+        />
+      </nz-input-wrapper>
+    </nz-space-compact>
+  </div>
+
+  <nz-table
+    #suppliersTable
+    [nzData]="suppliers"
+    [nzLoading]="loading"
+    [nzPageSize]="pageSize"
+    [nzPageIndex]="pageIndex"
+    [nzTotal]="total"
+    [nzFrontPagination]="false"
+    (nzPageIndexChange)="onPageChange($event)"
+    (nzPageSizeChange)="onPageSizeChange($event)"
+    [nzScroll]="{ x: '1000px', y: 'calc(100vh - 350px)' }"
+  >
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Address</th>
+        @if (p.canUpdate || p.canDelete) {
+          <th nzWidth="150px">Actions</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (supplier of suppliersTable.data; track supplier.id) {
+        <tr>
+          <td><strong>{{ supplier.name }}</strong></td>
+          <td>{{ supplier.email || '-' }}</td>
+          <td>{{ supplier.phone || '-' }}</td>
+          <td>{{ supplier.address || '-' }}</td>
+          @if (p.canUpdate || p.canDelete) {
+            <td>
+              @if (p.canUpdate) {
+                <button
+                  type="button"
+                  nz-button
+                  nzType="link"
+                  nzSize="small"
+                  [routerLink]="['/purchasing/suppliers', supplier.id]"
+                  aria-label="Edit supplier"
+                >
+                  <span nz-icon nzType="edit"></span>
+                  Edit
+                </button>
+              }
+              @if (p.canDelete) {
+                <button
+                  type="button"
+                  nz-button
+                  nzType="link"
+                  nzSize="small"
+                  nzDanger
+                  (click)="deleteSupplier(supplier)"
+                  aria-label="Delete supplier"
+                >
+                  <span nz-icon nzType="delete"></span>
+                  Delete
+                </button>
+              }
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </nz-table>
+</div>
+}

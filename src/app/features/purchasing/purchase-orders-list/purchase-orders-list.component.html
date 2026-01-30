@@ -1,0 +1,99 @@
+@if (permissions$ | async; as p) {
+<div>
+  <div class="page-header">
+    <h1>Purchase Orders</h1>
+    <div class="header-actions">
+      @if (p.canExport) {
+        <button nz-button (click)="exportToXlsx()">
+          <i nz-icon nzType="file-excel"></i> Export XLSX
+        </button>
+      }
+      @if (p.canExport) {
+        <button nz-button (click)="exportToPdf()">
+          <i nz-icon nzType="file-pdf"></i> Export PDF
+        </button>
+      }
+      @if (p.canCreate) {
+        <button nz-button nzType="primary" routerLink="/purchasing/orders/new">
+          <i nz-icon nzType="plus"></i> New Purchase Order
+        </button>
+      }
+    </div>
+  </div>
+
+  <nz-card>
+    <div class="list-search">
+      <!--<span class="list-search__label">Search</span>-->
+      <nz-space-compact nzSize="large" class="list-search__compact">
+        <nz-input-wrapper>
+          <nz-icon nzInputAddonBefore nzType="search" />
+          <input
+            type="text"
+            nz-input
+            placeholder="By order number or reference..."
+            [(ngModel)]="searchTerm"
+            (ngModelChange)="onSearch()"
+          />
+        </nz-input-wrapper>
+      </nz-space-compact>
+    </div>
+
+    <nz-table
+      #basicTable
+      [nzData]="data"
+      [nzLoading]="loading"
+      [nzTotal]="total"
+      [(nzPageIndex)]="pageIndex"
+      [(nzPageSize)]="pageSize"
+      [nzFrontPagination]="false"
+      (nzPageIndexChange)="onPageChange($event)"
+      (nzPageSizeChange)="onPageSizeChange($event)"
+      [nzScroll]="{ x: '1000px', y: 'calc(100vh - 400px)' }"
+    >
+      <thead>
+        <tr>
+          <th>Order #</th>
+          <th>Supplier</th>
+          <th>Date</th>
+          <th>Total Amount</th>
+          <th>Status</th>
+          @if (p.canRead || p.canDelete) {
+            <th nzWidth="150px">Actions</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of basicTable.data; track item.id) {
+          <tr>
+            <td><strong>{{ item.orderNumber }}</strong></td>
+            <td>{{ item.supplierName }}</td>
+            <td>{{ item.orderDate | date:'shortDate' }}</td>
+            <td>${{ item.totalAmount.toFixed(2) }}</td>
+            <td>
+              <nz-tag [nzColor]="getStatusColor(item.status)">
+                {{ item.status }}
+              </nz-tag>
+            </td>
+            @if (p.canRead || p.canDelete) {
+              <td>
+                @if (p.canRead) {
+                  <a [routerLink]="['/purchasing/orders', item.id]" class="view-link">View</a>
+                }
+                @if (p.canDelete) {
+                  <a
+                    nz-popconfirm
+                    nzPopconfirmTitle="Are you sure cancel this order?"
+                    (nzOnConfirm)="deleteOrder(item.id)"
+                    nzPopconfirmPlacement="left"
+                    class="cancel-link"
+                  >Cancel</a>
+                }
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+  </nz-card>
+</div>
+}

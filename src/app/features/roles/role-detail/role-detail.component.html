@@ -1,6 +1,6 @@
 <div class="role-detail">
-  <div class="page-header" style="margin-bottom: 24px;">
-    <button nz-button nzType="default" routerLink="/roles" style="margin-right: 16px;">
+  <div class="page-header">
+    <button nz-button nzType="default" routerLink="/roles" class="back-button">
       <i nz-icon nzType="arrow-left"></i> Back
     </button>
     <h1>{{ isEditMode ? 'Edit Role' : 'Create Role' }}</h1>
@@ -23,22 +23,34 @@
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-label [nzSpan]="4">Permissions</nz-form-label>
-        <nz-form-control [nzSpan]="14">
-          <nz-select formControlName="permissionIds" nzMode="multiple" nzPlaceHolder="Select permissions">
-            <nz-option *ngFor="let p of allPermissions" [nzValue]="p.id" [nzLabel]="p.module + ':' + p.action"></nz-option>
-          </nz-select>
-        </nz-form-control>
-      </nz-form-item>
-
-      <nz-form-item>
         <nz-form-control [nzOffset]="4" [nzSpan]="14">
           <button nz-button nzType="primary" [nzLoading]="saving" [disabled]="!roleForm.valid">
             {{ isEditMode ? 'Update' : 'Create' }}
           </button>
-          <button nz-button nzType="default" type="button" routerLink="/roles" style="margin-left: 8px;">Cancel</button>
+          <button nz-button nzType="default" type="button" routerLink="/roles" class="cancel-button">Cancel</button>
         </nz-form-control>
       </nz-form-item>
     </form>
   </nz-card>
+
+  <!-- Permission Management Card (if canUpdate and in edit mode) -->
+  @if (isEditMode && roleId && canUpdate()) {
+    <nz-card id="manage-permissions" class="manage-permissions-card">
+      <div class="manage-permissions-header">
+        <h3 class="manage-permissions-title">Manage Permissions</h3>
+        <span class="manage-permissions-subtitle">Assign or unassign permissions to this role</span>
+      </div>
+      <app-permission-selector
+        [roleId]="roleId"
+        [initialPermissions]="rolePermissions"
+        [readonly]="!canUpdate()"
+        (permissionsChange)="onPermissionsChange($event)"
+      />
+    </nz-card>
+  }
+
+  <!-- Assigned Permissions View -->
+  @if (isEditMode && role) {
+    <app-assigned-permissions-view [permissions]="rolePermissions" />
+  }
 </div>

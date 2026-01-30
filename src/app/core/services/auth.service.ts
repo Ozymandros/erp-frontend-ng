@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { map, tap, switchMap, filter, take, catchError } from 'rxjs/operators';
 import { ApiClientService } from '../api/http-client.service';
 import { AUTH_ENDPOINTS, USERS_ENDPOINTS, PERMISSIONS_ENDPOINTS } from '../api/endpoints.constants';
 import {
@@ -9,8 +9,7 @@ import {
   RegisterRequest,
   AuthResponse,
   User,
-  PermissionCheckRequest,
-  PermissionCheckResponse
+  ModulePermissions
 } from '../types/api.types';
 
 const ACCESS_TOKEN_KEY = 'access_token';
@@ -21,6 +20,17 @@ const TOKEN_EXPIRY_KEY = 'token_expiry';
   providedIn: 'root'
 })
 export class AuthService {
+  // Signals for reactive state management
+  private currentUserSignal = signal<User | null>(null);
+  private isLoadingSignal = signal<boolean>(true);
+
+  // Computed signals
+  public currentUser = computed(() => this.currentUserSignal());
+  public isLoading = computed(() => this.isLoadingSignal());
+  public isAuthenticated = computed(() => this.currentUserSignal() !== null);
+  public permissions = computed(() => this.currentUserSignal()?.permissions || []);
+
+  // RxJS observables for backward compatibility
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   private isLoadingSubject = new BehaviorSubject<boolean>(true);
 
@@ -42,14 +52,19 @@ export class AuthService {
     if (token && !this.isTokenExpired()) {
       this.apiClient.setAuthToken(token);
       this.fetchCurrentUser().subscribe({
-        next: () => this.isLoadingSubject.next(false),
+        next: () => {
+          this.isLoadingSubject.next(false);
+          this.isLoadingSignal.set(false);
+        },
         error: () => {
           this.clearTokens();
           this.isLoadingSubject.next(false);
+          this.isLoadingSignal.set(false);
         }
       });
     } else {
       this.isLoadingSubject.next(false);
+      this.isLoadingSignal.set(false);
     }
   }
 
@@ -58,6 +73,7 @@ export class AuthService {
       tap(response => {
         this.storeTokens(response.accessToken, response.refreshToken, response.expiresIn);
         this.currentUserSubject.next(response.user);
+        this.currentUserSignal.set(response.user);
         this.router.navigate(['/']);
       })
     );
@@ -68,6 +84,7 @@ export class AuthService {
       tap(response => {
         this.storeTokens(response.accessToken, response.refreshToken, response.expiresIn);
         this.currentUserSubject.next(response.user);
+        this.currentUserSignal.set(response.user);
         this.router.navigate(['/']);
       })
     );
@@ -78,15 +95,98 @@ export class AuthService {
       tap(() => {
         this.clearTokens();
         this.currentUserSubject.next(null);
+        this.currentUserSignal.set(null);
         this.router.navigate(['/login']);
       })
     );
   }
 
+  /**
+   * Get current user synchronously (for use in templates and computed signals)
+   */
+  getCurrentUser(): User | null {
+    return this.currentUserSignal();
+  }
+
+  /**
+   * Check permission via backend API endpoint.
+   * This is the ONLY place where /permissions/check should be called.
+   * Used by PermissionGuard for route authorization.
+   */
   checkPermission(module: string, action: string): Observable<boolean> {
-    const request: PermissionCheckRequest = { module, action };
-    return this.apiClient.post<PermissionCheckResponse>(PERMISSIONS_ENDPOINTS.CHECK, request).pipe(
-      map(response => response.allowed)
+    const user = this.currentUserSignal();
+    
+    // Admin override
+    if (user?.isAdmin) {
+      return of(true);
+    }
+
+    // If user exists, check cached permissions first (client-side check)
+    if (user) {
+      const hasPermission = user.permissions?.some(
+        p => p.module.toLowerCase() === module.toLowerCase() && 
+             p.action.toLowerCase() === action.toLowerCase()
+      );
+      
+      // If permission not found in cache, return early without API call
+      if (!hasPermission) {
+        return of(false);
+      }
+      
+      // If found in cache, still call backend to verify (for route guards)
+      return this.apiClient.get<boolean>(PERMISSIONS_ENDPOINTS.CHECK, { module, action }).pipe(
+        map(allowed => allowed),
+        catchError(() => of(false))
+      );
+    }
+
+    // If loading, wait for it to finish
+    if (this.isLoadingSignal()) {
+      return this.isLoading$.pipe(
+        filter(isLoading => !isLoading),
+        take(1),
+        switchMap(() => {
+          const loadedUser = this.currentUserSignal();
+          if (loadedUser?.isAdmin) return of(true);
+          
+          // Call backend API for verification
+          return this.apiClient.get<boolean>(PERMISSIONS_ENDPOINTS.CHECK, { module, action }).pipe(
+            map(allowed => allowed),
+            catchError(() => of(false))
+          );
+        })
+      );
+    }
+
+    // Fallback to API if not loading and no user
+    return this.apiClient.get<boolean>(PERMISSIONS_ENDPOINTS.CHECK, { module, action }).pipe(
+      map(allowed => allowed),
+      catchError(() => of(false))
+    );
+  }
+
+  getModulePermissions(module: string): Observable<ModulePermissions> {
+    return this.currentUser$.pipe(
+      map(user => {
+        if (!user) {
+          return { canRead: false, canCreate: false, canUpdate: false, canDelete: false, canExport: false };
+        }
+        
+        if (user.isAdmin) {
+          return { canRead: true, canCreate: true, canUpdate: true, canDelete: true, canExport: true };
+        }
+
+        const perms = user.permissions || [];
+        const modulePerms = perms.filter(p => p.module.toLowerCase() === module.toLowerCase());
+        
+        return {
+          canRead: modulePerms.some(p => ['read', 'view', 'list'].includes(p.action.toLowerCase())),
+          canCreate: modulePerms.some(p => ['create', 'add', 'new'].includes(p.action.toLowerCase())),
+          canUpdate: modulePerms.some(p => ['update', 'edit', 'modify'].includes(p.action.toLowerCase())),
+          canDelete: modulePerms.some(p => ['delete', 'remove'].includes(p.action.toLowerCase())),
+          canExport: modulePerms.some(p => ['export', 'download'].includes(p.action.toLowerCase()))
+        };
+      })
     );
   }
 
@@ -96,7 +196,10 @@ export class AuthService {
 
   private fetchCurrentUser(): Observable<User> {
     return this.apiClient.get<User>(USERS_ENDPOINTS.ME).pipe(
-      tap(user => this.currentUserSubject.next(user))
+      tap(user => {
+        this.currentUserSubject.next(user);
+        this.currentUserSignal.set(user);
+      })
     );
   }
 

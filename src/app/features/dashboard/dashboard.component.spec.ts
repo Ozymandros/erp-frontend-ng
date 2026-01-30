@@ -28,15 +28,18 @@ describe('DashboardComponent', () => {
   };
 
   beforeEach(async () => {
-    usersServiceSpy = jasmine.createSpyObj('UsersService', ['getUsers']);
-    productsServiceSpy = jasmine.createSpyObj('ProductsService', ['getProducts']);
-    warehousesServiceSpy = jasmine.createSpyObj('WarehousesService', ['getWarehouses']);
-    customersServiceSpy = jasmine.createSpyObj('CustomersService', ['getCustomers']);
+    usersServiceSpy = jasmine.createSpyObj('UsersService', ['getAll']);
+    productsServiceSpy = jasmine.createSpyObj('ProductsService', ['getAll']);
+    warehousesServiceSpy = jasmine.createSpyObj('WarehousesService', ['getAll']);
+    customersServiceSpy = jasmine.createSpyObj('CustomersService', ['getAll']);
 
-    usersServiceSpy.getUsers.and.returnValue(of({ ...emptyPaginatedResponse, total: 100 }));
-    productsServiceSpy.getProducts.and.returnValue(of({ total: 50, items: [] } as any));
-    warehousesServiceSpy.getWarehouses.and.returnValue(of({ total: 5, items: [] } as any));
-    customersServiceSpy.getCustomers.and.returnValue(of({ total: 200, items: [] } as any));
+    usersServiceSpy.getAll.and.returnValue(of({ ...emptyPaginatedResponse, total: 100 }));
+
+    productsServiceSpy.getAll.and.returnValue(of({ total: 50, items: [] } as any));
+
+    warehousesServiceSpy.getAll.and.returnValue(of({ total: 5, items: [] } as any));
+    customersServiceSpy.getAll.and.returnValue(of({ total: 200, items: [] } as any));
+
 
     await TestBed.configureTestingModule({
       imports: [ DashboardComponent, BrowserAnimationsModule, HttpClientTestingModule ],

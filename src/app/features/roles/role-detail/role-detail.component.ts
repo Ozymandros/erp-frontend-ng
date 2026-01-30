@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -6,11 +6,15 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
-import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { RolesService } from '../../../core/services/roles.service';
 import { PermissionsService } from '../../../core/services/permissions.service';
+import { PermissionService } from '../../../core/services/permission.service';
+import { PERMISSION_MODULES, PERMISSION_ACTIONS } from '../../../core/constants/permissions';
+import { PermissionSelectorComponent } from '../components/permission-selector/permission-selector.component';
+import { AssignedPermissionsViewComponent } from '../components/assigned-permissions-view/assigned-permissions-view.component';
 import { Role, Permission } from '../../../types/api.types';
+import { forkJoin, finalize } from 'rxjs';
 
 @Component({
   selector: 'app-role-detail',
@@ -23,16 +27,11 @@ import { Role, Permission } from '../../../types/api.types';
     NzInputModule,
     NzButtonModule,
     NzCardModule,
-    NzSelectModule
+    PermissionSelectorComponent,
+    AssignedPermissionsViewComponent
   ],
   templateUrl: './role-detail.component.html',
-  styles: [`
-    h1 {
-      display: inline-block;
-      margin: 0;
-      vertical-align: middle;
-    }
-  `]
+  styleUrls: ['./role-detail.component.css']
 })
 export class RoleDetailComponent implements OnInit {
   roleForm: FormGroup;
@@ -40,58 +39,80 @@ export class RoleDetailComponent implements OnInit {
   isEditMode = false;
   loading = false;
   saving = false;
-  allPermissions: Permission[] = [];
+  role: Role | null = null;
+  rolePermissions: Permission[] = [];
+
+  // Permission checks
+  canUpdate = computed(() => {
+    return this.permissionService.hasPermission(
+      PERMISSION_MODULES.ROLES,
+      PERMISSION_ACTIONS.UPDATE
+    );
+  });
+
 
   constructor(
     private fb: FormBuilder,
     private rolesService: RolesService,
     private permissionsService: PermissionsService,
+    private permissionService: PermissionService,
     private route: ActivatedRoute,
     private router: Router,
     private message: NzMessageService
   ) {
     this.roleForm = this.fb.group({
       name: ['', [Validators.required]],
-      description: [''],
-      permissionIds: [[]]
+      description: ['']
     });
   }
 
   ngOnInit(): void {
     this.roleId = this.route.snapshot.paramMap.get('id');
     this.isEditMode = !!this.roleId && this.roleId !== 'new';
-    
-    this.loadPermissions();
 
     if (this.isEditMode && this.roleId) {
       this.loadRole(this.roleId);
     }
   }
 
-  loadPermissions(): void {
-    this.permissionsService.getPermissions({ pageSize: 1000 }).subscribe({
-      next: (response) => {
-        this.allPermissions = response.items;
+  loadRole(id: string): void {
+    this.loading = true;
+    
+    // Load role data and permissions in parallel
+    forkJoin({
+      role: this.rolesService.getById(id),
+      permissions: this.rolesService.getRolePermissions(id)
+    }).pipe(
+      finalize(() => {
+        this.loading = false;
+      })
+    ).subscribe({
+      next: ({ role, permissions }) => {
+        this.role = role;
+        this.rolePermissions = permissions;
+        this.roleForm.patchValue({
+          name: role.name,
+          description: role.description
+        });
+      },
+      error: (err) => {
+        this.message.error('Failed to load role');
       }
     });
   }
 
-  loadRole(id: string): void {
-    this.loading = true;
-    this.rolesService.getRoleById(id).subscribe({
-      next: (role) => {
-        this.roleForm.patchValue({
-          name: role.name,
-          description: role.description,
-          permissionIds: role.permissions?.map((p: Permission) => p.id)
-        });
-        this.loading = false;
-      },
-      error: () => {
-        this.message.error('Failed to load role');
-        this.loading = false;
-      }
-    });
+  onPermissionsChange(permissions: Permission[]): void {
+    // Compare IDs to avoid unnecessary updates that cause re-renders
+    const oldIds = this.rolePermissions.map(p => p.id).sort().join(',');
+    const newIds = permissions.map(p => p.id).sort().join(',');
+    
+    if (oldIds !== newIds) {
+      // Only update if IDs actually changed
+      // Use setTimeout to defer update to next JavaScript event loop tick, ensuring it happens after Angular's change detection completes
+      setTimeout(() => {
+        this.rolePermissions = permissions;
+      }, 0);
+    }
   }
 
   save(): void {
@@ -100,8 +121,9 @@ export class RoleDetailComponent implements OnInit {
       const data = this.roleForm.value;
 
       const obs = this.isEditMode && this.roleId
-        ? this.rolesService.updateRole(this.roleId, data)
-        : this.rolesService.createRole(data);
+        ? this.rolesService.update(this.roleId, data)
+        : this.rolesService.create(data);
+
 
       obs.subscribe({
         next: () => {

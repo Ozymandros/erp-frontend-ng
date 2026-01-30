@@ -8,38 +8,20 @@ import {
   PaginatedResponse,
   SearchParams
 } from '../types/api.types';
+import { BaseApiService } from '../base/base-api.service';
+
 
 @Injectable({
   providedIn: 'root'
 })
-export class WarehousesService {
-  constructor(private apiClient: ApiClientService) {}
+export class WarehousesService extends BaseApiService<WarehouseDto, CreateUpdateWarehouseDto, CreateUpdateWarehouseDto> {
 
-  getWarehouses(params?: SearchParams): Observable<PaginatedResponse<WarehouseDto>> {
-    return this.apiClient.get<PaginatedResponse<WarehouseDto>>(INVENTORY_ENDPOINTS.WAREHOUSES, params);
+  constructor(apiClient: ApiClientService) {
+    super(apiClient);
   }
 
-  getWarehouseById(id: string): Observable<WarehouseDto> {
-    return this.apiClient.get<WarehouseDto>(INVENTORY_ENDPOINTS.WAREHOUSE_BY_ID(id));
-  }
-
-  createWarehouse(data: CreateUpdateWarehouseDto): Observable<WarehouseDto> {
-    return this.apiClient.post<WarehouseDto>(INVENTORY_ENDPOINTS.WAREHOUSES, data);
-  }
-
-  updateWarehouse(id: string, data: CreateUpdateWarehouseDto): Observable<WarehouseDto> {
-    return this.apiClient.put<WarehouseDto>(INVENTORY_ENDPOINTS.WAREHOUSE_BY_ID(id), data);
-  }
-
-  deleteWarehouse(id: string): Observable<void> {
-    return this.apiClient.delete<void>(INVENTORY_ENDPOINTS.WAREHOUSE_BY_ID(id));
-  }
-
-  exportToXlsx(): Observable<Blob> {
-    return this.apiClient.download(INVENTORY_ENDPOINTS.WAREHOUSES_EXPORT_XLSX);
-  }
-
-  exportToPdf(): Observable<Blob> {
-    return this.apiClient.download(INVENTORY_ENDPOINTS.WAREHOUSES_EXPORT_PDF);
+  protected getEndpoint(): string {
+    return INVENTORY_ENDPOINTS.WAREHOUSES;
   }
 }
+

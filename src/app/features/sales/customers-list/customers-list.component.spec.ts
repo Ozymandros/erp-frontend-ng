@@ -21,11 +21,11 @@ describe('CustomersListComponent', () => {
   };
 
   beforeEach(async () => {
-    customersServiceSpy = jasmine.createSpyObj('CustomersService', ['getCustomers', 'deleteCustomer']);
+    customersServiceSpy = jasmine.createSpyObj('CustomersService', ['getAll', 'delete', 'exportToXlsx', 'exportToPdf']);
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
     modalServiceSpy = jasmine.createSpyObj('NzModalService', ['confirm', 'create', 'info', 'success', 'error', 'warning', 'open']);
 
-    customersServiceSpy.getCustomers.and.returnValue(of(mockResponse as any));
+    customersServiceSpy.getAll.and.returnValue(of(mockResponse as any));
 
     await TestBed.configureTestingModule({
       imports: [ CustomersListComponent, BrowserAnimationsModule, HttpClientTestingModule ],
@@ -64,11 +64,12 @@ describe('CustomersListComponent', () => {
       options.nzOnOk();
       return undefined as any;
     });
-    customersServiceSpy.deleteCustomer.and.returnValue(of(void 0));
+    customersServiceSpy.delete.and.returnValue(of(void 0));
     
     component.deleteCustomer({ id: '1' } as any);
     
-    expect(customersServiceSpy.deleteCustomer).toHaveBeenCalledWith('1');
+    expect(customersServiceSpy.delete).toHaveBeenCalledWith('1');
+
     expect(messageServiceSpy.success).toHaveBeenCalled();
   });
 });

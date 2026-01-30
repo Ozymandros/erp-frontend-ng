@@ -6,13 +6,17 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { UsersService } from '../../../core/services/users.service';
 import { User } from '../../../types/api.types';
-import { FileUtils } from '../../../core/utils/file-utils';
+import { BaseListComponent } from '../../../core/base/base-list.component';
+import { FileService } from '../../../core/services/file.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { finalize } from 'rxjs';
 
 @Component({
@@ -26,95 +30,41 @@ import { finalize } from 'rxjs';
     NzButtonModule,
     NzInputModule,
     NzIconModule,
+    NzSpaceModule,
     NzTagModule,
     NzPopconfirmModule,
     NzCardModule,
+    NzModalModule
   ],
   templateUrl: './users-list.component.html',
   styleUrls: ['./users-list.component.css'],
 })
-export class UsersListComponent implements OnInit {
-  users: User[] = [];
-  loading = true;
-  total = 0;
-  pageIndex = 1;
-  pageSize = 10;
-  searchTerm = '';
+export class UsersListComponent extends BaseListComponent<User> {
+  protected get moduleName(): string {
+    return 'users';
+  }
 
   constructor(
-    private usersService: UsersService,
-    private message: NzMessageService,
-    private cdr: ChangeDetectorRef
-  ) {}
+    usersService: UsersService,
+    message: NzMessageService,
+    modal: NzModalService,
+    fileService: FileService,
+    cdr: ChangeDetectorRef,
+    authService: AuthService
+  ) {
+    super(usersService, message, modal, fileService, cdr, authService);
+  }
 
-  ngOnInit(): void {
-    this.loadUsers();
+  get users(): User[] {
+    return this.data;
   }
 
   loadUsers(): void {
-    this.loading = true;
-    this.usersService
-      .getUsers({
-        page: this.pageIndex,
-        pageSize: this.pageSize,
-        search: this.searchTerm,
-      })
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-          this.cdr.detectChanges();
-        })
-      )
-      .subscribe({
-        next: (response: any) => {
-          this.users = response?.items || (Array.isArray(response) ? response : []);
-          this.total = response?.total || (Array.isArray(response) ? response.length : 0);
-        },
-        error: () => {
-          this.message.error('Failed to load users');
-        },
-      });
-  }
-
-
-  onSearch(): void {
-    this.pageIndex = 1;
-    this.loadUsers();
+    this.loadData();
   }
 
   deleteUser(id: string): void {
-    this.usersService.deleteUser(id).subscribe({
-      next: () => {
-        this.message.success('User deleted successfully');
-        this.loadUsers();
-      },
-      error: () => {
-        this.message.error('Failed to delete user');
-      },
-    });
-  }
-
-  exportToXlsx(): void {
-    this.usersService.exportToXlsx().subscribe({
-      next: (blob) => {
-        FileUtils.saveFile(blob, 'users.xlsx');
-        this.message.success('Users exported to XLSX successfully');
-      },
-      error: () => {
-        this.message.error('Failed to export users to XLSX');
-      }
-    });
-  }
-
-  exportToPdf(): void {
-    this.usersService.exportToPdf().subscribe({
-      next: (blob) => {
-        FileUtils.saveFile(blob, 'users.pdf');
-        this.message.success('Users exported to PDF successfully');
-      },
-      error: () => {
-        this.message.error('Failed to export users to PDF');
-      }
-    });
+    super.deleteItem(id, 'user');
   }
 }
+

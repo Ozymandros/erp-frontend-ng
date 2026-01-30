@@ -1,0 +1,41 @@
+<nz-card class="module-card">
+  <div class="module-header">
+    <h3>{{ group.module }}</h3>
+    <div class="module-actions">
+      <button
+        nz-button
+        nzType="link"
+        nzSize="small"
+        [nzLoading]="isSaving"
+        [disabled]="readonly || isSaving"
+        (click)="onSelectAll()"
+      >
+        Select All
+      </button>
+      <button
+        nz-button
+        nzType="link"
+        nzSize="small"
+        nzDanger
+        [nzLoading]="isSaving"
+        [disabled]="readonly || isSaving"
+        (click)="onDeselectAll()"
+      >
+        Deselect All
+      </button>
+    </div>
+  </div>
+  
+  <div class="permissions-grid">
+    @for (permission of group.permissions; track permission.id) {
+      <app-permission-card
+        [permission]="permission"
+        [isAssigned]="isAssigned(permission.id)"
+        [saving]="savingPermissionId === permission.id"
+        [readonly]="readonly"
+        (assign)="assign.emit($event)"
+        (unassign)="unassign.emit($event)"
+      />
+    }
+  </div>
+</nz-card>

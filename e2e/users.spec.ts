@@ -1,28 +1,30 @@
 import { test, expect } from '@playwright/test';
-import { mockLogin, mockAuthenticatedState, mockGetUsers } from './mocks/api-mocks';
-import { mockAuthResponse, mockAdminUser, mockRoles } from './mocks/fixtures';
+import { mockLogin, mockAuthenticatedState, mockGetUsers, mockGetRoles, mockGetPermissions } from './mocks/api-mocks';
+import { mockAuthResponse, mockAdminUser, mockRoles, mockPermissions } from './mocks/fixtures';
 
 test.describe('User Management', () => {
   test.beforeEach(async ({ page }) => {
     await mockAuthenticatedState(page, mockAdminUser);
     await mockGetUsers(page, [mockAdminUser]);
+    await mockGetRoles(page, mockRoles);
+    await mockGetPermissions(page, mockPermissions);
   });
 
   test('should load users page and display list', async ({ page }) => {
     await page.goto('/users');
-    await expect(page.locator('h1')).toContainText('User Management');
-    await expect(page.locator('table')).toBeVisible();
+    await expect(page.locator('.page-header h1')).toContainText('Users Management');
+    await expect(page.locator('nz-table')).toBeVisible();
     await expect(page.locator('text=admin@example.com')).toBeVisible();
   });
 
   test('should navigate to roles page', async ({ page }) => {
     await page.goto('/roles');
-    await expect(page.locator('h1')).toContainText('Role Management');
+    await expect(page.locator('.page-header h1')).toContainText('Roles Management');
   });
 
   test('should navigate to permissions page', async ({ page }) => {
     await page.goto('/permissions');
-    await expect(page.locator('h1')).toContainText('Permission Management');
+    await expect(page.locator('.page-header h1')).toContainText('Permissions Management');
   });
 
   test('should open create user form', async ({ page }) => {

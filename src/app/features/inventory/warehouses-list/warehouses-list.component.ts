@@ -8,12 +8,18 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { WarehousesService } from '../../../core/services/warehouses.service';
+
+
 import { WarehouseDto } from '../../../types/api.types';
-import { FileUtils } from '../../../core/utils/file-utils';
+import { BaseListComponent } from '../../../core/base/base-list.component';
+import { FileService } from '../../../core/services/file.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { finalize } from 'rxjs';
+
 
 @Component({
   selector: 'app-warehouses-list',
@@ -31,159 +37,147 @@ import { finalize } from 'rxjs';
     NzCardModule
   ],
   template: `
-    <div class="page-header" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
-      <h1 style="margin: 0;">Warehouses Management</h1>
-      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-        <button nz-button (click)="exportToXlsx()">
+@if (permissions$ | async; as p) {
+<div>
+  <div class="page-header">
+    <h1>Warehouses Management</h1>
+    <div class="header-actions">
+      @if (p.canExport) {
+        <button nz-button (click)="exportToXlsx('warehouses.xlsx')">
           <i nz-icon nzType="file-excel"></i> Export XLSX
         </button>
-        <button nz-button (click)="exportToPdf()">
+      }
+      @if (p.canExport) {
+        <button nz-button (click)="exportToPdf('warehouses.pdf')">
           <i nz-icon nzType="file-pdf"></i> Export PDF
         </button>
+      }
 
-
+      @if (p.canCreate) {
         <button nz-button nzType="primary" routerLink="/inventory/warehouses/new">
           <i nz-icon nzType="plus"></i> Add Warehouse
         </button>
-      </div>
+      }
+    </div>
+  </div>
+
+  <nz-card>
+    <div class="search-container">
+      <nz-input-wrapper [nzPrefix]="'search'">
+        <input type="text" nz-input placeholder="Search warehouses..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" />
+      </nz-input-wrapper>
     </div>
 
-    <nz-card>
-      <div style="margin-bottom: 16px; display: flex; gap: 16px; max-width: 400px;">
-        <nz-input-group [nzPrefix]="prefixIconSearch">
-          <input type="text" nz-input placeholder="Search warehouses..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" />
-        </nz-input-group>
-        <ng-template #prefixIconSearch>
-          <i nz-icon nzType="search"></i>
-        </ng-template>
-      </div>
-
-      <nz-table
-        #basicTable
-        [nzData]="warehouses"
-        [nzLoading]="loading"
-        [nzTotal]="total"
-        [(nzPageIndex)]="pageIndex"
-        [(nzPageSize)]="pageSize"
-        [nzFrontPagination]="false"
-        (nzPageIndexChange)="loadWarehouses()"
-        (nzPageSizeChange)="loadWarehouses()"
-        [nzScroll]="{ x: '800px', y: 'calc(100vh - 400px)' }"
-      >
-
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Location</th>
-            <th>Created At</th>
+    <nz-table
+      #basicTable
+      [nzData]="warehouses"
+      [nzLoading]="loading"
+      [nzTotal]="total"
+      [(nzPageIndex)]="pageIndex"
+      [(nzPageSize)]="pageSize"
+      [nzFrontPagination]="false"
+      (nzPageIndexChange)="loadWarehouses()"
+      (nzPageSizeChange)="loadWarehouses()"
+      [nzScroll]="{ x: '800px', y: 'calc(100vh - 400px)' }"
+    >
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Location</th>
+          <th>Created At</th>
+          @if (p.canUpdate || p.canDelete) {
             <th nzWidth="150px">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let data of basicTable.data">
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (data of basicTable.data; track data.id) {
+          <tr>
             <td><strong>{{ data.name }}</strong></td>
             <td>{{ data.location || '-' }}</td>
             <td>{{ data.createdAt | date:'short' }}</td>
-            <td>
-
-              <a [routerLink]="['/inventory/warehouses', data.id]" style="margin-right: 8px;">Edit</a>
-              <a
-                nz-popconfirm
-                nzPopconfirmTitle="Are you sure delete this warehouse?"
-                (nzOnConfirm)="deleteWarehouse(data.id)"
-                nzPopconfirmPlacement="left"
-                style="color: #ff4d4f;"
-              >Delete</a>
-            </td>
+            @if (p.canUpdate || p.canDelete) {
+              <td>
+                @if (p.canUpdate) {
+                  <a [routerLink]="['/inventory/warehouses', data.id]" class="edit-link">Edit</a>
+                }
+                @if (p.canDelete) {
+                  <a
+                    nz-popconfirm
+                    nzPopconfirmTitle="Are you sure delete this warehouse?"
+                    (nzOnConfirm)="deleteWarehouse(data.id)"
+                    nzPopconfirmPlacement="left"
+                    class="delete-link"
+                  >Delete</a>
+                }
+              </td>
+            }
           </tr>
-        </tbody>
-      </nz-table>
-    </nz-card>
+        }
+      </tbody>
+    </nz-table>
+  </nz-card>
+</div>
+}
   `,
-  styles: []
+  styles: [`
+    .page-header {
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .page-header h1 {
+      margin: 0;
+    }
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .search-container {
+      margin-bottom: 16px;
+      display: flex;
+      gap: 16px;
+      max-width: 400px;
+    }
+    .edit-link {
+      margin-right: 8px;
+    }
+    .delete-link {
+      color: #ff4d4f;
+      margin-left: 8px;
+    }
+  `]
 })
-export class WarehousesListComponent implements OnInit {
-  warehouses: WarehouseDto[] = [];
-  loading = true;
-  total = 0;
-  pageIndex = 1;
-  pageSize = 10;
-  searchTerm = '';
+export class WarehousesListComponent extends BaseListComponent<WarehouseDto> {
+  protected get moduleName(): string {
+    return 'inventory';
+  }
 
   constructor(
-    private warehousesService: WarehousesService,
-    private message: NzMessageService,
-    private cdr: ChangeDetectorRef
-  ) {}
+    warehousesService: WarehousesService,
+    message: NzMessageService,
+    modal: NzModalService,
+    fileService: FileService,
+    cdr: ChangeDetectorRef,
+    authService: AuthService
+  ) {
+    super(warehousesService, message, modal, fileService, cdr, authService);
+  }
 
-  ngOnInit(): void {
-    this.loadWarehouses();
+  get warehouses(): WarehouseDto[] {
+    return this.data;
   }
 
   loadWarehouses(): void {
-    setTimeout(() => {
-      this.loading = true;
-      this.warehousesService.getWarehouses({
-        page: this.pageIndex,
-        pageSize: this.pageSize,
-        search: this.searchTerm
-      }).pipe(
-        finalize(() => {
-          this.loading = false;
-          this.cdr.detectChanges();
-        })
-      ).subscribe({
-        next: (response: any) => {
-          this.warehouses = response?.items || (Array.isArray(response) ? response : []);
-          this.total = response?.total || (Array.isArray(response) ? response.length : 0);
-        },
-        error: () => {
-          this.message.error('Failed to load warehouses');
-        }
-      });
-    });
-  }
-
-
-
-  onSearch(): void {
-    this.pageIndex = 1;
-    this.loadWarehouses();
+    this.loadData();
   }
 
   deleteWarehouse(id: string): void {
-    this.warehousesService.deleteWarehouse(id).subscribe({
-      next: () => {
-        this.message.success('Warehouse deleted successfully');
-        this.loadWarehouses();
-      },
-      error: () => {
-        this.message.error('Failed to delete warehouse');
-      }
-    });
-  }
-
-  exportToXlsx(): void {
-    this.warehousesService.exportToXlsx().subscribe({
-      next: (blob) => {
-        FileUtils.saveFile(blob, 'warehouses.xlsx');
-        this.message.success('Warehouses exported to XLSX successfully');
-      },
-      error: () => {
-        this.message.error('Failed to export warehouses to XLSX');
-      }
-    });
-  }
-
-  exportToPdf(): void {
-    this.warehousesService.exportToPdf().subscribe({
-      next: (blob) => {
-        FileUtils.saveFile(blob, 'warehouses.pdf');
-        this.message.success('Warehouses exported to PDF successfully');
-      },
-      error: () => {
-        this.message.error('Failed to export warehouses to PDF');
-      }
-    });
+    super.deleteItem(id, 'warehouse');
   }
 }
+

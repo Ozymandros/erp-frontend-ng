@@ -5,7 +5,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { UsersService } from '../../core/services/users.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { of, BehaviorSubject } from 'rxjs';
-import { User } from '../../types/api.types';
+import { User } from '../../core/types/api.types';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('ProfileComponent', () => {
@@ -25,7 +25,6 @@ describe('ProfileComponent', () => {
     lastName: 'User',
     emailConfirmed: true,
     isExternalLogin: false,
-    
     isAdmin: true,
     isActive: true,
     permissions: [],
@@ -35,10 +34,11 @@ describe('ProfileComponent', () => {
 
   beforeEach(async () => {
     userSubject = new BehaviorSubject<User | null>(mockUser);
-    authServiceSpy = jasmine.createSpyObj('AuthService', [], {
+    authServiceSpy = jasmine.createSpyObj('AuthService', ['refreshUserData'], {
       currentUser$: userSubject.asObservable()
     });
-    usersServiceSpy = jasmine.createSpyObj('UsersService', ['updateUser']);
+    authServiceSpy.refreshUserData.and.returnValue(of(mockUser));
+    usersServiceSpy = jasmine.createSpyObj('UsersService', ['update']);
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
 
     await TestBed.configureTestingModule({
@@ -66,23 +66,24 @@ describe('ProfileComponent', () => {
   });
 
   it('should update profile', () => {
-    usersServiceSpy.updateUser.and.returnValue(of({ ...mockUser, firstName: 'Updated' }));
+    usersServiceSpy.update.and.returnValue(of({ ...mockUser, firstName: 'Updated' }));
     
     component.profileForm.controls['firstName'].setValue('Updated');
     component.updateProfile();
     
-    expect(usersServiceSpy.updateUser).toHaveBeenCalledWith('1', jasmine.objectContaining({ firstName: 'Updated' }));
+    expect(usersServiceSpy.update).toHaveBeenCalledWith('1', jasmine.objectContaining({ firstName: 'Updated' }));
     expect(messageServiceSpy.success).toHaveBeenCalled();
   });
 
   it('should change password', () => {
-    usersServiceSpy.updateUser.and.returnValue(of(mockUser));
+    usersServiceSpy.update.and.returnValue(of(mockUser));
     
     component.passwordForm.controls['password'].setValue('newpass');
     component.changePassword();
     
-    expect(usersServiceSpy.updateUser).toHaveBeenCalledWith('1', jasmine.objectContaining({ password: 'newpass' }));
+    expect(usersServiceSpy.update).toHaveBeenCalledWith('1', jasmine.objectContaining({ password: 'newpass' }));
     expect(messageServiceSpy.success).toHaveBeenCalled();
   });
+
 });
 

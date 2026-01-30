@@ -1,34 +1,42 @@
+@if (permissions$ | async; as p) {
 <div class="products-list">
   <div class="page-header">
     <h1>Products Management</h1>
-    <div>
-      <button nz-button (click)="exportToXlsx()" style="margin-right: 8px;">
-        <span nz-icon nzType="file-excel"></span> Export XLSX
-      </button>
-      <button nz-button (click)="exportToPdf()" style="margin-right: 8px;">
-        <span nz-icon nzType="file-pdf"></span> Export PDF
-      </button>
+    <div class="header-actions">
+      @if (p.canExport) {
+        <button nz-button (click)="exportToXlsx('products.xlsx')" class="export-button">
+          <span nz-icon nzType="file-excel"></span> Export XLSX
+        </button>
+      }
+      @if (p.canExport) {
+        <button nz-button (click)="exportToPdf('products.pdf')" class="export-button">
+          <span nz-icon nzType="file-pdf"></span> Export PDF
+        </button>
+      }
 
-      <button nz-button nzType="primary" routerLink="/inventory/products/new">
-        <span nz-icon nzType="plus"></span>
-        Add Product
-      </button>
+      @if (p.canCreate) {
+        <button nz-button nzType="primary" routerLink="/inventory/products/new">
+          <span nz-icon nzType="plus"></span>
+          Add Product
+        </button>
+      }
     </div>
   </div>
 
-  <div class="search-bar">
-    <nz-input-group [nzSuffix]="suffixIconSearch">
-      <input 
-        type="text" 
-        nz-input 
-        placeholder="Search products..." 
-        [(ngModel)]="searchText"
-        (ngModelChange)="onSearch()"
-      />
-    </nz-input-group>
-    <ng-template #suffixIconSearch>
-      <span nz-icon nzType="search"></span>
-    </ng-template>
+  <div class="list-search">
+    <!--<span class="list-search__label">Search</span>-->
+    <nz-space-compact nzSize="large" class="list-search__compact">
+      <nz-input-wrapper>
+        <nz-icon nzInputAddonBefore nzType="search" />
+        <input
+          type="text"
+          nz-input
+          placeholder="By name or SKU..."
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearch()"
+        />
+      </nz-input-wrapper>
+    </nz-space-compact>
   </div>
 
   <nz-table
@@ -43,49 +51,58 @@
     (nzPageSizeChange)="onPageSizeChange($event)"
     [nzScroll]="{ x: '800px', y: 'calc(100vh - 350px)' }"
   >
-
-
     <thead>
       <tr>
         <th>SKU</th>
         <th>Name</th>
         <th>Unit Price</th>
         <th>Stock</th>
-        <th nzWidth="150px">Actions</th>
+        @if (p.canUpdate || p.canDelete) {
+          <th nzWidth="150px">Actions</th>
+        }
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let product of productsTable.data">
-        <td><strong>{{ product.sku }}</strong></td>
-        <td>{{ product.name }}</td>
-        <td>${{ product.unitPrice.toFixed(2) }}</td>
-        <td>
-          <nz-tag [nzColor]="product.quantityInStock <= product.reorderLevel ? 'red' : 'green'">
-            {{ product.quantityInStock }}
-          </nz-tag>
-        </td>
-        <td>
-          <button 
-            nz-button 
-            nzType="link" 
-            nzSize="small"
-            [routerLink]="['/inventory/products', product.id]"
-          >
-            <span nz-icon nzType="edit"></span>
-            Edit
-          </button>
-          <button 
-            nz-button 
-            nzType="link" 
-            nzSize="small"
-            nzDanger
-            (click)="deleteProduct(product)"
-          >
-            <span nz-icon nzType="delete"></span>
-            Delete
-          </button>
-        </td>
-      </tr>
+      @for (product of productsTable.data; track product.id) {
+        <tr>
+          <td><strong>{{ product.sku }}</strong></td>
+          <td>{{ product.name }}</td>
+          <td>${{ product.unitPrice.toFixed(2) }}</td>
+          <td>
+            <nz-tag [nzColor]="product.quantityInStock <= product.reorderLevel ? 'red' : 'green'">
+              {{ product.quantityInStock }}
+            </nz-tag>
+          </td>
+          @if (p.canUpdate || p.canDelete) {
+            <td>
+              @if (p.canUpdate) {
+                <button 
+                  nz-button 
+                  nzType="link" 
+                  nzSize="small"
+                  [routerLink]="['/inventory/products', product.id]"
+                >
+                  <span nz-icon nzType="edit"></span>
+                  Edit
+                </button>
+              }
+              @if (p.canDelete) {
+                <button 
+                  nz-button 
+                  nzType="link" 
+                  nzSize="small"
+                  nzDanger
+                  (click)="deleteProduct(product)"
+                >
+                  <span nz-icon nzType="delete"></span>
+                  Delete
+                </button>
+              }
+            </td>
+          }
+        </tr>
+      }
     </tbody>
   </nz-table>
 </div>
+}

@@ -37,7 +37,7 @@ describe('InventoryTransactionsService', () => {
 
     apiClientSpy.get.and.returnValue(of(mockData));
 
-    service.getInventoryTransactions().subscribe(response => {
+    service.getAll().subscribe(response => {
       expect(response).toEqual(mockData);
       expect(apiClientSpy.get).toHaveBeenCalled();
       done();

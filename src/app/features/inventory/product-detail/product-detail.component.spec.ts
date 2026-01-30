@@ -17,7 +17,7 @@ describe('ProductDetailComponent', () => {
   const mockProduct = { id: '1', sku: 'SKU1', name: 'Product 1', unitPrice: 10, stock: 100, isActive: true };
 
   beforeEach(async () => {
-    productsServiceSpy = jasmine.createSpyObj('ProductsService', ['getProductById', 'createProduct', 'updateProduct']);
+    productsServiceSpy = jasmine.createSpyObj('ProductsService', ['getById', 'create', 'update']);
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
@@ -35,7 +35,7 @@ describe('ProductDetailComponent', () => {
 
   function createComponent(id: string | null) {
       if (id && id !== 'new') {
-        productsServiceSpy.getProductById.and.returnValue(of(mockProduct as any));
+        productsServiceSpy.getById.and.returnValue(of(mockProduct as any));
       }
       const route = TestBed.inject(ActivatedRoute);
       spyOn(route.snapshot.paramMap, 'get').and.returnValue(id);
@@ -52,16 +52,17 @@ describe('ProductDetailComponent', () => {
 
   it('should load product in edit mode', () => {
     createComponent('1');
-    expect(productsServiceSpy.getProductById).toHaveBeenCalledWith('1');
+    expect(productsServiceSpy.getById).toHaveBeenCalledWith('1');
     expect(component.productForm.value.sku).toBe('SKU1');
   });
 
   it('should save new product', () => {
     createComponent('new');
-    productsServiceSpy.createProduct.and.returnValue(of(mockProduct as any));
+    productsServiceSpy.create.and.returnValue(of(mockProduct as any));
     component.productForm.patchValue({ sku: 'SKU2', name: 'P2', unitPrice: 10, stock: 100 });
     component.save();
-    expect(productsServiceSpy.createProduct).toHaveBeenCalled();
+    expect(productsServiceSpy.create).toHaveBeenCalled();
+
     expect(messageServiceSpy.success).toHaveBeenCalled();
   });
 });

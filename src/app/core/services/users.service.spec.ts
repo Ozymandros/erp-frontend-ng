@@ -37,7 +37,7 @@ describe('UsersService', () => {
 
     apiClientSpy.get.and.returnValue(of(mockUsers));
 
-    service.getUsers().subscribe(response => {
+    service.getAll().subscribe(response => {
       expect(response).toEqual(mockUsers);
       expect(apiClientSpy.get).toHaveBeenCalled();
       done();
@@ -47,11 +47,12 @@ describe('UsersService', () => {
   it('should delete a user', (done) => {
     apiClientSpy.delete.and.returnValue(of(undefined));
 
-    service.deleteUser('1').subscribe(() => {
+    service.delete('1').subscribe(() => {
       expect(apiClientSpy.delete).toHaveBeenCalled();
       done();
     });
   });
+
   
   it('should export to XLSX', (done) => {
     const mockBlob = new Blob(['data'], { type: 'application/octet-stream' });

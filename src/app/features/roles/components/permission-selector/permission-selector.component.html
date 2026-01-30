@@ -1,0 +1,59 @@
+<div class="permission-selector">
+  <div class="filters-container">
+    <div class="list-search filters-container-search">
+      <span class="list-search__label">Search & filter</span>
+      <nz-space-compact nzSize="large" class="list-search__compact filters-compact">
+      <nz-input-wrapper>
+        <nz-icon nzInputAddonBefore nzType="search" />
+        <input
+          type="text"
+          nz-input
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearchOrModuleChange()"
+          placeholder="By permission or module..."
+          [disabled]="readonly || loading"
+        />
+      </nz-input-wrapper>
+      <nz-select
+        [(ngModel)]="selectedModule"
+        (ngModelChange)="onSearchOrModuleChange()"
+        [nzPlaceHolder]="'Filter by module'"
+        [nzAllowClear]="true"
+        [disabled]="readonly || loading"
+        class="module-filter"
+      >
+        <nz-option [nzValue]="null" nzLabel="All Modules"></nz-option>
+        @for (module of modules; track module) {
+          <nz-option [nzValue]="module" [nzLabel]="module"></nz-option>
+        }
+      </nz-select>
+    </nz-space-compact>
+    </div>
+  </div>
+
+  @if (!loading) {
+    <div class="summary">
+      <span>{{ assignedCount }} of {{ totalCount }} permissions selected</span>
+    </div>
+  }
+
+  <nz-spin [nzSpinning]="loading">
+    @if (!loading) {
+      <div class="modules-container">
+      @for (group of groupedPermissions; track group.module) {
+        <app-permission-group
+          [group]="group"
+          [assignedPermissionIds]="assignedPermissions"
+          [savingPermissionId]="savingPermissionId"
+          [savingModule]="savingModule"
+          [readonly]="readonly"
+          (assign)="assignPermission($event)"
+          (unassign)="unassignPermission($event)"
+          (selectAll)="selectAllInModule($event)"
+          (deselectAll)="deselectAllInModule($event)"
+        />
+      }
+      </div>
+    }
+  </nz-spin>
+</div>

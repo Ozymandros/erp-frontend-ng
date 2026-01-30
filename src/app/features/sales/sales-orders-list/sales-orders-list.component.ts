@@ -6,14 +6,17 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { SalesOrdersService } from '../../../core/services/sales-orders.service';
 import { SalesOrderDto } from '../../../types/api.types';
-import { FileUtils } from '../../../core/utils/file-utils';
-import { finalize } from 'rxjs';
+import { BaseListComponent } from '../../../core/base/base-list.component';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { FileService } from '../../../core/services/file.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-sales-orders-list',
@@ -26,6 +29,7 @@ import { finalize } from 'rxjs';
     NzButtonModule,
     NzInputModule,
     NzIconModule,
+    NzSpaceModule,
     NzTagModule,
     NzPopconfirmModule,
     NzCardModule
@@ -33,57 +37,31 @@ import { finalize } from 'rxjs';
   templateUrl: './sales-orders-list.component.html',
   styleUrls: ['./sales-orders-list.component.css']
 })
-export class SalesOrdersListComponent implements OnInit {
-  orders: SalesOrderDto[] = [];
-  loading = true;
-  total = 0;
-  pageIndex = 1;
-  pageSize = 10;
-  searchTerm = '';
+export class SalesOrdersListComponent extends BaseListComponent<SalesOrderDto> implements OnInit {
+  protected get moduleName(): string {
+    return 'sales';
+  }
 
   constructor(
     private salesOrdersService: SalesOrdersService,
-    private message: NzMessageService,
-    private cdr: ChangeDetectorRef
-  ) {}
-
-  ngOnInit(): void {
-    this.loadOrders();
+    message: NzMessageService,
+    modal: NzModalService,
+    fileService: FileService,
+    cdr: ChangeDetectorRef,
+    authService: AuthService
+  ) {
+    super(salesOrdersService as any, message, modal, fileService, cdr, authService);
   }
 
-  loadOrders(): void {
-    this.loading = true;
-    this.salesOrdersService.getSalesOrders({
-      page: this.pageIndex,
-      pageSize: this.pageSize,
-      search: this.searchTerm
-    }).pipe(
-      finalize(() => {
-        this.loading = false;
-        this.cdr.detectChanges();
-      })
-    ).subscribe({
-      next: (response: any) => {
-        this.orders = response?.items || (Array.isArray(response) ? response : []);
-        this.total = response?.total || (Array.isArray(response) ? response.length : 0);
-      },
-      error: () => {
-        this.message.error('Failed to load sales orders');
-      }
-    });
-  }
-
-
-  onSearch(): void {
-    this.pageIndex = 1;
-    this.loadOrders();
+  override ngOnInit(): void {
+    super.ngOnInit();
   }
 
   deleteOrder(id: string): void {
-    this.salesOrdersService.deleteSalesOrder(id).subscribe({
+    this.service.delete(id).subscribe({
       next: () => {
         this.message.success('Order cancelled successfully');
-        this.loadOrders();
+        this.loadData();
       },
       error: () => {
         this.message.error('Failed to cancel order');
@@ -107,30 +85,5 @@ export class SalesOrdersListComponent implements OnInit {
       case 5: return 'red';
       default: return 'default';
     }
-  }
-
-
-  exportToXlsx(): void {
-    this.salesOrdersService.exportToXlsx().subscribe({
-      next: (blob) => {
-        FileUtils.saveFile(blob, 'sales-orders.xlsx');
-        this.message.success('Sales orders exported to XLSX successfully');
-      },
-      error: () => {
-        this.message.error('Failed to export sales orders to XLSX');
-      }
-    });
-  }
-
-  exportToPdf(): void {
-    this.salesOrdersService.exportToPdf().subscribe({
-      next: (blob) => {
-        FileUtils.saveFile(blob, 'sales-orders.pdf');
-        this.message.success('Sales orders exported to PDF successfully');
-      },
-      error: () => {
-        this.message.error('Failed to export sales orders to PDF');
-      }
-    });
   }
 }

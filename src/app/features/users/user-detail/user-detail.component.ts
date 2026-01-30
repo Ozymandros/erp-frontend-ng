@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -8,9 +8,14 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
+import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { UsersService } from '../../../core/services/users.service';
 import { RolesService } from '../../../core/services/roles.service';
+import { PermissionService } from '../../../core/services/permission.service';
+import { PERMISSION_MODULES, PERMISSION_ACTIONS } from '../../../core/constants/permissions';
+import { RoleSelectorComponent } from '../components/role-selector/role-selector.component';
 import { User, Role } from '../../../types/api.types';
 
 @Component({
@@ -25,7 +30,10 @@ import { User, Role } from '../../../types/api.types';
     NzButtonModule,
     NzCardModule,
     NzSelectModule,
-    NzSwitchModule
+    NzSwitchModule,
+    NzBadgeModule,
+    NzGridModule,
+    RoleSelectorComponent
   ],
   templateUrl: './user-detail.component.html',
   styleUrls: ['./user-detail.component.css']
@@ -36,12 +44,22 @@ export class UserDetailComponent implements OnInit {
   isEditMode = false;
   loading = false;
   saving = false;
-  allRoles: Role[] = [];
+  user: User | null = null;
+  userRoles: Role[] = [];
+
+  // Permission checks
+  canUpdate = computed(() => {
+    return this.permissionService.hasPermission(
+      PERMISSION_MODULES.USERS,
+      PERMISSION_ACTIONS.UPDATE
+    );
+  });
 
   constructor(
     private fb: FormBuilder,
     private usersService: UsersService,
     private rolesService: RolesService,
+    private permissionService: PermissionService,
     private route: ActivatedRoute,
     private router: Router,
     private message: NzMessageService
@@ -52,15 +70,13 @@ export class UserDetailComponent implements OnInit {
       firstName: [''],
       lastName: [''],
       password: [''],
-      roleIds: [[]]
+      isActive: [true]
     });
   }
 
   ngOnInit(): void {
     this.userId = this.route.snapshot.paramMap.get('id');
     this.isEditMode = !!this.userId && this.userId !== 'new';
-    
-    this.loadRoles();
 
     if (this.isEditMode && this.userId) {
       this.loadUser(this.userId);
@@ -70,24 +86,18 @@ export class UserDetailComponent implements OnInit {
     }
   }
 
-  loadRoles(): void {
-    this.rolesService.getRoles({ pageSize: 100 }).subscribe({
-      next: (response) => {
-        this.allRoles = response.items;
-      }
-    });
-  }
-
   loadUser(id: string): void {
     this.loading = true;
-    this.usersService.getUserById(id).subscribe({
+    this.usersService.getById(id).subscribe({
       next: (user) => {
+        this.user = user;
+        this.userRoles = user.roles || [];
         this.userForm.patchValue({
           username: user.username,
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
-          roleIds: user.roles?.map((r: { id: string }) => r.id)
+          isActive: user.isActive
         });
         this.loading = false;
       },
@@ -98,14 +108,28 @@ export class UserDetailComponent implements OnInit {
     });
   }
 
+  onRolesChange(roles: Role[]): void {
+    this.userRoles = roles;
+    // Refresh user data to get updated permissions
+    if (this.userId) {
+      this.usersService.getById(this.userId).subscribe({
+        next: (user) => {
+          this.user = user;
+          this.userRoles = user.roles || [];
+        }
+      });
+    }
+  }
+
   save(): void {
     if (this.userForm.valid) {
       this.saving = true;
       const data = this.userForm.value;
 
       const observable = this.isEditMode && this.userId
-        ? this.usersService.updateUser(this.userId, data)
-        : this.usersService.createUser(data);
+        ? this.usersService.update(this.userId, data)
+        : this.usersService.create(data);
+
 
       observable.subscribe({
         next: () => {

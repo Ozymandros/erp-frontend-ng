@@ -58,7 +58,7 @@ export class WarehouseDetailComponent implements OnInit {
 
   loadWarehouse(id: string): void {
     this.loading = true;
-    this.warehousesService.getWarehouseById(id).subscribe({
+    this.warehousesService.getById(id).subscribe({
       next: (warehouse) => {
         this.warehouseForm.patchValue({
           name: warehouse.name,
@@ -79,8 +79,9 @@ export class WarehouseDetailComponent implements OnInit {
       const data = this.warehouseForm.value;
 
       const obs = this.isEditMode && this.warehouseId
-        ? this.warehousesService.updateWarehouse(this.warehouseId, data)
-        : this.warehousesService.createWarehouse(data);
+        ? this.warehousesService.update(this.warehouseId, data)
+        : this.warehousesService.create(data);
+
 
       obs.subscribe({
         next: () => {

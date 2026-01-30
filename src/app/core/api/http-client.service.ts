@@ -75,11 +75,14 @@ export class ApiClientService {
     );
   }
 
-  delete<T>(url: string): Observable<T> {
+  delete<T>(url: string, options?: { body?: any }): Observable<T> {
     const fullUrl = this.getFullUrl(url);
-    const options = { headers: this.getHeaders() };
+    const httpOptions: any = { 
+      headers: this.getHeaders(),
+      ...(options?.body !== undefined && { body: options.body })
+    };
     
-    return this.http.delete<any>(fullUrl, options).pipe(
+    return this.http.delete<any>(fullUrl, httpOptions).pipe(
       map(response => this.handleResponse<T>(response)),
       catchError(error => this.handleError(error))
     );

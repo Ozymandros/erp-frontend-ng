@@ -6,13 +6,17 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { CustomersService } from '../../../core/services/customers.service';
 import { CustomerDto } from '../../../types/api.types';
-import { FileUtils } from '../../../core/utils/file-utils';
+import { BaseListComponent } from '../../../core/base/base-list.component';
+import { FileService } from '../../../core/services/file.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { finalize } from 'rxjs';
+
 
 @Component({
   selector: 'app-customers-list',
@@ -25,113 +29,39 @@ import { finalize } from 'rxjs';
     NzButtonModule,
     NzInputModule,
     NzIconModule,
+    NzSpaceModule,
     NzTagModule,
     NzModalModule
   ],
   templateUrl: './customers-list.component.html',
   styleUrls: ['./customers-list.component.css']
 })
-export class CustomersListComponent implements OnInit {
-  customers: CustomerDto[] = [];
-  loading = false;
-  searchText = '';
-  pageIndex = 1;
-  pageSize = 10;
-  total = 0;
+export class CustomersListComponent extends BaseListComponent<CustomerDto> {
+  protected get moduleName(): string {
+    return 'sales';
+  }
 
   constructor(
-    private customersService: CustomersService,
-    private message: NzMessageService,
-    private modal: NzModalService,
-    private cdr: ChangeDetectorRef
-  ) {}
+    customersService: CustomersService,
+    message: NzMessageService,
+    modal: NzModalService,
+    fileService: FileService,
+    cdr: ChangeDetectorRef,
+    authService: AuthService
+  ) {
+    super(customersService, message, modal, fileService, cdr, authService);
+  }
 
-  ngOnInit(): void {
-    this.loadCustomers();
+  get customers(): CustomerDto[] {
+    return this.data;
   }
 
   loadCustomers(): void {
-    setTimeout(() => {
-      this.loading = true;
-      this.customersService.getCustomers({
-        page: this.pageIndex,
-        pageSize: this.pageSize,
-        search: this.searchText
-      }).pipe(
-        finalize(() => {
-          this.loading = false;
-          this.cdr.detectChanges();
-        })
-      ).subscribe({
-        next: (response: any) => {
-          this.customers = response?.items || (Array.isArray(response) ? response : []);
-          this.total = response?.total || (Array.isArray(response) ? response.length : 0);
-        },
-        error: (error) => {
-          this.message.error('Failed to load customers: ' + error.message);
-        }
-      });
-    });
-  }
-
-
-  onSearch(): void {
-    this.pageIndex = 1;
-    this.loadCustomers();
-  }
-
-  onPageChange(page: number): void {
-    this.pageIndex = page;
-    this.loadCustomers();
-  }
-
-  onPageSizeChange(size: number): void {
-    this.pageSize = size;
-    this.pageIndex = 1;
-    this.loadCustomers();
+    this.loadData();
   }
 
   deleteCustomer(customer: CustomerDto): void {
-    this.modal.confirm({
-      nzTitle: 'Delete Customer',
-      nzContent: `Are you sure you want to delete customer "${customer.name}"?`,
-      nzOkText: 'Delete',
-      nzOkDanger: true,
-      nzOnOk: () => {
-        this.customersService.deleteCustomer(customer.id).subscribe({
-          next: () => {
-            this.message.success('Customer deleted successfully');
-            this.loadCustomers();
-          },
-          error: (error) => {
-            this.message.error('Failed to delete customer: ' + error.message);
-          }
-        });
-      }
-    });
-  }
-
-  exportToXlsx(): void {
-    this.customersService.exportToXlsx().subscribe({
-      next: (blob) => {
-        FileUtils.saveFile(blob, 'customers.xlsx');
-        this.message.success('Customers exported to XLSX successfully');
-      },
-      error: () => {
-        this.message.error('Failed to export customers to XLSX');
-      }
-    });
-  }
-
-  exportToPdf(): void {
-    this.customersService.exportToPdf().subscribe({
-      next: (blob) => {
-        FileUtils.saveFile(blob, 'customers.pdf');
-        this.message.success('Customers exported to PDF successfully');
-      },
-      error: () => {
-        this.message.error('Failed to export customers to PDF');
-      }
-    });
+    super.deleteItem(customer.id, `customer "${customer.name}"`);
   }
 }
+

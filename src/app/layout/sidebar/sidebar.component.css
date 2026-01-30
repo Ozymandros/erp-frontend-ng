@@ -1,27 +1,75 @@
-.sidebar {
-  overflow: auto;
-  height: 100vh;
+:host {
+  display: contents;
 }
 
+.sidebar {
+  height: 100vh;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+  background: #fff;
+}
+
+/* Correctly target the internal flex container of nz-sider */
+::ng-deep .sidebar .ant-layout-sider-children {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
 
 .logo {
   height: 64px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.1);
-  margin: 16px;
-  border-radius: 4px;
+  padding: 0 24px;
+  border-bottom: 1px solid #f0f0f0;
+  flex-shrink: 0;
 }
 
 .logo h2 {
-  color: #fff;
+  color: #000;
   margin: 0;
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
 }
 
-.logo span {
+.logo-icon {
   font-size: 24px;
-  color: #fff;
+  color: #1890ff;
+}
+
+.sidebar-menu {
+  flex: 1;
+  border-right: none !important;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-top: 8px;
+  width: 100%;
+}
+
+.sidebar-footer {
+  padding: 16px;
+  text-align: center;
+  border-top: 1px solid #f0f0f0;
+  color: #8c8c8c;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* Custom styles for active state to match image */
+::ng-deep .ant-menu-inline {
+  border-right: none !important;
+}
+
+::ng-deep .ant-menu-inline .ant-menu-item-selected {
+  background-color: #2f54eb !important;
+  color: #fff !important;
+}
+
+::ng-deep .ant-menu-inline .ant-menu-item-selected .anticon {
+  color: #fff !important;
+}
+
+::ng-deep .ant-menu-submenu-title {
+  font-weight: 500;
+  color: #595959;
 }

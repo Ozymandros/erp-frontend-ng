@@ -5,12 +5,16 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { InventoryTransactionsService } from '../../../core/services/inventory-transactions.service';
+import { FileService } from '../../../core/services/file.service';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 describe('InventoryTransactionsListComponent', () => {
   let component: InventoryTransactionsListComponent;
   let fixture: ComponentFixture<InventoryTransactionsListComponent>;
   let inventoryTransactionsServiceSpy: jasmine.SpyObj<InventoryTransactionsService>;
   let messageServiceSpy: jasmine.SpyObj<NzMessageService>;
+  let fileServiceSpy: jasmine.SpyObj<FileService>;
+  let modalServiceSpy: jasmine.SpyObj<NzModalService>;
 
   const mockResponse = {
     items: [{ transactionType: 'Sale', productName: 'P1', quantity: 5, createdAt: new Date() }],
@@ -18,15 +22,20 @@ describe('InventoryTransactionsListComponent', () => {
   };
 
   beforeEach(async () => {
-    inventoryTransactionsServiceSpy = jasmine.createSpyObj('InventoryTransactionsService', ['getInventoryTransactions']);
+    inventoryTransactionsServiceSpy = jasmine.createSpyObj('InventoryTransactionsService', ['getAll']);
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
-    inventoryTransactionsServiceSpy.getInventoryTransactions.and.returnValue(of({ items: [], total: 0 } as any));
+    fileServiceSpy = jasmine.createSpyObj('FileService', ['saveFile']);
+    modalServiceSpy = jasmine.createSpyObj('NzModalService', ['confirm']);
+
+    inventoryTransactionsServiceSpy.getAll.and.returnValue(of(mockResponse as any));
 
     await TestBed.configureTestingModule({
       imports: [ InventoryTransactionsListComponent, BrowserAnimationsModule, HttpClientTestingModule ],
       providers: [
         { provide: InventoryTransactionsService, useValue: inventoryTransactionsServiceSpy },
-        { provide: NzMessageService, useValue: messageServiceSpy }
+        { provide: NzMessageService, useValue: messageServiceSpy },
+        { provide: FileService, useValue: fileServiceSpy },
+        { provide: NzModalService, useValue: modalServiceSpy }
       ]
     })
     .compileComponents();
@@ -41,13 +50,13 @@ describe('InventoryTransactionsListComponent', () => {
   });
 
   it('should load transactions', () => {
-    expect(component.transactions.length).toBe(0); // Changed to 0 because the mock now returns an empty array
-    expect(component.total).toBe(0); // Changed to 0 because the mock now returns 0
+    expect(component.data.length).toBe(1);
+    expect(component.total).toBe(1);
   });
   
   it('should search transactions', () => {
     component.searchTerm = 'query';
     component.onSearch();
-    expect(inventoryTransactionsServiceSpy.getInventoryTransactions).toHaveBeenCalled();
+    expect(inventoryTransactionsServiceSpy.getAll).toHaveBeenCalled();
   });
 });

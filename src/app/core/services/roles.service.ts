@@ -7,44 +7,86 @@ import {
   CreateRoleRequest,
   UpdateRoleRequest,
   PaginatedResponse,
-  SearchParams
+  SearchParams,
+  Permission
 } from '../types/api.types';
+import { BaseApiService } from '../base/base-api.service';
+
 
 @Injectable({
   providedIn: 'root'
 })
-export class RolesService {
-  constructor(private apiClient: ApiClientService) {}
+export class RolesService extends BaseApiService<Role, CreateRoleRequest, UpdateRoleRequest> {
 
-  getRoles(params?: SearchParams): Observable<PaginatedResponse<Role>> {
-    return this.apiClient.get<PaginatedResponse<Role>>(ROLES_ENDPOINTS.BASE, params);
+  constructor(apiClient: ApiClientService) {
+    super(apiClient);
   }
 
-  getRoleById(id: string): Observable<Role> {
-    return this.apiClient.get<Role>(ROLES_ENDPOINTS.BY_ID(id));
+  protected getEndpoint(): string {
+    return ROLES_ENDPOINTS.BASE;
   }
 
-  createRole(data: CreateRoleRequest): Observable<Role> {
-    return this.apiClient.post<Role>(ROLES_ENDPOINTS.BASE, data);
+  /**
+   * Add a permission to a role
+   * POST /auth/api/roles/{roleId}/permissions?permissionId={permissionId}
+   */
+  addPermissionToRole(roleId: string, permissionId: string): Observable<void>;
+  /**
+   * Add multiple permissions to a role (bulk operation)
+   * POST /auth/api/roles/{roleId}/permissions/bulk
+   * Body: string[] (array of permission IDs)
+   */
+  addPermissionToRole(roleId: string, permissionIds: string[]): Observable<void>;
+  addPermissionToRole(roleId: string, permissionIdOrIds: string | string[]): Observable<void> {
+    if (Array.isArray(permissionIdOrIds)) {
+      // Bulk operation: POST /api/Roles/{roleId}/permissions/bulk
+      // Body: string[] (array of permission IDs)
+      return this.apiClient.post<void>(
+        `${ROLES_ENDPOINTS.BASE}/${roleId}/permissions/bulk`,
+        permissionIdOrIds
+      );
+    } else {
+      // Single operation: POST with query parameter
+      return this.apiClient.post<void>(
+        `${ROLES_ENDPOINTS.BASE}/${roleId}/permissions?permissionId=${permissionIdOrIds}`,
+        null
+      );
+    }
   }
 
-  updateRole(id: string, data: UpdateRoleRequest): Observable<Role> {
-    return this.apiClient.put<Role>(ROLES_ENDPOINTS.BY_ID(id), data);
+  /**
+   * Remove a permission from a role
+   * DELETE /auth/api/roles/{roleId}/permissions/{permissionId}
+   */
+  removePermissionFromRole(roleId: string, permissionId: string): Observable<void>;
+  /**
+   * Remove multiple permissions from a role (bulk operation)
+   * DELETE /auth/api/roles/{roleId}/permissions/bulk
+   * Body: string[] (array of permission IDs)
+   */
+  removePermissionFromRole(roleId: string, permissionIds: string[]): Observable<void>;
+  removePermissionFromRole(roleId: string, permissionIdOrIds: string | string[]): Observable<void> {
+    if (Array.isArray(permissionIdOrIds)) {
+      // Bulk operation: DELETE /api/Roles/{roleId}/permissions/bulk
+      // Body: string[] (array of permission IDs)
+      return this.apiClient.delete<void>(
+        `${ROLES_ENDPOINTS.BASE}/${roleId}/permissions/bulk`,
+        { body: permissionIdOrIds }
+      );
+    } else {
+      // Single operation: DELETE with path parameter
+      return this.apiClient.delete<void>(
+        `${ROLES_ENDPOINTS.BASE}/${roleId}/permissions/${permissionIdOrIds}`
+      );
+    }
   }
 
-  deleteRole(id: string): Observable<void> {
-    return this.apiClient.delete<void>(ROLES_ENDPOINTS.BY_ID(id));
-  }
-
-  exportToXlsx(): Observable<Blob> {
-    return this.apiClient.download(ROLES_ENDPOINTS.EXPORT_XLSX);
-  }
-
-  exportToPdf(): Observable<Blob> {
-    return this.apiClient.download(ROLES_ENDPOINTS.EXPORT_PDF);
-  }
-
-  assignPermissions(roleId: string, permissionIds: string[]): Observable<Role> {
-    return this.apiClient.post<Role>(ROLES_ENDPOINTS.PERMISSIONS(roleId), { permissionIds });
+  /**
+   * Get all permissions assigned to a role
+   * GET /auth/api/roles/{roleId}/permissions
+   */
+  getRolePermissions(roleId: string): Observable<Permission[]> {
+    return this.apiClient.get<Permission[]>(ROLES_ENDPOINTS.PERMISSIONS(roleId));
   }
 }
+

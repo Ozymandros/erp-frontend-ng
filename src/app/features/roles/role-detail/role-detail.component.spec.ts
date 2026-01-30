@@ -20,12 +20,12 @@ describe('RoleDetailComponent', () => {
   const mockRole = { id: '1', name: 'Admin', permissions: [{ id: 'p1' }] };
 
   beforeEach(async () => {
-    rolesServiceSpy = jasmine.createSpyObj('RolesService', ['getRoleById', 'createRole', 'updateRole']);
-    permissionsServiceSpy = jasmine.createSpyObj('PermissionsService', ['getPermissions']);
+    rolesServiceSpy = jasmine.createSpyObj('RolesService', ['getById', 'create', 'update']);
+    permissionsServiceSpy = jasmine.createSpyObj('PermissionsService', ['getAll']);
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
-    permissionsServiceSpy.getPermissions.and.returnValue(of(mockPermissions as any));
+    permissionsServiceSpy.getAll.and.returnValue(of(mockPermissions as any));
 
     await TestBed.configureTestingModule({
       imports: [ RoleDetailComponent, BrowserAnimationsModule, HttpClientTestingModule ],
@@ -42,7 +42,7 @@ describe('RoleDetailComponent', () => {
 
   function createComponent(id: string | null) {
      if (id && id !== 'new') {
-        rolesServiceSpy.getRoleById.and.returnValue(of(mockRole as any));
+        rolesServiceSpy.getById.and.returnValue(of(mockRole as any));
      }
      const route = TestBed.inject(ActivatedRoute);
      spyOn(route.snapshot.paramMap, 'get').and.returnValue(id);
@@ -60,16 +60,17 @@ describe('RoleDetailComponent', () => {
   it('should load role in edit mode', () => {
     createComponent('1');
     expect(component.isEditMode).toBeTrue();
-    expect(rolesServiceSpy.getRoleById).toHaveBeenCalledWith('1');
+    expect(rolesServiceSpy.getById).toHaveBeenCalledWith('1');
     expect(component.roleForm.value.name).toBe('Admin');
   });
 
   it('should save new role', () => {
     createComponent('new');
-    rolesServiceSpy.createRole.and.returnValue(of(mockRole as any));
+    rolesServiceSpy.create.and.returnValue(of(mockRole as any));
     component.roleForm.patchValue({ name: 'New Role' });
     component.save();
-    expect(rolesServiceSpy.createRole).toHaveBeenCalled();
+    expect(rolesServiceSpy.create).toHaveBeenCalled();
+
     expect(messageServiceSpy.success).toHaveBeenCalled();
   });
 });

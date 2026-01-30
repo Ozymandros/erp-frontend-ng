@@ -3,6 +3,9 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { WarehousesListComponent } from './warehouses-list.component';
 import { WarehousesService } from '../../../core/services/warehouses.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { FileService } from '../../../core/services/file.service';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
@@ -19,17 +22,26 @@ describe('WarehousesListComponent', () => {
   };
 
   beforeEach(async () => {
-    warehousesServiceSpy = jasmine.createSpyObj('WarehousesService', ['getWarehouses', 'deleteWarehouse']);
+    warehousesServiceSpy = jasmine.createSpyObj('WarehousesService', ['getAll', 'delete', 'exportToXlsx', 'exportToPdf']);
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
-    warehousesServiceSpy.getWarehouses.and.returnValue(of(mockResponse as any));
-    warehousesServiceSpy.deleteWarehouse.and.returnValue(of(void 0));
+    warehousesServiceSpy.getAll.and.returnValue(of(mockResponse as any));
+    warehousesServiceSpy.delete.and.returnValue(of(void 0));
 
     await TestBed.configureTestingModule({
       imports: [ WarehousesListComponent, BrowserAnimationsModule, HttpClientTestingModule ],
       providers: [
         { provide: WarehousesService, useValue: warehousesServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
+        { 
+          provide: NzModalService, 
+          useValue: {
+            confirm: (options: any) => options.nzOnOk()
+          }
+        },
+        { provide: FileService, useValue: jasmine.createSpyObj('FileService', ['saveFile']) },
         { provide: ActivatedRoute, useValue: {} }
+
+
       ]
     })
     .compileComponents();
@@ -49,9 +61,10 @@ describe('WarehousesListComponent', () => {
   });
 
   it('should delete warehouse', () => {
-    warehousesServiceSpy.deleteWarehouse.and.returnValue(of(undefined));
+    warehousesServiceSpy.delete.and.returnValue(of(undefined));
     component.deleteWarehouse('1');
-    expect(warehousesServiceSpy.deleteWarehouse).toHaveBeenCalledWith('1');
+    expect(warehousesServiceSpy.delete).toHaveBeenCalledWith('1');
+
     expect(messageServiceSpy.success).toHaveBeenCalled();
   });
 });

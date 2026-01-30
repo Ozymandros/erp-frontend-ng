@@ -1,0 +1,73 @@
+.role-selector {
+  padding: 16px;
+}
+
+.summary {
+  margin-bottom: 16px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.error-message {
+  padding: 12px;
+  margin-bottom: 16px;
+  background-color: #fff2f0;
+  border: 1px solid #ffccc7;
+  border-radius: 4px;
+  color: #cf1322;
+}
+
+.roles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.role-card {
+  transition: all 0.3s;
+}
+
+.role-card.assigned {
+  border-color: #52c41a;
+  background-color: #f6ffed;
+}
+
+.role-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.role-header h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.check-icon {
+  color: #52c41a;
+  font-size: 20px;
+}
+
+.role-description {
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 14px;
+  margin-bottom: 12px;
+  min-height: 40px;
+}
+
+.role-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.action-button {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .roles-grid {
+    grid-template-columns: 1fr;
+  }
+}

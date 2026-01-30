@@ -1,0 +1,78 @@
+<div class="role-selector">
+  <div class="list-search">
+    <!--<span class="list-search__label">Search</span>-->
+    <nz-space-compact nzSize="large" class="list-search__compact">
+      <nz-input-wrapper>
+        <nz-icon nzInputAddonBefore nzType="search" />
+        <input
+          type="text"
+          nz-input
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearchInput()"
+          placeholder="By role name..."
+          [disabled]="readonly || loading"
+        />
+      </nz-input-wrapper>
+    </nz-space-compact>
+  </div>
+
+  @if (!loading) {
+    <div class="summary">
+      <span>{{ assignedCount }} of {{ totalCount }} roles assigned</span>
+    </div>
+  }
+
+  <nz-spin [nzSpinning]="loading">
+    @if (error) {
+      <div class="error-message">
+        {{ error }}
+      </div>
+    }
+
+    @if (!loading) {
+      <div class="roles-grid">
+      @for (role of filteredRoles; track role.id) {
+        <nz-card class="role-card" [class.assigned]="isAssigned(role.id)">
+          <div class="role-header">
+            <h4>{{ role.name }}</h4>
+            @if (isAssigned(role.id)) {
+              <span nz-icon nzType="check-circle" nzTheme="fill" class="check-icon"></span>
+            }
+          </div>
+          @if (role.description) {
+            <p class="role-description">{{ role.description }}</p>
+          }
+          <div class="role-actions">
+            @if (isAssigned(role.id)) {
+              <button
+                nz-button
+                nzType="default"
+                nzDanger
+                [nzLoading]="saving"
+                [disabled]="readonly"
+                (click)="unassignRole(role)"
+                class="action-button"
+              >
+                <span nz-icon nzType="close"></span>
+                Unassign
+              </button>
+            } @else {
+              <button
+                nz-button
+                nzType="primary"
+                [nzLoading]="saving"
+                [disabled]="readonly"
+                (click)="assignRole(role)"
+                class="action-button"
+              >
+                <span nz-icon nzType="plus"></span>
+                Assign
+              </button>
+            }
+          </div>
+        </nz-card>
+      }
+      </div>
+    }
+  </nz-spin>
+</div>

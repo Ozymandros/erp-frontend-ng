@@ -1,56 +1,37 @@
-<nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzWidth]="250" nzBreakpoint="lg" [nzCollapsedWidth]="80" class="sidebar">
+<nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzWidth]="250" nzBreakpoint="lg" [nzCollapsedWidth]="80" nzTheme="light" class="sidebar">
   <div class="logo">
-    <h2 *ngIf="!isCollapsed">ERP Admin</h2>
-    <span *ngIf="isCollapsed" nz-icon nzType="appstore"></span>
+    @if (!isCollapsed) {
+      <h2>ERP Admin</h2>
+    }
+    @if (isCollapsed) {
+      <span nz-icon nzType="appstore" class="logo-icon"></span>
+    }
   </div>
-  <ul nz-menu nzTheme="dark" nzMode="inline">
-    <li nz-menu-item routerLink="/users" routerLinkActive="ant-menu-item-selected">
-      <span nz-icon nzType="user"></span>
-      <span>Users</span>
-    </li>
-    <li nz-menu-item routerLink="/roles" routerLinkActive="ant-menu-item-selected">
-      <span nz-icon nzType="safety-certificate"></span>
-      <span>Roles</span>
-    </li>
-    <li nz-menu-item routerLink="/permissions" routerLinkActive="ant-menu-item-selected">
-      <span nz-icon nzType="key"></span>
-      <span>Permissions</span>
-    </li>
-    <li nz-menu-item routerLink="/inventory/products" routerLinkActive="ant-menu-item-selected">
-      <span nz-icon nzType="inbox"></span>
-      <span>Products</span>
-    </li>
-    <li nz-menu-item routerLink="/inventory/warehouses" routerLinkActive="ant-menu-item-selected">
-      <span nz-icon nzType="home"></span>
-      <span>Warehouses</span>
-    </li>
-    <li nz-menu-item routerLink="/sales/customers" routerLinkActive="ant-menu-item-selected">
-      <span nz-icon nzType="dollar"></span>
-      <span>Customers</span>
-    </li>
-    <li nz-menu-item routerLink="/sales/orders" routerLinkActive="ant-menu-item-selected">
-      <span nz-icon nzType="shopping-cart"></span>
-      <span>Sales Orders</span>
-    </li>
-    <li nz-menu-item routerLink="/purchasing/orders" routerLinkActive="ant-menu-item-selected">
-      <span nz-icon nzType="shopping"></span>
-      <span>Purchase Orders</span>
-    </li>
-    <li nz-menu-item routerLink="/inventory/warehouse-stocks" routerLinkActive="ant-menu-item-selected">
-      <span nz-icon nzType="line-chart"></span>
-      <span>Warehouse Stocks</span>
-    </li>
-    <li nz-menu-item routerLink="/inventory/transactions" routerLinkActive="ant-menu-item-selected">
-      <span nz-icon nzType="file-text"></span>
-      <span>Transactions</span>
-    </li>
-    <li nz-menu-item routerLink="/inventory/stock-operations" routerLinkActive="ant-menu-item-selected">
-      <span nz-icon nzType="sync"></span>
-      <span>Stock Operations</span>
-    </li>
-    <li nz-menu-item routerLink="/orders" routerLinkActive="ant-menu-item-selected">
-      <span nz-icon nzType="ordered-list"></span>
-      <span>Orders</span>
-    </li>
+  <ul nz-menu nzTheme="light" nzMode="inline" class="sidebar-menu">
+    @for (item of visibleNavItems(); track item.title) {
+      @if (item.children && item.children.length > 0) {
+        <li nz-submenu [nzTitle]="item.title" [nzIcon]="item.icon">
+          <ul>
+            @for (child of item.children; track child.title) {
+              <li nz-menu-item [routerLink]="child.href" routerLinkActive="ant-menu-item-selected">
+                <span nz-icon [nzType]="child.icon"></span>
+                <span>{{ child.title }}</span>
+              </li>
+            }
+          </ul>
+        </li>
+      } @else {
+        <li nz-menu-item [routerLink]="item.href" routerLinkActive="ant-menu-item-selected">
+          <span nz-icon [nzType]="item.icon"></span>
+          <span>{{ item.title }}</span>
+        </li>
+      }
+    }
   </ul>
+
+  @if (!isCollapsed) {
+    <div class="sidebar-footer">
+      <span>ERP Admin Portal v1.0</span>
+    </div>
+  }
 </nz-sider>

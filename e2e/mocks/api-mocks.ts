@@ -101,8 +101,49 @@ export async function mockGetUsers(page: Page, users: any[]): Promise<void> {
   await mockPaginatedResponse(page, '**/auth/api/users**', users);
 }
 
+export async function mockGetRoles(page: Page, roles: any[]): Promise<void> {
+  await mockPaginatedResponse(page, '**/auth/api/roles**', roles);
+}
+
+export async function mockGetPermissions(page: Page, permissions: any[]): Promise<void> {
+  await mockPaginatedResponse(page, '**/auth/api/permissions**', permissions);
+}
+
+export async function mockGetInventoryTransactions(page: Page, transactions: any[]): Promise<void> {
+  await mockPaginatedResponse(page, '**/inventory/api/inventory/transactions**', transactions);
+}
+
+export async function mockGetWarehouses(page: Page, warehouses: any[]): Promise<void> {
+  await mockPaginatedResponse(page, '**/inventory/api/inventory/warehouses**', warehouses);
+}
+
+export async function mockGetWarehouseStocks(page: Page, stocks: any[]): Promise<void> {
+  await mockPaginatedResponse(page, '**/inventory/api/inventory/warehouse-stocks**', stocks);
+}
+
+export async function mockGetCustomers(page: Page, customers: any[]): Promise<void> {
+  await mockPaginatedResponse(page, '**/sales/api/sales/customers**', customers);
+}
+
+export async function mockGetSalesOrders(page: Page, orders: any[]): Promise<void> {
+  await mockPaginatedResponse(page, '**/sales/api/sales/orders**', orders);
+}
+
+export async function mockGetPurchaseOrders(page: Page, orders: any[]): Promise<void> {
+  await mockPaginatedResponse(page, '**/purchasing/api/purchasing/orders**', orders);
+}
+
+export async function mockGetSuppliers(page: Page, suppliers: any[]): Promise<void> {
+  await mockPaginatedResponse(page, '**/purchasing/api/purchasing/suppliers**', suppliers);
+}
+
+export async function mockLogout(page: Page): Promise<void> {
+  await mockApiSuccess(page, '**/auth/api/auth/logout', { success: true });
+}
+
 export async function mockAuthenticatedState(page: Page, user: any): Promise<void> {
   await mockGetCurrentUser(page, user);
+  await mockLogout(page);
   // Set session storage
   await page.addInitScript((u) => {
     window.sessionStorage.setItem('access_token', 'mock-token');

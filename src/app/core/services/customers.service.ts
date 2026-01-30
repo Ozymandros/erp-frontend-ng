@@ -7,38 +7,19 @@ import {
   PaginatedResponse,
   SearchParams
 } from '../types/api.types';
+import { BaseApiService } from '../base/base-api.service';
+
 
 @Injectable({
   providedIn: 'root'
 })
-export class CustomersService {
-  constructor(private apiClient: ApiClientService) {}
-
-  getCustomers(params?: SearchParams): Observable<PaginatedResponse<CustomerDto>> {
-    return this.apiClient.get<PaginatedResponse<CustomerDto>>(SALES_ENDPOINTS.CUSTOMERS, params);
+export class CustomersService extends BaseApiService<CustomerDto> {
+  constructor(apiClient: ApiClientService) {
+    super(apiClient);
   }
 
-  getCustomerById(id: string): Observable<CustomerDto> {
-    return this.apiClient.get<CustomerDto>(SALES_ENDPOINTS.CUSTOMER_BY_ID(id));
-  }
-
-  createCustomer(data: Partial<CustomerDto>): Observable<CustomerDto> {
-    return this.apiClient.post<CustomerDto>(SALES_ENDPOINTS.CUSTOMERS, data);
-  }
-
-  updateCustomer(id: string, data: Partial<CustomerDto>): Observable<CustomerDto> {
-    return this.apiClient.put<CustomerDto>(SALES_ENDPOINTS.CUSTOMER_BY_ID(id), data);
-  }
-
-  deleteCustomer(id: string): Observable<void> {
-    return this.apiClient.delete<void>(SALES_ENDPOINTS.CUSTOMER_BY_ID(id));
-  }
-
-  exportToXlsx(): Observable<Blob> {
-    return this.apiClient.download(SALES_ENDPOINTS.CUSTOMERS_EXPORT_XLSX);
-  }
-
-  exportToPdf(): Observable<Blob> {
-    return this.apiClient.download(SALES_ENDPOINTS.CUSTOMERS_EXPORT_PDF);
+  protected getEndpoint(): string {
+    return SALES_ENDPOINTS.CUSTOMERS;
   }
 }
+

@@ -21,12 +21,12 @@ describe('StockOperationsComponent', () => {
 
   beforeEach(async () => {
     stockOperationsServiceSpy = jasmine.createSpyObj('StockOperationsService', ['reserve', 'transfer', 'adjust']);
-    productsServiceSpy = jasmine.createSpyObj('ProductsService', ['getProducts']);
-    warehousesServiceSpy = jasmine.createSpyObj('WarehousesService', ['getWarehouses']);
+    productsServiceSpy = jasmine.createSpyObj('ProductsService', ['getAll']);
+    warehousesServiceSpy = jasmine.createSpyObj('WarehousesService', ['getAll']);
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
 
-    productsServiceSpy.getProducts.and.returnValue(of(mockProducts as any));
-    warehousesServiceSpy.getWarehouses.and.returnValue(of(mockWarehouses as any));
+    productsServiceSpy.getAll.and.returnValue(of(mockProducts as any));
+    warehousesServiceSpy.getAll.and.returnValue(of(mockWarehouses as any));
 
     await TestBed.configureTestingModule({
       imports: [ StockOperationsComponent, BrowserAnimationsModule, HttpClientTestingModule ],
@@ -49,8 +49,10 @@ describe('StockOperationsComponent', () => {
   });
 
   it('should load data on init', () => {
-    expect(productsServiceSpy.getProducts).toHaveBeenCalled();
-    expect(warehousesServiceSpy.getWarehouses).toHaveBeenCalled();
+    expect(productsServiceSpy.getAll).toHaveBeenCalled();
+
+    expect(warehousesServiceSpy.getAll).toHaveBeenCalled();
+
     expect(component.products.length).toBe(1);
     expect(component.warehouses.length).toBe(1);
   });

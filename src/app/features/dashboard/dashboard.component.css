@@ -5,10 +5,7 @@
 .dashboard-title {
   margin-bottom: 24px;
 }
-.dashboard-container {
-  padding: 24px;
-}
 
-.dashboard-title {
-  margin-bottom: 24px;
+.stat-card {
+  margin-bottom: 16px;
 }
