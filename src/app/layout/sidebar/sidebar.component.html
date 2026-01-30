@@ -1,18 +1,37 @@
-<nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzWidth]="250" nzBreakpoint="lg" [nzCollapsedWidth]="80" class="sidebar">
+<nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzWidth]="250" nzBreakpoint="lg" [nzCollapsedWidth]="80" nzTheme="light" class="sidebar">
   <div class="logo">
     @if (!isCollapsed) {
       <h2>ERP Admin</h2>
     }
     @if (isCollapsed) {
-      <span nz-icon nzType="appstore"></span>
+      <span nz-icon nzType="appstore" class="logo-icon"></span>
     }
   </div>
-  <ul nz-menu nzTheme="dark" nzMode="inline">
-    @for (item of visibleNavItems(); track item.href) {
-      <li nz-menu-item [routerLink]="item.href" routerLinkActive="ant-menu-item-selected">
-        <span nz-icon [nzType]="item.icon"></span>
-        <span>{{ item.title }}</span>
-      </li>
+  <ul nz-menu nzTheme="light" nzMode="inline" class="sidebar-menu">
+    @for (item of visibleNavItems(); track item.title) {
+      @if (item.children && item.children.length > 0) {
+        <li nz-submenu [nzTitle]="item.title" [nzIcon]="item.icon">
+          <ul>
+            @for (child of item.children; track child.title) {
+              <li nz-menu-item [routerLink]="child.href" routerLinkActive="ant-menu-item-selected">
+                <span nz-icon [nzType]="child.icon"></span>
+                <span>{{ child.title }}</span>
+              </li>
+            }
+          </ul>
+        </li>
+      } @else {
+        <li nz-menu-item [routerLink]="item.href" routerLinkActive="ant-menu-item-selected">
+          <span nz-icon [nzType]="item.icon"></span>
+          <span>{{ item.title }}</span>
+        </li>
+      }
     }
   </ul>
+
+  @if (!isCollapsed) {
+    <div class="sidebar-footer">
+      <span>ERP Admin Portal v1.0</span>
+    </div>
+  }
 </nz-sider>

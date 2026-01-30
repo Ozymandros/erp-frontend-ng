@@ -25,54 +25,24 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
     <nz-layout class="app-layout" nzHasSider>
       <app-sidebar></app-sidebar>
       <nz-layout class="inner-layout">
-
         <app-header></app-header>
         <nz-content class="app-content">
           <router-outlet></router-outlet>
         </nz-content>
       </nz-layout>
-
     </nz-layout>
   `,
   styles: [`
     .app-layout {
       height: 100vh;
-      overflow: hidden;
       display: flex;
       flex-direction: row;
     }
 
     .inner-layout {
-      height: 100vh;
       display: flex;
       flex-direction: column;
-    }
-
-    .sidebar {
-      overflow: auto;
-      height: 100vh;
-    }
-
-    .logo {
-      height: 64px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(255, 255, 255, 0.1);
-      margin: 16px;
-      border-radius: 4px;
-    }
-
-    .logo h2 {
-      color: #fff;
-      margin: 0;
-      font-size: 18px;
-      font-weight: 600;
-    }
-
-    .logo span {
-      font-size: 24px;
-      color: #fff;
+      flex: 1;
     }
 
     .app-content {
@@ -82,8 +52,6 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
       overflow: auto;
       flex: 1;
     }
-
-
 
     @media screen and (max-width: 768px) {
       .app-content {

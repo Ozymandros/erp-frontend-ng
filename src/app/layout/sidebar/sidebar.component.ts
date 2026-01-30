@@ -24,19 +24,29 @@ export class SidebarComponent {
     const user = this.authService.currentUser();
     if (!user) return [];
         
-    return NAV_ITEMS_CONFIG.filter(item => {
-      // If no permission required, show the item
-      if (!item.permission) return true;
-            
-      // Admin has full access
-      if (user.isAdmin) return true;
-            
-      // Check against cached permissions (client-side, no API call)
-      return this.permissionService.hasPermission(
-        item.permission.module,
-        item.permission.action
-      );
-    });
+    const filterItems = (items: NavItemConfig[]): NavItemConfig[] => {
+      return items.filter(item => {
+        // Check current item permission
+        const hasMainPermission = !item.permission || 
+                                user.isAdmin || 
+                                this.permissionService.hasPermission(item.permission.module, item.permission.action);
+
+        if (!hasMainPermission) return false;
+
+        // If it has children, filter them too
+        if (item.children) {
+          item.children = filterItems(item.children);
+          // Only show group if it has at least one visible child
+          return item.children.length > 0;
+        }
+
+        return true;
+      });
+    };
+
+    // Deep clone to avoid mutating the original config while filtering
+    const itemsCopy = JSON.parse(JSON.stringify(NAV_ITEMS_CONFIG));
+    return filterItems(itemsCopy);
   });
 
   constructor(

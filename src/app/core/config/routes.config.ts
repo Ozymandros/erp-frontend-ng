@@ -42,82 +42,124 @@ export function getRoutePermission(path: string): RoutePermission | undefined {
 
 export interface NavItemConfig {
   title: string;
-  href: string;
+  href?: string;
   icon: string; // Material/ng-zorro icon name
   permission?: RoutePermission;
+  children?: NavItemConfig[];
 }
 
 export const NAV_ITEMS_CONFIG: NavItemConfig[] = [
   {
-    title: 'Users',
-    href: '/users',
-    icon: 'user',
-    permission: createPermission(PERMISSION_MODULES.USERS, PERMISSION_ACTIONS.READ),
+    title: 'Dashboard',
+    href: '/',
+    icon: 'appstore',
   },
   {
-    title: 'Roles',
-    href: '/roles',
+    title: 'Auth',
     icon: 'safety-certificate',
-    permission: createPermission(PERMISSION_MODULES.ROLES, PERMISSION_ACTIONS.READ),
+    children: [
+      {
+        title: 'Users',
+        href: '/users',
+        icon: 'team',
+        permission: createPermission(PERMISSION_MODULES.USERS, PERMISSION_ACTIONS.READ),
+      },
+      {
+        title: 'Roles',
+        href: '/roles',
+        icon: 'safety-certificate',
+        permission: createPermission(PERMISSION_MODULES.ROLES, PERMISSION_ACTIONS.READ),
+      },
+      {
+        title: 'Permissions',
+        href: '/permissions',
+        icon: 'key',
+        permission: createPermission(PERMISSION_MODULES.PERMISSIONS, PERMISSION_ACTIONS.READ),
+      },
+    ]
   },
   {
-    title: 'Permissions',
-    href: '/permissions',
-    icon: 'key',
-    permission: createPermission(PERMISSION_MODULES.PERMISSIONS, PERMISSION_ACTIONS.READ),
-  },
-  {
-    title: 'Products',
-    href: '/inventory/products',
+    title: 'Inventory',
     icon: 'inbox',
-    permission: createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.READ),
+    children: [
+      {
+        title: 'Products',
+        href: '/inventory/products',
+        icon: 'inbox',
+        permission: createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.READ),
+      },
+      {
+        title: 'Warehouses',
+        href: '/inventory/warehouses',
+        icon: 'home',
+        permission: createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.READ),
+      },
+      {
+        title: 'Warehouse Stocks',
+        href: '/inventory/warehouse-stocks',
+        icon: 'line-chart',
+        permission: createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.READ),
+      },
+      {
+        title: 'Transactions',
+        href: '/inventory/transactions',
+        icon: 'file-text',
+        permission: createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.READ),
+      },
+      {
+        title: 'Stock Operations',
+        href: '/inventory/stock-operations',
+        icon: 'sync',
+        permission: createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.CREATE),
+      },
+    ]
   },
   {
-    title: 'Warehouses',
-    href: '/inventory/warehouses',
-    icon: 'home',
-    permission: createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.READ),
-  },
-  {
-    title: 'Warehouse Stocks',
-    href: '/inventory/warehouse-stocks',
-    icon: 'line-chart',
-    permission: createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.READ),
-  },
-  {
-    title: 'Transactions',
-    href: '/inventory/transactions',
-    icon: 'file-text',
-    permission: createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.READ),
-  },
-  {
-    title: 'Stock Operations',
-    href: '/inventory/stock-operations',
-    icon: 'sync',
-    permission: createPermission(PERMISSION_MODULES.INVENTORY, PERMISSION_ACTIONS.CREATE),
-  },
-  {
-    title: 'Customers',
-    href: '/sales/customers',
+    title: 'Sales',
     icon: 'dollar',
-    permission: createPermission(PERMISSION_MODULES.SALES, PERMISSION_ACTIONS.READ),
+    children: [
+      {
+        title: 'Customers',
+        href: '/sales/customers',
+        icon: 'dollar',
+        permission: createPermission(PERMISSION_MODULES.SALES, PERMISSION_ACTIONS.READ),
+      },
+      {
+        title: 'Sales Orders',
+        href: '/sales/orders',
+        icon: 'shopping-cart',
+        permission: createPermission(PERMISSION_MODULES.SALES, PERMISSION_ACTIONS.READ),
+      },
+    ]
   },
   {
-    title: 'Sales Orders',
-    href: '/sales/orders',
-    icon: 'shopping-cart',
-    permission: createPermission(PERMISSION_MODULES.SALES, PERMISSION_ACTIONS.READ),
-  },
-  {
-    title: 'Suppliers',
-    href: '/purchasing/suppliers',
-    icon: 'team',
-    permission: createPermission(PERMISSION_MODULES.PURCHASING, PERMISSION_ACTIONS.READ),
-  },
-  {
-    title: 'Purchase Orders',
-    href: '/purchasing/orders',
+    title: 'Purchasing',
     icon: 'shopping',
-    permission: createPermission(PERMISSION_MODULES.PURCHASING, PERMISSION_ACTIONS.READ),
+    children: [
+      {
+        title: 'Suppliers',
+        href: '/purchasing/suppliers',
+        icon: 'team',
+        permission: createPermission(PERMISSION_MODULES.PURCHASING, PERMISSION_ACTIONS.READ),
+      },
+      {
+        title: 'Purchase Orders',
+        href: '/purchasing/orders',
+        icon: 'shopping',
+        permission: createPermission(PERMISSION_MODULES.PURCHASING, PERMISSION_ACTIONS.READ),
+      },
+    ]
   },
+  {
+    title: 'Orders',
+    icon: 'ordered-list',
+    children: [
+      {
+        title: 'Orders',
+        href: '/sales/orders', // Reusing sales orders for generic "Orders" group as in image
+        icon: 'ordered-list',
+        permission: createPermission(PERMISSION_MODULES.SALES, PERMISSION_ACTIONS.READ),
+      }
+    ]
+  }
 ];
