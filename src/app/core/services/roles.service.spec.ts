@@ -68,8 +68,7 @@ describe('RolesService', () => {
 
     service.removePermissionFromRole('1', 'perm-1').subscribe(() => {
       expect(apiClientSpy.delete).toHaveBeenCalledWith(
-        jasmine.stringContaining('/roles/1/permissions/perm-1'),
-        undefined
+        jasmine.stringContaining('/roles/1/permissions/perm-1')
       );
       done();
     });

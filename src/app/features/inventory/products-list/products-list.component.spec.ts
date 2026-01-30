@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ProductsListComponent } from './products-list.component';
 import { ProductsService } from '../../../core/services/products.service';
@@ -76,11 +76,12 @@ describe('ProductsListComponent', () => {
     expect(component.total).toBe(1);
   });
 
-  it('should search products', () => {
+  it('should search products', fakeAsync(() => {
     component.searchTerm = 'query';
     component.onSearch();
-    expect(productsServiceSpy.getAll).toHaveBeenCalledWith(jasmine.objectContaining({ search: 'query', page: 1 }));
-  });
+    tick(300);
+    expect(productsServiceSpy.getAll).toHaveBeenCalledWith(jasmine.objectContaining({ SearchTerm: 'query', page: 1 }));
+  }));
 
   it('should change page', () => {
     component.onPageChange(2);

@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { WarehouseStocksListComponent } from './warehouse-stocks-list.component';
 import { WarehouseStocksService } from '../../../core/services/warehouse-stocks.service';
@@ -54,9 +54,10 @@ describe('WarehouseStocksListComponent', () => {
     expect(component.total).toBe(1);
   });
   
-  it('should search stocks', () => {
+  it('should search stocks', fakeAsync(() => {
     component.searchTerm = 'query';
     component.onSearch();
-    expect(warehouseStocksServiceSpy.getAll).toHaveBeenCalledWith(jasmine.objectContaining({ search: 'query' }));
-  });
+    tick(300);
+    expect(warehouseStocksServiceSpy.getAll).toHaveBeenCalledWith(jasmine.objectContaining({ SearchTerm: 'query' }));
+  }));
 });

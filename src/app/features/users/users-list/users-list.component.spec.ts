@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { UsersListComponent } from './users-list.component';
 import { UsersService } from '../../../core/services/users.service';
@@ -88,11 +88,12 @@ describe('UsersListComponent', () => {
     expect(component.loading).toBeFalse();
   });
 
-  it('should search users', () => {
+  it('should search users', fakeAsync(() => {
     component.searchTerm = 'query';
-    component.loadData();
-    expect(usersServiceSpy.getAll).toHaveBeenCalledWith(jasmine.objectContaining({ search: 'query', page: 1 }));
-  });
+    component.onSearch();
+    tick(300);
+    expect(usersServiceSpy.getAll).toHaveBeenCalledWith(jasmine.objectContaining({ SearchTerm: 'query', page: 1 }));
+  }));
 
   it('should delete user', () => {
     modalServiceSpy.confirm.and.callFake((options: any) => {

@@ -48,14 +48,19 @@ describe('StockOperationsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load data on init', () => {
+  it('should load products on search', fakeAsync(() => {
+    component.onProductSearch('prod');
+    tick(300);
     expect(productsServiceSpy.getAll).toHaveBeenCalled();
-
-    expect(warehousesServiceSpy.getAll).toHaveBeenCalled();
-
     expect(component.products.length).toBe(1);
+  }));
+
+  it('should load warehouses on search', fakeAsync(() => {
+    component.onWarehouseSearch('ware');
+    tick(300);
+    expect(warehousesServiceSpy.getAll).toHaveBeenCalled();
     expect(component.warehouses.length).toBe(1);
-  });
+  }));
 
   it('should submit adjustment', () => {
     stockOperationsServiceSpy.adjust.and.returnValue(of(void 0));

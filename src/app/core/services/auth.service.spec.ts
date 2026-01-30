@@ -80,11 +80,12 @@ describe('AuthService', () => {
   });
 
   it('should check permissions via API', () => {
-    apiClientSpy.post.and.returnValue(of({ allowed: true }));
+    apiClientSpy.get.and.returnValue(of(true));
     
     service.checkPermission('Users', 'View').subscribe(allowed => {
       expect(allowed).toBeTrue();
-      expect(apiClientSpy.post).toHaveBeenCalled();
+      // Use get instead of post as per current implementation
+      expect(apiClientSpy.get).toHaveBeenCalled();
     });
   });
 });
