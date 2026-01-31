@@ -29,7 +29,7 @@ export class AssignedPermissionsViewComponent {
       groups.get(module)!.push(permission);
     });
     // Sort permissions within each group by action
-    groups.forEach((permissions, module) => {
+    groups.forEach((permissions, _module) => {
       permissions.sort((a, b) => a.action.localeCompare(b.action));
     });
     return groups;
@@ -37,6 +37,6 @@ export class AssignedPermissionsViewComponent {
 
   // Get sorted module names for display
   getSortedModules(): string[] {
-    return Array.from(this.groupedPermissions.keys()).sort();
+    return Array.from(this.groupedPermissions.keys()).sort((a, b) => a.localeCompare(b));
   }
 }

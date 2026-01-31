@@ -6,10 +6,8 @@ import {
   Role,
   CreateRoleRequest,
   UpdateRoleRequest,
-  PaginatedResponse,
-  SearchParams,
   Permission
-} from '../types/api.types';
+} from '../../types/api.types';
 import { BaseApiService } from '../base/base-api.service';
 
 

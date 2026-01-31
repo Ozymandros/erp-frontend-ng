@@ -11,13 +11,13 @@ test.describe('Sales Management', () => {
 
   test('should load customers page and display list', async ({ page }) => {
     await page.goto('/sales/customers');
-    await expect(page.locator('.page-header h1')).toContainText('Customers Management');
+    await expect(page.getByRole('heading', { name: 'Customers Management' })).toBeVisible();
     await expect(page.locator('nz-table')).toBeVisible();
   });
 
   test('should navigate to sales orders', async ({ page }) => {
     await page.goto('/sales/orders');
-    await expect(page.locator('.page-header h1')).toContainText('Sales Orders');
+    await expect(page.getByRole('heading', { name: 'Sales Orders' })).toBeVisible();
   });
 
   test('should open add customer form', async ({ page }) => {

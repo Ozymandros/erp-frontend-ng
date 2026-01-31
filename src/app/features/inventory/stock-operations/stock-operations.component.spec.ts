@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { StockOperationsComponent } from './stock-operations.component';
 import { StockOperationsService } from '../../../core/services/stock-operations.service';
 import { ProductsService } from '../../../core/services/products.service';
 import { WarehousesService } from '../../../core/services/warehouses.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 
 describe('StockOperationsComponent', () => {
@@ -29,8 +29,10 @@ describe('StockOperationsComponent', () => {
     warehousesServiceSpy.getAll.and.returnValue(of(mockWarehouses as any));
 
     await TestBed.configureTestingModule({
-      imports: [ StockOperationsComponent, BrowserAnimationsModule, HttpClientTestingModule ],
+      imports: [ StockOperationsComponent ],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: StockOperationsService, useValue: stockOperationsServiceSpy },
         { provide: ProductsService, useValue: productsServiceSpy },
         { provide: WarehousesService, useValue: warehousesServiceSpy },
@@ -48,14 +50,19 @@ describe('StockOperationsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load data on init', () => {
+  it('should load products on search', fakeAsync(() => {
+    component.onProductSearch('prod');
+    tick(300);
     expect(productsServiceSpy.getAll).toHaveBeenCalled();
-
-    expect(warehousesServiceSpy.getAll).toHaveBeenCalled();
-
     expect(component.products.length).toBe(1);
+  }));
+
+  it('should load warehouses on search', fakeAsync(() => {
+    component.onWarehouseSearch('ware');
+    tick(300);
+    expect(warehousesServiceSpy.getAll).toHaveBeenCalled();
     expect(component.warehouses.length).toBe(1);
-  });
+  }));
 
   it('should submit adjustment', () => {
     stockOperationsServiceSpy.adjust.and.returnValue(of(void 0));

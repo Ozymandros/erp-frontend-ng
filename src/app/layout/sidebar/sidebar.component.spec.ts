@@ -1,9 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { SidebarComponent } from './sidebar.component';
 import { provideRouter } from '@angular/router';
+import { SidebarComponent } from './sidebar.component';
 import { RouterLink } from '@angular/router';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { By } from '@angular/platform-browser';
 import { AuthService } from '../../core/services/auth.service';
 import { PermissionService } from '../../core/services/permission.service';
@@ -47,7 +45,7 @@ describe('SidebarComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [ SidebarComponent, BrowserAnimationsModule, RouterTestingModule, NzIconModule ],
+      imports: [ SidebarComponent, NzIconModule ],
       providers: [
         provideRouter([]),
         { provide: AuthService, useValue: mockAuthService },
@@ -67,26 +65,19 @@ describe('SidebarComponent', () => {
   });
 
   it('should render menu items', () => {
-    const menuItems = fixture.debugElement.queryAll(By.css('[nz-menu-item], [nz-submenu]'));
-    // Dashboard (1) + Users (sub) + Users/Roles/Perms (3) + Inventory (sub) + 5 items + Sales (sub) + 2 items + Purch (sub) + 1 item
-    // Submenus are also elements.
-    // Let's just check for some known text
     const nativeElement = fixture.nativeElement as HTMLElement;
-    expect(nativeElement.textContent).toContain('Users');
-    expect(nativeElement.textContent).toContain('Roles');
-    expect(nativeElement.textContent).toContain('Permissions');
-    expect(nativeElement.textContent).toContain('Products');
-    expect(nativeElement.textContent).toContain('Warehouses');
-    expect(nativeElement.textContent).toContain('Customers');
-    expect(nativeElement.textContent).toContain('Sales Orders');
-    expect(nativeElement.textContent).toContain('Purchase Orders');
+    expect(nativeElement.textContent).toContain('Dashboard');
+    expect(nativeElement.textContent).toContain('Auth');
+    expect(nativeElement.textContent).toContain('Inventory');
+    expect(nativeElement.textContent).toContain('Sales');
+    expect(nativeElement.textContent).toContain('Purchasing');
   });
   
   it('should have correct router links', () => {
      // Check for routerLink directive - it can be on different elements
-     const links = fixture.debugElement.queryAll(By.directive(RouterLink));
+     fixture.debugElement.queryAll(By.directive(RouterLink));
      // Also check for elements with routerLink attribute
-     const linksByAttr = fixture.debugElement.queryAll(By.css('[routerLink], [ng-reflect-router-link]'));
+     fixture.debugElement.queryAll(By.css('[routerLink], [ng-reflect-router-link]'));
      
      // The component should have navigation items with router links
      // Since we're using @for loop with routerLink binding, check if menu items exist

@@ -9,13 +9,12 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { SuppliersService } from '../../../core/services/suppliers.service';
-import { SupplierDto } from '../../../types/api.types';
 
 /** Validates international phone numbers (US, European, etc.): digits, +, spaces, hyphens, parentheses, dots; 8–15 digits. */
 function phoneNumberValidator(control: AbstractControl): ValidationErrors | null {
   const v = (control.value ?? '').trim();
   if (!v) return null; // required is handled separately
-  const digitsOnly = v.replace(/\D/g, '');
+  const digitsOnly = v.replaceAll(/\D/g, '');
   if (digitsOnly.length < 8 || digitsOnly.length > 15) return { phoneNumber: true };
   if (!/^[\d\s\-+().]{8,25}$/.test(v)) return { phoneNumber: true };
   return null;

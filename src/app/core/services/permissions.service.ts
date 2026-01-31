@@ -1,14 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { ApiClientService } from '../api/http-client.service';
 import { PERMISSIONS_ENDPOINTS } from '../api/endpoints.constants';
 import {
   Permission,
   CreatePermissionRequest,
-  UpdatePermissionRequest,
-  PaginatedResponse,
-  SearchParams
-} from '../types/api.types';
+  UpdatePermissionRequest
+} from '../../types/api.types';
 import { BaseApiService } from '../base/base-api.service';
 
 

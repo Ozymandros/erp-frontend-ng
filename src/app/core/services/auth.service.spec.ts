@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { AuthService } from './auth.service';
 import { ApiClientService } from '../api/http-client.service';
-import { AuthResponse, User } from '../types/api.types';
+import { AuthResponse, User } from '../../types/api.types';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -80,11 +80,12 @@ describe('AuthService', () => {
   });
 
   it('should check permissions via API', () => {
-    apiClientSpy.post.and.returnValue(of({ allowed: true }));
+    apiClientSpy.get.and.returnValue(of(true));
     
     service.checkPermission('Users', 'View').subscribe(allowed => {
       expect(allowed).toBeTrue();
-      expect(apiClientSpy.post).toHaveBeenCalled();
+      // Use get instead of post as per current implementation
+      expect(apiClientSpy.get).toHaveBeenCalled();
     });
   });
 });

@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { InventoryTransactionsListComponent } from './inventory-transactions-list.component';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { InventoryTransactionsService } from '../../../core/services/inventory-transactions.service';
 import { FileService } from '../../../core/services/file.service';
@@ -30,8 +30,10 @@ describe('InventoryTransactionsListComponent', () => {
     inventoryTransactionsServiceSpy.getAll.and.returnValue(of(mockResponse as any));
 
     await TestBed.configureTestingModule({
-      imports: [ InventoryTransactionsListComponent, BrowserAnimationsModule, HttpClientTestingModule ],
+      imports: [ InventoryTransactionsListComponent ],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: InventoryTransactionsService, useValue: inventoryTransactionsServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
         { provide: FileService, useValue: fileServiceSpy },

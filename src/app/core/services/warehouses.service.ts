@@ -1,13 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { ApiClientService } from '../api/http-client.service';
 import { INVENTORY_ENDPOINTS } from '../api/endpoints.constants';
 import {
   WarehouseDto,
-  CreateUpdateWarehouseDto,
-  PaginatedResponse,
-  SearchParams
-} from '../types/api.types';
+  CreateUpdateWarehouseDto
+} from '../../types/api.types';
 import { BaseApiService } from '../base/base-api.service';
 
 

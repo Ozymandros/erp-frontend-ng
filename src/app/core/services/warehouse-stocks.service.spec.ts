@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { WarehouseStocksService } from './warehouse-stocks.service';
 import { ApiClientService } from '../api/http-client.service';
-import { WarehouseStockDto, PaginatedResponse } from '../types/api.types';
+import { WarehouseStockDto, PaginatedResponse } from '../../types/api.types';
 
 describe('WarehouseStocksService', () => {
   let service: WarehouseStocksService;

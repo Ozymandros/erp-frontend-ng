@@ -13,6 +13,7 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { SalesOrdersService } from '../../../core/services/sales-orders.service';
 import { SalesOrderDto } from '../../../types/api.types';
+import { BaseApiService } from '../../../core/base/base-api.service';
 import { BaseListComponent } from '../../../core/base/base-list.component';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { FileService } from '../../../core/services/file.service';
@@ -50,7 +51,7 @@ export class SalesOrdersListComponent extends BaseListComponent<SalesOrderDto> i
     cdr: ChangeDetectorRef,
     authService: AuthService
   ) {
-    super(salesOrdersService as any, message, modal, fileService, cdr, authService);
+    super(salesOrdersService as BaseApiService<SalesOrderDto>, message, modal, fileService, cdr, authService);
   }
 
   override ngOnInit(): void {
@@ -69,7 +70,7 @@ export class SalesOrdersListComponent extends BaseListComponent<SalesOrderDto> i
     });
   }
 
-  getStatusColor(status: any): string {
+  getStatusColor(status: number | string): string {
     switch (status) {
       case 'Draft': 
       case 0: return 'default';

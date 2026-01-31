@@ -17,7 +17,7 @@ export class PermissionService {
     if (user.isAdmin) return true;
         
     return user.permissions.some(
-      p => p.module.toLowerCase() === module.toLowerCase() &&
+      (p: { module: string; action: string }) => p.module.toLowerCase() === module.toLowerCase() &&
            p.action.toLowerCase() === action.toLowerCase()
     );
   }

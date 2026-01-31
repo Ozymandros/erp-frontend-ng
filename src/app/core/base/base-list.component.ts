@@ -5,7 +5,7 @@ import { Subject, takeUntil, finalize, debounceTime } from 'rxjs';
 import { BaseApiService } from './base-api.service';
 import { FileService } from '../services/file.service';
 import { AuthService } from '../services/auth.service';
-import { ModulePermissions } from '../types/api.types';
+import { ModulePermissions } from '../../types/api.types';
 import { Observable, of } from 'rxjs';
 
 /** Min characters before search is sent to the API; fewer means no SearchTerm param (show all). */
@@ -65,7 +65,7 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
 
   loadData(): void {
     this.loading = true;
-    const params: any = {
+    const params: Record<string, string | number> = {
       page: this.pageIndex,
       pageSize: this.pageSize
     };
@@ -74,7 +74,7 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
     // Backend API expects SearchTerm (capital S) for search functionality
     const term = (this.searchTerm || '').trim();
     if (term.length >= SEARCH_MIN_LENGTH) {
-      params.SearchTerm = term;
+      params['SearchTerm'] = term;
     }
     
     this.service.getAll(params).pipe(
@@ -84,10 +84,10 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
         this.cdr.detectChanges();
       })
     ).subscribe({
-      next: (response: any) => {
+      next: (response: { items?: T[]; total?: number } | T[]) => {
         // Handle both wrapper and direct array responses for flexibility, though BaseApi expects wrapper
-        this.data = response?.items || (Array.isArray(response) ? response : []);
-        this.total = response?.total || (Array.isArray(response) ? response.length : 0);
+        this.data = (response && typeof response === 'object' && 'items' in response ? response.items : Array.isArray(response) ? response : []) ?? [];
+        this.total = (response && typeof response === 'object' && 'total' in response ? response.total : Array.isArray(response) ? response.length : 0) ?? 0;
       },
       error: (error) => {
         this.message.error('Failed to load data');

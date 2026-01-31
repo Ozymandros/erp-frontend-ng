@@ -104,8 +104,8 @@ export class PermissionSelectorComponent implements OnInit, OnChanges, OnDestroy
   private updateAssignedPermissions(): void {
     const newIds = new Set(this.initialPermissions.map((p) => p.id));
     // Only update if contents actually changed to avoid unnecessary re-renders
-    const oldIds = Array.from(this.assignedPermissions).sort().join(',');
-    const newIdsStr = Array.from(newIds).sort().join(',');
+    const oldIds = Array.from(this.assignedPermissions).sort((a, b) => a.localeCompare(b)).join(',');
+    const newIdsStr = Array.from(newIds).sort((a, b) => a.localeCompare(b)).join(',');
     if (oldIds !== newIdsStr) {
       this.assignedPermissions = newIds;
     }
@@ -119,11 +119,11 @@ export class PermissionSelectorComponent implements OnInit, OnChanges, OnDestroy
       const currentValue = changes['initialPermissions'].currentValue || [];
       const previousIds = previousValue
         .map((p: Permission) => p.id)
-        .sort()
+        .sort((a: string, b: string) => a.localeCompare(b))
         .join(',');
       const currentIds = currentValue
         .map((p: Permission) => p.id)
-        .sort()
+        .sort((a: string, b: string) => a.localeCompare(b))
         .join(',');
 
       // Only update if IDs actually changed
@@ -472,7 +472,7 @@ export class PermissionSelectorComponent implements OnInit, OnChanges, OnDestroy
 
   get modules(): string[] {
     const moduleSet = new Set(this.allPermissions.map((p) => p.module));
-    return Array.from(moduleSet).sort();
+    return Array.from(moduleSet).sort((a, b) => a.localeCompare(b));
   }
 
   get assignedCount(): number {

@@ -6,7 +6,7 @@ import {
   OrderDto,
   PaginatedResponse,
   SearchParams
-} from '../types/api.types';
+} from '../../types/api.types';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,7 @@ export class OrdersService {
   constructor(private apiClient: ApiClientService) {}
 
   getOrders(params?: SearchParams): Observable<PaginatedResponse<OrderDto>> {
-    return this.apiClient.get<PaginatedResponse<OrderDto>>(ORDERS_ENDPOINTS.BASE, params);
+    return this.apiClient.get<PaginatedResponse<OrderDto>>(ORDERS_ENDPOINTS.BASE, params as Record<string, unknown> | undefined);
   }
 
   getOrderById(id: string): Observable<OrderDto> {

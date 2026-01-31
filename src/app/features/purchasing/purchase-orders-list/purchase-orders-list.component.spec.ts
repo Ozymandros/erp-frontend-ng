@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { PurchaseOrdersListComponent } from './purchase-orders-list.component';
 import { PurchaseOrdersService } from '../../../core/services/purchase-orders.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { FileService } from '../../../core/services/file.service';
@@ -31,8 +31,10 @@ describe('PurchaseOrdersListComponent', () => {
     purchaseOrdersServiceSpy.getAll.and.returnValue(of(mockResponse as any));
 
     await TestBed.configureTestingModule({
-      imports: [ PurchaseOrdersListComponent, BrowserAnimationsModule, HttpClientTestingModule ],
+      imports: [ PurchaseOrdersListComponent ],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: PurchaseOrdersService, useValue: purchaseOrdersServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
         { provide: FileService, useValue: fileServiceSpy },

@@ -95,7 +95,7 @@ export class RoleDetailComponent implements OnInit {
           description: role.description
         });
       },
-      error: (err) => {
+      error: (_err) => {
         this.message.error('Failed to load role');
       }
     });
@@ -103,8 +103,8 @@ export class RoleDetailComponent implements OnInit {
 
   onPermissionsChange(permissions: Permission[]): void {
     // Compare IDs to avoid unnecessary updates that cause re-renders
-    const oldIds = this.rolePermissions.map(p => p.id).sort().join(',');
-    const newIds = permissions.map(p => p.id).sort().join(',');
+    const oldIds = this.rolePermissions.map(p => p.id).sort((a, b) => a.localeCompare(b)).join(',');
+    const newIds = permissions.map(p => p.id).sort((a, b) => a.localeCompare(b)).join(',');
     
     if (oldIds !== newIds) {
       // Only update if IDs actually changed

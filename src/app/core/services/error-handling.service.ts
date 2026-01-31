@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ProblemDetails } from '../types/api.types';
+import { ProblemDetails } from '../../types/api.types';
 
 @Injectable({
   providedIn: 'root'
@@ -9,24 +9,25 @@ export class ErrorHandlingService {
   /**
    * Extract error message from API response
    */
-  extractErrorMessage(error: any): string {
+  extractErrorMessage(error: unknown): string {
     if (error instanceof HttpErrorResponse) {
       return this.extractHttpErrorMessage(error);
     }
     
-    if (error?.error) {
-      return this.extractHttpErrorMessage(error);
+    if (error && typeof error === 'object' && 'error' in error) {
+      return this.extractHttpErrorMessage(error as HttpErrorResponse);
     }
     
-    if (error?.message) {
-      return error.message;
+    if (error && typeof error === 'object' && 'message' in error && typeof (error as { message: unknown }).message === 'string') {
+      return (error as { message: string }).message;
     }
     
     return 'An unknown error occurred';
   }
 
-  private extractHttpErrorMessage(error: HttpErrorResponse | any): string {
-    const errorBody = error.error || error;
+  private extractHttpErrorMessage(error: HttpErrorResponse | { error?: unknown; message?: string }): string {
+    type ErrorBody = { error?: { message?: string }; message?: string; detail?: string; title?: string; errors?: Record<string, string[]> };
+    const errorBody = ((error as { error?: unknown }).error ?? error) as ErrorBody;
     
     // Handle ProblemDetails format (ASP.NET Core)
     if (this.isProblemDetails(errorBody)) {
@@ -98,18 +99,20 @@ export class ErrorHandlingService {
     return 'An error occurred';
   }
 
-  private isProblemDetails(obj: any): boolean {
-    return obj && (
-      typeof obj.detail === 'string' ||
-      typeof obj.title === 'string' ||
-      (obj.errors && typeof obj.errors === 'object')
+  private isProblemDetails(obj: unknown): boolean {
+    if (!obj || typeof obj !== 'object') return false;
+    const o = obj as { detail?: string; title?: string; errors?: unknown };
+    return (
+      typeof o.detail === 'string' ||
+      typeof o.title === 'string' ||
+      !!(o.errors && typeof o.errors === 'object')
     );
   }
 
   /**
    * Log error for debugging (in development mode)
    */
-  logError(error: any, context?: string): void {
+  logError(error: unknown, context?: string): void {
     if (typeof window !== 'undefined' && !window.location.hostname.includes('localhost')) {
       // Only log in development
       return;

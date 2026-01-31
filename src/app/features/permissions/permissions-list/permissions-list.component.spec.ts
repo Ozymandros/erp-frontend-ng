@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { PermissionsListComponent } from './permissions-list.component';
 import { PermissionsService } from '../../../core/services/permissions.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { FileService } from '../../../core/services/file.service';
@@ -31,8 +31,10 @@ describe('PermissionsListComponent', () => {
     permissionsServiceSpy.getAll.and.returnValue(of(mockResponse as any));
 
     await TestBed.configureTestingModule({
-      imports: [ PermissionsListComponent, BrowserAnimationsModule, HttpClientTestingModule ],
+      imports: [ PermissionsListComponent ],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: PermissionsService, useValue: permissionsServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
         { provide: NzModalService, useValue: modalServiceSpy },

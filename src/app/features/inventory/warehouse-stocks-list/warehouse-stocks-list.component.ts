@@ -46,7 +46,7 @@ export class WarehouseStocksListComponent extends BaseListComponent<WarehouseSto
     cdr: ChangeDetectorRef,
     authService: AuthService
   ) {
-    super(warehouseStocksService as any, message, modal, fileService, cdr, authService);
+    super(warehouseStocksService, message, modal, fileService, cdr, authService);
   }
 
   override ngOnInit(): void {

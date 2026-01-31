@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { RolesService } from './roles.service';
 import { ApiClientService } from '../api/http-client.service';
-import { Role, PaginatedResponse } from '../types/api.types';
+import { Role, PaginatedResponse } from '../../types/api.types';
 
 describe('RolesService', () => {
   let service: RolesService;
@@ -68,8 +68,7 @@ describe('RolesService', () => {
 
     service.removePermissionFromRole('1', 'perm-1').subscribe(() => {
       expect(apiClientSpy.delete).toHaveBeenCalledWith(
-        jasmine.stringContaining('/roles/1/permissions/perm-1'),
-        undefined
+        jasmine.stringContaining('/roles/1/permissions/perm-1')
       );
       done();
     });

@@ -88,7 +88,7 @@ export class ProfileComponent implements OnInit {
     if (this.passwordForm.valid && this.currentUser) {
       this.updatingPassword = true;
       // Assume a specific endpoint or just update via user service
-      this.usersService.update(this.currentUser.id, { password: this.passwordForm.value.password } as any).subscribe({
+      this.usersService.update(this.currentUser.id, { password: this.passwordForm.value.password } as { password?: string }).subscribe({
 
 
         next: () => {

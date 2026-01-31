@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ProfileComponent } from './profile.component';
 import { AuthService } from '../../core/services/auth.service';
 import { UsersService } from '../../core/services/users.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { of, BehaviorSubject } from 'rxjs';
-import { User } from '../../core/types/api.types';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { User } from '../../types/api.types';
 
 describe('ProfileComponent', () => {
   let component: ProfileComponent;
@@ -42,8 +42,10 @@ describe('ProfileComponent', () => {
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
 
     await TestBed.configureTestingModule({
-      imports: [ ProfileComponent, BrowserAnimationsModule, HttpClientTestingModule ],
+      imports: [ ProfileComponent ],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: AuthService, useValue: authServiceSpy },
         { provide: UsersService, useValue: usersServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy }

@@ -1,14 +1,15 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { permissionGuard } from './core/guards/permission.guard';
+import { APP_ROUTES } from './core/constants/routes.constants';
 
 export const routes: Routes = [
   {
-    path: 'login',
+    path: APP_ROUTES.AUTH.LOGIN,
     loadComponent: () => import('./features/auth/login/login.component').then(m => m.LoginComponent)
   },
   {
-    path: 'register',
+    path: APP_ROUTES.AUTH.REGISTER,
     loadComponent: () => import('./features/auth/register/register.component').then(m => m.RegisterComponent)
   },
   {
@@ -17,144 +18,132 @@ export const routes: Routes = [
     loadComponent: () => import('./layout/app-layout/app-layout.component').then(m => m.AppLayoutComponent),
     children: [
       {
-        path: '',
+        path: APP_ROUTES.DASHBOARD,
         loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent)
       },
       {
-        path: 'profile',
+        path: APP_ROUTES.PROFILE,
         loadComponent: () => import('./features/profile/profile.component').then(m => m.ProfileComponent)
       },
       {
-        path: 'users',
+        path: APP_ROUTES.USERS.ROOT,
         canActivate: [permissionGuard],
         data: { module: 'users', action: 'read' },
         loadComponent: () => import('./features/users/users-list/users-list.component').then(m => m.UsersListComponent)
       },
       {
-        path: 'users/:id',
+        path: APP_ROUTES.USERS.DETAIL,
         canActivate: [permissionGuard],
         data: { module: 'users', action: 'read' },
         loadComponent: () => import('./features/users/user-detail/user-detail.component').then(m => m.UserDetailComponent)
       },
       {
-        path: 'roles',
+        path: APP_ROUTES.ROLES.ROOT,
         canActivate: [permissionGuard],
         data: { module: 'roles', action: 'read' },
         loadComponent: () => import('./features/roles/roles-list/roles-list.component').then(m => m.RolesListComponent)
       },
       {
-        path: 'roles/:id',
+        path: APP_ROUTES.ROLES.DETAIL,
         canActivate: [permissionGuard],
         data: { module: 'roles', action: 'read' },
         loadComponent: () => import('./features/roles/role-detail/role-detail.component').then(m => m.RoleDetailComponent)
       },
       {
-        path: 'permissions',
+        path: APP_ROUTES.PERMISSIONS.ROOT,
         canActivate: [permissionGuard],
         data: { module: 'permissions', action: 'read' },
         loadComponent: () => import('./features/permissions/permissions-list/permissions-list.component').then(m => m.PermissionsListComponent)
       },
       {
-        path: 'inventory/products',
+        path: APP_ROUTES.INVENTORY.PRODUCTS,
         canActivate: [permissionGuard],
         data: { module: 'products', action: 'read' },
         loadComponent: () => import('./features/inventory/products-list/products-list.component').then(m => m.ProductsListComponent)
       },
       {
-        path: 'inventory/products/:id',
+        path: APP_ROUTES.INVENTORY.PRODUCT_DETAIL,
         canActivate: [permissionGuard],
         data: { module: 'products', action: 'read' },
         loadComponent: () => import('./features/inventory/product-detail/product-detail.component').then(m => m.ProductDetailComponent)
       },
       {
-        path: 'inventory/warehouses',
+        path: APP_ROUTES.INVENTORY.WAREHOUSES,
         canActivate: [permissionGuard],
         data: { module: 'inventory', action: 'read' },
         loadComponent: () => import('./features/inventory/warehouses-list/warehouses-list.component').then(m => m.WarehousesListComponent)
       },
       {
-        path: 'inventory/warehouses/:id',
+        path: APP_ROUTES.INVENTORY.WAREHOUSE_DETAIL,
         canActivate: [permissionGuard],
         data: { module: 'inventory', action: 'read' },
         loadComponent: () => import('./features/inventory/warehouse-detail/warehouse-detail.component').then(m => m.WarehouseDetailComponent)
       },
       {
-        path: 'inventory/warehouse-stocks',
+        path: APP_ROUTES.INVENTORY.WAREHOUSE_STOCKS,
         canActivate: [permissionGuard],
         data: { module: 'inventory', action: 'read' },
         loadComponent: () => import('./features/inventory/warehouse-stocks-list/warehouse-stocks-list.component').then(m => m.WarehouseStocksListComponent)
       },
       {
-        path: 'inventory/transactions',
+        path: APP_ROUTES.INVENTORY.TRANSACTIONS,
         canActivate: [permissionGuard],
         data: { module: 'inventory', action: 'read' },
         loadComponent: () => import('./features/inventory/inventory-transactions-list/inventory-transactions-list.component').then(m => m.InventoryTransactionsListComponent)
       },
       {
-        path: 'inventory/stock-operations',
+        path: APP_ROUTES.INVENTORY.STOCK_OPERATIONS,
         canActivate: [permissionGuard],
         data: { module: 'inventory', action: 'create' }, // Stock operations usually involve creation
         loadComponent: () => import('./features/inventory/stock-operations/stock-operations.component').then(m => m.StockOperationsComponent)
       },
       {
-        path: 'sales/customers',
+        path: APP_ROUTES.SALES.CUSTOMERS,
         canActivate: [permissionGuard],
         data: { module: 'sales', action: 'read' },
         loadComponent: () => import('./features/sales/customers-list/customers-list.component').then(m => m.CustomersListComponent)
       },
       {
-        path: 'sales/customers/:id',
+        path: APP_ROUTES.SALES.CUSTOMER_DETAIL,
         canActivate: [permissionGuard],
         data: { module: 'sales', action: 'read' },
         loadComponent: () => import('./features/sales/customer-detail/customer-detail.component').then(m => m.CustomerDetailComponent)
       },
       {
-        path: 'sales/orders',
+        path: APP_ROUTES.SALES.ORDERS,
         canActivate: [permissionGuard],
         data: { module: 'sales', action: 'read' },
         loadComponent: () => import('./features/sales/sales-orders-list/sales-orders-list.component').then(m => m.SalesOrdersListComponent)
       },
       {
-        path: 'sales/orders/:id',
+        path: APP_ROUTES.SALES.ORDER_DETAIL,
         canActivate: [permissionGuard],
         data: { module: 'sales', action: 'read' },
         loadComponent: () => import('./features/sales/sales-order-detail/sales-order-detail.component').then(m => m.SalesOrderDetailComponent)
       },
       {
-        path: 'purchasing/suppliers',
+        path: APP_ROUTES.PURCHASING.SUPPLIERS,
         canActivate: [permissionGuard],
         data: { module: 'purchasing', action: 'read' },
         loadComponent: () => import('./features/purchasing/suppliers-list/suppliers-list.component').then(m => m.SuppliersListComponent)
       },
       {
-        path: 'purchasing/suppliers/:id',
+        path: APP_ROUTES.PURCHASING.SUPPLIER_DETAIL,
         canActivate: [permissionGuard],
         data: { module: 'purchasing', action: 'read' },
         loadComponent: () => import('./features/purchasing/supplier-detail/supplier-detail.component').then(m => m.SupplierDetailComponent)
       },
       {
-        path: 'purchasing/orders',
+        path: APP_ROUTES.PURCHASING.ORDERS,
         canActivate: [permissionGuard],
         data: { module: 'purchasing', action: 'read' },
         loadComponent: () => import('./features/purchasing/purchase-orders-list/purchase-orders-list.component').then(m => m.PurchaseOrdersListComponent)
       },
       {
-        path: 'purchasing/orders/:id',
+        path: APP_ROUTES.PURCHASING.ORDER_DETAIL,
         canActivate: [permissionGuard],
         data: { module: 'purchasing', action: 'read' },
         loadComponent: () => import('./features/purchasing/purchase-order-detail/purchase-order-detail.component').then(m => m.PurchaseOrderDetailComponent)
-      },
-      {
-        path: 'purchases',
-        redirectTo: 'purchasing/orders'
-      },
-      {
-        path: 'purchases/orders',
-        redirectTo: 'purchasing/orders'
-      },
-      {
-        path: 'purchases/orders/new',
-        redirectTo: 'purchasing/orders/new'
       }
     ]
   },

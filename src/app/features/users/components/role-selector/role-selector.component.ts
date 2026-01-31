@@ -31,7 +31,7 @@ import { Role } from '../../../../types/api.types';
   templateUrl: './role-selector.component.html',
   styleUrls: ['./role-selector.component.css']
 })
-export class RoleSelectorComponent implements OnInit {
+export class RoleSelectorComponent implements OnInit, OnDestroy {
   @Input() userId!: string;
   @Input() initialRoles: Role[] = [];
   @Input() readonly = false;

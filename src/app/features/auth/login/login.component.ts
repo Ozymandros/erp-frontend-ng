@@ -28,7 +28,6 @@ import { LoginRequest } from '../../../types/api.types';
 export class LoginComponent {
   loginForm: FormGroup;
   isLoading = false;
-  isFormDisabled = true;
 
   constructor(
     private fb: FormBuilder,
@@ -38,13 +37,6 @@ export class LoginComponent {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]]
-    });
-    
-    // Update disabled state when form validity changes (using setTimeout to avoid change detection issues)
-    this.loginForm.statusChanges.subscribe(() => {
-      setTimeout(() => {
-        this.isFormDisabled = !this.loginForm.valid;
-      }, 0);
     });
   }
 
@@ -60,6 +52,13 @@ export class LoginComponent {
         error: (error) => {
           this.message.error(error.message || 'Login failed');
           this.isLoading = false;
+        }
+      });
+    } else {
+      Object.values(this.loginForm.controls).forEach(control => {
+        if (control.invalid) {
+          control.markAsDirty();
+          control.updateValueAndValidity({ onlySelf: true });
         }
       });
     }

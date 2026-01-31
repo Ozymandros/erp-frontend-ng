@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { SalesOrdersService } from './sales-orders.service';
 import { ApiClientService } from '../api/http-client.service';
-import { SalesOrderDto, PaginatedResponse } from '../types/api.types';
+import { SalesOrderDto, PaginatedResponse } from '../../types/api.types';
 
 describe('SalesOrdersService', () => {
   let service: SalesOrdersService;

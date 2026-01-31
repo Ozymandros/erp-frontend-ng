@@ -46,7 +46,7 @@ export class InventoryTransactionsListComponent extends BaseListComponent<Invent
     cdr: ChangeDetectorRef,
     authService: AuthService
   ) {
-    super(inventoryTransactionsService as any, message, modal, fileService, cdr, authService);
+    super(inventoryTransactionsService, message, modal, fileService, cdr, authService);
   }
 
   override ngOnInit(): void {
