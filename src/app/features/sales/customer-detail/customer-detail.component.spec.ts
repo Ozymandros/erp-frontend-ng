@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CustomerDetailComponent } from './customer-detail.component';
 import { CustomersService } from '../../../core/services/customers.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('CustomerDetailComponent', () => {
   let component: CustomerDetailComponent;
@@ -23,8 +23,10 @@ describe('CustomerDetailComponent', () => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
-      imports: [ CustomerDetailComponent, BrowserAnimationsModule, HttpClientTestingModule ],
+      imports: [ CustomerDetailComponent ],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: CustomersService, useValue: customersServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
         { provide: Router, useValue: routerSpy },

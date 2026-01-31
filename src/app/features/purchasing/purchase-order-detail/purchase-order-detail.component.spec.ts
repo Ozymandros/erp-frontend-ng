@@ -1,19 +1,19 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { PurchaseOrderDetailComponent } from './purchase-order-detail.component';
-import { PurchaseOrdersService } from '../../../core/services/purchase-orders.service';
-import { ProductsService } from '../../../core/services/products.service';
-import { SuppliersService } from '../../../core/services/suppliers.service';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { ActivatedRoute, Router } from '@angular/router';
-import { of } from 'rxjs';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { of } from 'rxjs';
+import { ProductsService } from '../../../core/services/products.service';
+import { PurchaseOrdersService } from '../../../core/services/purchase-orders.service';
+import { SuppliersService } from '../../../core/services/suppliers.service';
+import { createOrderDetailFixture } from '../../../core/testing/order-detail-spec.helper';
+import { PurchaseOrderDetailComponent } from './purchase-order-detail.component';
 
 describe('PurchaseOrderDetailComponent', () => {
   let component: PurchaseOrderDetailComponent;
-  let fixture: ComponentFixture<PurchaseOrderDetailComponent>;
+  let _fixture: ComponentFixture<PurchaseOrderDetailComponent>;
   let purchaseOrdersServiceSpy: jasmine.SpyObj<PurchaseOrdersService>;
   let productsServiceSpy: jasmine.SpyObj<ProductsService>;
   let suppliersServiceSpy: jasmine.SpyObj<SuppliersService>;
@@ -43,8 +43,10 @@ describe('PurchaseOrderDetailComponent', () => {
     suppliersServiceSpy.getAll.and.returnValue(of(mockSuppliers as any));
 
     await TestBed.configureTestingModule({
-      imports: [ PurchaseOrderDetailComponent, BrowserAnimationsModule, HttpClientTestingModule ],
+      imports: [ PurchaseOrderDetailComponent ],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: PurchaseOrdersService, useValue: purchaseOrdersServiceSpy },
         { provide: ProductsService, useValue: productsServiceSpy },
         { provide: SuppliersService, useValue: suppliersServiceSpy },
@@ -58,15 +60,12 @@ describe('PurchaseOrderDetailComponent', () => {
   });
 
   function createComponent(id: string | null) {
-      if (id && id !== 'new') {
-        purchaseOrdersServiceSpy.getById.and.returnValue(of(mockOrder as any));
-      }
-      const route = TestBed.inject(ActivatedRoute);
-      spyOn(route.snapshot.paramMap, 'get').and.returnValue(id);
-      
-      fixture = TestBed.createComponent(PurchaseOrderDetailComponent);
-      component = fixture.componentInstance;
-      fixture.detectChanges();
+    const result = createOrderDetailFixture(id, PurchaseOrderDetailComponent, {
+      getByIdSpy: purchaseOrdersServiceSpy.getById,
+      mockOrder
+    });
+    _fixture = result.fixture;
+    component = result.component;
   }
 
   it('should create', () => {

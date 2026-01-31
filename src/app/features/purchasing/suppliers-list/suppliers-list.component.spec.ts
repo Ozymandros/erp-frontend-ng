@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { SuppliersListComponent } from './suppliers-list.component';
 import { SuppliersService } from '../../../core/services/suppliers.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 
@@ -28,8 +28,10 @@ describe('SuppliersListComponent', () => {
     suppliersServiceSpy.getAll.and.returnValue(of(mockResponse as any));
 
     await TestBed.configureTestingModule({
-      imports: [ SuppliersListComponent, BrowserAnimationsModule, HttpClientTestingModule ],
+      imports: [ SuppliersListComponent ],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: SuppliersService, useValue: suppliersServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
         { provide: NzModalService, useValue: modalServiceSpy },

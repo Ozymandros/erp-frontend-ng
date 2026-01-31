@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { UserDetailComponent } from './user-detail.component';
 import { UsersService } from '../../../core/services/users.service';
 import { RolesService } from '../../../core/services/roles.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('UserDetailComponent', () => {
   let component: UserDetailComponent;
@@ -39,8 +39,10 @@ describe('UserDetailComponent', () => {
     rolesServiceSpy.getAll.and.returnValue(of(mockRoles as any));
 
     await TestBed.configureTestingModule({
-      imports: [ UserDetailComponent, BrowserAnimationsModule, HttpClientTestingModule ],
+      imports: [ UserDetailComponent ],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: UsersService, useValue: usersServiceSpy },
         { provide: RolesService, useValue: rolesServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },

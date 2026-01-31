@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { UsersListComponent } from './users-list.component';
 import { UsersService } from '../../../core/services/users.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { of, throwError } from 'rxjs';
 import { PaginatedResponse, User } from '../../../types/api.types';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { FileService } from '../../../core/services/file.service';
@@ -55,8 +55,10 @@ describe('UsersListComponent', () => {
     usersServiceSpy.getAll.and.returnValue(of(mockResponse as any));
 
     await TestBed.configureTestingModule({
-      imports: [ UsersListComponent, BrowserAnimationsModule, HttpClientTestingModule ],
+      imports: [ UsersListComponent ],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: UsersService, useValue: usersServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
         { provide: NzModalService, useValue: modalServiceSpy },

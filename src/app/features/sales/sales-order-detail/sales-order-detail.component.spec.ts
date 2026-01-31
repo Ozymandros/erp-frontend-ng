@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { SalesOrderDetailComponent } from './sales-order-detail.component';
 import { SalesOrdersService } from '../../../core/services/sales-orders.service';
 import { CustomersService } from '../../../core/services/customers.service';
@@ -7,13 +8,12 @@ import { ProductsService } from '../../../core/services/products.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
+import { createOrderDetailFixture } from '../../../core/testing/order-detail-spec.helper';
 
 describe('SalesOrderDetailComponent', () => {
   let component: SalesOrderDetailComponent;
-  let fixture: ComponentFixture<SalesOrderDetailComponent>;
+  let _fixture: ComponentFixture<SalesOrderDetailComponent>;
   let salesOrdersServiceSpy: jasmine.SpyObj<SalesOrdersService>;
   let customersServiceSpy: jasmine.SpyObj<CustomersService>;
   let productsServiceSpy: jasmine.SpyObj<ProductsService>;
@@ -43,8 +43,10 @@ describe('SalesOrderDetailComponent', () => {
     productsServiceSpy.getAll.and.returnValue(of(mockProducts as any));
 
     await TestBed.configureTestingModule({
-      imports: [ SalesOrderDetailComponent, BrowserAnimationsModule, HttpClientTestingModule ],
+      imports: [ SalesOrderDetailComponent ],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: SalesOrdersService, useValue: salesOrdersServiceSpy },
         { provide: CustomersService, useValue: customersServiceSpy },
         { provide: ProductsService, useValue: productsServiceSpy },
@@ -58,15 +60,12 @@ describe('SalesOrderDetailComponent', () => {
   });
 
   function createComponent(id: string | null) {
-      if (id && id !== 'new') {
-        salesOrdersServiceSpy.getById.and.returnValue(of(mockOrder as any));
-      }
-      const route = TestBed.inject(ActivatedRoute);
-      spyOn(route.snapshot.paramMap, 'get').and.returnValue(id);
-      
-      fixture = TestBed.createComponent(SalesOrderDetailComponent);
-      component = fixture.componentInstance;
-      fixture.detectChanges();
+    const result = createOrderDetailFixture(id, SalesOrderDetailComponent, {
+      getByIdSpy: salesOrdersServiceSpy.getById,
+      mockOrder
+    });
+    _fixture = result.fixture;
+    component = result.component;
   }
 
   it('should create', () => {

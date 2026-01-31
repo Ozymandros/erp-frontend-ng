@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { RoleDetailComponent } from './role-detail.component';
 import { RolesService } from '../../../core/services/roles.service';
 import { PermissionsService } from '../../../core/services/permissions.service';
@@ -7,7 +8,6 @@ import { PermissionService } from '../../../core/services/permission.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('RoleDetailComponent', () => {
   let component: RoleDetailComponent;
@@ -34,8 +34,10 @@ describe('RoleDetailComponent', () => {
     rolesServiceSpy.getRolePermissions.and.returnValue(of([]));
 
     await TestBed.configureTestingModule({
-      imports: [ RoleDetailComponent, BrowserAnimationsModule, HttpClientTestingModule ],
+      imports: [ RoleDetailComponent ],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: RolesService, useValue: rolesServiceSpy },
         { provide: PermissionsService, useValue: permissionsServiceSpy },
         { provide: PermissionService, useValue: mockPermissionService },

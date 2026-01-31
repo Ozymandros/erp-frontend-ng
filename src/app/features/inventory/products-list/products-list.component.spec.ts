@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ProductsListComponent } from './products-list.component';
 import { ProductsService } from '../../../core/services/products.service';
 import { ProductDto, PaginatedResponse } from '../../../types/api.types';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of, throwError } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { FileService } from '../../../core/services/file.service';
@@ -42,8 +42,10 @@ describe('ProductsListComponent', () => {
     } as PaginatedResponse<ProductDto>));
 
     await TestBed.configureTestingModule({
-      imports: [ ProductsListComponent, BrowserAnimationsModule, HttpClientTestingModule ],
+      imports: [ ProductsListComponent ],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: ProductsService, useValue: productsServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
         { provide: NzModalService, useValue: modalServiceSpy },

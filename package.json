@@ -9,7 +9,7 @@
     "build:dev": "ng build --configuration development",
     "lint": "eslint src",
     "watch": "ng build --watch --configuration development",
-    "test": "pnpm lint && ng test --watch=false --browser=ChromeHeadless",
+    "test": "pnpm lint && ng test --watch=false --browsers=ChromeHeadless",
     "test:watch": "ng test",
     "test:playwright": "playwright test",
     "test:coverage": "ng test --code-coverage",

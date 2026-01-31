@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { WarehousesListComponent } from './warehouses-list.component';
 import { WarehousesService } from '../../../core/services/warehouses.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { FileService } from '../../../core/services/file.service';
 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 
@@ -28,8 +28,10 @@ describe('WarehousesListComponent', () => {
     warehousesServiceSpy.delete.and.returnValue(of(void 0));
 
     await TestBed.configureTestingModule({
-      imports: [ WarehousesListComponent, BrowserAnimationsModule, HttpClientTestingModule ],
+      imports: [ WarehousesListComponent ],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: WarehousesService, useValue: warehousesServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
         { 

@@ -1,9 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { SidebarComponent } from './sidebar.component';
 import { provideRouter } from '@angular/router';
+import { SidebarComponent } from './sidebar.component';
 import { RouterLink } from '@angular/router';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { By } from '@angular/platform-browser';
 import { AuthService } from '../../core/services/auth.service';
 import { PermissionService } from '../../core/services/permission.service';
@@ -47,7 +45,7 @@ describe('SidebarComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [ SidebarComponent, BrowserAnimationsModule, RouterTestingModule, NzIconModule ],
+      imports: [ SidebarComponent, NzIconModule ],
       providers: [
         provideRouter([]),
         { provide: AuthService, useValue: mockAuthService },

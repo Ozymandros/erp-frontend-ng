@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { RegisterComponent } from './register.component';
 import { AuthService } from '../../../core/services/auth.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
 
@@ -18,8 +18,10 @@ describe('RegisterComponent', () => {
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
 
     await TestBed.configureTestingModule({
-      imports: [ RegisterComponent, BrowserAnimationsModule, HttpClientTestingModule ],
+      imports: [ RegisterComponent ],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: AuthService, useValue: authServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
         { provide: ActivatedRoute, useValue: {} }

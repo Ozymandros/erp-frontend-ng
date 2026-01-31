@@ -1,10 +1,14 @@
 name: CI Pipeline
 
+# CI only on PRs (no duplicate run on push) + push to main for post-merge checks
 on:
-  push:
-    branches: [master, main, develop]
   pull_request:
-    branches: [master, main, develop]
+    branches:
+      - main
+      - develop
+  push:
+    branches:
+      - main
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}

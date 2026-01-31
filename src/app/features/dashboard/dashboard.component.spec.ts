@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { DashboardComponent } from './dashboard.component';
 import { UsersService } from '../../core/services/users.service';
 import { ProductsService } from '../../core/services/products.service';
@@ -7,8 +8,6 @@ import { WarehousesService } from '../../core/services/warehouses.service';
 import { CustomersService } from '../../core/services/customers.service';
 import { of } from 'rxjs';
 import { PaginatedResponse } from '../../types/api.types';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
   let fixture: ComponentFixture<DashboardComponent>;
@@ -42,8 +41,10 @@ describe('DashboardComponent', () => {
 
 
     await TestBed.configureTestingModule({
-      imports: [ DashboardComponent, BrowserAnimationsModule, HttpClientTestingModule ],
+      imports: [ DashboardComponent ],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: UsersService, useValue: usersServiceSpy },
         { provide: ProductsService, useValue: productsServiceSpy },
         { provide: WarehousesService, useValue: warehousesServiceSpy },
