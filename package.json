@@ -47,6 +47,7 @@
     "@types/jasmine": "~5.1.0",
     "@types/node": "^25.0.9",
     "angular-eslint": "21.2.0",
+    "eslint": "^9.39.2",
     "http-server": "^14.1.1",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",
