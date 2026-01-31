@@ -52,10 +52,6 @@ export class SuppliersListComponent extends BaseListComponent<SupplierDto> {
     return this.data;
   }
 
-  loadSuppliers(): void {
-    this.loadData();
-  }
-
   deleteSupplier(supplier: SupplierDto): void {
     super.deleteItem(supplier.id, `supplier "${supplier.name}"`);
   }

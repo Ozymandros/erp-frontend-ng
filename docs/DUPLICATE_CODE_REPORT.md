@@ -25,6 +25,10 @@ This document summarizes duplicate-code findings and applied fixes.
 - **Removed** unused `loadUsers()` from `users-list.component.ts`.
 - **Reason:** Aligns with other list components and correctly passes page/size to the base class.
 
+### 4. Dead load wrappers in list components
+- **Removed** `loadSuppliers()` from `suppliers-list.component.ts` and `loadCustomers()` from `customers-list.component.ts`.
+- **Reason:** Both only called `this.loadData()` and were never referenced in templates; base class already provides `loadData()` and templates use `onSearch()` / `onPageChange()` / `onPageSizeChange()`.
+
 ---
 
 ## Findings (no code change / future refactors)
@@ -49,9 +53,24 @@ This document summarizes duplicate-code findings and applied fixes.
 - Specs for `UsersService`, `ProductsService`, `CustomersService`, `PurchaseOrdersService`, etc. repeat the same pattern: `apiClientSpy`, `TestBed`, “should be created”, “should fetch list”, “should export XLSX/PDF”.
 - **Suggestion:** A shared test helper (e.g. `createBaseApiServiceSpec(ServiceClass, endpoint, mockItem)`) could reduce duplication. Optional.
 
+### 5. Unused endpoint constants (dead code)
+- **`core/api/endpoints.constants.ts`:** The following are never referenced by any service: `USERS_ENDPOINTS.PAGINATED`, `ROLES_ENDPOINTS.PAGINATED`, `PERMISSIONS_ENDPOINTS.PAGINATED`, `INVENTORY_ENDPOINTS.PRODUCT_PAGINATED`, `INVENTORY_ENDPOINTS.WAREHOUSE_PAGINATED`, `INVENTORY_ENDPOINTS.TRANSACTION_PAGINATED`. All CRUD services use `BASE` (or equivalent) and rely on `BaseApiService.getAll()`. **Suggestion:** Remove the unused `PAGINATED` constants if the API does not require a separate paginated path, or keep for future use and add a comment.
+
+### 6. Redundant constructor in BaseApiService subclasses
+- Several services that only override `getEndpoint()` still declare an explicit constructor; some use `protected override apiClient` (unnecessary; base already has `protected apiClient`): e.g. `WarehouseStocksService`, `InventoryTransactionsService`, `SalesOrdersService`, `PurchaseOrdersService`. **Suggestion:** Omit the constructor when the subclass only implements `getEndpoint()`; drop redundant `constructor(apiClient) { super(apiClient); }` and `protected override apiClient` where they add no value.
+
+### 7. Detail components – repeated CRUD form pattern
+- **Customer, Supplier, Product, Warehouse** detail components share nearly identical structure: same fields (`entityId`, `isEditMode`, `loading`, `saving`, form group), same `ngOnInit` (read `id` from route, set `isEditMode`, call `loadEntity(id)` when editing), same load flow (`loading = true` → `service.getById(id)` → `patchValue` / error message), same save flow (validate → create/update observable → success navigate + message). **Suggestion:** Introduce a `BaseDetailComponent<T>` (or a reusable detail facade) that handles route param, isEditMode, load/save orchestration, and error toasts; subclasses supply form definition, service, and success route.
+
+### 8. Repeated error message strings
+- Many components use ad-hoc strings: `'Failed to load customer: ' + err.message`, `'Failed to load product: ' + err.message`, `'Failed to load warehouse'`, etc. **Suggestion:** Centralize in a small helper or constants (e.g. `MessageHelper.loadFailed('customer', err)`) for consistency and easier i18n later.
+
+### 9. List page template structure (repeated HTML)
+- List views share the same layout: `page-header` + `header-actions` (Export XLSX/PDF, Add), `list-search` with `onSearch()`, then `nz-table` with pagination and row actions (~60 structure matches across 21 files). **Future option:** A shared presentational component (e.g. `app-list-page` with projected header, search, table) or a single template driven by column/config could reduce duplication. Larger refactor.
+
 ---
 
 ## Summary
 
-- **Fixed:** Unused imports in 6 list components and in `CustomersService`, users-list pagination and dead `loadUsers()`.
-- **Documented:** Two `Permission` types, route file roles, list template pattern, and repeated service spec pattern for future refactors.
+- **Fixed:** Unused imports in 6 list components and in `CustomersService`, users-list pagination and dead `loadUsers()`. **Also removed:** dead `loadSuppliers()` and `loadCustomers()` (they only called `loadData()` and were never used in templates).
+- **Documented:** Two `Permission` types, route file roles, list template pattern, repeated service spec pattern, unused PAGINATED endpoint constants, redundant service constructors, detail component CRUD duplication, repeated error strings, and list page HTML structure for future refactors.

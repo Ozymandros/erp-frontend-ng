@@ -54,10 +54,6 @@ export class CustomersListComponent extends BaseListComponent<CustomerDto> {
     return this.data;
   }
 
-  loadCustomers(): void {
-    this.loadData();
-  }
-
   deleteCustomer(customer: CustomerDto): void {
     super.deleteItem(customer.id, `customer "${customer.name}"`);
   }
