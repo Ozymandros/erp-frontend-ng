@@ -14,7 +14,7 @@
     "test:playwright": "playwright test",
     "test:coverage": "ng test --code-coverage",
     "test:coverage:playwright": "playwright test --coverage",
-    "e2e": "playwright test",
+    "test:e2e": "npx playwright test --reporter=junit --reporter=html --output=test-results",
     "e2e:report": "playwright show-report"
   },
   "private": true,
