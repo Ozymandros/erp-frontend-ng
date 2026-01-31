@@ -5,9 +5,11 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "build:production": "ng build --configuration production",
+    "build:prod": "ng build --configuration production",
+    "build:dev": "ng build --configuration development",
+    "lint": "eslint src",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test --watch=false --browsers=ChromeHeadless",
+    "test": "pnpm lint && ng test --watch=false --browsers=ChromeHeadless",
     "test:watch": "ng test",
     "test:playwright": "playwright test",
     "test:coverage": "ng test --code-coverage",
@@ -38,11 +40,13 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^21.1.0",
+    "@angular-eslint/schematics": "21.2.0",
     "@angular/cli": "^21.1.0",
     "@angular/compiler-cli": "^21.1.0",
     "@playwright/test": "^1.57.0",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^25.0.9",
+    "angular-eslint": "21.2.0",
     "http-server": "^14.1.1",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",
@@ -62,7 +66,8 @@
       "tar": ">=7.5.4",
       "lodash": ">=4.17.23",
       "hono": ">=4.11.7",
-      "tar@<7.5.7": ">=7.5.7"
+      "tar@<7.5.7": ">=7.5.7",
+      "hono@<4.11.7": ">=4.11.7"
     },
     "peerDependencyRules": {
       "allowedVersions": {

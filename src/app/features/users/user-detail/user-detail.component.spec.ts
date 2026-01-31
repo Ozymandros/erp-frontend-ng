@@ -5,7 +5,7 @@ import { UsersService } from '../../../core/services/users.service';
 import { RolesService } from '../../../core/services/roles.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { ActivatedRoute, Router } from '@angular/router';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('UserDetailComponent', () => {

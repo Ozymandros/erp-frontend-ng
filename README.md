@@ -34,8 +34,7 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue?logo=typescript)
 ![RxJS](https://img.shields.io/badge/RxJS-7.8-B7178C?logo=rxjs)
 
-![NG-Zorro](https://img.shields.io/badge/NG%20Zorro-17.4-1890ff?logo=ant-design)
-![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4-blue?logo=tailwindcss)
+![NG-Zorro](https://img.shields.io/badge/NG%20Zorro-21-1890ff?logo=ant-design)
 
 ![Jasmine](https://img.shields.io/badge/Jasmine-5.1-8A4182?logo=jasmine)
 ![Karma](https://img.shields.io/badge/Karma-6.4-48C9B0?logo=karma)
@@ -131,7 +130,7 @@ pnpm exec playwright test # Run E2E tests
 pnpm test
 
 # Run code coverage
-pnpm exec ng test --code-coverage --watch=false --browsers=ChromeHeadless
+pnpm run test:coverage
 ```
 
 ### E2E Tests (Playwright)
@@ -141,10 +140,10 @@ pnpm exec ng test --code-coverage --watch=false --browsers=ChromeHeadless
 pnpm exec playwright install
 
 # Run E2E tests
-pnpm exec playwright test
+pnpm run test:playwright
 
 # Run E2E tests in UI mode
-pnpm exec playwright test --ui
+pnpm run test:playwright -- --ui
 ```
 
 **Note**: E2E tests use mocked API endpoints (`e2e/mocks/api-mocks.ts`) and mock data (`e2e/mocks/fixtures.ts`), so a running backend is NOT required for standard E2E runs.
@@ -158,7 +157,8 @@ src/
 │   │   ├── guards/          # Auth and permission guards
 │   │   ├── interceptors/    # HTTP interceptors (Auth, Error)
 │   │   ├── services/        # Singleton services (API logic)
-│   │   └── types/           # Core TypeScript interfaces/types
+│   │   └── ...
+│   ├── types/               # Shared API types (api.types.ts)
 │   ├── features/            # Feature modules (Lazy loaded)
 │   │   ├── auth/            # Login, Register
 │   │   ├── dashboard/       # Dashboard widgets
@@ -177,8 +177,9 @@ src/
 
 The project includes automated CI/CD with GitHub Actions (`.github/workflows/ci.yml`):
 
-- **Linting**: GitHub workflow linting
-- **Build Verification**: `ng build` check
+- **Linting**: GitHub workflow linting (actionlint) and ESLint on `src/`
+- **Type Check**: `tsc --noEmit -p tsconfig.app.json`
+- **Build Verification**: `pnpm build` check
 - **Security Audit**: `pnpm audit`
 - **CodeQL**: Security analysis
 - **SonarQube**: Code quality/coverage scan
@@ -197,7 +198,7 @@ The project includes automated CI/CD with GitHub Actions (`.github/workflows/ci.
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
 4. Write/update tests
-5. Ensure all tests pass (`pnpm test` and `pnpm exec playwright test`)
+5. Ensure all tests pass (`pnpm test` and `pnpm run test:playwright`)
 6. Commit your changes (`git commit -m 'Add amazing feature'`)
 7. Push to the branch (`git push origin feature/amazing-feature`)
 8. Open a Pull Request

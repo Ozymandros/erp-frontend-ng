@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { PermissionsService } from './permissions.service';
 import { ApiClientService } from '../api/http-client.service';
-import { Permission, PaginatedResponse } from '../types/api.types';
+import { Permission, PaginatedResponse } from '../../types/api.types';
 
 describe('PermissionsService', () => {
   let service: PermissionsService;

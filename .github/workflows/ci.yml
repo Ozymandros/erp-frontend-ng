@@ -49,10 +49,10 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      - name: Run TypeScript type check
+        run: pnpm exec tsc --noEmit -p tsconfig.app.json
       - name: Run Lint
-        run: echo "Linting not configured yet" # pnpm lint
-      # - name: Run TypeScript type check
-      #   run: pnpm exec tsc --noEmit
+        run: pnpm run lint
 
   build:
     name: Build Verification
@@ -151,7 +151,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Run tests with coverage
-        run: pnpm exec ng test --watch=false --browsers=ChromeHeadless --code-coverage
+        run: pnpm test -- --code-coverage
         continue-on-error: true
       - name: SonarQube Community Scan
         uses: sonarsource/sonarqube-scan-action@master
@@ -191,7 +191,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Run unit tests with coverage
-        run: pnpm exec ng test --watch=false --browsers=ChromeHeadless --code-coverage
+        run: pnpm test -- --code-coverage
       - name: Upload coverage artifact
         if: always()
         uses: actions/upload-artifact@v4
@@ -200,12 +200,12 @@ jobs:
           path: coverage/
           retention-days: 7
       - name: Upload coverage to Codecov
-        if: env.CODECOV_TOKEN != ''
+        if: success() && secrets.CODECOV_TOKEN != ''
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage/lcov.info
-          fail_ci_if_error: true
+          fail_ci_if_error: false
 
   playwright:
     name: Playwright E2E
@@ -233,7 +233,7 @@ jobs:
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps
       - name: Run Playwright tests
-        run: xvfb-run --auto-servernum pnpm exec playwright test
+        run: xvfb-run --auto-servernum pnpm run test:playwright
       - name: Publish Playwright test results
         if: always()
         uses: actions/upload-artifact@v4

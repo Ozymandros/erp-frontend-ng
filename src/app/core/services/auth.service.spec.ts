@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { AuthService } from './auth.service';
 import { ApiClientService } from '../api/http-client.service';
-import { AuthResponse, User } from '../types/api.types';
+import { AuthResponse, User } from '../../types/api.types';
 
 describe('AuthService', () => {
   let service: AuthService;

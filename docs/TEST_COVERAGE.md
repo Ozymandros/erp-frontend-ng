@@ -12,6 +12,12 @@ To run unit tests and generate a coverage report:
 pnpm run test:coverage
 ```
 
+Or with explicit flags:
+
+```bash
+pnpm test -- --code-coverage
+```
+
 The report will be generated in the `coverage/` directory. You can view it by opening `coverage/index.html` in your browser.
 
 ### E2E Tests (Playwright)
@@ -36,4 +42,4 @@ pnpm run test:coverage:playwright
 
 ## 🤖 CI Integration
 
-The CI pipeline automatically checks test coverage. Significant drops in coverage will trigger alerts in the SonarQube quality gate.
+The CI pipeline (`.github/workflows/ci.yml`) runs unit tests with coverage (`pnpm test -- --code-coverage`), uploads the coverage artifact, and optionally uploads to Codecov when `CODECOV_TOKEN` is set. SonarQube quality gate (when configured) can also use the coverage report.

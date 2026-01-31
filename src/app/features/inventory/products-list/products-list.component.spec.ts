@@ -8,7 +8,6 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of, throwError } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { FileUtils } from '../../../core/utils/file-utils';
 import { FileService } from '../../../core/services/file.service';
 
 

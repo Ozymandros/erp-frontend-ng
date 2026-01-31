@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -8,7 +8,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { WarehousesService } from '../../../core/services/warehouses.service';
@@ -18,8 +18,6 @@ import { WarehouseDto } from '../../../types/api.types';
 import { BaseListComponent } from '../../../core/base/base-list.component';
 import { FileService } from '../../../core/services/file.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { finalize } from 'rxjs';
-
 
 @Component({
   selector: 'app-warehouses-list',

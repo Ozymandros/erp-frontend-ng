@@ -8,7 +8,6 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { CustomersService } from '../../../core/services/customers.service';
-import { CustomerDto } from '../../../types/api.types';
 
 @Component({
   selector: 'app-customer-detail',

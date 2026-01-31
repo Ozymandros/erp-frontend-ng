@@ -5,7 +5,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { UsersService } from '../../core/services/users.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { of, BehaviorSubject } from 'rxjs';
-import { User } from '../../core/types/api.types';
+import { User } from '../../types/api.types';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('ProfileComponent', () => {

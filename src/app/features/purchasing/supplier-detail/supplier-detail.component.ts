@@ -9,7 +9,6 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { SuppliersService } from '../../../core/services/suppliers.service';
-import { SupplierDto } from '../../../types/api.types';
 
 /** Validates international phone numbers (US, European, etc.): digits, +, spaces, hyphens, parentheses, dots; 8–15 digits. */
 function phoneNumberValidator(control: AbstractControl): ValidationErrors | null {

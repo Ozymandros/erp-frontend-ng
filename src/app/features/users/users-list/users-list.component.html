@@ -47,8 +47,8 @@
       [(nzPageIndex)]="pageIndex"
       [(nzPageSize)]="pageSize"
       [nzFrontPagination]="false"
-      (nzPageIndexChange)="loadUsers()"
-      (nzPageSizeChange)="loadUsers()"
+      (nzPageIndexChange)="onPageChange($event)"
+      (nzPageSizeChange)="onPageSizeChange($event)"
       [nzScroll]="{ x: '1000px', y: 'calc(100vh - 400px)' }"
     >
       <thead>

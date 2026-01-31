@@ -95,7 +95,7 @@ export class RoleDetailComponent implements OnInit {
           description: role.description
         });
       },
-      error: (err) => {
+      error: (_err) => {
         this.message.error('Failed to load role');
       }
     });

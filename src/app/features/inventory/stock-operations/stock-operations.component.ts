@@ -112,14 +112,14 @@ export class StockOperationsComponent implements OnInit, OnDestroy {
           return;
         }
         this.productSearching = true;
-        const params: any = {
+        const params: Record<string, string | number> = {
           page: 1,
           pageSize: DROPDOWN_PAGE_SIZE,
           SearchTerm: term.trim(),
         };
         this.productsService.getAll(params).subscribe({
           next: (res) => {
-            let list = res?.items ?? (Array.isArray(res) ? res : []);
+            const list = res?.items ?? (Array.isArray(res) ? res : []);
             const selectedId = this.adjustmentForm.get('productId')?.value;
             if (
               selectedId &&
@@ -182,14 +182,14 @@ export class StockOperationsComponent implements OnInit, OnDestroy {
           return;
         }
         this.warehouseSearching = true;
-        const params: any = {
+        const params: Record<string, string | number> = {
           page: 1,
           pageSize: DROPDOWN_PAGE_SIZE,
           SearchTerm: term.trim(),
         };
         this.warehousesService.getAll(params).subscribe({
           next: (res) => {
-            let list = res?.items ?? (Array.isArray(res) ? res : []);
+            const list = res?.items ?? (Array.isArray(res) ? res : []);
             const selectedId = this.adjustmentForm.get('warehouseId')?.value;
             if (
               selectedId &&

@@ -7,10 +7,8 @@ import {
   CreateUpdateSalesOrderDto,
   CreateQuoteDto,
   ConfirmQuoteDto,
-  StockAvailabilityCheckDto,
-  PaginatedResponse,
-  SearchParams
-} from '../types/api.types';
+  StockAvailabilityCheckDto
+} from '../../types/api.types';
 import { BaseApiService } from '../base/base-api.service';
 
 @Injectable({

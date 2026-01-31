@@ -9,23 +9,23 @@ This project uses **Playwright** for End-to-End (E2E) testing. To ensure consist
 Before running E2E tests for the first time, you must install the Playwright browsers:
 
 ```bash
-pnpm exec playwright install
+pnpm exec playwright install --with-deps
 ```
 
 ### Execution Commands
 
 ```bash
 # Run all E2E tests (Headless)
-pnpm exec playwright test
+pnpm run test:playwright
 
 # Run a specific test file
-pnpm exec playwright test e2e/auth.spec.ts
+pnpm run test:playwright e2e/auth.spec.ts
 
 # Run tests in UI mode (Interactive)
-pnpm exec playwright test --ui
+pnpm run test:playwright -- --ui
 
 # Debug tests
-pnpm exec playwright test --debug
+pnpm run test:playwright -- --debug
 ```
 
 ## 🏗️ Test Structure

@@ -77,9 +77,9 @@ describe('SidebarComponent', () => {
   
   it('should have correct router links', () => {
      // Check for routerLink directive - it can be on different elements
-     const links = fixture.debugElement.queryAll(By.directive(RouterLink));
+     fixture.debugElement.queryAll(By.directive(RouterLink));
      // Also check for elements with routerLink attribute
-     const linksByAttr = fixture.debugElement.queryAll(By.css('[routerLink], [ng-reflect-router-link]'));
+     fixture.debugElement.queryAll(By.css('[routerLink], [ng-reflect-router-link]'));
      
      // The component should have navigation items with router links
      // Since we're using @for loop with routerLink binding, check if menu items exist

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -17,7 +17,6 @@ import { User } from '../../../types/api.types';
 import { BaseListComponent } from '../../../core/base/base-list.component';
 import { FileService } from '../../../core/services/file.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-users-list',
@@ -57,10 +56,6 @@ export class UsersListComponent extends BaseListComponent<User> {
 
   get users(): User[] {
     return this.data;
-  }
-
-  loadUsers(): void {
-    this.loadData();
   }
 
   deleteUser(id: string): void {

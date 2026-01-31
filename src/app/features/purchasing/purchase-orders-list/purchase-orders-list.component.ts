@@ -50,7 +50,7 @@ export class PurchaseOrdersListComponent extends BaseListComponent<PurchaseOrder
     cdr: ChangeDetectorRef,
     authService: AuthService
   ) {
-    super(purchaseOrdersService as any, message, modal, fileService, cdr, authService);
+    super(purchaseOrdersService, message, modal, fileService, cdr, authService);
   }
 
   override ngOnInit(): void {
@@ -69,7 +69,7 @@ export class PurchaseOrdersListComponent extends BaseListComponent<PurchaseOrder
     });
   }
 
-  getStatusColor(status: any): string {
+  getStatusColor(status: number | string): string {
     switch (status) {
       case 'Draft': 
       case 0: return 'default';

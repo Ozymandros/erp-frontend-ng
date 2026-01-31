@@ -31,7 +31,7 @@ export class PermissionCardComponent implements OnChanges {
 
   constructor(private cdr: ChangeDetectorRef) {}
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(_changes: SimpleChanges): void {
     // Component uses OnPush change detection strategy
   }
 

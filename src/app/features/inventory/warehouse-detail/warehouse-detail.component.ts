@@ -9,7 +9,6 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { WarehousesService } from '../../../core/services/warehouses.service';
-import { WarehouseDto } from '../../../types/api.types';
 
 @Component({
   selector: 'app-warehouse-detail',

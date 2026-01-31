@@ -11,7 +11,6 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { ProductsService } from '../../../core/services/products.service';
-import { ProductDto } from '../../../types/api.types';
 
 @Component({
   selector: 'app-product-detail',

@@ -10,7 +10,7 @@ import {
   AuthResponse,
   User,
   ModulePermissions
-} from '../types/api.types';
+} from '../../types/api.types';
 
 const ACCESS_TOKEN_KEY = 'access_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
@@ -126,7 +126,7 @@ export class AuthService {
     // If user exists, check cached permissions first (client-side check)
     if (user) {
       const hasPermission = user.permissions?.some(
-        p => p.module.toLowerCase() === module.toLowerCase() && 
+        (p: { module: string; action: string }) => p.module.toLowerCase() === module.toLowerCase() && 
              p.action.toLowerCase() === action.toLowerCase()
       );
       
@@ -179,14 +179,14 @@ export class AuthService {
         }
 
         const perms = user.permissions || [];
-        const modulePerms = perms.filter(p => p.module.toLowerCase() === module.toLowerCase());
+        const modulePerms = perms.filter((p: { module: string; action: string }) => p.module.toLowerCase() === module.toLowerCase());
         
         return {
-          canRead: modulePerms.some(p => ['read', 'view', 'list'].includes(p.action.toLowerCase())),
-          canCreate: modulePerms.some(p => ['create', 'add', 'new'].includes(p.action.toLowerCase())),
-          canUpdate: modulePerms.some(p => ['update', 'edit', 'modify'].includes(p.action.toLowerCase())),
-          canDelete: modulePerms.some(p => ['delete', 'remove'].includes(p.action.toLowerCase())),
-          canExport: modulePerms.some(p => ['export', 'download'].includes(p.action.toLowerCase()))
+          canRead: modulePerms.some((p: { action: string }) => ['read', 'view', 'list'].includes(p.action.toLowerCase())),
+          canCreate: modulePerms.some((p: { action: string }) => ['create', 'add', 'new'].includes(p.action.toLowerCase())),
+          canUpdate: modulePerms.some((p: { action: string }) => ['update', 'edit', 'modify'].includes(p.action.toLowerCase())),
+          canDelete: modulePerms.some((p: { action: string }) => ['delete', 'remove'].includes(p.action.toLowerCase())),
+          canExport: modulePerms.some((p: { action: string }) => ['export', 'download'].includes(p.action.toLowerCase()))
         };
       })
     );

@@ -9,12 +9,12 @@ export class HasPermissionDirective implements OnChanges {
   @Input() appHasPermission?: { module: string; action: string };
 
   constructor(
-    private templateRef: TemplateRef<any>,
+    private templateRef: TemplateRef<unknown>,
     private viewContainer: ViewContainerRef,
     private permissionService: PermissionService
   ) {}
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(_changes: SimpleChanges): void {
     // Always clear the view container first to prevent duplicate views
     this.viewContainer.clear();
 
