@@ -13,6 +13,7 @@ import { PermissionService } from '../../../core/services/permission.service';
 import { PERMISSION_MODULES, PERMISSION_ACTIONS } from '../../../core/constants/permissions';
 import { PermissionSelectorComponent } from '../components/permission-selector/permission-selector.component';
 import { AssignedPermissionsViewComponent } from '../components/assigned-permissions-view/assigned-permissions-view.component';
+import { compareByLocale } from '../../../core/utils/string-utils';
 import { Role, Permission } from '../../../types/api.types';
 import { forkJoin, finalize } from 'rxjs';
 
@@ -103,8 +104,8 @@ export class RoleDetailComponent implements OnInit {
 
   onPermissionsChange(permissions: Permission[]): void {
     // Compare IDs to avoid unnecessary updates that cause re-renders
-    const oldIds = this.rolePermissions.map(p => p.id).sort((a, b) => a.localeCompare(b)).join(',');
-    const newIds = permissions.map(p => p.id).sort((a, b) => a.localeCompare(b)).join(',');
+    const oldIds = this.rolePermissions.map(p => p.id).sort(compareByLocale).join(',');
+    const newIds = permissions.map(p => p.id).sort(compareByLocale).join(',');
     
     if (oldIds !== newIds) {
       // Only update if IDs actually changed

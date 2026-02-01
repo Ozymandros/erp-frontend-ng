@@ -25,9 +25,8 @@ test.describe('Authentication Flow', () => {
     await page.fill('input[formControlName="password"]', 'password123');
     await page.click('button[type="submit"]');
 
-    // Should redirect to dashboard
-    // Should redirect to dashboard (root path)
-    await expect(page).toHaveURL(/.*\/$/);
+    // Should redirect to dashboard (root path); avoid .* to prevent ReDoS
+    await expect(page).toHaveURL(/\/$/);
     await expect(page.locator('h1.dashboard-title')).toHaveText('Dashboard Overview');
   });
 
@@ -40,16 +39,16 @@ test.describe('Authentication Flow', () => {
 
   test('should navigate to registration page', async ({ page }) => {
     await page.click('a[routerLink="/register"]');
-    await expect(page).toHaveURL(/.*register/);
+    await expect(page).toHaveURL(/register/);
   });
 
   test('should persist session after page reload', async ({ page }) => {
     await mockAuthenticatedState(page, mockAdminUser);
     await page.goto('/users'); 
-    await expect(page).toHaveURL(/.*users/);
+    await expect(page).toHaveURL(/users/);
     
     await page.reload();
-    await expect(page).toHaveURL(/.*users/);
+    await expect(page).toHaveURL(/users/);
   });
 
   test('should handle logout', async ({ page }) => {
@@ -60,6 +59,6 @@ test.describe('Authentication Flow', () => {
     await page.click('.ant-dropdown-trigger'); // User avatar/name
     await page.click('text=Logout');
     
-    await expect(page).toHaveURL(/.*login/);
+    await expect(page).toHaveURL(/login/);
   });
 });

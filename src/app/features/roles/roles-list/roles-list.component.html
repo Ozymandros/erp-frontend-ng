@@ -61,12 +61,12 @@
       >
         <thead>
           <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Description</th>
-            <th scope="col">Permissions</th>
-            <th scope="col">Created At</th>
+            <th id="th-name" scope="col">Name</th>
+            <th id="th-description" scope="col">Description</th>
+            <th id="th-permissions" scope="col">Permissions</th>
+            <th id="th-created-at" scope="col">Created At</th>
             @if (p.canUpdate || p.canDelete) {
-              <th scope="col">Actions</th>
+              <th id="th-actions" scope="col">Actions</th>
             }
           </tr>
         </thead>

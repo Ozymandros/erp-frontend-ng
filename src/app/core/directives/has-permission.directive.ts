@@ -1,11 +1,11 @@
-import { Directive, Input, TemplateRef, ViewContainerRef, OnChanges, SimpleChanges } from '@angular/core';
+import { Directive, Input, TemplateRef, ViewContainerRef, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { PermissionService } from '../services/permission.service';
 
 @Directive({
   selector: '[appHasPermission]',
   standalone: true
 })
-export class HasPermissionDirective implements OnChanges {
+export class HasPermissionDirective implements OnInit, OnChanges {
   @Input() appHasPermission?: { module: string; action: string };
 
   constructor(
@@ -14,8 +14,15 @@ export class HasPermissionDirective implements OnChanges {
     private permissionService: PermissionService
   ) {}
 
+  ngOnInit(): void {
+    this.applyPermission();
+  }
+
   ngOnChanges(_changes: SimpleChanges): void {
-    // Always clear the view container first to prevent duplicate views
+    this.applyPermission();
+  }
+
+  private applyPermission(): void {
     this.viewContainer.clear();
 
     if (!this.appHasPermission) {

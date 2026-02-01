@@ -94,48 +94,51 @@ export async function mockGetCurrentUser(page: Page, user: any): Promise<void> {
   await mockApiSuccess(page, '**/auth/api/users/me', { success: true, data: user });
 }
 
+/** Bounded query part for URL matching (avoids ReDoS from (\?.*)?$ backtracking). */
+const OPTIONAL_QUERY = '(?:\\?[\\s\\S]{0,2048})?$';
+
 export async function mockGetProducts(page: Page, products: any[]): Promise<void> {
-  await mockPaginatedResponse(page, /\/inventory\/api\/inventory\/products(\?.*)?$/, products);
+  await mockPaginatedResponse(page, new RegExp(`/inventory/api/inventory/products${OPTIONAL_QUERY}`), products);
 }
 
 export async function mockGetUsers(page: Page, users: any[]): Promise<void> {
-  await mockPaginatedResponse(page, /\/auth\/api\/users(\?.*)?$/, users);
+  await mockPaginatedResponse(page, new RegExp(`/auth/api/users${OPTIONAL_QUERY}`), users);
 }
 
 export async function mockGetRoles(page: Page, roles: any[]): Promise<void> {
-  await mockPaginatedResponse(page, /\/auth\/api\/roles(\?.*)?$/, roles);
+  await mockPaginatedResponse(page, new RegExp(`/auth/api/roles${OPTIONAL_QUERY}`), roles);
 }
 
 export async function mockGetPermissions(page: Page, permissions: any[]): Promise<void> {
-  await mockPaginatedResponse(page, /\/auth\/api\/permissions(\?.*)?$/, permissions);
+  await mockPaginatedResponse(page, new RegExp(`/auth/api/permissions${OPTIONAL_QUERY}`), permissions);
 }
 
 export async function mockGetInventoryTransactions(page: Page, transactions: any[]): Promise<void> {
-  await mockPaginatedResponse(page, /\/inventory\/api\/inventory\/transactions(\?.*)?$/, transactions);
+  await mockPaginatedResponse(page, new RegExp(`/inventory/api/inventory/transactions${OPTIONAL_QUERY}`), transactions);
 }
 
 export async function mockGetWarehouses(page: Page, warehouses: any[]): Promise<void> {
-  await mockPaginatedResponse(page, /\/inventory\/api\/inventory\/warehouses(\?.*)?$/, warehouses);
+  await mockPaginatedResponse(page, new RegExp(`/inventory/api/inventory/warehouses${OPTIONAL_QUERY}`), warehouses);
 }
 
 export async function mockGetWarehouseStocks(page: Page, stocks: any[]): Promise<void> {
-  await mockPaginatedResponse(page, /\/inventory\/api\/inventory\/warehouse-stocks(\?.*)?$/, stocks);
+  await mockPaginatedResponse(page, new RegExp(`/inventory/api/inventory/warehouse-stocks${OPTIONAL_QUERY}`), stocks);
 }
 
 export async function mockGetCustomers(page: Page, customers: any[]): Promise<void> {
-  await mockPaginatedResponse(page, /\/sales\/api\/sales\/customers(\?.*)?$/, customers);
+  await mockPaginatedResponse(page, new RegExp(`/sales/api/sales/customers${OPTIONAL_QUERY}`), customers);
 }
 
 export async function mockGetSalesOrders(page: Page, orders: any[]): Promise<void> {
-  await mockPaginatedResponse(page, /\/sales\/api\/sales\/orders(\?.*)?$/, orders);
+  await mockPaginatedResponse(page, new RegExp(`/sales/api/sales/orders${OPTIONAL_QUERY}`), orders);
 }
 
 export async function mockGetPurchaseOrders(page: Page, orders: any[]): Promise<void> {
-  await mockPaginatedResponse(page, /\/purchasing\/api\/purchasing\/orders(\?.*)?$/, orders);
+  await mockPaginatedResponse(page, new RegExp(`/purchasing/api/purchasing/orders${OPTIONAL_QUERY}`), orders);
 }
 
 export async function mockGetSuppliers(page: Page, suppliers: any[]): Promise<void> {
-  await mockPaginatedResponse(page, /\/purchasing\/api\/purchasing\/suppliers(\?.*)?$/, suppliers);
+  await mockPaginatedResponse(page, new RegExp(`/purchasing/api/purchasing/suppliers${OPTIONAL_QUERY}`), suppliers);
 }
 
 export async function mockLogout(page: Page): Promise<void> {

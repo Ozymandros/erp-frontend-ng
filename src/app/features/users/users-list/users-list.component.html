@@ -53,13 +53,13 @@
     >
       <thead>
         <tr>
-          <th scope="col">Username</th>
-          <th scope="col">Email</th>
-          <th scope="col">Roles</th>
-          <th scope="col">Status</th>
-          <th scope="col">Created At</th>
+          <th id="th-username" scope="col">Username</th>
+          <th id="th-email" scope="col">Email</th>
+          <th id="th-roles" scope="col">Roles</th>
+          <th id="th-status" scope="col">Status</th>
+          <th id="th-created-at" scope="col">Created At</th>
           @if (p.canUpdate || p.canDelete) {
-            <th scope="col">Actions</th>
+            <th id="th-actions" scope="col">Actions</th>
           }
         </tr>
       </thead>

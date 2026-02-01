@@ -53,12 +53,12 @@
   >
     <thead>
       <tr>
-        <th scope="col">SKU</th>
-        <th scope="col">Name</th>
-        <th scope="col">Unit Price</th>
-        <th scope="col">Stock</th>
+        <th id="th-sku" scope="col">SKU</th>
+        <th id="th-name" scope="col">Name</th>
+        <th id="th-unit-price" scope="col">Unit Price</th>
+        <th id="th-stock" scope="col">Stock</th>
         @if (p.canUpdate || p.canDelete) {
-          <th scope="col" nzWidth="150px">Actions</th>
+          <th id="th-actions" scope="col" nzWidth="150px">Actions</th>
         }
       </tr>
     </thead>

@@ -53,11 +53,11 @@
   >
     <thead>
       <tr>
-        <th scope="col">Name</th>
-        <th scope="col">Email</th>
-        <th scope="col">Address</th>
+        <th id="th-name" scope="col">Name</th>
+        <th id="th-email" scope="col">Email</th>
+        <th id="th-address" scope="col">Address</th>
         @if (p.canUpdate || p.canDelete) {
-          <th scope="col" nzWidth="150px">Actions</th>
+          <th id="th-actions" scope="col" nzWidth="150px">Actions</th>
         }
       </tr>
     </thead>

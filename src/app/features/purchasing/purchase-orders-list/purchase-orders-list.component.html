@@ -52,13 +52,13 @@
     >
       <thead>
         <tr>
-          <th scope="col">Order #</th>
-          <th scope="col">Supplier</th>
-          <th scope="col">Date</th>
-          <th scope="col">Total Amount</th>
-          <th scope="col">Status</th>
+          <th id="th-order-number" scope="col">Order #</th>
+          <th id="th-supplier" scope="col">Supplier</th>
+          <th id="th-date" scope="col">Date</th>
+          <th id="th-total-amount" scope="col">Total Amount</th>
+          <th id="th-status" scope="col">Status</th>
           @if (p.canRead || p.canDelete) {
-            <th scope="col" nzWidth="150px">Actions</th>
+            <th id="th-actions" scope="col" nzWidth="150px">Actions</th>
           }
         </tr>
       </thead>

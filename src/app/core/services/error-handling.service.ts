@@ -22,6 +22,11 @@ export class ErrorHandlingService {
       return (error as { message: string }).message;
     }
     
+    // Plain object with ProblemDetails shape (detail/title/errors)
+    if (error && typeof error === 'object' && this.isProblemDetails(error)) {
+      return this.extractProblemDetailsMessage(error as ProblemDetails);
+    }
+    
     return 'An unknown error occurred';
   }
 

@@ -27,11 +27,13 @@ To run E2E tests with coverage:
 pnpm run test:coverage:playwright
 ```
 
-## 🎯 Coverage Goals
+## 🎯 Coverage Goals and Enforcement
 
-- **Overall Statement Coverage**: > 80%
-- **Critical Services/Guards**: 100%
-- **Core Feature Components**: > 70%
+- **Sonar target**: 80% for statements, lines, branches, and functions. Sonar quality gate requires at least 80% coverage.
+- **Current enforcement**: Karma thresholds in `karma.conf.js` are set to current coverage levels (~75% statements, ~77% lines, ~53% branches, ~74% functions) so the build passes. **Raise these thresholds toward 80%** as you add tests so CI and Sonar stay aligned.
+- **Coverage warning**: After tests, `scripts/check-coverage-warning.js` runs and prints a reminder when any metric is below 80% (Sonar target). It does not fail the build.
+- **Critical Services/Guards**: Aim for 100% where possible.
+- **Core Feature Components**: Aim for ≥ 80%.
 
 ## 🔍 How to Improve Coverage
 
@@ -42,4 +44,4 @@ pnpm run test:coverage:playwright
 
 ## 🤖 CI Integration
 
-The CI pipeline (`.github/workflows/ci.yml`) runs unit tests with coverage (`pnpm test -- --code-coverage`), uploads the coverage artifact, and optionally uploads to Codecov when `CODECOV_TOKEN` is set. SonarQube quality gate (when configured) can also use the coverage report.
+The CI pipeline (`.github/workflows/ci.yml`) runs unit tests with coverage (`pnpm test -- --code-coverage`). If coverage drops below the Karma thresholds in `karma.conf.js`, the build fails. Coverage is uploaded as an artifact and optionally to Codecov when `CODECOV_TOKEN` is set. Sonar reads `coverage/lcov.info`; raise Karma thresholds to 80% once coverage reaches that level to align with Sonar.

@@ -1,0 +1,38 @@
+# Dependencies and build outputs (reinstalled or rebuilt in container)
+node_modules
+dist
+tmp
+out-tsc
+bazel-out
+.angular
+*.tsbuildinfo
+
+# Test and coverage (not needed for image context)
+coverage
+playwright-report
+test-results
+.nyc_output
+
+# Git and IDE
+.git
+.gitignore
+.idea
+.vscode
+*.log
+
+# Documentation and local config (optional: remove if you want them in image)
+*.md
+!README.md
+.env
+.env.*
+!.env.example
+
+# Lockfiles: keep pnpm-lock.yaml so install is reproducible; ignore others
+package-lock.json
+yarn.lock
+bun.lock
+
+# OS and misc
+.DS_Store
+Thumbs.db
+*.local

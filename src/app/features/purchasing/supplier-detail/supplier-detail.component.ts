@@ -10,11 +10,15 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { SuppliersService } from '../../../core/services/suppliers.service';
 
+/** Max length before running regex to prevent ReDoS on very long input. */
+const PHONE_INPUT_MAX_LENGTH = 25;
+
 /** Validates international phone numbers (US, European, etc.): digits, +, spaces, hyphens, parentheses, dots; 8–15 digits. */
 function phoneNumberValidator(control: AbstractControl): ValidationErrors | null {
   const v = (control.value ?? '').trim();
   if (!v) return null; // required is handled separately
-  const digitsOnly = v.replaceAll(/\D/g, '');
+  if (v.length > PHONE_INPUT_MAX_LENGTH) return { phoneNumber: true };
+  const digitsOnly = v.replace(/\D/g, '');
   if (digitsOnly.length < 8 || digitsOnly.length > 15) return { phoneNumber: true };
   if (!/^[\d\s\-+().]{8,25}$/.test(v)) return { phoneNumber: true };
   return null;

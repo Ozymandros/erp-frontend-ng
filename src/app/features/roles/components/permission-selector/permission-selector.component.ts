@@ -21,6 +21,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, takeUntil, finalize } from 'rxjs';
 import { PermissionsService } from '../../../../core/services/permissions.service';
 import { RolesService } from '../../../../core/services/roles.service';
+import { compareByLocale } from '../../../../core/utils/string-utils';
 import { Permission } from '../../../../types/api.types';
 import {
   PermissionGroup,
@@ -104,8 +105,8 @@ export class PermissionSelectorComponent implements OnInit, OnChanges, OnDestroy
   private updateAssignedPermissions(): void {
     const newIds = new Set(this.initialPermissions.map((p) => p.id));
     // Only update if contents actually changed to avoid unnecessary re-renders
-    const oldIds = Array.from(this.assignedPermissions).sort((a, b) => a.localeCompare(b)).join(',');
-    const newIdsStr = Array.from(newIds).sort((a, b) => a.localeCompare(b)).join(',');
+    const oldIds = Array.from(this.assignedPermissions).sort(compareByLocale).join(',');
+    const newIdsStr = Array.from(newIds).sort(compareByLocale).join(',');
     if (oldIds !== newIdsStr) {
       this.assignedPermissions = newIds;
     }
@@ -119,11 +120,11 @@ export class PermissionSelectorComponent implements OnInit, OnChanges, OnDestroy
       const currentValue = changes['initialPermissions'].currentValue || [];
       const previousIds = previousValue
         .map((p: Permission) => p.id)
-        .sort((a: string, b: string) => a.localeCompare(b))
+        .sort(compareByLocale)
         .join(',');
       const currentIds = currentValue
         .map((p: Permission) => p.id)
-        .sort((a: string, b: string) => a.localeCompare(b))
+        .sort(compareByLocale)
         .join(',');
 
       // Only update if IDs actually changed
@@ -461,7 +462,7 @@ export class PermissionSelectorComponent implements OnInit, OnChanges, OnDestroy
         ([module, permissions]): PermissionGroup => ({
           module,
           permissions: permissions.sort((a, b) =>
-            a.action.localeCompare(b.action),
+            compareByLocale(a.action, b.action),
           ),
         }),
       );
@@ -472,7 +473,7 @@ export class PermissionSelectorComponent implements OnInit, OnChanges, OnDestroy
 
   get modules(): string[] {
     const moduleSet = new Set(this.allPermissions.map((p) => p.module));
-    return Array.from(moduleSet).sort((a, b) => a.localeCompare(b));
+    return Array.from(moduleSet).sort(compareByLocale);
   }
 
   get assignedCount(): number {

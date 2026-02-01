@@ -30,7 +30,7 @@ test.describe('Inventory Management', () => {
   test('should navigate to product creation', async ({ page }) => {
     await page.goto('/inventory/products');
     await page.click('button:has-text("Add Product")');
-    await expect(page).toHaveURL(/.*products\/new/);
+    await expect(page).toHaveURL(/products\/new/);
     await expect(page.getByRole('heading', { name: 'Create Product' })).toBeVisible();
   });
 

@@ -1,7 +1,8 @@
 {
 	"name": "ERP Aspire Frontend (Angular)",
 	"build": {
-		"dockerfile": "Dockerfile"
+		"dockerfile": "Dockerfile",
+		"context": ".."
 	},
 	"customizations": {
 		"vscode": {
@@ -26,15 +27,19 @@
 	"features": {
 		"ghcr.io/devcontainers/features/github-cli:1": {}
 	},
-	"forwardPorts": [3000, 9877],
-	"postCreateCommand": "pnpm install && npx playwright install --with-deps",
+	"forwardPorts": [3000, 9876, 9877],
+	"postCreateCommand": "pnpm install --frozen-lockfile && npx playwright install --with-deps chromium",
 	"portsAttributes": {
 		"3000": {
 			"label": "Angular Dev Server",
 			"onAutoForward": "notify"
 		},
+		"9876": {
+			"label": "Karma",
+			"onAutoForward": "ignore"
+		},
 		"9877": {
-			"label": "Karma Test Server",
+			"label": "Karma (alt)",
 			"onAutoForward": "ignore"
 		}
 	}
