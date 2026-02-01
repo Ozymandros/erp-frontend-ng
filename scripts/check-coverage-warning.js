@@ -5,12 +5,42 @@
  * See docs/TEST_COVERAGE.md.
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const COVERAGE_SUMMARY_PATH = path.join(__dirname, '..', 'coverage', 'coverage-summary.json');
 const WARNING_THRESHOLD_PCT = 80;
 const METRICS = ['statements', 'lines', 'branches', 'functions'];
+
+function aggregateTotal(summary) {
+  let combined = null;
+  for (const key of Object.keys(summary)) {
+    if (key === 'total') continue;
+    const entry = summary[key];
+    if (entry && typeof entry === 'object') {
+      if (!combined) {
+        combined = { statements: { total: 0, covered: 0 }, lines: { total: 0, covered: 0 }, branches: { total: 0, covered: 0 }, functions: { total: 0, covered: 0 } };
+      }
+      for (const m of METRICS) {
+        if (entry[m]) {
+          combined[m].total += entry[m].total || 0;
+          combined[m].covered += entry[m].covered || 0;
+        }
+      }
+    }
+  }
+  if (!combined) return null;
+  const result = {};
+  for (const m of METRICS) {
+    const t = combined[m].total;
+    result[m] = { pct: t === 0 ? 100 : (100 * combined[m].covered) / t };
+  }
+  return result;
+}
 
 function main() {
   if (!fs.existsSync(COVERAGE_SUMMARY_PATH)) {
@@ -55,32 +85,6 @@ function main() {
   }
 
   process.exit(0);
-}
-
-function aggregateTotal(summary) {
-  let combined = null;
-  for (const key of Object.keys(summary)) {
-    if (key === 'total') continue;
-    const entry = summary[key];
-    if (entry && typeof entry === 'object') {
-      if (!combined) {
-        combined = { statements: { total: 0, covered: 0 }, lines: { total: 0, covered: 0 }, branches: { total: 0, covered: 0 }, functions: { total: 0, covered: 0 } };
-      }
-      for (const m of METRICS) {
-        if (entry[m]) {
-          combined[m].total += entry[m].total || 0;
-          combined[m].covered += entry[m].covered || 0;
-        }
-      }
-    }
-  }
-  if (!combined) return null;
-  const result = {};
-  for (const m of METRICS) {
-    const t = combined[m].total;
-    result[m] = { pct: t === 0 ? 100 : (100 * combined[m].covered) / t };
-  }
-  return result;
 }
 
 main();

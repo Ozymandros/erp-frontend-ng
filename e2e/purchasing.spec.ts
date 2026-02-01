@@ -12,7 +12,7 @@ test.describe('Purchasing Management', () => {
 
   test('should load suppliers page and display list', async ({ page }) => {
     await page.goto('/purchasing/suppliers');
-    await expect(page.getByRole('heading', { name: 'Suppliers Management' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Suppliers', exact: true })).toBeVisible();
     await expect(page.locator('nz-table')).toBeVisible();
   });
 

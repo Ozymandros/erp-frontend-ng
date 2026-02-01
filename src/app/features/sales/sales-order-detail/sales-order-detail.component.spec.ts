@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { SalesOrderDetailComponent } from './sales-order-detail.component';
@@ -9,11 +9,9 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
-import { createOrderDetailFixture } from '../../../core/testing/order-detail-spec.helper';
+import { runCommonOrderDetailTests } from '../../../core/testing/order-detail-spec.helper';
 
 describe('SalesOrderDetailComponent', () => {
-  let component: SalesOrderDetailComponent;
-  let _fixture: ComponentFixture<SalesOrderDetailComponent>;
   let salesOrdersServiceSpy: jasmine.SpyObj<SalesOrdersService>;
   let customersServiceSpy: jasmine.SpyObj<CustomersService>;
   let productsServiceSpy: jasmine.SpyObj<ProductsService>;
@@ -59,52 +57,12 @@ describe('SalesOrderDetailComponent', () => {
     .compileComponents();
   });
 
-  function createComponent(id: string | null) {
-    const result = createOrderDetailFixture(id, SalesOrderDetailComponent, {
-      getByIdSpy: salesOrdersServiceSpy.getById,
-      mockOrder
-    });
-    _fixture = result.fixture;
-    component = result.component;
-  }
-
-  it('should create', () => {
-    createComponent('new');
-    expect(component).toBeTruthy();
-  });
-
-  it('should load order in view mode', () => {
-    createComponent('1');
-    expect(salesOrdersServiceSpy.getById).toHaveBeenCalledWith('1');
-    expect(component.order?.orderNumber).toBe('SO-001');
-  });
-
-  it('should initialize form for new order', () => {
-    createComponent('new');
-    expect(component.orderForm).toBeDefined();
-    expect(component.lines.length).toBe(1);
-  });
-
-  it('should add and remove lines', () => {
-    createComponent('new');
-    component.addLine();
-    expect(component.lines.length).toBe(2);
-    component.removeLine(1);
-    expect(component.lines.length).toBe(1);
-  });
-
-  it('should submit new order', () => {
-    createComponent('new');
-    salesOrdersServiceSpy.create.and.returnValue(of(mockOrder as any));
-    component.orderForm.patchValue({ 
-      orderNumber: 'SO-NEW', 
-      customerId: 'C1',
-      orderDate: new Date()
-    });
-    component.lines.at(0).patchValue({ productId: 'P1', quantity: 2, unitPrice: 50 });
-    
-    component.submitOrder();
-    expect(salesOrdersServiceSpy.create).toHaveBeenCalled();
-    expect(messageServiceSpy.success).toHaveBeenCalled();
+  runCommonOrderDetailTests(SalesOrderDetailComponent, {
+    getByIdSpy: () => salesOrdersServiceSpy.getById,
+    createSpy: () => salesOrdersServiceSpy.create,
+    mockOrder,
+    orderNumberPrefix: 'SO',
+    entityIdField: 'customerId',
+    entityIdValue: 'C1'
   });
 });

@@ -1,9 +1,8 @@
-// @ts-check
-const eslint = require('@eslint/js');
-const tseslint = require('typescript-eslint');
-const angular = require('angular-eslint');
+import js from '@eslint/js';
+import { config, configs as _configs } from 'typescript-eslint';
+import { configs as __configs, processInlineTemplates } from 'angular-eslint';
 
-module.exports = tseslint.config(
+export default config(
   {
     ignores: [
       '.angular/**',
@@ -19,11 +18,11 @@ module.exports = tseslint.config(
   {
     files: ['src/**/*.ts'],
     extends: [
-      eslint.configs.recommended,
-      ...tseslint.configs.recommended,
-      ...angular.configs.tsRecommended,
+      js.configs.recommended,
+      ..._configs.recommended,
+      ...__configs.tsRecommended,
     ],
-    processor: angular.processInlineTemplates,
+    processor: processInlineTemplates,
     languageOptions: {
       parserOptions: {
         project: ['./tsconfig.app.json', './tsconfig.spec.json'],
@@ -43,13 +42,32 @@ module.exports = tseslint.config(
         'error',
         { type: 'element', prefix: 'app', style: 'kebab-case' },
       ],
+      'no-restricted-globals': [
+        'error',
+        {
+          name: 'parseInt',
+          message: 'Use Number.parseInt instead of the global parseInt.',
+        },
+        {
+          name: 'parseFloat',
+          message: 'Use Number.parseFloat instead of the global parseFloat.',
+        },
+        {
+          name: 'isNaN',
+          message: 'Use Number.isNaN instead of the global isNaN.',
+        },
+        {
+          name: 'isFinite',
+          message: 'Use Number.isFinite instead of the global isFinite.',
+        },
+      ],
     },
   },
   {
     files: ['src/**/*.html'],
     extends: [
-      ...angular.configs.templateRecommended,
-      ...angular.configs.templateAccessibility,
+      ...__configs.templateRecommended,
+      ...__configs.templateAccessibility,
     ],
     rules: {},
   },

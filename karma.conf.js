@@ -2,24 +2,28 @@
 // Thresholds set to current coverage so build passes; Sonar requires 80%—raise thresholds as coverage improves.
 // See docs/TEST_COVERAGE.md.
 
-const path = require('path');
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
-module.exports = function (config) {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+export default function (config) {
   config.set({
     basePath: '',
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
     plugins: [
-      require('karma-jasmine'),
-      require('karma-chrome-launcher'),
-      require('karma-jasmine-html-reporter'),
-      require('karma-coverage'),
-      require('@angular-devkit/build-angular/plugins/karma'),
+      'karma-jasmine',
+      'karma-chrome-launcher',
+      'karma-jasmine-html-reporter',
+      'karma-coverage',
+      '@angular-devkit/build-angular/plugins/karma',
     ],
     jasmineHtmlReporter: {
       suppressAll: true,
     },
     coverageReporter: {
-      dir: path.join(__dirname, 'coverage'),
+      dir: join(__dirname, 'coverage'),
       subdir: '.',
       reporters: [
         { type: 'html' },
@@ -44,6 +48,10 @@ module.exports = function (config) {
         flags: ['--no-sandbox', '--headless', '--disable-gpu', '--disable-dev-shm-usage'],
       },
     },
+    browserNoActivityTimeout: 60000,
+    browserDisconnectTimeout: 10000,
+    browserDisconnectTolerance: 3,
+    captureTimeout: 210000,
     restartOnFileChange: true,
   });
 };

@@ -69,6 +69,7 @@ export class PermissionSelectorComponent implements OnInit, OnChanges, OnDestroy
   private _lastSearchTerm = '';
   private _lastSelectedModule: string | null = null;
   private _lastAllPermissionsLength = 0;
+  private _lastPermissionsRef: Permission[] | null = null;
   private searchTerm$ = new Subject<string>();
   private destroy$ = new Subject<void>();
 
@@ -409,7 +410,8 @@ export class PermissionSelectorComponent implements OnInit, OnChanges, OnDestroy
     const searchChanged = this._lastSearchTerm !== this.effectiveSearchTerm;
     const moduleChanged = this._lastSelectedModule !== this.selectedModule;
     const permissionsChanged =
-      this._lastAllPermissionsLength !== this.allPermissions.length;
+      this._lastAllPermissionsLength !== this.allPermissions.length ||
+      this._lastPermissionsRef !== this.allPermissions;
 
     if (
       this._filteredPermissions === null ||
@@ -439,6 +441,7 @@ export class PermissionSelectorComponent implements OnInit, OnChanges, OnDestroy
       this._lastSearchTerm = this.effectiveSearchTerm;
       this._lastSelectedModule = this.selectedModule;
       this._lastAllPermissionsLength = this.allPermissions.length;
+      this._lastPermissionsRef = this.allPermissions;
       // Clear grouped cache when filtered changes
       this._groupedPermissions = null;
     }
@@ -447,11 +450,13 @@ export class PermissionSelectorComponent implements OnInit, OnChanges, OnDestroy
   }
 
   get groupedPermissions(): PermissionGroup[] {
-    // Use cached value if available (cleared when filteredPermissions changes)
+    // Calling the getter ensures that cached _groupedPermissions is cleared if inputs changed
+    const filtered = this.filteredPermissions;
+    
     if (this._groupedPermissions === null) {
       const groups = new Map<string, Permission[]>();
 
-      this.filteredPermissions.forEach((permission) => {
+      filtered.forEach((permission) => {
         if (!groups.has(permission.module)) {
           groups.set(permission.module, []);
         }

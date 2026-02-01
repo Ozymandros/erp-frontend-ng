@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { Observable } from 'rxjs';
 import { PermissionSelectorComponent } from './permission-selector.component';
 import { PermissionsService } from '../../../../core/services/permissions.service';
@@ -108,5 +108,114 @@ describe('PermissionSelectorComponent', () => {
       expect(component.permissionsChange.emit).toHaveBeenCalled();
       done();
     }, 50);
+  });
+
+  it('should update effectiveSearchTerm only when term length >= 3', () => {
+    component.searchTerm = 'ab';
+    component.onSearchOrModuleChange();
+    expect(component.effectiveSearchTerm).toBe('');
+
+    component.searchTerm = 'abc';
+    component.onSearchOrModuleChange();
+    expect(component.effectiveSearchTerm).toBe('abc');
+  });
+
+  it('should filter permissions by search term', () => {
+    component.allPermissions = [
+      { id: '1', module: 'Users', action: 'Read' },
+      { id: '2', module: 'Roles', action: 'Write' }
+    ] as any;
+    component.searchTerm = 'Users';
+    component.onSearchOrModuleChange();
+    // effectiveSearchTerm updates, but filteredPermissions is lazy
+    expect(component.filteredPermissions.length).toBe(1);
+    expect(component.filteredPermissions[0].module).toBe('Users');
+  });
+
+  it('should filter permissions by module', () => {
+    component.allPermissions = [
+      { id: '1', module: 'Users', action: 'Read' },
+      { id: '2', module: 'Roles', action: 'Write' }
+    ] as any;
+    component.selectedModule = 'Roles';
+    expect(component.filteredPermissions.length).toBe(1);
+    expect(component.filteredPermissions[0].module).toBe('Roles');
+  });
+
+  it('should bulk assign permissions in a module and handle partial success', (done) => {
+    component.allPermissions = [
+      { id: '1', module: 'Users', action: 'Read' },
+      { id: '2', module: 'Users', action: 'Write' }
+    ] as any;
+    component.assignedPermissions = new Set(['1']);
+    rolesServiceSpy.addPermissionToRole.and.returnValue(throwError(() => ({ status: 409, message: 'Conflict' })));
+
+    component.selectAllInModule('Users');
+
+    expect(rolesServiceSpy.addPermissionToRole).toHaveBeenCalled();
+    setTimeout(() => {
+      // For 409, we assume it's already there
+      expect(component.assignedPermissions.has('2')).toBeTrue();
+      expect(messageSpy.error).toHaveBeenCalled();
+      done();
+    }, 50);
+  });
+
+  it('should bulk unassign permissions and handle partial success', (done) => {
+    component.allPermissions = [
+      { id: '1', module: 'Users', action: 'Read' },
+      { id: '2', module: 'Users', action: 'Write' }
+    ] as any;
+    component.assignedPermissions = new Set(['1', '2']);
+    rolesServiceSpy.removePermissionFromRole.and.returnValue(throwError(() => ({ status: 404, message: 'Not found' })));
+
+    component.deselectAllInModule('Users');
+
+    expect(rolesServiceSpy.removePermissionFromRole).toHaveBeenCalled();
+    setTimeout(() => {
+      // For 404, we assume it's already gone
+      expect(component.assignedPermissions.size).toBe(0);
+      expect(messageSpy.error).toHaveBeenCalled();
+      done();
+    }, 50);
+  });
+
+  it('should handle error when loading permissions', () => {
+    permissionsServiceSpy.getAll.and.returnValue(throwError(() => new Error('Load failed')));
+    component.loadPermissions();
+    expect(messageSpy.error).toHaveBeenCalledWith(jasmine.stringMatching('Failed to load permissions'));
+    expect(component.loading).toBeFalse();
+  });
+
+  it('should use empty array if response format is unknown', () => {
+    permissionsServiceSpy.getAll.and.returnValue(of({ invalid: true } as any));
+    component.loadPermissions();
+    expect(component.allPermissions).toEqual([]);
+  });
+
+  it('should correctly handle search term change via Subject', (done) => {
+    spyOn(component as any, 'applySearchTerm').and.callThrough();
+    component.searchTerm = 'testing-debounce';
+    component.onSearchOrModuleChange();
+    
+    setTimeout(() => {
+      expect((component as any).applySearchTerm).toHaveBeenCalledWith('testing-debounce');
+      done();
+    }, 350); // > 300ms debounce
+  });
+
+  it('should compute groupedPermissions correctly and cache it', () => {
+    component.allPermissions = [
+      { id: '1', module: 'Users', action: 'Read' },
+      { id: '2', module: 'Users', action: 'Write' },
+      { id: '3', module: 'Inventory', action: 'Read' }
+    ] as any;
+    const groups = component.groupedPermissions;
+    expect(groups.length).toBe(2);
+    expect(groups.find(g => g.module === 'Users')?.permissions.length).toBe(2);
+    
+    // Test caching
+    const groups2 = component.groupedPermissions;
+    expect(groups).toBe(groups2);
   });
 });

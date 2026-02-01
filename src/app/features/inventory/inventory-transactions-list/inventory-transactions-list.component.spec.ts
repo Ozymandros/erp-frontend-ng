@@ -61,4 +61,12 @@ describe('InventoryTransactionsListComponent', () => {
     component.onSearch();
     expect(inventoryTransactionsServiceSpy.getAll).toHaveBeenCalled();
   });
+
+  it('should return correct transaction colors', () => {
+    expect(component.getTransactionColor('Purchase')).toBe('green');
+    expect(component.getTransactionColor('Sale')).toBe('blue');
+    expect(component.getTransactionColor('Transfer')).toBe('orange');
+    expect(component.getTransactionColor('Adjustment')).toBe('red');
+    expect(component.getTransactionColor('Unknown')).toBe('default');
+  });
 });
