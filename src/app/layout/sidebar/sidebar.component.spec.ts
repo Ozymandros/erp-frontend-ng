@@ -86,4 +86,43 @@ describe('SidebarComponent', () => {
      // At least some menu items should be rendered (based on permissions)
      expect(menuItems.length).toBeGreaterThan(0);
   });
+
+  it('should hide items without permission', () => {
+    mockPermissionService.hasPermission.and.returnValue(false);
+    mockAuthService.currentUser.set({ ...mockUser, isAdmin: false });
+    fixture.detectChanges();
+    const visibleItems = component.visibleNavItems();
+    // Dashboard doesn't require permissions, so at least one item should be visible
+    expect(visibleItems.length).toBeGreaterThan(0);
+    // But items requiring permissions should be filtered
+    const usersItem = visibleItems.find(item => item.title === 'Users');
+    expect(usersItem).toBeUndefined();
+  });
+
+  it('should show all items for admin', () => {
+    mockAuthService.currentUser.set({ ...mockUser, isAdmin: true });
+    fixture.detectChanges();
+    const visibleItems = component.visibleNavItems();
+    expect(visibleItems.length).toBeGreaterThan(0);
+  });
+
+  it('should filter out groups with no visible children', () => {
+    // Mock permission to block all Users, Roles but allow other permissions
+    mockPermissionService.hasPermission.and.callFake((module: string, action: string) => {
+      return module !== 'Users' && module !== 'Roles' && module !== 'Permissions';
+    });
+    mockAuthService.currentUser.set({ ...mockUser, isAdmin: false });
+    fixture.detectChanges();
+    const visibleItems = component.visibleNavItems();
+    // Auth group should be filtered out since all its children require blocked permissions
+    const authGroup = visibleItems.find(item => item.title === 'Auth');
+    expect(authGroup).toBeUndefined();
+  });
+
+  it('should return empty array when user is null', () => {
+    mockAuthService.currentUser.set(null);
+    fixture.detectChanges();
+    const visibleItems = component.visibleNavItems();
+    expect(visibleItems.length).toBe(0);
+  });
 });

@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { RolesService } from '../../../core/services/roles.service';
@@ -16,6 +14,7 @@ import { AssignedPermissionsViewComponent } from '../components/assigned-permiss
 import { compareByLocale } from '../../../core/utils/string-utils';
 import { Role, Permission } from '../../../types/api.types';
 import { forkJoin, finalize } from 'rxjs';
+import { AppButtonComponent, AppInputComponent, AppTextareaComponent } from '../../../shared/components';
 
 @Component({
   selector: 'app-role-detail',
@@ -25,11 +24,12 @@ import { forkJoin, finalize } from 'rxjs';
     ReactiveFormsModule,
     RouterLink,
     NzFormModule,
-    NzInputModule,
-    NzButtonModule,
     NzCardModule,
     PermissionSelectorComponent,
-    AssignedPermissionsViewComponent
+    AssignedPermissionsViewComponent,
+    AppButtonComponent,
+    AppInputComponent,
+    AppTextareaComponent
   ],
   templateUrl: './role-detail.component.html',
   styleUrls: ['./role-detail.component.css']

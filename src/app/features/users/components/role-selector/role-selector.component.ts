@@ -3,16 +3,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
 import { NzCardModule } from 'ng-zorro-antd/card';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { UsersService } from '../../../../core/services/users.service';
 import { RolesService } from '../../../../core/services/roles.service';
 import { Role } from '../../../../types/api.types';
+import { AppButtonComponent, AppInputComponent } from '../../../../shared/components';
 
 @Component({
   selector: 'app-role-selector',
@@ -21,12 +20,12 @@ import { Role } from '../../../../types/api.types';
     CommonModule,
     FormsModule,
     NzCardModule,
-    NzButtonModule,
-    NzInputModule,
-    NzIconModule,
     NzSpaceModule,
     NzBadgeModule,
-    NzSpinModule
+    NzSpinModule,
+    NzTooltipModule,
+    AppButtonComponent,
+    AppInputComponent
   ],
   templateUrl: './role-selector.component.html',
   styleUrls: ['./role-selector.component.css']

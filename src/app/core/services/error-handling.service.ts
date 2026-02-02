@@ -83,11 +83,7 @@ export class ErrorHandlingService {
       return problemDetails.detail;
     }
     
-    if (problemDetails.title) {
-      return problemDetails.title;
-    }
-    
-    // Handle validation errors in ProblemDetails
+    // Handle validation errors in ProblemDetails first (before title)
     if (problemDetails.errors && typeof problemDetails.errors === 'object') {
       const validationMessages = Object.entries(problemDetails.errors)
         .map(([field, messages]) => {
@@ -99,6 +95,10 @@ export class ErrorHandlingService {
       if (validationMessages) {
         return validationMessages;
       }
+    }
+    
+    if (problemDetails.title) {
+      return problemDetails.title;
     }
     
     return 'An error occurred';

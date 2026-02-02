@@ -2,17 +2,13 @@ import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzCardModule } from 'ng-zorro-antd/card';
-import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
-import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { Subscription } from 'rxjs';
 import { timeout, catchError, finalize } from 'rxjs/operators';
 import { of } from 'rxjs';
@@ -20,6 +16,12 @@ import { SalesOrdersService } from '../../../core/services/sales-orders.service'
 import { CustomersService } from '../../../core/services/customers.service';
 import { ProductsService } from '../../../core/services/products.service';
 import { SalesOrderDto, CustomerDto, ProductDto } from '../../../types/api.types';
+import { 
+  AppButtonComponent, 
+  AppInputComponent, 
+  AppSelectComponent, 
+  AppInputNumberComponent 
+} from '../../../shared/components';
 
 @Component({
   selector: 'app-sales-order-detail',
@@ -29,15 +31,15 @@ import { SalesOrderDto, CustomerDto, ProductDto } from '../../../types/api.types
     RouterLink,
     ReactiveFormsModule,
     NzCardModule,
-    NzButtonModule,
     NzTagModule,
     NzTableModule,
-    NzIconModule,
     NzFormModule,
-    NzInputModule,
-    NzSelectModule,
     NzDatePickerModule,
-    NzInputNumberModule
+    NzTypographyModule,
+    AppButtonComponent,
+    AppInputComponent,
+    AppSelectComponent,
+    AppInputNumberComponent
   ],
   templateUrl: './sales-order-detail.component.html',
   styleUrls: ['./sales-order-detail.component.css']

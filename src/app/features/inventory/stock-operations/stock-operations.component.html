@@ -3,8 +3,8 @@
     <h1 nz-typography>Inventory Operations</h1>
   </div>
 
-  <div nz-row [nzGutter]="16">
-    <div nz-col [nzSpan]="12">
+  <div nz-row [nzGutter]="24">
+    <div nz-col [nzXs]="24" [nzLg]="12">
       <nz-card nzTitle="Manual Stock Adjustment">
         <form
           nz-form
@@ -15,90 +15,75 @@
           <nz-form-item>
             <nz-form-label nzRequired>Product</nz-form-label>
             <nz-form-control nzErrorTip="Please select a product!">
-              <div #productSelectHost class="select-host">
-                <nz-select
-                  formControlName="productId"
-                  nzShowSearch
-                  nzServerSearch
-                  nzPlaceHolder="Type at least 3 characters to search..."
-                  [nzOpen]="productDropdownOpen"
-                  [nzLoading]="productSearching"
-                  [nzNotFoundContent]="notFoundProductText"
-                  (nzOnSearch)="onProductSearch($event)"
-                  (nzOpenChange)="onProductOpenChange($event)"
-                >
-                  @for (p of products; track p.id) {
-                    <nz-option
-                      [nzValue]="p.id"
-                      [nzLabel]="p.name + ' (' + p.sku + ')'"
-                    ></nz-option>
-                  }
-                </nz-select>
-              </div>
+              <app-select
+                formControlName="productId"
+                [options]="products"
+                labelKey="name"
+                valueKey="id"
+                [showSearch]="true"
+                [serverSearch]="true"
+                placeholder="Search products by name or SKU..."
+                [loading]="productSearching"
+                (searchQuery)="onProductSearch($event)"
+              ></app-select>
             </nz-form-control>
           </nz-form-item>
 
           <nz-form-item>
             <nz-form-label nzRequired>Warehouse</nz-form-label>
             <nz-form-control nzErrorTip="Please select a warehouse!">
-              <div #warehouseSelectHost class="select-host">
-                <nz-select
-                  formControlName="warehouseId"
-                  nzShowSearch
-                  nzServerSearch
-                  nzPlaceHolder="Type at least 3 characters to search..."
-                  [nzOpen]="warehouseDropdownOpen"
-                  [nzLoading]="warehouseSearching"
-                  [nzNotFoundContent]="notFoundWarehouseText"
-                  (nzOnSearch)="onWarehouseSearch($event)"
-                  (nzOpenChange)="onWarehouseOpenChange($event)"
-                >
-                  @for (w of warehouses; track w.id) {
-                    <nz-option [nzValue]="w.id" [nzLabel]="w.name"></nz-option>
-                  }
-                </nz-select>
-              </div>
+              <app-select
+                formControlName="warehouseId"
+                [options]="warehouses"
+                labelKey="name"
+                valueKey="id"
+                [showSearch]="true"
+                [serverSearch]="true"
+                placeholder="Search warehouses..."
+                [loading]="warehouseSearching"
+                (searchQuery)="onWarehouseSearch($event)"
+              ></app-select>
             </nz-form-control>
           </nz-form-item>
 
           <nz-form-item>
-            <nz-form-label nzRequired>Adjustment</nz-form-label>
-            <nz-form-control nzExtra="Use negative numbers for stock removals">
-              <nz-input-number
+            <nz-form-label nzRequired>Quantity Adjustment</nz-form-label>
+            <nz-form-control nzExtra="Positive for additions, negative for removals">
+              <app-input-number
                 formControlName="quantity"
-                [nzStep]="1"
+                [step]="1"
                 class="full-width-input"
-              ></nz-input-number>
+              ></app-input-number>
             </nz-form-control>
           </nz-form-item>
 
           <nz-form-item>
-            <nz-form-label>Reference / Reason</nz-form-label>
+            <nz-form-label>Reason / Reference</nz-form-label>
             <nz-form-control>
-              <textarea
-                nz-input
+              <app-textarea
                 formControlName="reason"
-                [nzAutosize]="{ minRows: 3, maxRows: 6 }"
-                placeholder="e.g. Damage, count correction"
-              ></textarea>
+                placeholder="e.g. Damage, inventory count, transfer"
+                [rows]="3"
+              ></app-textarea>
             </nz-form-control>
           </nz-form-item>
 
-          <nz-form-item>
-            <nz-form-control>
-              <button
-                nz-button
-                [nzType]="isDark() ? 'default' : 'primary'"
-                type="submit"
-                [nzLoading]="submitting"
-                [disabled]="!adjustmentForm.valid"
-              >
-                Apply Adjustment
-              </button>
-            </nz-form-control>
-          </nz-form-item>
+          <div class="form-actions mt-4">
+            <app-button
+              type="primary"
+              btnType="submit"
+              [loading]="submitting"
+              [disabled]="!adjustmentForm.valid || submitting"
+              [block]="true"
+              size="large"
+            >
+              Apply Adjustment
+            </app-button>
+          </div>
         </form>
       </nz-card>
     </div>
+
+    <!-- Future expansion: could add bulk operations or stock transfers here -->
   </div>
 </div>

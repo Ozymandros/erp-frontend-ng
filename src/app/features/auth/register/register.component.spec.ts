@@ -98,4 +98,18 @@ describe('RegisterComponent', () => {
     expect(authServiceSpy.register).toHaveBeenCalled();
     expect(messageServiceSpy.error).toHaveBeenCalledWith('Email exists');
   });
+
+  it('should handle registration error without message', () => {
+    authServiceSpy.register.and.returnValue(throwError(() => ({})));
+    
+    component.registerForm.controls['username'].setValue('user');
+    component.registerForm.controls['email'].setValue('test@example.com');
+    component.registerForm.controls['password'].setValue('password123');
+    component.registerForm.controls['passwordConfirm'].setValue('password123');
+    
+    component.onSubmit();
+    
+    expect(authServiceSpy.register).toHaveBeenCalled();
+    expect(messageServiceSpy.error).toHaveBeenCalledWith('Registration failed');
+  });
 });

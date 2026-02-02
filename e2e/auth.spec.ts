@@ -55,9 +55,17 @@ test.describe('Authentication Flow', () => {
     await mockAuthenticatedState(page, mockAdminUser);
     await page.goto('/dashboard');
     
-    // Open user menu and click logout
-    await page.click('.ant-dropdown-trigger'); // User avatar/name
-    await page.click('text=Logout');
+    // Wait for page to fully load
+    await page.waitForLoadState('networkidle');
+    
+    // Open user menu by clicking avatar
+    const avatarButton = page.locator('nz-avatar');
+    await avatarButton.click();
+    
+    // Wait for and click the logout menu item
+    const logoutItem = page.locator('[nz-menu-item]:has-text("Logout")');
+    await logoutItem.waitFor({ state: 'visible', timeout: 5000 });
+    await logoutItem.click();
     
     await expect(page).toHaveURL(/login/);
   });

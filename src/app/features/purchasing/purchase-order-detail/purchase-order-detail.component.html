@@ -1,16 +1,8 @@
 <div class="purchase-order-detail">
   <div class="page-header">
-    <button
-      type="button"
-      nz-button
-      nzType="default"
-      routerLink="/purchasing/orders"
-      class="back-button"
-      aria-label="Back to orders list"
-    >
-      <span nz-icon nzType="arrow-left"></span>
+    <app-button type="default" routerLink="/purchasing/orders" icon="arrow-left">
       Back to List
-    </button>
+    </app-button>
     <h1 nz-typography>
       {{
         isNewOrder
@@ -33,11 +25,10 @@
             <nz-form-item>
               <nz-form-label nzRequired>Order #</nz-form-label>
               <nz-form-control nzErrorTip="Please enter order number">
-                <input
-                  nz-input
+                <app-input
                   formControlName="orderNumber"
                   placeholder="PO-0001"
-                />
+                ></app-input>
               </nz-form-control>
             </nz-form-item>
           </div>
@@ -45,19 +36,13 @@
             <nz-form-item>
               <nz-form-label nzRequired>Supplier</nz-form-label>
               <nz-form-control nzErrorTip="Please select a supplier">
-                <nz-select
+                <app-select
                   formControlName="supplierId"
-                  nzShowSearch
-                  nzAllowClear
+                  [options]="suppliers"
+                  labelKey="name"
+                  valueKey="id"
                   placeholder="Select supplier"
-                >
-                  @for (supplier of suppliers; track supplier.id) {
-                    <nz-option
-                      [nzLabel]="supplier.name"
-                      [nzValue]="supplier.id"
-                    ></nz-option>
-                  }
-                </nz-select>
+                ></app-select>
               </nz-form-control>
             </nz-form-item>
           </div>
@@ -107,40 +92,34 @@
                 <td>
                   <nz-form-item>
                     <nz-form-control nzErrorTip="Product required">
-                      <nz-select
+                      <app-select
                         formControlName="productId"
-                        nzShowSearch
-                        nzAllowClear
+                        [options]="products"
+                        labelKey="name"
+                        valueKey="id"
                         placeholder="Select product"
-                      >
-                        @for (product of products; track product.id) {
-                          <nz-option
-                            [nzLabel]="product.name"
-                            [nzValue]="product.id"
-                          ></nz-option>
-                        }
-                      </nz-select>
+                      ></app-select>
                     </nz-form-control>
                   </nz-form-item>
                 </td>
                 <td>
                   <nz-form-item>
                     <nz-form-control nzErrorTip="Min 1">
-                      <nz-input-number
+                      <app-input-number
                         formControlName="quantity"
-                        [nzMin]="1"
-                      ></nz-input-number>
+                        [min]="1"
+                      ></app-input-number>
                     </nz-form-control>
                   </nz-form-item>
                 </td>
                 <td>
                   <nz-form-item>
                     <nz-form-control nzErrorTip="Required">
-                      <nz-input-number
+                      <app-input-number
                         formControlName="unitPrice"
-                        [nzMin]="0"
-                        [nzStep]="0.01"
-                      ></nz-input-number>
+                        [min]="0"
+                        [step]="0.01"
+                      ></app-input-number>
                     </nz-form-control>
                   </nz-form-item>
                 </td>
@@ -153,17 +132,13 @@
                   }}
                 </td>
                 <td>
-                  <button
-                    type="button"
-                    nz-button
-                    nzDanger
-                    nzShape="circle"
+                  <app-button
                     (click)="removeLine($index)"
-                    title="Remove line"
-                    aria-label="Remove line"
-                  >
-                    <span nz-icon nzType="minus"></span>
-                  </button>
+                    type="link"
+                    danger
+                    icon="minus"
+                    tooltip="Remove line"
+                  ></app-button>
                 </td>
               </tr>
             }
@@ -171,16 +146,14 @@
         </nz-table>
 
         <div class="form-actions">
-          <button
-            type="button"
-            nz-button
-            nzType="dashed"
+          <app-button
             (click)="addLine()"
+            type="dashed"
+            icon="plus"
             class="add-line-btn"
-            aria-label="Add order line"
           >
-            <span nz-icon nzType="plus"></span> Add Line
-          </button>
+            Add Line
+          </app-button>
 
           <div class="total-section">
             <span class="total-label">Grand Total:</span>
@@ -189,15 +162,13 @@
         </div>
 
         <div class="submit-section">
-          <button
-            type="submit"
-            nz-button
-            nzType="primary"
-            [nzLoading]="submitting"
-            aria-label="Create purchase order"
+          <app-button
+            btnType="submit"
+            type="primary"
+            [loading]="submitting"
           >
             Create Purchase Order
-          </button>
+          </app-button>
         </div>
       </form>
     } @else {

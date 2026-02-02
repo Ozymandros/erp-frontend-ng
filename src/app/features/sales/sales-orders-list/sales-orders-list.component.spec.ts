@@ -60,6 +60,10 @@ describe('SalesOrdersListComponent', () => {
 
   it('should delete order', () => {
     salesOrdersServiceSpy.delete.and.returnValue(of(void 0));
+    modalServiceSpy.confirm.and.callFake((options: any) => {
+      options.nzOnOk();
+      return undefined as any;
+    });
     component.deleteOrder('1');
     expect(salesOrdersServiceSpy.delete).toHaveBeenCalledWith('1');
     expect(messageServiceSpy.success).toHaveBeenCalled();
@@ -105,6 +109,51 @@ describe('SalesOrdersListComponent', () => {
     
     expect(salesOrdersServiceSpy.exportToPdf).toHaveBeenCalled();
     expect(messageServiceSpy.error).toHaveBeenCalledWith('Failed to export to PDF');
+  });
+
+  it('should return correct color for Draft status (string)', () => {
+    expect(component.getStatusColor('Draft')).toBe('default');
+  });
+
+  it('should return correct color for Draft status (number)', () => {
+    expect(component.getStatusColor(0)).toBe('default');
+  });
+
+  it('should return correct color for Confirmed status (string)', () => {
+    expect(component.getStatusColor('Confirmed')).toBe('blue');
+  });
+
+  it('should return correct color for Confirmed status (number)', () => {
+    expect(component.getStatusColor(2)).toBe('blue');
+  });
+
+  it('should return correct color for Shipped status (string)', () => {
+    expect(component.getStatusColor('Shipped')).toBe('green');
+  });
+
+  it('should return correct color for Shipped status (number)', () => {
+    expect(component.getStatusColor(3)).toBe('green');
+  });
+
+  it('should return correct color for Delivered status (string)', () => {
+    expect(component.getStatusColor('Delivered')).toBe('cyan');
+  });
+
+  it('should return correct color for Delivered status (number)', () => {
+    expect(component.getStatusColor(4)).toBe('cyan');
+  });
+
+  it('should return correct color for Cancelled status (string)', () => {
+    expect(component.getStatusColor('Cancelled')).toBe('red');
+  });
+
+  it('should return correct color for Cancelled status (number)', () => {
+    expect(component.getStatusColor(5)).toBe('red');
+  });
+
+  it('should return default color for unknown status', () => {
+    expect(component.getStatusColor('Unknown' as any)).toBe('default');
+    expect(component.getStatusColor(999)).toBe('default');
   });
 });
 

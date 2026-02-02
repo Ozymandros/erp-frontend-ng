@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { Observable } from 'rxjs';
 import { RoleSelectorComponent } from './role-selector.component';
 import { UsersService } from '../../../../core/services/users.service';
@@ -113,5 +113,129 @@ describe('RoleSelectorComponent', () => {
       expect(component.rolesChange.emit).toHaveBeenCalled();
       done();
     }, 50);
+  });
+
+  it('should not assign role when readonly', () => {
+    component.readonly = true;
+    component.assignRole(mockRoles[0]);
+    expect(usersServiceSpy.assignRole).not.toHaveBeenCalled();
+  });
+
+  it('should not assign role when saving', () => {
+    component.saving = true;
+    component.assignRole(mockRoles[0]);
+    expect(usersServiceSpy.assignRole).not.toHaveBeenCalled();
+  });
+
+  it('should not unassign role when readonly', () => {
+    component.readonly = true;
+    component.unassignRole(mockRoles[0]);
+    expect(usersServiceSpy.removeRole).not.toHaveBeenCalled();
+  });
+
+  it('should not unassign role when saving', () => {
+    component.saving = true;
+    component.unassignRole(mockRoles[0]);
+    expect(usersServiceSpy.removeRole).not.toHaveBeenCalled();
+  });
+
+  it('should filter roles by name', (done) => {
+    component.searchTerm = 'Admin';
+    component.onSearchInput();
+    setTimeout(() => {
+      const filtered = component.filteredRoles;
+      expect(filtered.length).toBe(1);
+      expect(filtered[0].name).toBe('Admin');
+      done();
+    }, 400);
+  });
+
+  it('should filter roles by description', (done) => {
+    component.searchTerm = 'User role';
+    component.onSearchInput();
+    setTimeout(() => {
+      const filtered = component.filteredRoles;
+      expect(filtered.length).toBe(1);
+      expect(filtered[0].name).toBe('User');
+      done();
+    }, 400);
+  });
+
+  it('should return all roles when search term is empty', () => {
+    component.effectiveSearchTerm = '';
+    const filtered = component.filteredRoles;
+    expect(filtered.length).toBe(2);
+  });
+
+  it('should return all roles when search term is too short', (done) => {
+    component.searchTerm = 'ab';
+    component.onSearchInput();
+    setTimeout(() => {
+      expect(component.effectiveSearchTerm).toBe('');
+      const filtered = component.filteredRoles;
+      expect(filtered.length).toBe(2);
+      done();
+    }, 400);
+  });
+
+  it('should return assignedCount', () => {
+    component.assignedRoles = new Set(['r1', 'r2']);
+    expect(component.assignedCount).toBe(2);
+  });
+
+  it('should return totalCount', () => {
+    expect(component.totalCount).toBe(2);
+  });
+
+  it('should handle assign role error without message', (done) => {
+    usersServiceSpy.assignRole.and.returnValue(throwError(() => ({})));
+    component.assignRole(mockRoles[0]);
+    setTimeout(() => {
+      expect(component.saving).toBeFalse();
+      expect(component.error).toContain('Failed to assign role');
+      done();
+    }, 50);
+  });
+
+  it('should handle unassign role error without message', (done) => {
+    usersServiceSpy.removeRole.and.returnValue(throwError(() => ({})));
+    component.assignedRoles = new Set(['r1']);
+    component.unassignRole(mockRoles[0]);
+    setTimeout(() => {
+      expect(component.saving).toBeFalse();
+      expect(component.error).toContain('Failed to unassign role');
+      done();
+    }, 50);
+  });
+
+  it('should handle null assignedRoles in isAssigned', () => {
+    component.assignedRoles = null as any;
+    expect(component.isAssigned('r1')).toBeFalse();
+  });
+
+  it('should handle null allRoles in filteredRoles', () => {
+    component.allRoles = null as any;
+    expect(component.filteredRoles).toEqual([]);
+  });
+
+  it('should handle null assignedRoles in assignedCount', () => {
+    component.assignedRoles = null as any;
+    expect(component.assignedCount).toBe(0);
+  });
+
+  it('should handle null allRoles in totalCount', () => {
+    component.allRoles = null as any;
+    expect(component.totalCount).toBe(0);
+  });
+
+  it('should handle role with no description in filteredRoles', (done) => {
+    component.allRoles = [{ id: 'r3', name: 'NoDesc', permissions: [], createdAt: '', createdBy: '' }];
+    component.searchTerm = 'NoDesc';
+    component.onSearchInput();
+    setTimeout(() => {
+      const filtered = component.filteredRoles;
+      expect(filtered.length).toBe(1);
+      done();
+    }, 400);
   });
 });

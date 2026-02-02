@@ -3,12 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
-import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { WarehousesService } from '../../../core/services/warehouses.service';
+import { AppButtonComponent, AppInputComponent } from '../../../shared/components';
 
 @Component({
   selector: 'app-warehouse-detail',
@@ -18,10 +17,10 @@ import { WarehousesService } from '../../../core/services/warehouses.service';
     ReactiveFormsModule,
     RouterLink,
     NzFormModule,
-    NzInputModule,
-    NzButtonModule,
     NzCardModule,
-    NzSwitchModule
+    NzTypographyModule,
+    AppButtonComponent,
+    AppInputComponent
   ],
   templateUrl: './warehouse-detail.component.html',
   styleUrls: ['./warehouse-detail.component.css']

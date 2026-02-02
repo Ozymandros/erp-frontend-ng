@@ -1,71 +1,64 @@
-import { Component, ChangeDetectorRef, computed } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzTagModule } from 'ng-zorro-antd/tag';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
-import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
+import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { NzCardModule } from 'ng-zorro-antd/card';
 import { ProductsService } from '../../../core/services/products.service';
 import { ProductDto } from '../../../types/api.types';
 import { BaseListComponent } from '../../../core/base/base-list.component';
 import { FileService } from '../../../core/services/file.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { ThemeService } from '../../../core/services/theme.service';
+import { AppButtonComponent, AppInputComponent } from '../../../shared/components';
 
 @Component({
   selector: 'app-products-list',
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
     FormsModule,
+    RouterLink,
     NzTableModule,
-    NzButtonModule,
-    NzInputModule,
-    NzIconModule,
-    NzSpaceModule,
     NzTagModule,
-    NzModalModule,
-    NzTooltipModule,
-    NzPopconfirmModule
+    NzSpaceModule,
+    NzPopconfirmModule,
+    NzTypographyModule,
+    NzCardModule,
+    AppButtonComponent,
+    AppInputComponent
   ],
   templateUrl: './products-list.component.html',
   styleUrls: ['./products-list.component.css']
 })
-export class ProductsListComponent extends BaseListComponent<ProductDto> {
+export class ProductsListComponent extends BaseListComponent<ProductDto> implements OnInit {
   protected get moduleName(): string {
-    return 'products';
+    return 'inventory';
   }
 
   constructor(
-    productsService: ProductsService,
+    private productsService: ProductsService,
     message: NzMessageService,
     modal: NzModalService,
     fileService: FileService,
     cdr: ChangeDetectorRef,
-    authService: AuthService,
-    public themeService: ThemeService
+    authService: AuthService
   ) {
     super(productsService, message, modal, fileService, cdr, authService);
   }
 
-  // Computed property to check if dark mode is active
-  isDark = computed(() => this.themeService.effectiveTheme() === 'dark');
-
-  get products(): ProductDto[] {
-    return this.data;
+  override ngOnInit(): void {
+    super.ngOnInit();
   }
 
-  // Wrapper for HTML template compatibility
   deleteProduct(product: ProductDto): void {
-    super.deleteItem(product.id, `product "${product.name}"`);
+    this.deleteItem(product.id, 'product');
   }
-}
 
+  // search, pagination, and export methods are inherited from BaseListComponent
+}

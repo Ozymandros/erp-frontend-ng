@@ -93,4 +93,37 @@ describe('LoginComponent', () => {
     expect(messageServiceSpy.error).toHaveBeenCalledWith('Invalid credentials');
     expect(component.isLoading).toBeFalse();
   });
+
+  it('should handle login error without message', () => {
+    authServiceSpy.login.and.returnValue(throwError(() => ({})));
+    component.loginForm.controls['email'].setValue('test@example.com');
+    component.loginForm.controls['password'].setValue('wrong');
+    
+    component.onSubmit();
+    
+    expect(authServiceSpy.login).toHaveBeenCalled();
+    expect(messageServiceSpy.error).toHaveBeenCalledWith('Login failed');
+    expect(component.isLoading).toBeFalse();
+  });
+
+  it('should mark invalid controls as dirty when form is invalid', () => {
+    component.loginForm.controls['email'].setValue('');
+    component.loginForm.controls['password'].setValue('');
+    
+    component.onSubmit();
+    
+    expect(component.loginForm.controls['email'].dirty).toBeTrue();
+    expect(component.loginForm.controls['password'].dirty).toBeTrue();
+    expect(authServiceSpy.login).not.toHaveBeenCalled();
+  });
+
+  it('should mark only invalid email control as dirty', () => {
+    component.loginForm.controls['email'].setValue('invalid-email');
+    component.loginForm.controls['password'].setValue('password123');
+    
+    component.onSubmit();
+    
+    expect(component.loginForm.controls['email'].dirty).toBeTrue();
+    expect(authServiceSpy.login).not.toHaveBeenCalled();
+  });
 });

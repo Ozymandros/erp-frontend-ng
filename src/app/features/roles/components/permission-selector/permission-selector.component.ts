@@ -11,18 +11,17 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil, finalize } from 'rxjs';
 import { PermissionsService } from '../../../../core/services/permissions.service';
 import { RolesService } from '../../../../core/services/roles.service';
 import { compareByLocale } from '../../../../core/utils/string-utils';
 import { Permission } from '../../../../types/api.types';
+import { AppButtonComponent, AppInputComponent, AppSelectComponent } from '../../../../shared/components';
 import {
   PermissionGroup,
   PermissionGroupComponent,
@@ -37,12 +36,13 @@ const SEARCH_DEBOUNCE_MS = 300;
   imports: [
     CommonModule,
     FormsModule,
-    NzIconModule,
-    NzInputModule,
-    NzSelectModule,
     NzSpaceModule,
     NzSpinModule,
+    NzSelectModule,
     PermissionGroupComponent,
+    AppButtonComponent,
+    AppInputComponent,
+    AppSelectComponent
   ],
   templateUrl: './permission-selector.component.html',
   styleUrls: ['./permission-selector.component.css'],

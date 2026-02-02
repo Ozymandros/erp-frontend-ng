@@ -1,9 +1,8 @@
 <div class="product-detail">
   <div class="page-header">
-    <button nz-button nzType="default" routerLink="/inventory/products">
-      <span nz-icon nzType="arrow-left"></span>
+    <app-button type="default" routerLink="/inventory/products" icon="arrow-left">
       Back to List
-    </button>
+    </app-button>
     <h1 nz-typography>{{ isEditMode ? 'Edit Product' : 'Create Product' }}</h1>
   </div>
 
@@ -14,7 +13,7 @@
           <nz-form-item>
             <nz-form-label nzRequired>SKU</nz-form-label>
             <nz-form-control nzErrorTip="Please input SKU!">
-              <input nz-input formControlName="sku" placeholder="SKU" />
+              <app-input formControlName="sku" placeholder="SKU"></app-input>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -22,7 +21,7 @@
           <nz-form-item>
             <nz-form-label nzRequired>Name</nz-form-label>
             <nz-form-control nzErrorTip="Please input product name!">
-              <input nz-input formControlName="name" placeholder="Product Name" />
+              <app-input formControlName="name" placeholder="Product Name"></app-input>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -31,7 +30,7 @@
       <nz-form-item>
         <nz-form-label>Description</nz-form-label>
         <nz-form-control>
-          <textarea nz-input formControlName="description" [nzAutosize]="{ minRows: 2, maxRows: 6 }" placeholder="Product Description"></textarea>
+          <app-textarea formControlName="description" placeholder="Product Description"></app-textarea>
         </nz-form-control>
       </nz-form-item>
 
@@ -40,7 +39,7 @@
           <nz-form-item>
             <nz-form-label nzRequired>Unit Price</nz-form-label>
             <nz-form-control nzErrorTip="Please input unit price!">
-              <nz-input-number formControlName="unitPrice" [nzMin]="0" [nzStep]="0.01" class="full-width-input"></nz-input-number>
+              <app-input-number formControlName="unitPrice" [min]="0" [step]="0.01" class="full-width-input"></app-input-number>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -51,7 +50,7 @@
           <nz-form-item>
             <nz-form-label nzRequired>Initial Stock</nz-form-label>
             <nz-form-control nzErrorTip="Please input initial stock!">
-              <nz-input-number formControlName="quantityInStock" [nzMin]="0" [nzPrecision]="0" class="full-width-input"></nz-input-number>
+              <app-input-number formControlName="quantityInStock" [min]="0" [precision]="0" class="full-width-input"></app-input-number>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -59,19 +58,17 @@
           <nz-form-item>
             <nz-form-label>Reorder Level</nz-form-label>
             <nz-form-control>
-              <nz-input-number formControlName="reorderLevel" [nzMin]="0" [nzPrecision]="0" class="full-width-input"></nz-input-number>
+              <app-input-number formControlName="reorderLevel" [min]="0" [precision]="0" class="full-width-input"></app-input-number>
             </nz-form-control>
           </nz-form-item>
         </div>
       </div>
 
-
-
       <div class="form-actions">
-        <button nz-button nzType="primary" [nzLoading]="saving" [disabled]="!productForm.valid">
+        <app-button type="primary" [loading]="saving" [disabled]="!productForm.valid" btnType="submit">
           {{ isEditMode ? 'Update' : 'Create' }}
-        </button>
-        <button nz-button nzType="default" type="button" routerLink="/inventory/products">Cancel</button>
+        </app-button>
+        <app-button type="default" routerLink="/inventory/products">Cancel</app-button>
       </div>
     </form>
   </nz-card>

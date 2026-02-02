@@ -5,7 +5,7 @@ import { WarehouseDetailComponent } from './warehouse-detail.component';
 import { WarehousesService } from '../../../core/services/warehouses.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { ActivatedRoute, Router } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 describe('WarehouseDetailComponent', () => {
   let component: WarehouseDetailComponent;
@@ -69,5 +69,44 @@ describe('WarehouseDetailComponent', () => {
     component.save();
     expect(warehousesServiceSpy.create).toHaveBeenCalled();
     expect(messageServiceSpy.success).toHaveBeenCalled();
+  });
+
+  it('should update existing warehouse', () => {
+    createComponent('1');
+    warehousesServiceSpy.update.and.returnValue(of(mockWarehouse as any));
+    component.warehouseForm.patchValue({ name: 'Updated Warehouse' });
+    component.save();
+    expect(warehousesServiceSpy.update).toHaveBeenCalledWith('1', jasmine.any(Object));
+    expect(messageServiceSpy.success).toHaveBeenCalled();
+  });
+
+  it('should handle load warehouse error', () => {
+    createComponent('1');
+    warehousesServiceSpy.getById.and.returnValue(throwError(() => ({ message: 'Load error' })));
+    component.loadWarehouse('1');
+    expect(messageServiceSpy.error).toHaveBeenCalledWith(jasmine.stringContaining('Failed to load warehouse'));
+  });
+
+  it('should handle create warehouse error', () => {
+    createComponent('new');
+    warehousesServiceSpy.create.and.returnValue(throwError(() => ({ message: 'Create error' })));
+    component.warehouseForm.patchValue({ name: 'Test' });
+    component.save();
+    expect(messageServiceSpy.error).toHaveBeenCalledWith(jasmine.stringContaining('Operation failed'));
+  });
+
+  it('should handle update warehouse error', () => {
+    createComponent('1');
+    warehousesServiceSpy.update.and.returnValue(throwError(() => ({ message: 'Update error' })));
+    component.warehouseForm.patchValue({ name: 'Updated' });
+    component.save();
+    expect(messageServiceSpy.error).toHaveBeenCalledWith(jasmine.stringContaining('Operation failed'));
+  });
+
+  it('should not save invalid form', () => {
+    createComponent('new');
+    component.warehouseForm.patchValue({ name: '' });
+    component.save();
+    expect(warehousesServiceSpy.create).not.toHaveBeenCalled();
   });
 });

@@ -2,24 +2,25 @@ import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzCardModule } from 'ng-zorro-antd/card';
-import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
-import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { Subscription } from 'rxjs';
+import { Subscription, of } from 'rxjs';
 import { timeout, catchError, finalize } from 'rxjs/operators';
-import { of } from 'rxjs';
 import { PurchaseOrdersService } from '../../../core/services/purchase-orders.service';
 import { ProductsService } from '../../../core/services/products.service';
 import { SuppliersService } from '../../../core/services/suppliers.service';
 import { PurchaseOrderDto, ProductDto, SupplierDto } from '../../../types/api.types';
+import { 
+  AppButtonComponent, 
+  AppInputComponent, 
+  AppSelectComponent, 
+  AppInputNumberComponent 
+} from '../../../shared/components';
 
 @Component({
   selector: 'app-purchase-order-detail',
@@ -29,15 +30,15 @@ import { PurchaseOrderDto, ProductDto, SupplierDto } from '../../../types/api.ty
     RouterLink,
     ReactiveFormsModule,
     NzCardModule,
-    NzButtonModule,
     NzTagModule,
     NzTableModule,
-    NzIconModule,
     NzFormModule,
-    NzInputModule,
-    NzSelectModule,
     NzDatePickerModule,
-    NzInputNumberModule
+    NzTypographyModule,
+    AppButtonComponent,
+    AppInputComponent,
+    AppSelectComponent,
+    AppInputNumberComponent
   ],
   templateUrl: './purchase-order-detail.component.html',
   styleUrls: ['./purchase-order-detail.component.css']
@@ -145,7 +146,7 @@ export class PurchaseOrderDetailComponent implements OnInit {
     this.purchaseOrdersService.getById(id).pipe(
       timeout(PurchaseOrderDetailComponent.LOAD_TIMEOUT_MS),
       catchError((err) => {
-        this.loadError = err?.message?.includes('Timeout') ? 'Request timed out. The server may be slow or the endpoint may not exist.' : (err?.message ?? 'Failed to load order.');
+        this.loadError = err?.message?.includes('Timeout') ? 'Request timed out.' : (err?.message ?? 'Failed to load order.');
         return of(null);
       }),
       finalize(() => {

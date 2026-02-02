@@ -3,9 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -13,8 +10,9 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { AppButtonComponent, AppInputComponent } from '../../../shared/components';
 import { WarehousesService } from '../../../core/services/warehouses.service';
-
 
 import { WarehouseDto } from '../../../types/api.types';
 import { BaseListComponent } from '../../../core/base/base-list.component';
@@ -29,60 +27,61 @@ import { AuthService } from '../../../core/services/auth.service';
     RouterLink,
     FormsModule,
     NzTableModule,
-    NzButtonModule,
-    NzInputModule,
-    NzIconModule,
     NzTagModule,
     NzPopconfirmModule,
     NzCardModule,
     NzTooltipModule,
-    NzSpaceModule
+    NzSpaceModule,
+    NzTypographyModule,
+    AppButtonComponent,
+    AppInputComponent
   ],
   template: `
 @if (permissions$ | async; as p) {
 <div>
   <div class="page-header">
-    <h1>Warehouses Management</h1>
+    <h1 nz-typography>Warehouses Management</h1>
     <div class="header-actions">
       @if (p.canExport) {
-        <button nz-button (click)="exportToXlsx('warehouses.xlsx')">
-          <i nz-icon nzType="file-excel"></i> Export XLSX
-        </button>
+        <app-button (click)="exportToXlsx('warehouses.xlsx')" icon="file-excel">
+          Export XLSX
+        </app-button>
       }
       @if (p.canExport) {
-        <button nz-button (click)="exportToPdf('warehouses.pdf')">
-          <i nz-icon nzType="file-pdf"></i> Export PDF
-        </button>
+        <app-button (click)="exportToPdf('warehouses.pdf')" icon="file-pdf">
+          Export PDF
+        </app-button>
       }
 
       @if (p.canCreate) {
-        <button nz-button nzType="primary" routerLink="/inventory/warehouses/new">
-          <i nz-icon nzType="plus"></i> Add Warehouse
-        </button>
+        <app-button type="primary" routerLink="/inventory/warehouses/new" icon="plus">
+          Add Warehouse
+        </app-button>
       }
     </div>
   </div>
 
   <nz-card>
     <div class="search-container">
-      <nz-space-compact nzSize="large" style="width: 100%; max-width: 400px;">
-        <nz-input-wrapper>
-          <nz-icon nzInputAddonBefore nzType="search" />
-          <input type="text" nz-input placeholder="Search warehouses..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" />
-        </nz-input-wrapper>
-      </nz-space-compact>
+      <app-input
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearch()"
+        placeholder="Search warehouses..."
+        icon="search"
+        size="large"
+      ></app-input>
     </div>
 
     <nz-table
       #basicTable
-      [nzData]="warehouses"
+      [nzData]="data"
       [nzLoading]="loading"
       [nzTotal]="total"
       [(nzPageIndex)]="pageIndex"
       [(nzPageSize)]="pageSize"
       [nzFrontPagination]="false"
-      (nzPageIndexChange)="loadWarehouses()"
-      (nzPageSizeChange)="loadWarehouses()"
+      (nzPageIndexChange)="onPageChange($event)"
+      (nzPageSizeChange)="onPageSizeChange($event)"
       [nzScroll]="{ x: '800px' }"
     >
       <thead>
@@ -96,41 +95,35 @@ import { AuthService } from '../../../core/services/auth.service';
         </tr>
       </thead>
       <tbody>
-        @for (data of basicTable.data; track data.id) {
+        @for (item of basicTable.data; track item.id) {
           <tr>
-            <td><strong>{{ data.name }}</strong></td>
-            <td>{{ data.location || '-' }}</td>
-            <td>{{ data.createdAt | date:'short' }}</td>
+            <td><strong>{{ item.name }}</strong></td>
+            <td>{{ item.location || '-' }}</td>
+            <td>{{ item.createdAt | date:'short' }}</td>
             @if (p.canUpdate || p.canDelete) {
               <td>
                 <nz-space [nzSize]="8">
                   @if (p.canUpdate) {
-                    <button
+                    <app-button
                       *nzSpaceItem
-                      nz-button
-                      nzType="link"
-                      nz-tooltip
-                      nzTooltipTitle="Edit warehouse"
-                      [routerLink]="['/inventory/warehouses', data.id]"
-                    >
-                      <span nz-icon nzType="edit"></span>
-                    </button>
+                      type="link"
+                      tooltip="Edit warehouse"
+                      [routerLink]="['/inventory/warehouses', item.id]"
+                      icon="edit"
+                    ></app-button>
                   }
                   @if (p.canDelete) {
-                    <button
+                    <app-button
                       *nzSpaceItem
-                      nz-button
-                      nzType="link"
-                      nzDanger
-                      nz-tooltip
-                      nzTooltipTitle="Delete warehouse"
+                      type="link"
+                      danger
+                      tooltip="Delete warehouse"
                       nz-popconfirm
                       nzPopconfirmTitle="Are you sure delete this warehouse?"
-                      (nzOnConfirm)="deleteWarehouse(data.id)"
+                      (nzOnConfirm)="deleteWarehouse(item.id)"
                       nzPopconfirmPlacement="left"
-                    >
-                      <span nz-icon nzType="delete"></span>
-                    </button>
+                      icon="delete"
+                    ></app-button>
                   }
                 </nz-space>
               </td>

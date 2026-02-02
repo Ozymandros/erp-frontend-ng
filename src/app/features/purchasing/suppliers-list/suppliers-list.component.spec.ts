@@ -57,7 +57,7 @@ describe('SuppliersListComponent', () => {
   });
 
   it('should load suppliers', () => {
-    expect(component.suppliers.length).toBe(1);
+    expect(component.data.length).toBe(1);
     expect(component.total).toBe(1);
   });
 

@@ -41,7 +41,7 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
   });
 
   constructor(
-    protected service: BaseApiService<T>,
+    protected service: BaseApiService<T, any, any>,
     protected message: NzMessageService,
     protected modal: NzModalService,
     protected fileService: FileService,
@@ -113,7 +113,7 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
     this.loadData();
   }
 
-  deleteItem(id: string, name: string = 'item'): void {
+  deleteItem(id: string, name: string = 'item', displayName?: string): void {
     this.modal.confirm({
       nzTitle: `Delete ${name}`,
       nzContent: `Are you sure you want to delete this ${name}?`,
@@ -128,7 +128,8 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
             this.loadData();
           },
           error: (error) => {
-            this.message.error(`Failed to delete ${name}`);
+            const errorMsg = displayName ? `Failed to delete ${name} "${displayName}"` : `Failed to delete ${name}`;
+            this.message.error(errorMsg);
             console.error(error);
           }
         });

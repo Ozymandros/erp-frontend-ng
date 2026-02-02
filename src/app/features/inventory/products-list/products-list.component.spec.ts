@@ -73,7 +73,7 @@ describe('ProductsListComponent', () => {
   });
 
   it('should load products', () => {
-    expect(component.products.length).toBe(1);
+    expect(component.data.length).toBe(1);
     expect(component.total).toBe(1);
   });
 

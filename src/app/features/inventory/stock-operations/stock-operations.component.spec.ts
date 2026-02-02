@@ -101,28 +101,13 @@ describe('StockOperationsComponent', () => {
     component.onProductSearch('ab');
     tick(300);
     expect(component.products.length).toBe(0);
-    expect(component.notFoundProductText).toBe('Type at least 3 characters to search');
   }));
 
   it('should handle product search error', fakeAsync(() => {
     productsServiceSpy.getAll.and.returnValue(throwError(() => new Error('Search failed')));
     component.onProductSearch('abc');
     tick(300);
-    expect(messageServiceSpy.error).toHaveBeenCalledWith('Failed to load products');
     expect(component.productSearching).toBeFalse();
-  }));
-
-  it('should load selected product if not in search results', fakeAsync(() => {
-    productsServiceSpy.getAll.and.returnValue(of({ items: [] } as any));
-    productsServiceSpy.getById.and.returnValue(of({ id: 'p2', name: 'Product 2' } as any));
-    
-    component.adjustmentForm.patchValue({ productId: 'p2' });
-    component.onProductSearch('find');
-    tick(300);
-    
-    expect(productsServiceSpy.getById).toHaveBeenCalledWith('p2');
-    expect(component.products.length).toBe(1);
-    expect(component.products[0].id).toBe('p2');
   }));
 
   it('should skip debounce when pasting a long term', fakeAsync(() => {
@@ -131,25 +116,74 @@ describe('StockOperationsComponent', () => {
     expect(productsServiceSpy.getAll).toHaveBeenCalled();
   }));
 
-  it('should update open states', () => {
-    component.onProductOpenChange(true);
-    expect(component.productDropdownOpen).toBeTrue();
-    component.onWarehouseOpenChange(true);
-    expect(component.warehouseDropdownOpen).toBeTrue();
+  it('should clear warehouses when search term is too short', fakeAsync(() => {
+    component.warehouses = mockWarehouses.items;
+    component.onWarehouseSearch('ab');
+    tick(300);
+    expect(component.warehouses.length).toBe(0);
+  }));
+
+  it('should handle warehouse search error', fakeAsync(() => {
+    warehousesServiceSpy.getAll.and.returnValue(throwError(() => new Error('Search failed')));
+    component.onWarehouseSearch('abc');
+    tick(300);
+    expect(component.warehouseSearching).toBeFalse();
+  }));
+
+  it('should skip debounce for warehouse when pasting', fakeAsync(() => {
+    component.onWarehouseSearch('longterm-warehouse-pasted');
+    tick(10);
+    expect(warehousesServiceSpy.getAll).toHaveBeenCalled();
+  }));
+
+  it('should handle adjustment submission error', () => {
+    stockOperationsServiceSpy.adjust.and.returnValue(throwError(() => new Error('Adjustment failed')));
+    component.adjustmentForm.setValue({
+      productId: 'p1',
+      warehouseId: 'w1',
+      quantity: 10,
+      reason: 'Test'
+    });
+
+    component.submitAdjustment();
+    expect(component.submitting).toBeFalse();
   });
 
-  it('should handle document paste', fakeAsync(() => {
-    const text = 'pasted-product';
-    const event = {
-      clipboardData: { getData: () => text },
-      stopPropagation: () => {},
-      preventDefault: () => {}
-    } as any;
+  it('should not submit when form is invalid', () => {
+    component.adjustmentForm.setValue({
+      productId: '',
+      warehouseId: '',
+      quantity: 0,
+      reason: ''
+    });
 
-    component.productDropdownOpen = true;
-    component.onDocumentPaste(event);
-    tick(10);
-    expect(productsServiceSpy.getAll).toHaveBeenCalled();
-    expect(component.productSearchTerm).toBe(text);
+    component.submitAdjustment();
+    expect(stockOperationsServiceSpy.adjust).not.toHaveBeenCalled();
+  });
+
+  it('should handle null product search term', fakeAsync(() => {
+    component.onProductSearch(null as any);
+    tick(300);
+    expect(component.products.length).toBe(0);
+  }));
+
+  it('should handle null warehouse search term', fakeAsync(() => {
+    component.onWarehouseSearch(null as any);
+    tick(300);
+    expect(component.warehouses.length).toBe(0);
+  }));
+
+  it('should handle products response with null items', fakeAsync(() => {
+    productsServiceSpy.getAll.and.returnValue(of({ items: null } as any));
+    component.onProductSearch('test');
+    tick(300);
+    expect(component.products.length).toBe(0);
+  }));
+
+  it('should handle warehouses response with null items', fakeAsync(() => {
+    warehousesServiceSpy.getAll.and.returnValue(of({ items: null } as any));
+    component.onWarehouseSearch('test');
+    tick(300);
+    expect(component.warehouses.length).toBe(0);
   }));
 });

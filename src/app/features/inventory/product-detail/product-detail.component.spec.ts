@@ -5,7 +5,7 @@ import { ProductDetailComponent } from './product-detail.component';
 import { ProductsService } from '../../../core/services/products.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { ActivatedRoute, Router } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 describe('ProductDetailComponent', () => {
   let component: ProductDetailComponent;
   let fixture: ComponentFixture<ProductDetailComponent>;
@@ -65,5 +65,56 @@ describe('ProductDetailComponent', () => {
     expect(productsServiceSpy.create).toHaveBeenCalled();
 
     expect(messageServiceSpy.success).toHaveBeenCalled();
+  });
+
+  it('should update existing product', () => {
+    createComponent('1');
+    productsServiceSpy.update.and.returnValue(of(mockProduct as any));
+    component.productForm.patchValue({ name: 'Updated Product' });
+    component.save();
+    expect(productsServiceSpy.update).toHaveBeenCalledWith('1', jasmine.any(Object));
+    expect(messageServiceSpy.success).toHaveBeenCalled();
+  });
+
+  it('should handle load product error', () => {
+    createComponent('1');
+    productsServiceSpy.getById.and.returnValue(throwError(() => ({ message: 'Load error' })));
+    component.loadProduct('1');
+    expect(messageServiceSpy.error).toHaveBeenCalledWith(jasmine.stringContaining('Failed to load product'));
+  });
+
+  it('should handle create product error', () => {
+    createComponent('new');
+    productsServiceSpy.create.and.returnValue(throwError(() => ({ message: 'Create error' })));
+    component.productForm.patchValue({ sku: 'SKU2', name: 'P2', unitPrice: 10, stock: 100 });
+    component.save();
+    expect(messageServiceSpy.error).toHaveBeenCalledWith(jasmine.stringContaining('Failed to create'));
+  });
+
+  it('should handle update product error', () => {
+    createComponent('1');
+    productsServiceSpy.update.and.returnValue(throwError(() => ({ message: 'Update error' })));
+    component.productForm.patchValue({ name: 'Updated' });
+    component.save();
+    expect(messageServiceSpy.error).toHaveBeenCalledWith(jasmine.stringContaining('Failed to update'));
+  });
+
+  it('should not save invalid form', () => {
+    createComponent('new');
+    component.productForm.patchValue({ sku: '' });
+    component.save();
+    expect(productsServiceSpy.create).not.toHaveBeenCalled();
+  });
+
+  it('should accept positive price', () => {
+    createComponent('new');
+    component.productForm.patchValue({ unitPrice: 100 });
+    expect(component.productForm.get('unitPrice')?.valid).toBe(true);
+  });
+
+  it('should allow zero price', () => {
+    createComponent('new');
+    component.productForm.patchValue({ unitPrice: 0 });
+    expect(component.productForm.get('unitPrice')?.valid).toBe(true);
   });
 });

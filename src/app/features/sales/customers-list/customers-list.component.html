@@ -4,21 +4,20 @@
     <h1 nz-typography>Customers Management</h1>
     <div class="header-actions">
       @if (p.canExport) {
-        <button nz-button [nzGhost]="isDark()" (click)="exportToXlsx('customers.xlsx')">
-          <span nz-icon nzType="file-excel"></span> Export XLSX
-        </button>
+        <app-button icon="file-excel" (click)="exportToXlsx('customers.xlsx')">
+          Export XLSX
+        </app-button>
       }
       @if (p.canExport) {
-        <button nz-button [nzGhost]="isDark()" (click)="exportToPdf('customers.pdf')">
-          <span nz-icon nzType="file-pdf"></span> Export PDF
-        </button>
+        <app-button icon="file-pdf" (click)="exportToPdf('customers.pdf')">
+          Export PDF
+        </app-button>
       }
 
       @if (p.canCreate) {
-        <button nz-button nzType="primary" [nzGhost]="isDark()" routerLink="/sales/customers/new">
-          <span nz-icon nzType="plus"></span>
+        <app-button type="primary" icon="plus" routerLink="/sales/customers/new">
           Add Customer
-        </button>
+        </app-button>
       }
     </div>
   </div>
@@ -26,16 +25,11 @@
   <div class="list-search">
     <!--<span class="list-search__label">Search</span>-->
     <nz-space-compact nzSize="large" class="list-search__compact">
-      <nz-input-wrapper>
-        <nz-icon nzInputAddonBefore nzType="search" />
-        <input
-          type="text"
-          nz-input
-          placeholder="By name or email..."
-          [(ngModel)]="searchTerm"
-          (ngModelChange)="onSearch()"
-        />
-      </nz-input-wrapper>
+      <app-input
+        placeholder="By name or email..."
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearch()"
+      ></app-input>
     </nz-space-compact>
   </div>
 
@@ -71,32 +65,28 @@
             <td>
               <nz-space [nzSize]="8">
                 @if (p.canUpdate) {
-                  <button
+                  <app-button
                     *nzSpaceItem
-                    nz-button
-                    nzType="link"
+                    type="link"
+                    icon="edit"
                     nz-tooltip
                     nzTooltipTitle="Edit customer"
                     [routerLink]="['/sales/customers', customer.id]"
-                  >
-                    <span nz-icon nzType="edit"></span>
-                  </button>
+                  ></app-button>
                 }
                 @if (p.canDelete) {
-                  <button
+                  <app-button
                     *nzSpaceItem
-                    nz-button
-                    nzType="link"
-                    nzDanger
+                    type="link"
+                    danger
+                    icon="delete"
                     nz-tooltip
                     nzTooltipTitle="Delete customer"
                     nz-popconfirm
                     nzPopconfirmTitle="Are you sure delete this customer?"
                     (nzOnConfirm)="deleteCustomer(customer)"
                     nzPopconfirmPlacement="left"
-                  >
-                    <span nz-icon nzType="delete"></span>
-                  </button>
+                  ></app-button>
                 }
               </nz-space>
             </td>

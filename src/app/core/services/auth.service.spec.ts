@@ -230,4 +230,68 @@ describe('AuthService', () => {
     new AuthService(apiSpy as unknown as ApiClientService, router as unknown as Router);
     expect(apiSpy.get).not.toHaveBeenCalled();
   });
+
+  it('should handle login error gracefully', (done) => {
+    apiClientSpy.post.and.returnValue(throwError(() => ({ message: 'Login failed' })));
+    service.login({ email: 'a@b.com', password: 'wrong' }).subscribe(
+      () => { expect(false).toBe(true); },
+      (_err) => {
+        expect(sessionStorage.getItem('access_token')).toBeNull();
+        done();
+      }
+    );
+  });
+
+  it('should return cached user without fetching on refreshUserData when user exists', (done) => {
+    apiClientSpy.post.and.returnValue(of(mockAuthResponse));
+    service.login({ email: 'a@b.com', password: 'p' }).subscribe(() => {
+      service.refreshUserData().subscribe(user => {
+        expect(user.username).toBe('admin');
+        done();
+      });
+    });
+  });
+
+  it('should check permission with cached inventory permissions', (done) => {
+    apiClientSpy.post.and.returnValue(of({ ...mockAuthResponse, user: mockUserNonAdmin }));
+    apiClientSpy.get.and.returnValue(of(true));
+    service.login({ email: 'a@b.com', password: 'p' }).subscribe(() => {
+      service.checkPermission('Inventory', 'Create').subscribe(allowed => {
+        expect(allowed).toBeTrue();
+        done();
+      });
+    });
+  });
+
+  it('should return false for permission not in cache without calling API', (done) => {
+    apiClientSpy.post.and.returnValue(of({ ...mockAuthResponse, user: mockUserNonAdmin }));
+    service.login({ email: 'a@b.com', password: 'p' }).subscribe(() => {
+      service.checkPermission('Sales', 'Update').subscribe(allowed => {
+        expect(allowed).toBeFalse();
+        done();
+      });
+    });
+  });
+
+  it('should return false when checkPermission API request fails', (done) => {
+    apiClientSpy.post.and.returnValue(of({ ...mockAuthResponse, user: mockUserNonAdmin }));
+    apiClientSpy.get.and.returnValue(throwError(() => new Error('Network error')));
+    service.login({ email: 'a@b.com', password: 'p' }).subscribe(() => {
+      service.checkPermission('Inventory', 'Delete').subscribe(allowed => {
+        expect(allowed).toBeFalse();
+        done();
+      });
+    });
+  });
+
+  it('should properly initialize currentUser$ on login', (done) => {
+    apiClientSpy.post.and.returnValue(of(mockAuthResponse));
+    service.login({ email: 'a@b.com', password: 'p' }).subscribe(() => {
+      service.currentUser$.subscribe(user => {
+        expect(user).toBeTruthy();
+        expect(user?.username).toBe('admin');
+        done();
+      });
+    });
+  });
 });

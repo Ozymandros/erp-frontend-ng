@@ -1,10 +1,9 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NzCardModule } from 'ng-zorro-antd/card';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { Permission } from '../../../../types/api.types';
+import { AppButtonComponent } from '../../../../shared/components';
 
 @Component({
   selector: 'app-permission-card',
@@ -12,9 +11,8 @@ import { Permission } from '../../../../types/api.types';
   imports: [
     CommonModule,
     NzCardModule,
-    NzButtonModule,
-    NzIconModule,
-    NzBadgeModule
+    NzBadgeModule,
+    AppButtonComponent
   ],
   templateUrl: './permission-card.component.html',
   styleUrls: ['./permission-card.component.css'],

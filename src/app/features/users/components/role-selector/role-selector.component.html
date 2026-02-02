@@ -1,19 +1,11 @@
 <div class="role-selector">
   <div class="list-search">
-    <!--<span class="list-search__label">Search</span>-->
-    <nz-space-compact nzSize="large" class="list-search__compact">
-      <nz-input-wrapper>
-        <nz-icon nzInputAddonBefore nzType="search" />
-        <input
-          type="text"
-          nz-input
-          [(ngModel)]="searchTerm"
-          (ngModelChange)="onSearchInput()"
-          placeholder="By role name..."
-          [disabled]="readonly || loading"
-        />
-      </nz-input-wrapper>
-    </nz-space-compact>
+    <app-input
+      [(ngModel)]="searchTerm"
+      (ngModelChange)="onSearchInput()"
+      placeholder="By role name..."
+      [disabled]="readonly || loading"
+    ></app-input>
   </div>
 
   @if (!loading) {
@@ -44,30 +36,27 @@
           }
           <div class="role-actions">
             @if (isAssigned(role.id)) {
-              <button
-                nz-button
-                nzType="default"
-                nzDanger
-                [nzLoading]="saving"
+              <app-button
+                danger
+                [loading]="saving"
                 [disabled]="readonly"
                 (click)="unassignRole(role)"
                 class="action-button"
+                icon="close"
               >
-                <span nz-icon nzType="close"></span>
                 Unassign
-              </button>
+              </app-button>
             } @else {
-              <button
-                nz-button
-                nzType="primary"
-                [nzLoading]="saving"
+              <app-button
+                type="primary"
+                [loading]="saving"
                 [disabled]="readonly"
                 (click)="assignRole(role)"
                 class="action-button"
+                icon="plus"
               >
-                <span nz-icon nzType="plus"></span>
                 Assign
-              </button>
+              </app-button>
             }
           </div>
         </nz-card>

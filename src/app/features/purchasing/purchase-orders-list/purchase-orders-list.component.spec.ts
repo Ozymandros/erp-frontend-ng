@@ -60,8 +60,57 @@ describe('PurchaseOrdersListComponent', () => {
 
   it('should delete order', () => {
     purchaseOrdersServiceSpy.delete.and.returnValue(of(void 0));
+    modalServiceSpy.confirm.and.callFake((options: any) => {
+      options.nzOnOk();
+      return undefined as any;
+    });
     component.deleteOrder('1');
     expect(purchaseOrdersServiceSpy.delete).toHaveBeenCalledWith('1');
     expect(messageServiceSpy.success).toHaveBeenCalled();
+  });
+
+  it('should return correct color for Draft status (string)', () => {
+    expect(component.getStatusColor('Draft')).toBe('default');
+  });
+
+  it('should return correct color for Draft status (number)', () => {
+    expect(component.getStatusColor(0)).toBe('default');
+  });
+
+  it('should return correct color for Pending status (string)', () => {
+    expect(component.getStatusColor('Pending')).toBe('orange');
+  });
+
+  it('should return correct color for Pending status (number)', () => {
+    expect(component.getStatusColor(1)).toBe('orange');
+  });
+
+  it('should return correct color for Confirmed status (string)', () => {
+    expect(component.getStatusColor('Confirmed')).toBe('blue');
+  });
+
+  it('should return correct color for Confirmed status (number)', () => {
+    expect(component.getStatusColor(2)).toBe('blue');
+  });
+
+  it('should return correct color for Received status (string)', () => {
+    expect(component.getStatusColor('Received')).toBe('green');
+  });
+
+  it('should return correct color for Received status (number)', () => {
+    expect(component.getStatusColor(3)).toBe('green');
+  });
+
+  it('should return correct color for Cancelled status (string)', () => {
+    expect(component.getStatusColor('Cancelled')).toBe('red');
+  });
+
+  it('should return correct color for Cancelled status (number)', () => {
+    expect(component.getStatusColor(4)).toBe('red');
+  });
+
+  it('should return default color for unknown status', () => {
+    expect(component.getStatusColor('Unknown' as any)).toBe('default');
+    expect(component.getStatusColor(999)).toBe('default');
   });
 });

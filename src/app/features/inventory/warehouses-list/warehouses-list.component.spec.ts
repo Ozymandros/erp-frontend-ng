@@ -58,7 +58,7 @@ describe('WarehousesListComponent', () => {
   });
 
   it('should load warehouses', () => {
-    expect(component.warehouses.length).toBe(1);
+    expect(component.data.length).toBe(1);
     expect(component.total).toBe(1);
   });
 

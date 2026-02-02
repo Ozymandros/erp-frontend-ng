@@ -3,31 +3,26 @@
     <div class="list-search filters-container-search">
       <span class="list-search__label">Search & filter</span>
       <nz-space-compact nzSize="large" class="list-search__compact filters-compact">
-      <nz-input-wrapper>
-        <nz-icon nzInputAddonBefore nzType="search" />
-        <input
-          type="text"
-          nz-input
+        <app-input
           [(ngModel)]="searchTerm"
           (ngModelChange)="onSearchOrModuleChange()"
           placeholder="By permission or module..."
           [disabled]="readonly || loading"
-        />
-      </nz-input-wrapper>
-      <nz-select
-        [(ngModel)]="selectedModule"
-        (ngModelChange)="onSearchOrModuleChange()"
-        [nzPlaceHolder]="'Filter by module'"
-        [nzAllowClear]="true"
-        [disabled]="readonly || loading"
-        class="module-filter"
-      >
-        <nz-option [nzValue]="null" nzLabel="All Modules"></nz-option>
-        @for (module of modules; track module) {
-          <nz-option [nzValue]="module" [nzLabel]="module"></nz-option>
-        }
-      </nz-select>
-    </nz-space-compact>
+        ></app-input>
+        <app-select
+          [(ngModel)]="selectedModule"
+          (ngModelChange)="onSearchOrModuleChange()"
+          placeholder="Filter by module"
+          allowClear
+          [disabled]="readonly || loading"
+          class="module-filter"
+        >
+          <nz-option [nzValue]="null" nzLabel="All Modules"></nz-option>
+          @for (module of modules; track module) {
+            <nz-option [nzValue]="module" [nzLabel]="module"></nz-option>
+          }
+        </app-select>
+      </nz-space-compact>
     </div>
   </div>
 
