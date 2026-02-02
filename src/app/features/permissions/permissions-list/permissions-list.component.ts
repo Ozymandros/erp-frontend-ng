@@ -73,7 +73,7 @@ import { AuthService } from '../../../core/services/auth.service';
           [nzFrontPagination]="false"
           (nzPageIndexChange)="loadPermissions()"
           (nzPageSizeChange)="loadPermissions()"
-          [nzScroll]="{ x: '800px', y: 'calc(100vh - 400px)' }"
+          [nzScroll]="{ x: '800px' }"
         >
           <thead>
             <tr>

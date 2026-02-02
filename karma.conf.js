@@ -33,10 +33,10 @@ export default function (config) {
       ],
       check: {
         global: {
-          statements: 75,
-          lines: 77,
-          branches: 52,
-          functions: 74,
+          statements: 80,
+          lines: 80,
+          branches: 60,
+          functions: 80,
         },
       },
     },

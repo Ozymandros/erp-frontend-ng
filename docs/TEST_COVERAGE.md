@@ -30,7 +30,7 @@ pnpm run test:coverage:playwright
 ## 🎯 Coverage Goals and Enforcement
 
 - **Sonar target**: 80% for statements, lines, branches, and functions. Sonar quality gate requires at least 80% coverage.
-- **Current enforcement**: Karma thresholds in `karma.conf.js` are set to current coverage levels (~75% statements, ~77% lines, ~53% branches, ~74% functions) so the build passes. **Raise these thresholds toward 80%** as you add tests so CI and Sonar stay aligned.
+- **Current enforcement**: Karma thresholds in `karma.conf.js` are set to **80% statements, 80% lines, 60% branches, and 80% functions**. These were raised after the Dark Mode implementation which introduced highly-tested reactive logic.
 - **Coverage warning**: After tests, `scripts/check-coverage-warning.js` runs and prints a reminder when any metric is below 80% (Sonar target). It does not fail the build.
 - **Critical Services/Guards**: Aim for 100% where possible.
 - **Core Feature Components**: Aim for ≥ 80%.

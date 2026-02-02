@@ -7,6 +7,7 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { AuthService } from '../../core/services/auth.service';
 import { User } from '../../types/api.types';
+import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
 
 @Component({
   selector: 'app-header',
@@ -16,7 +17,8 @@ import { User } from '../../types/api.types';
     NzLayoutModule,
     NzDropDownModule,
     NzAvatarModule,
-    NzIconModule
+    NzIconModule,
+    ThemeToggleComponent
   ],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']

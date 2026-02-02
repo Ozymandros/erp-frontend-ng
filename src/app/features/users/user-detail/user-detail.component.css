@@ -26,7 +26,7 @@
 }
 
 .manage-roles-subtitle {
-  color: rgba(0, 0, 0, 0.65);
+  color: var(--app-text-secondary);
 }
 
 .roles-permissions-card {
@@ -53,7 +53,7 @@
 
 .role-description {
   margin: 0;
-  color: rgba(0, 0, 0, 0.65);
+  color: var(--app-text-secondary);
 }
 
 .permissions-section {
@@ -83,5 +83,5 @@
 }
 
 .manage-roles-subtitle {
-  color: rgba(0, 0, 0, 0.65);
+  color: var(--app-text-secondary);
 }

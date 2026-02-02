@@ -23,16 +23,16 @@
 .summary {
   margin-bottom: 16px;
   font-weight: 500;
-  color: rgba(0, 0, 0, 0.65);
+  color: var(--app-text-secondary);
 }
 
 .error-message {
   padding: 12px;
   margin-bottom: 16px;
-  background-color: #fff2f0;
-  border: 1px solid #ffccc7;
+  background-color: var(--app-error-bg);
+  border: 1px solid var(--app-error-border);
   border-radius: 4px;
-  color: #cf1322;
+  color: var(--app-error-text);
 }
 
 .modules-container {

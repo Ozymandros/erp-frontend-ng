@@ -6,6 +6,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { AuthService } from '../../core/services/auth.service';
 import { PermissionService } from '../../core/services/permission.service';
+import { ThemeService } from '../../core/services/theme.service';
 import { NAV_ITEMS_CONFIG, NavItemConfig } from '../../core/config/routes.config';
 
 @Component({
@@ -18,6 +19,7 @@ import { NAV_ITEMS_CONFIG, NavItemConfig } from '../../core/config/routes.config
 export class SidebarComponent {
   isCollapsed = false;
   currentUser = this.authService.currentUser;
+  effectiveTheme = this.themeService.effectiveTheme;
 
   // Filter navigation items based on permissions
   visibleNavItems = computed(() => {
@@ -51,7 +53,8 @@ export class SidebarComponent {
 
   constructor(
     private authService: AuthService,
-    private permissionService: PermissionService
+    private permissionService: PermissionService,
+    private themeService: ThemeService
   ) {}
 }
 

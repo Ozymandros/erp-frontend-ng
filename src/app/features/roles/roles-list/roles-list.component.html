@@ -57,7 +57,7 @@
         [nzFrontPagination]="false"
         (nzPageIndexChange)="loadRoles()"
         (nzPageSizeChange)="loadRoles()"
-        [nzScroll]="{ x: '1000px', y: 'calc(100vh - 400px)' }"
+        [nzScroll]="{ x: '1000px' }"
       >
         <thead>
           <tr>
@@ -93,21 +93,36 @@
               <td>{{ data.createdAt | date: "short" }}</td>
               @if (p.canUpdate || p.canDelete) {
                 <td>
-                  @if (p.canUpdate) {
-                    <a [routerLink]="['/roles', data.id]" class="edit-link"
-                      >Edit</a
-                    >
-                  }
-                  @if (p.canDelete) {
-                    <a
-                      nz-popconfirm
-                      nzPopconfirmTitle="Are you sure delete this role?"
-                      (nzOnConfirm)="deleteRole(data.id)"
-                      nzPopconfirmPlacement="left"
-                      class="delete-link"
-                      >Delete</a
-                    >
-                  }
+                  <nz-space [nzSize]="8">
+                    @if (p.canUpdate) {
+                      <button
+                        *nzSpaceItem
+                        nz-button
+                        nzType="link"
+                        nz-tooltip
+                        nzTooltipTitle="Edit role"
+                        [routerLink]="['/roles', data.id]"
+                      >
+                        <span nz-icon nzType="edit"></span>
+                      </button>
+                    }
+                    @if (p.canDelete) {
+                      <button
+                        *nzSpaceItem
+                        nz-button
+                        nzType="link"
+                        nzDanger
+                        nz-tooltip
+                        nzTooltipTitle="Delete role"
+                        nz-popconfirm
+                        nzPopconfirmTitle="Are you sure delete this role?"
+                        (nzOnConfirm)="deleteRole(data.id)"
+                        nzPopconfirmPlacement="left"
+                      >
+                        <span nz-icon nzType="delete"></span>
+                      </button>
+                    }
+                  </nz-space>
                 </td>
               }
             </tr>

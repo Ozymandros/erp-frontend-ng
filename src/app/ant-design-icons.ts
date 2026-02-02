@@ -23,7 +23,12 @@ import {
   FileExcelOutline,
   FilePdfOutline,
   ArrowLeftOutline,
-  TeamOutline
+  TeamOutline,
+  SunOutline,
+  SunFill,
+  MoonOutline,
+  MoonFill,
+  LaptopOutline
 } from '@ant-design/icons-angular/icons';
 
 export const icons = [
@@ -51,5 +56,10 @@ export const icons = [
   FileExcelOutline,
   FilePdfOutline,
   ArrowLeftOutline,
-  TeamOutline
+  TeamOutline,
+  SunOutline,
+  SunFill,
+  MoonOutline,
+  MoonFill,
+  LaptopOutline
 ];

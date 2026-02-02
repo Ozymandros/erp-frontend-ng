@@ -10,6 +10,8 @@ import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { CustomersService } from '../../../core/services/customers.service';
 import { CustomerDto } from '../../../types/api.types';
 import { BaseListComponent } from '../../../core/base/base-list.component';
@@ -29,7 +31,9 @@ import { AuthService } from '../../../core/services/auth.service';
     NzIconModule,
     NzSpaceModule,
     NzTagModule,
-    NzModalModule
+    NzModalModule,
+    NzTooltipModule,
+    NzPopconfirmModule
   ],
   templateUrl: './customers-list.component.html',
   styleUrls: ['./customers-list.component.css']

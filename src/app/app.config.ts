@@ -1,4 +1,4 @@
-import { ApplicationConfig, importProvidersFrom } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, APP_INITIALIZER } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -8,6 +8,18 @@ import { NZ_ICONS } from 'ng-zorro-antd/icon';
 import { icons } from './ant-design-icons';
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { ThemeService } from './core/services/theme.service';
+
+/**
+ * Initialize theme service on app startup to ensure theme is applied immediately
+ */
+function initializeTheme(_themeService: ThemeService) {
+  return () => {
+    // Simply injecting the service triggers its constructor and effect()
+    // which applies the theme from localStorage
+    return Promise.resolve();
+  };
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -16,7 +28,13 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     provideNzI18n(en_US),
     importProvidersFrom(NzModalModule),
-    { provide: NZ_ICONS, useValue: icons }
+    { provide: NZ_ICONS, useValue: icons },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeTheme,
+      deps: [ThemeService],
+      multi: true
+    }
   ]
 };
 

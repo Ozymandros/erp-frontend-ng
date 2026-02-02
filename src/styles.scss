@@ -1,12 +1,634 @@
-// Import NG-Zorro styles
-@import "ng-zorro-antd/ng-zorro-antd.min.css";
+// Import NG-Zorro CSS Variables theme (supports dynamic dark/light switching)
+@import "ng-zorro-antd/ng-zorro-antd.variable.min.css";
 
-// NG-Zorro Theme Variables
+// NG-Zorro Theme Variables - Light Mode (default)
 :root {
   --ant-primary-color: #1890ff;
   --ant-success-color: #52c41a;
   --ant-warning-color: #faad14;
   --ant-error-color: #f5222d;
+
+  // Custom app variables
+  --app-bg-color: #f0f2f5;
+  --app-text-color: rgba(0, 0, 0, 0.85);
+  --app-text-secondary: rgba(0, 0, 0, 0.65);
+  --app-border-color: #d9d9d9;
+  --app-card-bg: #ffffff;
+  --app-header-bg: #001529;
+}
+
+// Dark Mode overrides (variable theme bakes light colors; we override body + components)
+.dark {
+  --ant-primary-color: #177ddc;
+  --ant-primary-color-hover: #3c9ae8;
+  --ant-primary-color-active: #1765ad;
+  --ant-success-color: #49aa19;
+  --ant-warning-color: #d89614;
+  --ant-error-color: #a61d24;
+  --ant-info-color: #177ddc;
+
+  // Custom app variables - dark
+  --app-bg-color: #141414;
+  --app-text-color: rgba(255, 255, 255, 0.85);
+  --app-text-secondary: rgba(255, 255, 255, 0.65);
+  --app-border-color: #434343;
+  --app-card-bg: #1f1f1f;
+  --app-header-bg: #1f1f1f;
+
+  .ant-layout {
+    background-color: var(--app-bg-color);
+  }
+
+  // Force body (ng-zorro variable.css sets light body)
+  body {
+    color: var(--app-text-color);
+    background-color: var(--app-bg-color);
+  }
+
+  // All headings and app text use light foreground
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .header-title h1,
+  .dashboard-title,
+  .app-header,
+  .app-content {
+    color: var(--app-text-color) !important;
+  }
+  .header-title h1,
+  .dashboard-title {
+    color: var(--app-text-color) !important;
+  }
+
+  // Theme toggle and header actions – light icon/text
+  .theme-toggle-btn,
+  .theme-toggle-btn .anticon,
+  .app-header .anticon,
+  .app-header .ant-btn {
+    color: var(--app-text-color) !important;
+  }
+  .theme-toggle-btn:hover .anticon,
+  .app-header .ant-btn:hover {
+    color: var(--ant-primary-color) !important;
+  }
+
+  // General icons – ensure they inherit theme color (unless explicitly overridden)
+  .anticon:not(.ant-menu-item-selected .anticon):not(.ant-btn-primary .anticon):not(.ant-btn-danger .anticon) {
+    color: inherit;
+  }
+
+  // SVG icons (ng-zorro renders icons as SVG with viewBox) – ensure fill follows color
+  svg.anticon,
+  .anticon svg,
+  nz-icon svg,
+  [nz-icon] svg,
+  i[nz-icon] svg,
+  span[nz-icon] svg {
+    fill: currentColor !important;
+  }
+  
+
+  // Sidebar / menu – unselected items and icons (including ant-menu-dark)
+  .ant-menu-item,
+  .ant-menu-submenu-title,
+  .ant-menu-dark .ant-menu-item,
+  .ant-menu-dark .ant-menu-submenu-title {
+    color: rgba(255, 255, 255, 0.85) !important;
+  }
+  .ant-menu-item .anticon,
+  .ant-menu-submenu-title .anticon,
+  .ant-menu-submenu-arrow,
+  .ant-menu-dark .ant-menu-item .anticon,
+  .ant-menu-dark .ant-menu-submenu-title .anticon,
+  .ant-menu-dark .ant-menu-submenu-arrow {
+    color: rgba(255, 255, 255, 0.85) !important;
+  }
+
+  // Dashboard / statistic cards – titles (muted) and values (primary text)
+  .ant-statistic-title,
+  .ant-card .ant-statistic-title {
+    color: var(--app-text-secondary) !important;
+  }
+  .ant-statistic-content,
+  .ant-card .ant-statistic-content {
+    color: var(--app-text-color) !important;
+  }
+
+  // Tables
+  .ant-table,
+  .ant-table-wrapper {
+    background: #141414 !important;
+    color: var(--app-text-color);
+  }
+  .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > td {
+    background: #141414 !important;
+    border-color: #303030 !important;
+    color: var(--app-text-color);
+  }
+  .ant-table-tbody > tr:hover > td {
+    background: #262626 !important;
+  }
+  .ant-table-container table > thead > tr:first-child > *:first-child {
+    border-start-start-radius: 0;
+  }
+
+  // Cards
+  .ant-card {
+    background: #1f1f1f !important;
+    border-color: #434343 !important;
+    color: var(--app-text-color);
+  }
+  .ant-card-head {
+    background: transparent !important;
+    border-color: #434343 !important;
+    color: var(--app-text-color);
+  }
+  .ant-card-body {
+    color: var(--app-text-color);
+  }
+
+  // Inputs & selects
+  .ant-input,
+  .ant-input-affix-wrapper,
+  .ant-input-number,
+  .ant-picker,
+  .ant-select-selector {
+    background: transparent !important;
+    border-color: #434343 !important;
+    color: var(--app-text-color) !important;
+  }
+  // Input group addon (nzInputAddonBefore) - ensure icons are visible
+  .ant-input-group-addon {
+    background: transparent !important;
+    border-color: #434343 !important;
+    color: rgba(255, 255, 255, 0.65) !important;
+  }
+  .ant-input-group-addon nz-icon,
+  .ant-input-group-addon [nz-icon],
+  .ant-input-group-addon i[nz-icon],
+  .ant-input-group-addon span[nz-icon] {
+    color: rgba(255, 255, 255, 0.65) !important;
+    display: inline-flex !important;
+  }
+  .ant-input-group-addon nz-icon svg,
+  .ant-input-group-addon [nz-icon] svg,
+  .ant-input-group-addon i[nz-icon] svg,
+  .ant-input-group-addon span[nz-icon] svg,
+  .ant-input-group-addon .anticon svg {
+    fill: rgba(255, 255, 255, 0.65) !important;
+    display: block !important;
+    width: 14px !important;
+    height: 14px !important;
+  }
+  .ant-input::placeholder,
+  .ant-input-affix-wrapper input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
+  .ant-input-disabled,
+  .ant-input[disabled],
+  .ant-input-affix-wrapper-disabled {
+    background: rgba(255, 255, 255, 0.04) !important;
+    color: rgba(255, 255, 255, 0.3);
+  }
+  .ant-select-selection-item,
+  .ant-select-selection-placeholder {
+    color: var(--app-text-color);
+  }
+  // Select dropdown arrow icon - ensure visible in dark mode
+  .ant-select-arrow,
+  .ant-select-suffix,
+  .ant-select-suffix-icon,
+  .ant-select .anticon {
+    color: rgba(255, 255, 255, 0.65) !important;
+  }
+  .ant-select-arrow .anticon,
+  .ant-select-suffix .anticon,
+  .ant-select-suffix-icon .anticon,
+  .ant-select .anticon {
+    color: rgba(255, 255, 255, 0.65) !important;
+    display: inline-flex !important;
+  }
+  .ant-select-arrow svg,
+  .ant-select-suffix svg,
+  .ant-select-suffix-icon svg,
+  .ant-select-arrow .anticon svg,
+  .ant-select-suffix .anticon svg,
+  .ant-select-suffix-icon .anticon svg,
+  .ant-select .anticon svg {
+    fill: rgba(255, 255, 255, 0.65) !important;
+    display: block !important;
+    width: 12px !important;
+    height: 12px !important;
+  }
+  .ant-select-dropdown,
+  .ant-picker-dropdown {
+    background: #1f1f1f !important;
+    border-color: #434343;
+  }
+  .ant-select-item,
+  .ant-picker-panel-container {
+    background: #1f1f1f;
+    color: var(--app-text-color);
+  }
+  .ant-select-item-option-active,
+  .ant-select-item-option-selected {
+    background: rgba(255, 255, 255, 0.08) !important;
+  }
+
+  // Modals & dropdowns
+  .ant-modal-content,
+  .ant-modal-header {
+    background: #1f1f1f !important;
+    border-color: #434343;
+    color: var(--app-text-color);
+  }
+  .ant-modal-title {
+    color: var(--app-text-color);
+  }
+  .ant-modal-close-x {
+    color: rgba(255, 255, 255, 0.65);
+  }
+  .ant-dropdown-menu,
+  .ant-menu-sub,
+  .ant-menu-vertical .ant-menu-sub {
+    background: #1f1f1f !important;
+    border-color: #434343;
+  }
+  .ant-dropdown-menu-item,
+  .ant-menu-item,
+  .ant-menu-submenu-title {
+    color: var(--app-text-color);
+  }
+  .ant-dropdown-menu-item:hover,
+  .ant-menu-item:hover,
+  .ant-menu-submenu-title:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+  }
+
+  // Layout (header, sider, content)
+  .ant-layout-header {
+    background: #1f1f1f !important;
+    border-color: #434343;
+    color: var(--app-text-color);
+  }
+  .ant-layout-sider,
+  .ant-layout-sider-children {
+    background: #1f1f1f !important;
+  }
+  .ant-layout-content {
+    background: var(--app-bg-color);
+  }
+  .ant-menu,
+  .ant-menu-inline,
+  .ant-menu-light {
+    background: #1f1f1f !important;
+    color: var(--app-text-color);
+  }
+  .ant-menu-item,
+  .ant-menu-submenu-title {
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .ant-menu-item-selected {
+    background: rgba(23, 125, 220, 0.2) !important;
+    color: #177ddc;
+  }
+  .ant-menu-item-selected .anticon,
+  .ant-menu-item-selected::after {
+    color: inherit;
+  }
+
+  // Tags – comprehensive dark theme styling
+  .ant-tag {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: #434343 !important;
+    color: var(--app-text-color) !important;
+  }
+  .ant-tag a {
+    color: var(--app-text-color) !important;
+  }
+  .ant-tag .anticon {
+    color: inherit !important;
+  }
+  
+  // Tag variants with proper dark theme colors
+  .ant-tag-success {
+    background: rgba(73, 170, 25, 0.15) !important;
+    border-color: #49aa19 !important;
+    color: #73d13d !important;
+  }
+  .ant-tag-success .anticon {
+    color: #73d13d !important;
+  }
+  
+  .ant-tag-error {
+    background: rgba(255, 77, 79, 0.15) !important;
+    border-color: #ff4d4f !important;
+    color: #ff7875 !important;
+  }
+  .ant-tag-error .anticon {
+    color: #ff7875 !important;
+  }
+  
+  .ant-tag-warning {
+    background: rgba(250, 173, 20, 0.15) !important;
+    border-color: #faad14 !important;
+    color: #ffc53d !important;
+  }
+  .ant-tag-warning .anticon {
+    color: #ffc53d !important;
+  }
+  
+  .ant-tag-info,
+  .ant-tag-processing {
+    background: rgba(23, 125, 220, 0.15) !important;
+    border-color: #177ddc !important;
+    color: #3c9ae8 !important;
+  }
+  .ant-tag-info .anticon,
+  .ant-tag-processing .anticon {
+    color: #3c9ae8 !important;
+  }
+  
+  // Custom colored tags (blue, red, green, etc.)
+  .ant-tag[style*="background"] {
+    // Preserve custom backgrounds but ensure text is readable
+    color: inherit !important;
+  }
+  
+  // Tags with custom nzColor (blue, red, green, etc.)
+  .ant-tag.ant-tag-blue,
+  .ant-tag[class*="blue"] {
+    background: rgba(23, 125, 220, 0.15) !important;
+    border-color: #177ddc !important;
+    color: #3c9ae8 !important;
+  }
+  .ant-tag.ant-tag-red,
+  .ant-tag[class*="red"] {
+    background: rgba(255, 77, 79, 0.15) !important;
+    border-color: #ff4d4f !important;
+    color: #ff7875 !important;
+  }
+  .ant-tag.ant-tag-green,
+  .ant-tag[class*="green"] {
+    background: rgba(73, 170, 25, 0.15) !important;
+    border-color: #49aa19 !important;
+    color: #73d13d !important;
+  }
+  
+  // Tag hover states
+  .ant-tag:hover {
+    opacity: 0.85;
+  }
+  .ant-tag-success:hover {
+    border-color: #73d13d !important;
+  }
+  .ant-tag-error:hover {
+    border-color: #ff7875 !important;
+  }
+  .ant-tag-warning:hover {
+    border-color: #ffc53d !important;
+  }
+  .ant-tag-info:hover,
+  .ant-tag-processing:hover {
+    border-color: #3c9ae8 !important;
+  }
+
+  .ant-form-item-label > label {
+    color: var(--app-text-color);
+  }
+
+  // Buttons – all types: ensure proper text/icon colors
+  // Base button (no type) defaults to default style
+  .ant-btn:not(.ant-btn-primary):not(.ant-btn-danger):not(.ant-btn-success):not(.ant-btn-warning),
+  .ant-btn:not(.ant-btn-primary):not(.ant-btn-danger):not(.ant-btn-success):not(.ant-btn-warning) .anticon {
+    color: var(--app-text-color) !important;
+  }
+  .ant-btn-default,
+  .ant-btn-default .anticon,
+  button.ant-btn:not([nzType]),
+  button.ant-btn:not([nzType]) .anticon {
+    background: transparent !important;
+    border-color: #434343 !important;
+    color: var(--app-text-color) !important;
+  }
+  .ant-btn-default:hover,
+  .ant-btn-default:hover .anticon,
+  .ant-btn-default:focus,
+  .ant-btn-default:focus .anticon {
+    border-color: #177ddc !important;
+    color: var(--ant-primary-color) !important;
+  }
+  .ant-btn-text,
+  .ant-btn-text .anticon,
+  .ant-btn-link,
+  .ant-btn-link .anticon,
+  .ant-btn-dashed,
+  .ant-btn-dashed .anticon {
+    color: var(--app-text-color) !important;
+  }
+  .ant-btn-text:hover,
+  .ant-btn-text:hover .anticon,
+  .ant-btn-link:hover,
+  .ant-btn-link:hover .anticon {
+    color: var(--ant-primary-color) !important;
+  }
+  // Primary buttons keep white text on colored backgrounds
+  .ant-btn-primary,
+  .ant-btn-primary .anticon,
+  .ant-btn-primary:hover,
+  .ant-btn-primary:hover .anticon {
+    color: #fff !important;
+  }
+  // Danger buttons – proper red styling (link type = red text, solid type = red bg with white text)
+  .ant-btn-danger.ant-btn-link,
+  .ant-btn-danger.ant-btn-link .anticon,
+  .ant-btn-danger.ant-btn-link svg,
+  .ant-btn-danger.ant-btn-link .anticon svg {
+    color: #ff4d4f !important;
+    border-color: transparent !important;
+  }
+  .ant-btn-danger.ant-btn-link:hover,
+  .ant-btn-danger.ant-btn-link:hover .anticon,
+  .ant-btn-danger.ant-btn-link:hover svg,
+  .ant-btn-danger.ant-btn-link:hover .anticon svg {
+    color: #ff7875 !important;
+  }
+  .ant-btn-danger.ant-btn-link:focus,
+  .ant-btn-danger.ant-btn-link:active {
+    color: #d9363e !important;
+  }
+  // Danger button SVG fill for link type
+  .ant-btn-danger.ant-btn-link svg,
+  .ant-btn-danger.ant-btn-link .anticon svg {
+    fill: #ff4d4f !important;
+  }
+  .ant-btn-danger.ant-btn-link:hover svg,
+  .ant-btn-danger.ant-btn-link:hover .anticon svg {
+    fill: #ff7875 !important;
+  }
+  // Solid danger buttons (if used) keep white text on red background
+  .ant-btn-danger:not(.ant-btn-link),
+  .ant-btn-danger:not(.ant-btn-link) .anticon {
+    color: #fff !important;
+    background: #ff4d4f !important;
+    border-color: #ff4d4f !important;
+  }
+  .ant-btn-danger:not(.ant-btn-link):hover {
+    background: #ff7875 !important;
+    border-color: #ff7875 !important;
+  }
+  
+  // Select All / Deselect All buttons - make them look exactly like Unassign buttons
+  // Unassign buttons are: nzType="default" nzDanger nzSize="small" with dark bg, light border, white text
+  .module-actions .ant-btn-link {
+    background: transparent !important;
+    border: 1px solid #434343 !important;
+    border-radius: 6px !important;
+    color: #fff !important;
+    transition: all 0.2s !important;
+  }
+  .module-actions .ant-btn-link:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: #595959 !important;
+    color: #fff !important;
+  }
+  .module-actions .ant-btn-link:focus,
+  .module-actions .ant-btn-link:active {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: #595959 !important;
+    color: #fff !important;
+  }
+  .module-actions .ant-btn-link .anticon {
+    color: #fff !important;
+  }
+  // Deselect All (danger link button) - match Unassign button style exactly
+  .module-actions .ant-btn-danger.ant-btn-link {
+    background: transparent !important;
+    border-color: #434343 !important;
+    color: #fff !important;
+  }
+  .module-actions .ant-btn-danger.ant-btn-link:hover {
+    background: rgba(255, 77, 79, 0.1) !important;
+    border-color: #ff4d4f !important;
+    color: #fff !important;
+  }
+  .module-actions .ant-btn-danger.ant-btn-link:focus,
+  .module-actions .ant-btn-danger.ant-btn-link:active {
+    background: rgba(255, 77, 79, 0.15) !important;
+    border-color: #ff4d4f !important;
+    color: #fff !important;
+  }
+  .module-actions .ant-btn-danger.ant-btn-link .anticon {
+    color: #fff !important;
+  }
+  .module-actions .ant-btn-danger.ant-btn-link svg,
+  .module-actions .ant-btn-danger.ant-btn-link .anticon svg {
+    fill: #fff !important;
+  }
+
+  // Search icons (nzInputAddonBefore via ant-input-group-addon) – ensure visible in dark mode
+  .ant-input-group-addon {
+    background: transparent !important;
+    border-color: #434343 !important;
+  }
+  .ant-input-group-addon nz-icon,
+  .ant-input-group-addon [nz-icon],
+  .ant-input-group-addon i[nz-icon],
+  .ant-input-group-addon span[nz-icon],
+  .ant-input-group-addon .anticon {
+    color: rgba(255, 255, 255, 0.65) !important;
+    display: inline-flex !important;
+    background: transparent !important;
+  }
+  .ant-input-group-addon nz-icon svg,
+  .ant-input-group-addon [nz-icon] svg,
+  .ant-input-group-addon i[nz-icon] svg,
+  .ant-input-group-addon span[nz-icon] svg,
+  .ant-input-group-addon .anticon svg {
+    fill: rgba(255, 255, 255, 0.65) !important;
+    stroke: none !important;
+    display: block !important;
+    width: 14px !important;
+    height: 14px !important;
+    background: transparent !important;
+  }
+
+  // Message / notification (overlays)
+  .ant-message-notice-content,
+  .ant-notification-notice {
+    background: #1f1f1f !important;
+    border-color: #434343;
+    color: var(--app-text-color);
+  }
+
+  // Pagination
+  .ant-pagination-item,
+  .ant-pagination-prev .ant-pagination-item-link,
+  .ant-pagination-next .ant-pagination-item-link {
+    background: transparent !important;
+    border-color: #434343 !important;
+    color: var(--app-text-color);
+  }
+  .ant-pagination-item a {
+    color: var(--app-text-color);
+  }
+  .ant-pagination-item-active {
+    background: #177ddc !important;
+    border-color: #177ddc !important;
+  }
+  .ant-pagination-item-active a {
+    color: #fff;
+  }
+
+  // Spin, empty, divider
+  .ant-spin-dot-item {
+    background-color: #177ddc;
+  }
+  .ant-empty-description {
+    color: rgba(255, 255, 255, 0.45);
+  }
+  .ant-divider {
+    border-color: #303030;
+  }
+
+  // Badge status text (e.g. nz-badge [nzText]) – use theme text, not white
+  .ant-badge-status-text {
+    color: var(--app-text-color) !important;
+  }
+
+  // Scrollbars – dark track/thumb so they’re visible and match theme
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #434343 #262626;
+  }
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  *::-webkit-scrollbar-track {
+    background: #262626;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: #434343;
+    border-radius: 4px;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: #595959;
+  }
+  
+  // Table scrollbars - only show when content overflows (remove forced y scroll)
+  .ant-table-body,
+  .ant-table-container {
+    overflow: auto !important;
+  }
+
+  .list-search .ant-input-affix-wrapper-focused {
+    box-shadow: 0 0 0 2px rgba(23, 125, 220, 0.2);
+  }
 }
 
 // Global styles
@@ -17,14 +639,17 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
   font-size: 14px;
   line-height: 1.5;
-  color: rgba(0, 0, 0, 0.85);
-  background-color: #f0f2f5;
+  color: var(--app-text-color);
+  background-color: var(--app-bg-color);
+  transition: background-color 0.3s, color 0.3s;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
 }
@@ -38,7 +663,7 @@ html, body {
     display: block;
     font-size: 13px;
     font-weight: 500;
-    color: rgba(0, 0, 0, 0.65);
+    color: var(--app-text-secondary);
     margin-bottom: 8px;
   }
 
@@ -70,17 +695,38 @@ html, body {
     }
     .ant-input-affix-wrapper:hover,
     .ant-input-affix-wrapper-focused {
-      border-color: #40a9ff;
+      border-color: var(--ant-primary-color-hover, #40a9ff);
       z-index: 1;
     }
     .ant-input-affix-wrapper-focused {
       box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.15);
     }
     .ant-input::placeholder {
-      color: rgba(0, 0, 0, 0.35);
+      color: var(--app-text-secondary);
     }
     .ant-input-group-addon {
-      color: rgba(0, 0, 0, 0.45);
+      color: var(--app-text-secondary);
+      background: transparent !important;
+    }
+    
+    // Ensure search icons (nzInputAddonBefore) are visible in light mode
+    .ant-input-group-addon nz-icon,
+    .ant-input-group-addon [nz-icon],
+    .ant-input-group-addon i[nz-icon],
+    .ant-input-group-addon span[nz-icon],
+    .ant-input-group-addon .anticon {
+      color: var(--app-text-secondary) !important;
+      display: inline-flex !important;
+    }
+    .ant-input-group-addon nz-icon svg,
+    .ant-input-group-addon [nz-icon] svg,
+    .ant-input-group-addon i[nz-icon] svg,
+    .ant-input-group-addon span[nz-icon] svg,
+    .ant-input-group-addon .anticon svg {
+      fill: var(--app-text-secondary) !important;
+      display: block !important;
+      width: 14px !important;
+      height: 14px !important;
     }
   }
 }

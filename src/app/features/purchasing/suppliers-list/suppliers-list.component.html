@@ -47,7 +47,7 @@
     [nzFrontPagination]="false"
     (nzPageIndexChange)="onPageChange($event)"
     (nzPageSizeChange)="onPageSizeChange($event)"
-    [nzScroll]="{ x: '1000px', y: 'calc(100vh - 350px)' }"
+    [nzScroll]="{ x: '1000px' }"
   >
     <thead>
       <tr>
@@ -69,33 +69,38 @@
           <td>{{ supplier.address || '-' }}</td>
           @if (p.canUpdate || p.canDelete) {
             <td>
-              @if (p.canUpdate) {
-                <button
-                  type="button"
-                  nz-button
-                  nzType="link"
-                  nzSize="small"
-                  [routerLink]="['/purchasing/suppliers', supplier.id]"
-                  aria-label="Edit supplier"
-                >
-                  <span nz-icon nzType="edit"></span>
-                  Edit
-                </button>
-              }
-              @if (p.canDelete) {
-                <button
-                  type="button"
-                  nz-button
-                  nzType="link"
-                  nzSize="small"
-                  nzDanger
-                  (click)="deleteSupplier(supplier)"
-                  aria-label="Delete supplier"
-                >
-                  <span nz-icon nzType="delete"></span>
-                  Delete
-                </button>
-              }
+              <nz-space [nzSize]="8">
+                @if (p.canUpdate) {
+                  <button
+                    *nzSpaceItem
+                    type="button"
+                    nz-button
+                    nzType="link"
+                    nz-tooltip
+                    nzTooltipTitle="Edit supplier"
+                    [routerLink]="['/purchasing/suppliers', supplier.id]"
+                  >
+                    <span nz-icon nzType="edit"></span>
+                  </button>
+                }
+                @if (p.canDelete) {
+                  <button
+                    *nzSpaceItem
+                    type="button"
+                    nz-button
+                    nzType="link"
+                    nzDanger
+                    nz-tooltip
+                    nzTooltipTitle="Delete supplier"
+                    nz-popconfirm
+                    nzPopconfirmTitle="Are you sure delete this supplier?"
+                    (nzOnConfirm)="deleteSupplier(supplier)"
+                    nzPopconfirmPlacement="left"
+                  >
+                    <span nz-icon nzType="delete"></span>
+                  </button>
+                }
+              </nz-space>
             </td>
           }
         </tr>

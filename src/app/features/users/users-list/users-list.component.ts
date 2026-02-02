@@ -12,6 +12,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { UsersService } from '../../../core/services/users.service';
 import { User } from '../../../types/api.types';
 import { BaseListComponent } from '../../../core/base/base-list.component';
@@ -33,7 +34,8 @@ import { AuthService } from '../../../core/services/auth.service';
     NzTagModule,
     NzPopconfirmModule,
     NzCardModule,
-    NzModalModule
+    NzModalModule,
+    NzTooltipModule
   ],
   templateUrl: './users-list.component.html',
   styleUrls: ['./users-list.component.css'],

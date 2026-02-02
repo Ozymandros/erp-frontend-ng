@@ -11,6 +11,8 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
+import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { WarehousesService } from '../../../core/services/warehouses.service';
 
 
@@ -32,7 +34,9 @@ import { AuthService } from '../../../core/services/auth.service';
     NzIconModule,
     NzTagModule,
     NzPopconfirmModule,
-    NzCardModule
+    NzCardModule,
+    NzTooltipModule,
+    NzSpaceModule
   ],
   template: `
 @if (permissions$ | async; as p) {
@@ -61,9 +65,12 @@ import { AuthService } from '../../../core/services/auth.service';
 
   <nz-card>
     <div class="search-container">
-      <nz-input-wrapper [nzPrefix]="'search'">
-        <input type="text" nz-input placeholder="Search warehouses..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" />
-      </nz-input-wrapper>
+      <nz-space-compact nzSize="large" style="width: 100%; max-width: 400px;">
+        <nz-input-wrapper>
+          <nz-icon nzInputAddonBefore nzType="search" />
+          <input type="text" nz-input placeholder="Search warehouses..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" />
+        </nz-input-wrapper>
+      </nz-space-compact>
     </div>
 
     <nz-table
@@ -76,7 +83,7 @@ import { AuthService } from '../../../core/services/auth.service';
       [nzFrontPagination]="false"
       (nzPageIndexChange)="loadWarehouses()"
       (nzPageSizeChange)="loadWarehouses()"
-      [nzScroll]="{ x: '800px', y: 'calc(100vh - 400px)' }"
+      [nzScroll]="{ x: '800px' }"
     >
       <thead>
         <tr>
@@ -96,18 +103,36 @@ import { AuthService } from '../../../core/services/auth.service';
             <td>{{ data.createdAt | date:'short' }}</td>
             @if (p.canUpdate || p.canDelete) {
               <td>
-                @if (p.canUpdate) {
-                  <a [routerLink]="['/inventory/warehouses', data.id]" class="edit-link">Edit</a>
-                }
-                @if (p.canDelete) {
-                  <a
-                    nz-popconfirm
-                    nzPopconfirmTitle="Are you sure delete this warehouse?"
-                    (nzOnConfirm)="deleteWarehouse(data.id)"
-                    nzPopconfirmPlacement="left"
-                    class="delete-link"
-                  >Delete</a>
-                }
+                <nz-space [nzSize]="8">
+                  @if (p.canUpdate) {
+                    <button
+                      *nzSpaceItem
+                      nz-button
+                      nzType="link"
+                      nz-tooltip
+                      nzTooltipTitle="Edit warehouse"
+                      [routerLink]="['/inventory/warehouses', data.id]"
+                    >
+                      <span nz-icon nzType="edit"></span>
+                    </button>
+                  }
+                  @if (p.canDelete) {
+                    <button
+                      *nzSpaceItem
+                      nz-button
+                      nzType="link"
+                      nzDanger
+                      nz-tooltip
+                      nzTooltipTitle="Delete warehouse"
+                      nz-popconfirm
+                      nzPopconfirmTitle="Are you sure delete this warehouse?"
+                      (nzOnConfirm)="deleteWarehouse(data.id)"
+                      nzPopconfirmPlacement="left"
+                    >
+                      <span nz-icon nzType="delete"></span>
+                    </button>
+                  }
+                </nz-space>
               </td>
             }
           </tr>

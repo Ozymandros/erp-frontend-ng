@@ -49,7 +49,7 @@
     [nzFrontPagination]="false"
     (nzPageIndexChange)="onPageChange($event)"
     (nzPageSizeChange)="onPageSizeChange($event)"
-    [nzScroll]="{ x: '800px', y: 'calc(100vh - 350px)' }"
+    [nzScroll]="{ x: '800px' }"
   >
     <thead>
       <tr>
@@ -75,29 +75,36 @@
           </td>
           @if (p.canUpdate || p.canDelete) {
             <td>
-              @if (p.canUpdate) {
-                <button 
-                  nz-button 
-                  nzType="link" 
-                  nzSize="small"
-                  [routerLink]="['/inventory/products', product.id]"
-                >
-                  <span nz-icon nzType="edit"></span>
-                  Edit
-                </button>
-              }
-              @if (p.canDelete) {
-                <button 
-                  nz-button 
-                  nzType="link" 
-                  nzSize="small"
-                  nzDanger
-                  (click)="deleteProduct(product)"
-                >
-                  <span nz-icon nzType="delete"></span>
-                  Delete
-                </button>
-              }
+              <nz-space [nzSize]="8">
+                @if (p.canUpdate) {
+                  <button
+                    *nzSpaceItem
+                    nz-button
+                    nzType="link"
+                    nz-tooltip
+                    nzTooltipTitle="Edit product"
+                    [routerLink]="['/inventory/products', product.id]"
+                  >
+                    <span nz-icon nzType="edit"></span>
+                  </button>
+                }
+                @if (p.canDelete) {
+                  <button
+                    *nzSpaceItem
+                    nz-button
+                    nzType="link"
+                    nzDanger
+                    nz-tooltip
+                    nzTooltipTitle="Delete product"
+                    nz-popconfirm
+                    nzPopconfirmTitle="Are you sure delete this product?"
+                    (nzOnConfirm)="deleteProduct(product)"
+                    nzPopconfirmPlacement="left"
+                  >
+                    <span nz-icon nzType="delete"></span>
+                  </button>
+                }
+              </nz-space>
             </td>
           }
         </tr>

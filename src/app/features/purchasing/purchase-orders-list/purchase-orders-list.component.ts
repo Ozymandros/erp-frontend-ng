@@ -11,6 +11,7 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { PurchaseOrdersService } from '../../../core/services/purchase-orders.service';
 import { PurchaseOrderDto } from '../../../types/api.types';
 import { BaseListComponent } from '../../../core/base/base-list.component';
@@ -32,7 +33,8 @@ import { AuthService } from '../../../core/services/auth.service';
     NzSpaceModule,
     NzTagModule,
     NzPopconfirmModule,
-    NzCardModule
+    NzCardModule,
+    NzTooltipModule
   ],
   templateUrl: './purchase-orders-list.component.html',
   styleUrls: ['./purchase-orders-list.component.css']

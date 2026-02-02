@@ -52,8 +52,9 @@ A modern, type-safe ERP admin portal built with **Angular** and **TypeScript**. 
 - **👥 User Management**: Complete CRUD operations with role assignment and permission management.
 - **📦 Inventory Management**: Products, warehouses, stock operations, and transaction tracking.
 - **💰 Sales & Purchasing**: Order management, customer and supplier management.
-- **🎨 Modern UI**: Responsive design with **NG-Zorro Ant Design** components.
+- **🎨 Modern UI**: Responsive design with **NG-Zorro Ant Design** components and native **Dark Mode** support.
 - **🔒 Type Safety**: Full TypeScript coverage with strict mode.
+- **📡 Reactive State**: Modern state management using **Angular Signals**.
 - **🧪 Testing**: Comprehensive test suite with Jasmine/Karma (unit) and Playwright (E2E).
 - **🚀 CI/CD**: Automated testing, code quality checks, and dependency updates via GitHub Actions.
 
@@ -64,7 +65,7 @@ A modern, type-safe ERP admin portal built with **Angular** and **TypeScript**. 
 - **Styling**: SCSS, NG-Zorro (Ant Design), TailwindCSS
 - **Routing**: Angular Router
 - **HTTP Client**: Angular HttpClient (with Interceptors)
-- **State Management**: RxJS (Services + BehaviorSubjects)
+- **State Management**: RxJS + **Angular Signals** (Theming, reactive state)
 - **Validation**: Angular Reactive Forms
 - **UI Components**: NG-Zorro Antd
 - **Testing**: Jasmine, Karma, Playwright
@@ -189,6 +190,7 @@ The project includes automated CI/CD with GitHub Actions (`.github/workflows/ci.
 
 ## 📚 Documentation
 
+- [Theming Guide](docs/THEMING.md) (Signal-based implementation)
 - [E2E Testing Guide](docs/E2E_TESTING.md) (See `e2e/` folder for implementation)
 - [Test Coverage](docs/TEST_COVERAGE.md) (Run coverage command to view)
 

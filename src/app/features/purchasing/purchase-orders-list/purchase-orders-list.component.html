@@ -48,7 +48,7 @@
       [nzFrontPagination]="false"
       (nzPageIndexChange)="onPageChange($event)"
       (nzPageSizeChange)="onPageSizeChange($event)"
-      [nzScroll]="{ x: '1000px', y: 'calc(100vh - 400px)' }"
+      [nzScroll]="{ x: '1000px' }"
     >
       <thead>
         <tr>
@@ -76,18 +76,36 @@
             </td>
             @if (p.canRead || p.canDelete) {
               <td>
-                @if (p.canRead) {
-                  <a [routerLink]="['/purchasing/orders', item.id]" class="view-link">View</a>
-                }
-                @if (p.canDelete) {
-                  <a
-                    nz-popconfirm
-                    nzPopconfirmTitle="Are you sure cancel this order?"
-                    (nzOnConfirm)="deleteOrder(item.id)"
-                    nzPopconfirmPlacement="left"
-                    class="cancel-link"
-                  >Cancel</a>
-                }
+                <nz-space [nzSize]="8">
+                  @if (p.canRead) {
+                    <button
+                      *nzSpaceItem
+                      nz-button
+                      nzType="link"
+                      nz-tooltip
+                      nzTooltipTitle="View order"
+                      [routerLink]="['/purchasing/orders', item.id]"
+                    >
+                      <span nz-icon nzType="eye"></span>
+                    </button>
+                  }
+                  @if (p.canDelete) {
+                    <button
+                      *nzSpaceItem
+                      nz-button
+                      nzType="link"
+                      nzDanger
+                      nz-tooltip
+                      nzTooltipTitle="Cancel order"
+                      nz-popconfirm
+                      nzPopconfirmTitle="Are you sure cancel this order?"
+                      (nzOnConfirm)="deleteOrder(item.id)"
+                      nzPopconfirmPlacement="left"
+                    >
+                      <span nz-icon nzType="close-circle"></span>
+                    </button>
+                  }
+                </nz-space>
               </td>
             }
           </tr>

@@ -9,6 +9,8 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { SuppliersService } from '../../../core/services/suppliers.service';
 import { SupplierDto } from '../../../types/api.types';
 import { BaseListComponent } from '../../../core/base/base-list.component';
@@ -27,7 +29,9 @@ import { AuthService } from '../../../core/services/auth.service';
     NzInputModule,
     NzIconModule,
     NzSpaceModule,
-    NzModalModule
+    NzModalModule,
+    NzTooltipModule,
+    NzPopconfirmModule
   ],
   templateUrl: './suppliers-list.component.html',
   styleUrls: ['./suppliers-list.component.css']

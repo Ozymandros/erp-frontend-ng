@@ -3,35 +3,36 @@
     <div class="header-title">
       <h1>Enterprise Resource Planning</h1>
     </div>
-    @if (currentUser$ | async; as user) {
-      <div class="header-actions">
-      <nz-avatar [nzText]="getUserInitials(user)" nz-dropdown [nzDropdownMenu]="menu"></nz-avatar>
-      <nz-dropdown-menu #menu="nzDropdownMenu">
-        <ul nz-menu>
-          <li 
-            nz-menu-item 
-            (click)="goToProfile()" 
-            (keydown.enter)="goToProfile()" 
-            (keydown.space)="goToProfile()" 
-            tabindex="0"
-          >
-            <span nz-icon nzType="user"></span>
-            Profile
-          </li>
-          <li nz-menu-divider></li>
-          <li 
-            nz-menu-item 
-            (click)="logout()" 
-            (keydown.enter)="logout()" 
-            (keydown.space)="logout()"
-            tabindex="0"
-          >
-            <span nz-icon nzType="logout"></span>
-            Logout
-          </li>
-        </ul>
-      </nz-dropdown-menu>
-      </div>
-    }
+    <div class="header-actions">
+      <app-theme-toggle></app-theme-toggle>
+      @if (currentUser$ | async; as user) {
+        <nz-avatar [nzText]="getUserInitials(user)" nz-dropdown [nzDropdownMenu]="menu" class="user-avatar"></nz-avatar>
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+          <ul nz-menu>
+            <li 
+              nz-menu-item 
+              (click)="goToProfile()" 
+              (keydown.enter)="goToProfile()" 
+              (keydown.space)="goToProfile()" 
+              tabindex="0"
+            >
+              <span nz-icon nzType="user"></span>
+              Profile
+            </li>
+            <li nz-menu-divider></li>
+            <li 
+              nz-menu-item 
+              (click)="logout()" 
+              (keydown.enter)="logout()" 
+              (keydown.space)="logout()"
+              tabindex="0"
+            >
+              <span nz-icon nzType="logout"></span>
+              Logout
+            </li>
+          </ul>
+        </nz-dropdown-menu>
+      }
+    </div>
   </div>
 </nz-header>

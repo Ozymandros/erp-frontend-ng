@@ -48,7 +48,9 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
     .app-content {
       margin: 24px;
       padding: 24px;
-      background: #fff;
+      background: var(--app-card-bg);
+      color: var(--app-text-color);
+      border-radius: 8px;
       overflow: auto;
       flex: 1;
     }

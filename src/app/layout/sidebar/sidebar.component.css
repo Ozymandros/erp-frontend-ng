@@ -4,8 +4,8 @@
 
 .sidebar {
   height: 100vh;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
-  background: #fff;
+  border-right: 1px solid var(--app-border-color);
+  background: var(--app-card-bg);
 }
 
 /* Correctly target the internal flex container of nz-sider */
@@ -20,12 +20,12 @@
   display: flex;
   align-items: center;
   padding: 0 24px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--app-border-color);
   flex-shrink: 0;
 }
 
 .logo h2 {
-  color: #000;
+  color: var(--app-text-color);
   margin: 0;
   font-size: 20px;
   font-weight: 700;
@@ -34,7 +34,7 @@
 
 .logo-icon {
   font-size: 24px;
-  color: #1890ff;
+  color: var(--ant-primary-color);
 }
 
 .sidebar-menu {
@@ -49,8 +49,8 @@
 .sidebar-footer {
   padding: 16px;
   text-align: center;
-  border-top: 1px solid #f0f0f0;
-  color: #8c8c8c;
+  border-top: 1px solid var(--app-border-color);
+  color: var(--app-text-secondary);
   font-size: 12px;
   flex-shrink: 0;
 }
@@ -69,7 +69,16 @@
   color: #fff !important;
 }
 
+:host-context(.dark) ::ng-deep .ant-menu-inline .ant-menu-item-selected {
+  background-color: rgba(23, 125, 220, 0.25) !important;
+  color: #177ddc !important;
+}
+
+:host-context(.dark) ::ng-deep .ant-menu-inline .ant-menu-item-selected .anticon {
+  color: #177ddc !important;
+}
+
 ::ng-deep .ant-menu-submenu-title {
   font-weight: 500;
-  color: #595959;
+  color: var(--app-text-color);
 }

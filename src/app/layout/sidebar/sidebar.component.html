@@ -1,4 +1,4 @@
-<nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzWidth]="250" nzBreakpoint="lg" [nzCollapsedWidth]="80" nzTheme="light" class="sidebar">
+<nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzWidth]="250" nzBreakpoint="lg" [nzCollapsedWidth]="80" [nzTheme]="effectiveTheme()" class="sidebar">
   <div class="logo">
     @if (!isCollapsed) {
       <h2>ERP Admin</h2>
@@ -7,7 +7,7 @@
       <span nz-icon nzType="appstore" class="logo-icon"></span>
     }
   </div>
-  <ul nz-menu nzTheme="light" nzMode="inline" class="sidebar-menu">
+  <ul nz-menu [nzTheme]="effectiveTheme()" nzMode="inline" class="sidebar-menu">
     @for (item of visibleNavItems(); track item.title) {
       @if (item.children && item.children.length > 0) {
         <li nz-submenu [nzTitle]="item.title" [nzIcon]="item.icon">
