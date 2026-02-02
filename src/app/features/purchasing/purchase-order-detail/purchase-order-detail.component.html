@@ -11,7 +11,7 @@
       <span nz-icon nzType="arrow-left"></span>
       Back to List
     </button>
-    <h1>
+    <h1 nz-typography>
       {{
         isNewOrder
           ? "Create New Purchase Order"
@@ -85,7 +85,7 @@
           </div>
         </div>
 
-        <h3 class="lines-title">Order Lines</h3>
+        <h3 nz-typography class="lines-title">Order Lines</h3>
         <nz-table
           #linesTable
           [nzData]="lines.controls"
@@ -233,7 +233,7 @@
           </div>
         </div>
 
-        <h3 class="lines-title">Order Lines</h3>
+        <h3 nz-typography class="lines-title">Order Lines</h3>
         <nz-table
           #linesTable
           [nzData]="o.lines || []"

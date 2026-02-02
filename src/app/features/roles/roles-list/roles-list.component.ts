@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -18,6 +18,7 @@ import { Role } from '../../../types/api.types';
 import { BaseListComponent } from '../../../core/base/base-list.component';
 import { FileService } from '../../../core/services/file.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ThemeService } from '../../../core/services/theme.service';
 
 @Component({
   selector: 'app-roles-list',
@@ -51,10 +52,13 @@ export class RolesListComponent extends BaseListComponent<Role> {
     modal: NzModalService,
     fileService: FileService,
     cdr: ChangeDetectorRef,
-    authService: AuthService
+    authService: AuthService,
+    public themeService: ThemeService
   ) {
     super(rolesService, message, modal, fileService, cdr, authService);
   }
+
+  isDark = computed(() => this.themeService.effectiveTheme() === 'dark');
 
   get roles(): Role[] {
     return this.data;

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -15,6 +15,7 @@ import { BaseListComponent } from '../../../core/base/base-list.component';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { FileService } from '../../../core/services/file.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ThemeService } from '../../../core/services/theme.service';
 
 @Component({
   selector: 'app-inventory-transactions-list',
@@ -44,10 +45,14 @@ export class InventoryTransactionsListComponent extends BaseListComponent<Invent
     modal: NzModalService,
     fileService: FileService,
     cdr: ChangeDetectorRef,
-    authService: AuthService
+    authService: AuthService,
+    public themeService: ThemeService
   ) {
     super(inventoryTransactionsService, message, modal, fileService, cdr, authService);
   }
+
+  // Computed property to check if dark mode is active
+  isDark = computed(() => this.themeService.effectiveTheme() === 'dark');
 
   override ngOnInit(): void {
     super.ngOnInit();

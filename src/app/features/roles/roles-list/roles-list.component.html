@@ -1,7 +1,7 @@
 @if (permissions$ | async; as p) {
   <div>
     <div class="page-header">
-      <h1>Roles Management</h1>
+      <h1 nz-typography>Roles Management</h1>
       <div class="header-actions">
         @if (p.canExport) {
           <button
@@ -23,7 +23,7 @@
         }
 
         @if (p.canCreate) {
-          <button nz-button nzType="primary" routerLink="/roles/new">
+          <button nz-button [nzType]="isDark() ? 'default' : 'primary'" routerLink="/roles/new">
             <i nz-icon nzType="plus"></i> Add Role
           </button>
         }
@@ -86,7 +86,7 @@
                     {{ perm.module }}:{{ perm.action }}
                   </nz-tag>
                 }
-                @if ((data.permissions?.length || 0) > 3) {
+                @if ((data.permissions.length || 0) > 3) {
                   <span>...</span>
                 }
               </td>

@@ -3,7 +3,7 @@
     <button nz-button nzType="default" routerLink="/inventory/warehouses" class="back-button">
       <i nz-icon nzType="arrow-left"></i> Back
     </button>
-    <h1>{{ isEditMode ? 'Edit Warehouse' : 'Create Warehouse' }}</h1>
+    <h1 nz-typography>{{ isEditMode ? 'Edit Warehouse' : 'Create Warehouse' }}</h1>
   </div>
 
   <nz-card [nzLoading]="loading">

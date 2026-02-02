@@ -1,21 +1,21 @@
 @if (permissions$ | async; as p) {
 <div class="products-list">
   <div class="page-header">
-    <h1>Products Management</h1>
+    <h1 nz-typography>Products Management</h1>
     <div class="header-actions">
       @if (p.canExport) {
-        <button nz-button (click)="exportToXlsx('products.xlsx')" class="export-button">
+        <button nz-button [nzGhost]="isDark()" (click)="exportToXlsx('products.xlsx')" class="export-button">
           <span nz-icon nzType="file-excel"></span> Export XLSX
         </button>
       }
       @if (p.canExport) {
-        <button nz-button (click)="exportToPdf('products.pdf')" class="export-button">
+        <button nz-button [nzGhost]="isDark()" (click)="exportToPdf('products.pdf')" class="export-button">
           <span nz-icon nzType="file-pdf"></span> Export PDF
         </button>
       }
 
       @if (p.canCreate) {
-        <button nz-button nzType="primary" routerLink="/inventory/products/new">
+        <button nz-button [nzType]="isDark() ? 'default' : 'primary'" routerLink="/inventory/products/new">
           <span nz-icon nzType="plus"></span>
           Add Product
         </button>

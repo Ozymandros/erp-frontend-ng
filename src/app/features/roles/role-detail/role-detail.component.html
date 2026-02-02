@@ -3,7 +3,7 @@
     <button nz-button nzType="default" routerLink="/roles" class="back-button">
       <i nz-icon nzType="arrow-left"></i> Back
     </button>
-    <h1>{{ isEditMode ? 'Edit Role' : 'Create Role' }}</h1>
+    <h1 nz-typography>{{ isEditMode ? 'Edit Role' : 'Create Role' }}</h1>
   </div>
 
   <nz-card [nzLoading]="loading">
@@ -37,7 +37,7 @@
   @if (isEditMode && roleId && canUpdate()) {
     <nz-card id="manage-permissions" class="manage-permissions-card">
       <div class="manage-permissions-header">
-        <h3 class="manage-permissions-title">Manage Permissions</h3>
+        <h3 nz-typography class="manage-permissions-title">Manage Permissions</h3>
         <span class="manage-permissions-subtitle">Assign or unassign permissions to this role</span>
       </div>
       <app-permission-selector

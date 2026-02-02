@@ -1,21 +1,21 @@
 @if (permissions$ | async; as p) {
 <div class="customers-list">
   <div class="page-header">
-    <h1>Customers Management</h1>
+    <h1 nz-typography>Customers Management</h1>
     <div class="header-actions">
       @if (p.canExport) {
-        <button nz-button (click)="exportToXlsx('customers.xlsx')">
+        <button nz-button [nzGhost]="isDark()" (click)="exportToXlsx('customers.xlsx')">
           <span nz-icon nzType="file-excel"></span> Export XLSX
         </button>
       }
       @if (p.canExport) {
-        <button nz-button (click)="exportToPdf('customers.pdf')">
+        <button nz-button [nzGhost]="isDark()" (click)="exportToPdf('customers.pdf')">
           <span nz-icon nzType="file-pdf"></span> Export PDF
         </button>
       }
 
       @if (p.canCreate) {
-        <button nz-button nzType="primary" routerLink="/sales/customers/new">
+        <button nz-button nzType="primary" [nzGhost]="isDark()" routerLink="/sales/customers/new">
           <span nz-icon nzType="plus"></span>
           Add Customer
         </button>

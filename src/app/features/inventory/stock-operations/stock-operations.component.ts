@@ -7,6 +7,7 @@ import {
   OnDestroy,
   OnInit,
   ViewChild,
+  computed,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -27,6 +28,7 @@ import { ProductsService } from '../../../core/services/products.service';
 import { StockOperationsService } from '../../../core/services/stock-operations.service';
 import { WarehousesService } from '../../../core/services/warehouses.service';
 import { ProductDto, WarehouseDto } from '../../../types/api.types';
+import { ThemeService } from '../../../core/services/theme.service';
 
 const SEARCH_MIN_LENGTH = 3;
 const SEARCH_DEBOUNCE_MS = 300;
@@ -79,6 +81,7 @@ export class StockOperationsComponent implements OnInit, OnDestroy {
     private warehousesService: WarehousesService,
     private message: NzMessageService,
     private cdr: ChangeDetectorRef,
+    public themeService: ThemeService
   ) {
     this.adjustmentForm = this.fb.group({
       productId: ['', [Validators.required]],
@@ -87,6 +90,8 @@ export class StockOperationsComponent implements OnInit, OnDestroy {
       reason: [''],
     });
   }
+
+  isDark = computed(() => this.themeService.effectiveTheme() === 'dark');
 
   ngOnInit(): void {
     this.productSearch$

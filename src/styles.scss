@@ -436,12 +436,23 @@
   .ant-btn-link:hover .anticon {
     color: var(--ant-primary-color) !important;
   }
-  // Primary buttons keep white text on colored backgrounds
+  // Primary buttons
   .ant-btn-primary,
-  .ant-btn-primary .anticon,
+  .ant-btn-primary .anticon {
+    color: #fff !important;
+    background-color: var(--ant-primary-color) !important;
+    border-color: var(--ant-primary-color) !important;
+  }
   .ant-btn-primary:hover,
   .ant-btn-primary:hover .anticon {
     color: #fff !important;
+    background-color: var(--ant-primary-color-hover) !important;
+    border-color: var(--ant-primary-color-hover) !important;
+  }
+  .ant-btn-primary:active,
+  .ant-btn-primary:active .anticon {
+    background-color: var(--ant-primary-color-active) !important;
+    border-color: var(--ant-primary-color-active) !important;
   }
   // Danger buttons – proper red styling (link type = red text, solid type = red bg with white text)
   .ant-btn-danger.ant-btn-link,
@@ -628,6 +639,27 @@
 
   .list-search .ant-input-affix-wrapper-focused {
     box-shadow: 0 0 0 2px rgba(23, 125, 220, 0.2);
+  }
+
+  // Disabled buttons – ensure they look muted in dark mode
+  .ant-btn-disabled,
+  .ant-btn[disabled],
+  .ant-btn-disabled:hover,
+  .ant-btn-disabled:focus,
+  .ant-btn-disabled:active {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: rgba(255, 255, 255, 0.25) !important;
+    border-color: #303030 !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+    cursor: not-allowed !important;
+  }
+  .ant-btn-disabled .anticon,
+  .ant-btn[disabled] .anticon,
+  .ant-btn-disabled svg,
+  .ant-btn[disabled] svg {
+    color: inherit !important;
+    fill: currentColor !important;
   }
 }
 

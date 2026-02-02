@@ -1,7 +1,7 @@
 @if (permissions$ | async; as p) {
 <div>
   <div class="page-header">
-    <h1>Warehouse Stock Levels</h1>
+    <h1 nz-typography>Warehouse Stock Levels</h1>
     <div class="header-actions">
       @if (p.canExport) {
         <button nz-button (click)="exportToXlsx()">

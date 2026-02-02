@@ -1,7 +1,7 @@
 @if (permissions$ | async; as p) {
 <div class="suppliers-list">
   <div class="page-header">
-    <h1>Suppliers</h1>
+    <h1 nz-typography>Suppliers</h1>
     <div class="header-actions">
       @if (p.canExport) {
         <button type="button" nz-button (click)="exportToXlsx('suppliers.xlsx')" aria-label="Export to Excel">

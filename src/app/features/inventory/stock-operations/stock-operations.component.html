@@ -1,6 +1,6 @@
 <div class="stock-operations">
   <div class="page-header">
-    <h1>Inventory Operations</h1>
+    <h1 nz-typography>Inventory Operations</h1>
   </div>
 
   <div nz-row [nzGutter]="16">
@@ -88,7 +88,7 @@
             <nz-form-control>
               <button
                 nz-button
-                nzType="primary"
+                [nzType]="isDark() ? 'default' : 'primary'"
                 type="submit"
                 [nzLoading]="submitting"
                 [disabled]="!adjustmentForm.valid"

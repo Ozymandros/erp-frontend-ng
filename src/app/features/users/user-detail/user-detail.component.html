@@ -4,7 +4,7 @@
       <span nz-icon nzType="arrow-left"></span>
       Back to List
     </button>
-    <h1>{{ isEditMode ? 'Edit User' : 'Create User' }}</h1>
+    <h1 nz-typography>{{ isEditMode ? 'Edit User' : 'Create User' }}</h1>
   </div>
 
   <nz-card [nzLoading]="loading">
@@ -84,7 +84,7 @@
   @if (isEditMode && userId && canUpdate()) {
     <nz-card id="manage-roles" class="manage-roles-card">
       <div nz-row nzJustify="space-between" nzAlign="middle" class="manage-roles-header">
-        <h3 class="manage-roles-title">Manage Roles</h3>
+        <h3 nz-typography class="manage-roles-title">Manage Roles</h3>
         <span class="manage-roles-subtitle">Assign or unassign roles to this user</span>
       </div>
       <app-role-selector
@@ -99,17 +99,17 @@
   <!-- Assigned Roles & Permissions View -->
   @if (isEditMode && user) {
     <nz-card class="roles-permissions-card">
-      <h3 class="roles-permissions-title">Roles & Permissions</h3>
+      <h3 nz-typography class="roles-permissions-title">Roles & Permissions</h3>
       @if (userRoles.length === 0) {
-        <p>No roles assigned to this user.</p>
+        <p nz-paragraph>No roles assigned to this user.</p>
       } @else {
         @for (role of userRoles; track role.id) {
           <nz-card class="role-card">
             <div class="role-card-header">
               <div>
-                <h4 class="role-name">{{ role.name }}</h4>
+                <h4 nz-typography class="role-name">{{ role.name }}</h4>
                 @if (role.description) {
-                  <p class="role-description">{{ role.description }}</p>
+                  <p nz-paragraph class="role-description">{{ role.description }}</p>
                 }
               </div>
             </div>
