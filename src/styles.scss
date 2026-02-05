@@ -1,6 +1,10 @@
 // Import NG-Zorro CSS Variables theme (supports dynamic dark/light switching)
 @import "ng-zorro-antd/ng-zorro-antd.variable.min.css";
 
+html {
+  color-scheme: light dark;
+}
+
 // NG-Zorro Theme Variables - Light Mode (default)
 :root {
   --ant-primary-color: #1890ff;
@@ -500,7 +504,12 @@
     border: 1px solid #434343 !important;
     border-radius: 6px !important;
     color: #fff !important;
-    transition: all 0.2s !important;
+    transition: background 0.2s, border-color 0.2s, color 0.2s !important;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .module-actions .ant-btn-link {
+      transition: none !important;
+    }
   }
   .module-actions .ant-btn-link:hover {
     background: rgba(255, 255, 255, 0.08) !important;
@@ -611,7 +620,8 @@
     color: var(--app-text-color) !important;
   }
 
-  // Scrollbars – dark track/thumb so they’re visible and match theme
+  // Scrollbars – dark track/thumb so they're visible and match theme
+  /* stylelint-disable-next-line property-no-vendor-prefix */
   * {
     scrollbar-width: thin;
     scrollbar-color: #434343 #262626;
@@ -762,3 +772,43 @@ body {
     }
   }
 }
+
+// Typography improvements
+/* stylelint-disable property-no-unknown */
+h1, h2, h3, h4, h5, h6,
+.ant-card-head-title,
+.ant-modal-title,
+.dashboard-title,
+.header-title h1 {
+  text-wrap: pretty;
+  text-wrap: balance;
+}
+
+// Tabular numbers for consistent numeric alignment
+.ant-table-cell,
+.ant-statistic-content-value,
+.price,
+.quantity,
+.amount,
+[class*=\"number\"],
+[class*=\"count\"] {
+  font-variant-numeric: tabular-nums;
+}
+
+// Proper focus-visible styles (never use outline: none without replacement)
+*:focus-visible {
+  outline: 2px solid var(--ant-primary-color);
+  outline-offset: 2px;
+}
+
+// Global reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+

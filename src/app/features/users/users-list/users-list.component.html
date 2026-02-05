@@ -85,6 +85,7 @@
                       nz-tooltip
                       nzTooltipTitle="Edit user"
                       [routerLink]="['/users', data.id]"
+                      [attr.aria-label]="'Edit user ' + data.username"
                     ></app-button>
                   }
                   @if (p.canDelete) {
@@ -95,6 +96,7 @@
                       icon="delete"
                       nz-tooltip
                       nzTooltipTitle="Delete user"
+                      [attr.aria-label]="'Delete user ' + data.username"
                       nz-popconfirm
                       nzPopconfirmTitle="Are you sure delete this user?"
                       (nzOnConfirm)="deleteUser(data.id)"

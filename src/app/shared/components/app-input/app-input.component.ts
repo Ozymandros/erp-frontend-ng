@@ -18,6 +18,9 @@ import { NzInputModule } from 'ng-zorro-antd/input';
     <input
       nz-input
       [type]="type"
+      [name]="name"
+      [autocomplete]="autocomplete"
+      [attr.inputmode]="inputmode"
       [placeholder]="placeholder"
       [disabled]="disabled"
       [(ngModel)]="value"
@@ -34,6 +37,9 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 })
 export class AppInputComponent implements ControlValueAccessor {
   @Input() type = 'text';
+  @Input() name = '';
+  @Input() autocomplete = 'off';
+  @Input() inputmode: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search' = 'text';
   @Input() placeholder = '';
   @Input({ transform: booleanAttribute }) disabled = false;
 

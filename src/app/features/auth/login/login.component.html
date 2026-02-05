@@ -2,16 +2,33 @@
   <nz-card class="login-card" nzTitle="ERP System Login">
     <form nz-form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <nz-form-item>
-        <nz-form-label nzRequired>Email</nz-form-label>
+        <nz-form-label nzRequired nzFor="email">Email</nz-form-label>
         <nz-form-control nzErrorTip="Please input your email!">
-          <input nz-input formControlName="email" type="email" placeholder="Email" />
+          <input 
+            nz-input 
+            id="email"
+            formControlName="email" 
+            type="email" 
+            name="email"
+            autocomplete="email"
+            inputmode="email"
+            placeholder="Email" 
+          />
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-label nzRequired>Password</nz-form-label>
+        <nz-form-label nzRequired nzFor="password">Password</nz-form-label>
         <nz-form-control nzErrorTip="Please input your password!">
-          <input nz-input formControlName="password" type="password" placeholder="Password" />
+          <input 
+            nz-input 
+            id="password"
+            formControlName="password" 
+            type="password" 
+            name="password"
+            autocomplete="current-password"
+            placeholder="Password" 
+          />
         </nz-form-control>
       </nz-form-item>
 

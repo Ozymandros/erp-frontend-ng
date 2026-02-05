@@ -1,4 +1,5 @@
-import { Component, ChangeDetectorRef, OnInit, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, OnDestroy, inject } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Subject, takeUntil, finalize, debounceTime } from 'rxjs';
@@ -28,6 +29,10 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
   private searchTrigger$ = new Subject<void>();
   protected destroy$ = new Subject<void>();
 
+  // Inject Router and ActivatedRoute using standalone inject() API
+  protected router = inject(Router);
+  protected route = inject(ActivatedRoute);
+
   // Explicit orchestration: components define which module they belong to
   protected abstract get moduleName(): string;
 
@@ -41,6 +46,7 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
   });
 
   constructor(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     protected service: BaseApiService<T, any, any>,
     protected message: NzMessageService,
     protected modal: NzModalService,
@@ -51,6 +57,24 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.permissions$ = this.authService.getModulePermissions(this.moduleName);
+    
+    // Initialize state from URL query parameters for deep-linking
+    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
+      const page = Number.parseInt(params['page'], 10);
+      const size = Number.parseInt(params['pageSize'], 10);
+      const search = params['search'];
+      
+      if (page && page !== this.pageIndex) {
+        this.pageIndex = page;
+      }
+      if (size && size !== this.pageSize) {
+        this.pageSize = size;
+      }
+      if (search !== undefined && search !== this.searchTerm) {
+        this.searchTerm = search;
+      }
+    });
+    
     this.searchTrigger$.pipe(
       debounceTime(SEARCH_DEBOUNCE_MS),
       takeUntil(this.destroy$)
@@ -99,18 +123,41 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
 
   onSearch(): void {
     this.pageIndex = 1;
+    this.updateUrl();
     this.searchTrigger$.next();
   }
 
   onPageChange(page: number): void {
     this.pageIndex = page;
+    this.updateUrl();
     this.loadData();
   }
 
   onPageSizeChange(size: number): void {
     this.pageSize = size;
     this.pageIndex = 1;
+    this.updateUrl();
     this.loadData();
+  }
+
+  /** Sync current pagination and search state to URL query parameters for deep-linking */
+  private updateUrl(): void {
+    const queryParams: Record<string, string | number> = {
+      page: this.pageIndex,
+      pageSize: this.pageSize
+    };
+    
+    // Only include search if it has meaningful content
+    if (this.searchTerm && this.searchTerm.trim().length > 0) {
+      queryParams['search'] = this.searchTerm.trim();
+    }
+    
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams,
+      queryParamsHandling: 'merge',
+      replaceUrl: true // Don't add to browser history for every pagination change
+    });
   }
 
   deleteItem(id: string, name: string = 'item', displayName?: string): void {

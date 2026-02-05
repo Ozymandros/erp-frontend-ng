@@ -29,6 +29,7 @@ import { ThemeService, ThemeMode } from '../../core/services/theme.service';
       nzTrigger="click"
       nz-tooltip
       [nzTooltipTitle]="'Theme: ' + themeService.theme()"
+      [attr.aria-label]="'Change theme. Current: ' + themeService.theme()"
       class="theme-toggle-btn"
     >
       @switch (themeService.effectiveTheme()) {
