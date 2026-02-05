@@ -1,0 +1,133 @@
+---
+description: "Build, test, and validation commands with preconditions and error handling"
+alwaysApply: true
+---
+
+# Build & Validation Instructions
+
+## Prerequisites
+**Before any build/test command:**
+- Node.js version: **20.x** (check with `node --version`)
+- pnpm version: **10.28.1** (check with `pnpm --version`)
+- If versions mismatch, update using `nvm` (Node) or `npm install -g pnpm@10.28.1`
+
+## Bootstrap Sequence
+**ALWAYS run in this order:**
+1. `pnpm install --frozen-lockfile` (required; do not use `pnpm install` without flag)
+   - Precondition: Node 20.x and pnpm 10.28.1 installed
+   - Expected time: 30-60 seconds
+   - Postcondition: `node_modules/` populated, lockfile verified
+   - If fails: Check Node/pnpm versions, delete `node_modules` and retry
+
+## Build Commands
+**Production build:**
+- Command: `pnpm build` (aliases to `ng build`)
+- Expected output: `dist/erp-frontend-ng/` directory
+- Expected time: 2-3 minutes
+- Precondition: `pnpm install --frozen-lockfile` completed successfully
+- If fails: Check TypeScript errors (`pnpm exec tsc --noEmit`), verify Angular CLI version
+
+**Development build:**
+- Command: `pnpm build:dev` (aliases to `ng build --configuration development`)
+- Use for: Local development, source maps
+- Expected output: `dist/erp-frontend-ng/` with source maps
+
+**Watch mode:**
+- Command: `pnpm watch` (aliases to `ng build --watch --configuration development`)
+- Use for: Continuous rebuilding during development
+- Note: Does not start dev server; use `pnpm start` for that
+
+## Validation Commands
+**Linting:**
+- Command: `pnpm lint` (aliases to `eslint src`)
+- Expected time: 10-30 seconds
+- Precondition: `pnpm install --frozen-lockfile` completed
+- If fails: Fix ESLint errors; never bypass with `// eslint-disable`
+
+**Type checking:**
+- Command: `pnpm exec tsc --noEmit -p tsconfig.app.json`
+- Expected time: 5-15 seconds
+- Precondition: `pnpm install --frozen-lockfile` completed
+- If fails: Fix TypeScript errors; never use `@ts-ignore` without justification
+
+**Full validation (CI simulation):**
+```bash
+pnpm install --frozen-lockfile
+pnpm exec tsc --noEmit -p tsconfig.app.json
+pnpm lint
+pnpm build
+```
+Expected time: 3-5 minutes total
+
+## Test Commands
+**Unit tests:**
+- Command: `pnpm test` (runs `pnpm lint && ng test`)
+- Expected time: 30-60 seconds
+- Precondition: `pnpm install --frozen-lockfile` completed
+- Coverage target: 60-80% per file (check with `pnpm run test:coverage`)
+
+**E2E tests:**
+- Precondition: `pnpm build` completed successfully
+- Command: `pnpm run test:playwright`
+- Expected time: 2-5 minutes
+- Note: Uses mocked API endpoints; backend not required
+- If fails: Check Playwright browser installation (`pnpm exec playwright install`)
+
+**Coverage report:**
+- Command: `pnpm run test:coverage`
+- Output: `coverage/` directory with HTML report
+- Warning threshold: Files below 60% trigger warnings (non-blocking)
+
+## CI Pipeline Order
+The CI pipeline (`.github/workflows/ci.yml`) runs in this sequence:
+1. Lint workflows (actionlint)
+2. Lint & Type Check (`pnpm lint`, `tsc --noEmit`)
+3. Build Verification (`pnpm build`)
+4. Dependency Audit (`pnpm audit`)
+5. CodeQL Analysis
+6. SonarQube Scan (optional, `continue-on-error: true`)
+7. Unit Tests (`pnpm test -- --code-coverage`)
+8. Playwright E2E Tests (`pnpm run test:playwright`)
+
+**Never skip steps** in this order; each step has dependencies.
+
+## Common Errors & Workarounds
+
+**Error: "Lockfile is out of sync"**
+- Solution: Run `pnpm install --frozen-lockfile` (do not regenerate lockfile)
+
+**Error: "Cannot find module '@angular/core'"**
+- Solution: Verify Node version is 20.x, then run `pnpm install --frozen-lockfile`
+
+**Error: "TypeScript compilation failed"**
+- Solution: Run `pnpm exec tsc --noEmit -p tsconfig.app.json` to see specific errors
+
+**Error: "Playwright browsers not installed"**
+- Solution: Run `pnpm exec playwright install --with-deps`
+
+**Build succeeds but app doesn't load:**
+- Check `dist/erp-frontend-ng/index.html` exists
+- Verify `angular.json` output path matches
+- Check browser console for runtime errors
+
+## Project Layout
+**Key directories:**
+- `src/app/core/` - Singleton services, guards, interceptors
+- `src/app/features/` - Feature modules (lazy-loaded)
+- `src/app/shared/` - Reusable components, pipes, directives
+- `src/app/layout/` - Main layout components (header, sidebar)
+- `e2e/` - Playwright E2E tests and mocks
+- `.github/workflows/` - CI/CD pipeline definitions
+
+**Configuration files:**
+- `angular.json` - Angular CLI configuration
+- `tsconfig.json` - TypeScript root config
+- `tsconfig.app.json` - Application TypeScript config (used by build)
+- `eslint.config.js` - ESLint configuration
+- `playwright.config.ts` - Playwright E2E test configuration
+- `karma.conf.js` - Karma unit test configuration
+- `package.json` - Dependencies and scripts
+
+**Never modify these files without understanding their purpose:**
+- `pnpm-lock.yaml` - Managed by pnpm; do not edit manually
+- `tsconfig.base.json` - Shared TypeScript config; changes affect all projects

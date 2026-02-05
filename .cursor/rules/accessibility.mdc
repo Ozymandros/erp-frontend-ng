@@ -1,0 +1,82 @@
+---
+description: "Accessibility requirements: ARIA, keyboard navigation, focus management"
+globs: ["**/*.component.html", "**/*.component.ts"]
+alwaysApply: true
+---
+
+# Accessibility Rules
+
+## Trigger-Action Rules
+
+### Form Inputs
+**When adding a form input:**
+- Always include associated `<label>` element with `for` attribute matching input `id`
+- If label is hidden, use `aria-label` or `aria-labelledby`
+- Reference: `@src/app/features/auth/login/login.component.html` for label patterns
+- Never use placeholder text as label replacement
+
+**When adding icon-only buttons:**
+- Always include `aria-label` describing the action
+- Example: `<button nz-button [nzType]="'text'" aria-label="Delete user">`
+- Reference: `@src/app/features/users/users-list/users-list.component.html` for patterns
+
+### Keyboard Navigation
+**When creating interactive elements:**
+- Ensure all interactive elements are keyboard accessible
+- Use semantic HTML (`<button>`, `<a>`, `<input>`) instead of `<div>` with click handlers
+- Maintain logical tab order (left-to-right, top-to-bottom)
+- Never remove default keyboard behavior without providing alternative
+
+**When adding custom keyboard shortcuts:**
+- Use `@HostListener('keydown', ['$event'])` for component-level shortcuts
+- Document shortcuts in component comments
+- Avoid conflicts with browser shortcuts (Ctrl+S, F5, etc.)
+
+### Focus Management
+**When opening modals or dialogs:**
+- Trap focus within modal using NG-Zorro's `nz-modal` (handles automatically)
+- Return focus to trigger element on close
+- Reference: `@src/app/shared/components/confirm-dialog/confirm-dialog.component.ts` for patterns
+
+**When showing/hiding content:**
+- Use `*ngIf` or `[hidden]` appropriately (screen readers read `*ngIf` removed content)
+- For visually hidden but accessible content, use `.sr-only` class pattern
+- Never use `display: none` on focusable elements without alternative
+
+### Visual Indicators
+**When styling focus states:**
+- Always include visible focus indicator: `outline: 2px solid currentColor` or `box-shadow`
+- Use `:focus-visible` pseudo-class for keyboard-only focus
+- Reference: `@src/styles/_accessibility.scss` for focus styles
+- Never remove `outline` without providing alternative focus indicator
+
+**When using color to convey information:**
+- Never rely solely on color (e.g., red = error); include icons or text
+- Ensure color contrast meets WCAG AA (4.5:1 for normal text, 3:1 for large text)
+- Reference: `@src/styles/_variables.scss` for color tokens
+
+### Motion Preferences
+**When adding animations:**
+- Respect `prefers-reduced-motion` media query
+- Use `@media (prefers-reduced-motion: reduce) { animation: none; }`
+- Reference: `@src/styles/_animations.scss` for reduced motion patterns
+- Never force animations on users who prefer reduced motion
+
+## Never Do
+- Never use `<div>` or `<span>` for buttons; use `<button>` or `<a>`
+- Never remove focus indicators without providing alternative
+- Never use `tabindex="-1"` to remove elements from tab order unless modal trap
+- Never use `aria-hidden="true"` on interactive elements
+- Never skip heading levels (h1 → h3 without h2)
+- Never use color alone to indicate state (error, success, warning)
+- Never create keyboard traps (except intentional modal focus traps)
+
+## Validation Checklist
+Before submitting code, verify:
+- [ ] All inputs have associated labels
+- [ ] All icon-only buttons have `aria-label`
+- [ ] Focus indicators are visible
+- [ ] Tab order is logical
+- [ ] Color contrast meets WCAG AA
+- [ ] Animations respect `prefers-reduced-motion`
+- [ ] Screen reader testing completed (if possible)

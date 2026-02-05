@@ -1,0 +1,85 @@
+---
+description: "Testing patterns for Angular components, services, and E2E tests"
+globs: ["**/*.spec.ts", "**/*.e2e.ts", "e2e/**/*.ts"]
+alwaysApply: false
+---
+
+# Testing Patterns
+
+## Trigger-Action Rules
+
+### Unit Test Creation
+**When creating unit tests for a component:**
+- Use `TestBed.configureTestingModule()` with standalone component imports
+- Mock Router, ActivatedRoute, and HTTP services
+- Reference: `@src/app/features/auth/login/login.component.spec.ts` for patterns
+- Test public behavior, not private methods
+
+**When creating unit tests for a service:**
+- Use `TestBed.inject()` for dependency injection
+- Mock HTTP with `HttpTestingController` from `@angular/common/http/testing`
+- Reference: `@src/app/core/services/api.service.spec.ts` for HTTP mocking patterns
+- Test error paths and edge cases, not just happy paths
+
+**When writing test assertions:**
+- Use descriptive test names: `it('should display error message when API returns 401', ...)`
+- One assertion per test when possible
+- Use `expect().toBeTruthy()` only when boolean is meaningful; prefer specific matchers
+
+### E2E Test Creation
+**When creating Playwright E2E tests:**
+- Use mocked API endpoints from `@e2e/mocks/api-mocks.ts`
+- Reference: `@e2e/auth/login.spec.ts` for authentication flow patterns
+- Use `page.goto()` with base URL from `playwright.config.ts`
+- Wait for network idle before assertions: `await page.waitForLoadState('networkidle')`
+
+**When testing forms:**
+- Use `page.fill()` for text inputs
+- Use `page.selectOption()` for dropdowns
+- Use `page.click()` for buttons and checkboxes
+- Verify form state before submission
+
+### Test Execution
+**When running tests locally:**
+- Always run `pnpm install --frozen-lockfile` first
+- Unit tests: `pnpm test` (runs lint + `ng test`)
+- E2E tests: `pnpm run test:playwright` (requires `pnpm build` first)
+- Coverage: `pnpm run test:coverage` (target: 60-80% per file)
+
+**When tests fail in CI:**
+- Check Node version (must be 20.x)
+- Check pnpm version (must be 10.28.1)
+- Verify `--frozen-lockfile` flag is used
+- Check for flaky tests (timing issues, network mocks)
+
+## Never Do
+- Never test implementation details (private methods, internal state)
+- Never use `setTimeout` in tests without `fakeAsync()` and `tick()`
+- Never make real HTTP calls in unit tests
+- Never skip tests with `xit()` or `xdescribe()` without TODO comment
+- Never hardcode test data that should be in fixtures
+- Never write tests that depend on execution order
+- Never bypass coverage thresholds without justification
+
+## Mocking Patterns
+**When mocking HTTP:**
+```typescript
+// Reference: @src/app/core/services/api.service.spec.ts
+const req = httpMock.expectOne('/api/users');
+expect(req.request.method).toBe('GET');
+req.flush(mockUsers);
+```
+
+**When mocking Router:**
+```typescript
+// Reference: @src/app/features/auth/login/login.component.spec.ts
+const router = TestBed.inject(Router);
+spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+```
+
+**When mocking ActivatedRoute:**
+```typescript
+// Reference: @src/app/features/inventory/products-list/products-list.component.spec.ts
+const route = { snapshot: { params: { id: '123' } } };
+TestBed.configureTestingModule({ providers: [{ provide: ActivatedRoute, useValue: route }] });
+```
