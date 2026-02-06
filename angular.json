@@ -104,6 +104,9 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
+            "watch": false,
+            "browsers": "ChromeHeadless",
+            "karmaConfig": "karma.conf.js",
             "polyfills": [
               "zone.js",
               "zone.js/testing"
@@ -117,7 +120,9 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "src/test-console-suppress.js"
+            ]
           }
         }
       }

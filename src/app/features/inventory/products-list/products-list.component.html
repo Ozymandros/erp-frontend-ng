@@ -1,108 +1,100 @@
 @if (permissions$ | async; as p) {
-<div class="products-list">
-  <div class="page-header">
-    <h1>Products Management</h1>
-    <div class="header-actions">
-      @if (p.canExport) {
-        <button nz-button (click)="exportToXlsx('products.xlsx')" class="export-button">
-          <span nz-icon nzType="file-excel"></span> Export XLSX
-        </button>
-      }
-      @if (p.canExport) {
-        <button nz-button (click)="exportToPdf('products.pdf')" class="export-button">
-          <span nz-icon nzType="file-pdf"></span> Export PDF
-        </button>
-      }
-
-      @if (p.canCreate) {
-        <button nz-button nzType="primary" routerLink="/inventory/products/new">
-          <span nz-icon nzType="plus"></span>
-          Add Product
-        </button>
-      }
-    </div>
+<div class="page-header">
+  <h1 nz-typography>Products Management</h1>
+  <div class="header-actions">
+    @if (p.canExport) {
+      <app-button (click)="exportToXlsx('products.xlsx')" icon="file-excel">
+        Export XLSX
+      </app-button>
+    }
+    @if (p.canExport) {
+      <app-button (click)="exportToPdf('products.pdf')" icon="file-pdf">
+        Export PDF
+      </app-button>
+    }
+    @if (p.canCreate) {
+      <app-button type="primary" routerLink="/inventory/products/new" icon="plus">
+        Add Product
+      </app-button>
+    }
   </div>
+</div>
 
-  <div class="list-search">
-    <!--<span class="list-search__label">Search</span>-->
-    <nz-space-compact nzSize="large" class="list-search__compact">
-      <nz-input-wrapper>
-        <nz-icon nzInputAddonBefore nzType="search" />
-        <input
-          type="text"
-          nz-input
-          placeholder="By name or SKU..."
-          [(ngModel)]="searchTerm"
-          (ngModelChange)="onSearch()"
-        />
-      </nz-input-wrapper>
-    </nz-space-compact>
+<nz-card>
+  <div class="search-container">
+    <app-input
+      [(ngModel)]="searchTerm"
+      (ngModelChange)="onSearch()"
+      placeholder="By name or SKU..."
+      icon="search"
+      size="large"
+    ></app-input>
   </div>
 
   <nz-table
     #productsTable
-    [nzData]="products"
+    [nzData]="data"
     [nzLoading]="loading"
-    [nzPageSize]="pageSize"
-    [nzPageIndex]="pageIndex"
     [nzTotal]="total"
+    [(nzPageIndex)]="pageIndex"
+    [(nzPageSize)]="pageSize"
     [nzFrontPagination]="false"
     (nzPageIndexChange)="onPageChange($event)"
     (nzPageSizeChange)="onPageSizeChange($event)"
-    [nzScroll]="{ x: '800px', y: 'calc(100vh - 350px)' }"
+    [nzScroll]="{ x: '800px' }"
   >
     <thead>
       <tr>
-        <th>SKU</th>
-        <th>Name</th>
-        <th>Unit Price</th>
-        <th>Stock</th>
+        <th scope="col">SKU</th>
+        <th scope="col">Name</th>
+        <th scope="col">Unit Price</th>
+        <th scope="col">Stock</th>
         @if (p.canUpdate || p.canDelete) {
-          <th nzWidth="150px">Actions</th>
+          <th scope="col" nzWidth="150px">Actions</th>
         }
       </tr>
     </thead>
     <tbody>
-      @for (product of productsTable.data; track product.id) {
+      @for (item of productsTable.data; track item.id) {
         <tr>
-          <td><strong>{{ product.sku }}</strong></td>
-          <td>{{ product.name }}</td>
-          <td>${{ product.unitPrice.toFixed(2) }}</td>
+          <td><strong>{{ item.sku }}</strong></td>
+          <td>{{ item.name }}</td>
+          <td>{{ item.unitPrice | currency }}</td>
           <td>
-            <nz-tag [nzColor]="product.quantityInStock <= product.reorderLevel ? 'red' : 'green'">
-              {{ product.quantityInStock }}
+            <nz-tag [nzColor]="item.quantityInStock <= item.reorderLevel ? 'red' : 'green'">
+              {{ item.quantityInStock }}
             </nz-tag>
           </td>
           @if (p.canUpdate || p.canDelete) {
             <td>
-              @if (p.canUpdate) {
-                <button 
-                  nz-button 
-                  nzType="link" 
-                  nzSize="small"
-                  [routerLink]="['/inventory/products', product.id]"
-                >
-                  <span nz-icon nzType="edit"></span>
-                  Edit
-                </button>
-              }
-              @if (p.canDelete) {
-                <button 
-                  nz-button 
-                  nzType="link" 
-                  nzSize="small"
-                  nzDanger
-                  (click)="deleteProduct(product)"
-                >
-                  <span nz-icon nzType="delete"></span>
-                  Delete
-                </button>
-              }
+              <nz-space>
+                @if (p.canUpdate) {
+                  <app-button
+                    *nzSpaceItem
+                    type="link"
+                    [routerLink]="['/inventory/products', item.id]"
+                    icon="edit"
+                    tooltip="Edit Product"
+                  ></app-button>
+                }
+                @if (p.canDelete) {
+                  <app-button
+                    *nzSpaceItem
+                    type="link"
+                    danger
+                    nz-popconfirm
+                    nzPopconfirmTitle="Are you sure you want to delete this product?"
+                    (nzOnConfirm)="deleteProduct(item)"
+                    icon="delete"
+                    tooltip="Delete Product"
+                  ></app-button>
+                }
+              </nz-space>
             </td>
           }
         </tr>
       }
     </tbody>
   </nz-table>
-</div>
+</nz-card>
 }

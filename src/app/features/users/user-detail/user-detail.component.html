@@ -1,10 +1,9 @@
 <div class="user-detail">
   <div class="page-header">
-    <button nz-button nzType="default" routerLink="/users">
-      <span nz-icon nzType="arrow-left"></span>
+    <app-button routerLink="/users" icon="arrow-left">
       Back to List
-    </button>
-    <h1>{{ isEditMode ? 'Edit User' : 'Create User' }}</h1>
+    </app-button>
+    <h1 nz-typography>{{ isEditMode ? 'Edit User' : 'Create User' }}</h1>
   </div>
 
   <nz-card [nzLoading]="loading">
@@ -14,7 +13,7 @@
           <nz-form-item>
             <nz-form-label nzRequired>Username</nz-form-label>
             <nz-form-control nzErrorTip="Please input username!">
-              <input nz-input formControlName="username" placeholder="Username" />
+              <app-input formControlName="username" placeholder="Username"></app-input>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -22,7 +21,7 @@
           <nz-form-item>
             <nz-form-label nzRequired>Email</nz-form-label>
             <nz-form-control nzErrorTip="Please input a valid email!">
-              <input nz-input formControlName="email" type="email" placeholder="Email" />
+              <app-input formControlName="email" type="email" placeholder="Email"></app-input>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -33,7 +32,7 @@
           <nz-form-item>
             <nz-form-label>First Name</nz-form-label>
             <nz-form-control>
-              <input nz-input formControlName="firstName" placeholder="First Name" />
+              <app-input formControlName="firstName" placeholder="First Name"></app-input>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -41,7 +40,7 @@
           <nz-form-item>
             <nz-form-label>Last Name</nz-form-label>
             <nz-form-control>
-              <input nz-input formControlName="lastName" placeholder="Last Name" />
+              <app-input formControlName="lastName" placeholder="Last Name"></app-input>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -53,7 +52,7 @@
             <nz-form-item>
               <nz-form-label nzRequired>Password</nz-form-label>
               <nz-form-control nzErrorTip="Password is required!">
-                <input nz-input formControlName="password" type="password" placeholder="Password" />
+                <app-input formControlName="password" type="password" placeholder="Password"></app-input>
               </nz-form-control>
             </nz-form-item>
           </div>
@@ -72,10 +71,10 @@
       </div>
 
       <div class="form-actions">
-        <button nz-button nzType="primary" type="submit" [nzLoading]="saving" [disabled]="!userForm.valid">
+        <app-button type="primary" btnType="submit" [loading]="saving" [disabled]="!userForm.valid">
           {{ isEditMode ? 'Update' : 'Create' }}
-        </button>
-        <button nz-button nzType="default" type="button" routerLink="/users">Cancel</button>
+        </app-button>
+        <app-button type="default" btnType="button" routerLink="/users">Cancel</app-button>
       </div>
     </form>
   </nz-card>
@@ -84,7 +83,7 @@
   @if (isEditMode && userId && canUpdate()) {
     <nz-card id="manage-roles" class="manage-roles-card">
       <div nz-row nzJustify="space-between" nzAlign="middle" class="manage-roles-header">
-        <h3 class="manage-roles-title">Manage Roles</h3>
+        <h3 nz-typography class="manage-roles-title">Manage Roles</h3>
         <span class="manage-roles-subtitle">Assign or unassign roles to this user</span>
       </div>
       <app-role-selector
@@ -99,17 +98,17 @@
   <!-- Assigned Roles & Permissions View -->
   @if (isEditMode && user) {
     <nz-card class="roles-permissions-card">
-      <h3 class="roles-permissions-title">Roles & Permissions</h3>
+      <h3 nz-typography class="roles-permissions-title">Roles & Permissions</h3>
       @if (userRoles.length === 0) {
-        <p>No roles assigned to this user.</p>
+        <p nz-paragraph>No roles assigned to this user.</p>
       } @else {
         @for (role of userRoles; track role.id) {
           <nz-card class="role-card">
             <div class="role-card-header">
               <div>
-                <h4 class="role-name">{{ role.name }}</h4>
+                <h4 nz-typography class="role-name">{{ role.name }}</h4>
                 @if (role.description) {
-                  <p class="role-description">{{ role.description }}</p>
+                  <p nz-paragraph class="role-description">{{ role.description }}</p>
                 }
               </div>
             </div>

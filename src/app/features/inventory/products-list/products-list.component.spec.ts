@@ -1,14 +1,13 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ProductsListComponent } from './products-list.component';
 import { ProductsService } from '../../../core/services/products.service';
 import { ProductDto, PaginatedResponse } from '../../../types/api.types';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of, throwError } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { FileUtils } from '../../../core/utils/file-utils';
 import { FileService } from '../../../core/services/file.service';
 
 
@@ -43,8 +42,10 @@ describe('ProductsListComponent', () => {
     } as PaginatedResponse<ProductDto>));
 
     await TestBed.configureTestingModule({
-      imports: [ ProductsListComponent, BrowserAnimationsModule, HttpClientTestingModule ],
+      imports: [ ProductsListComponent ],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: ProductsService, useValue: productsServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
         { provide: NzModalService, useValue: modalServiceSpy },
@@ -72,15 +73,16 @@ describe('ProductsListComponent', () => {
   });
 
   it('should load products', () => {
-    expect(component.products.length).toBe(1);
+    expect(component.data.length).toBe(1);
     expect(component.total).toBe(1);
   });
 
-  it('should search products', () => {
+  it('should search products', fakeAsync(() => {
     component.searchTerm = 'query';
     component.onSearch();
-    expect(productsServiceSpy.getAll).toHaveBeenCalledWith(jasmine.objectContaining({ search: 'query', page: 1 }));
-  });
+    tick(300);
+    expect(productsServiceSpy.getAll).toHaveBeenCalledWith(jasmine.objectContaining({ SearchTerm: 'query', page: 1 }));
+  }));
 
   it('should change page', () => {
     component.onPageChange(2);

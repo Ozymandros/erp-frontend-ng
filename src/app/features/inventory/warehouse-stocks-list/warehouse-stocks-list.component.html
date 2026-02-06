@@ -1,75 +1,67 @@
 @if (permissions$ | async; as p) {
-<div>
-  <div class="page-header">
-    <h1>Warehouse Stock Levels</h1>
-    <div class="header-actions">
-      @if (p.canExport) {
-        <button nz-button (click)="exportToXlsx()">
-          <i nz-icon nzType="file-excel"></i> Export XLSX
-        </button>
-      }
-      @if (p.canExport) {
-        <button nz-button (click)="exportToPdf()">
-          <i nz-icon nzType="file-pdf"></i> Export PDF
-        </button>
-      }
-    </div>
+<div class="page-header">
+  <h1 nz-typography>Warehouse Stock Levels</h1>
+  <div class="header-actions">
+    @if (p.canExport) {
+      <app-button (click)="exportToXlsx('warehouse-stocks.xlsx')" icon="file-excel">
+        Export XLSX
+      </app-button>
+    }
+    @if (p.canExport) {
+      <app-button (click)="exportToPdf('warehouse-stocks.pdf')" icon="file-pdf">
+        Export PDF
+      </app-button>
+    }
+  </div>
+</div>
+
+<nz-card>
+  <div class="search-container">
+    <app-input
+      [(ngModel)]="searchTerm"
+      (ngModelChange)="onSearch()"
+      placeholder="Search by product name or SKU..."
+      icon="search"
+      size="large"
+    ></app-input>
   </div>
 
-  <nz-card>
-    <div class="list-search">
-      <!--<span class="list-search__label">Search</span>-->
-      <nz-space-compact nzSize="large" class="list-search__compact">
-        <nz-input-wrapper>
-          <nz-icon nzInputAddonBefore nzType="search" />
-          <input
-            type="text"
-            nz-input
-            placeholder="By product name or SKU..."
-            [(ngModel)]="searchTerm"
-            (ngModelChange)="onSearch()"
-          />
-        </nz-input-wrapper>
-      </nz-space-compact>
-    </div>
-
-    <nz-table
-      #basicTable
-      [nzData]="data"
-      [nzLoading]="loading"
-      [nzTotal]="total"
-      [(nzPageIndex)]="pageIndex"
-      [(nzPageSize)]="pageSize"
-      [nzFrontPagination]="false"
-      (nzPageIndexChange)="onPageChange($event)"
-      (nzPageSizeChange)="onPageSizeChange($event)"
-      [nzScroll]="{ x: '1000px', y: 'calc(100vh - 400px)' }"
-    >
-      <thead>
+  <nz-table
+    #basicTable
+    [nzData]="data"
+    [nzLoading]="loading"
+    [nzTotal]="total"
+    [(nzPageIndex)]="pageIndex"
+    [(nzPageSize)]="pageSize"
+    [nzFrontPagination]="false"
+    (nzPageIndexChange)="onPageChange($event)"
+    (nzPageSizeChange)="onPageSizeChange($event)"
+    [nzScroll]="{ x: '1000px' }"
+  >
+    <thead>
+      <tr>
+        <th scope="col">Warehouse</th>
+        <th scope="col">Product</th>
+        <th scope="col" nzRight>Current Stock</th>
+        <th scope="col" nzRight>Reorder Level</th>
+        <th scope="col">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of basicTable.data; track item.productId + item.warehouseId) {
         <tr>
-          <th>Warehouse</th>
-          <th>Product</th>
-          <th>Current Stock</th>
-          <th>Reorder Level</th>
-          <th>Status</th>
+          <td>{{ item.warehouseName }}</td>
+          <td><strong>{{ item.productName }}</strong> ({{ item.productSku }})</td>
+          <td nzRight>{{ item.quantity }}</td>
+          <td nzRight>{{ item.reorderLevel }}</td>
+          <td>
+            <nz-tag [nzColor]="item.quantity <= item.reorderLevel ? 'warning' : 'success'">
+              {{ item.quantity <= item.reorderLevel ? 'Low Stock' : 'In Stock' }}
+            </nz-tag>
+          </td>
         </tr>
-      </thead>
-      <tbody>
-        @for (item of basicTable.data; track item.productId + item.warehouseId) {
-          <tr>
-            <td>{{ item.warehouseName }}</td>
-            <td><strong>{{ item.productName }}</strong> ({{ item.productSku }})</td>
-            <td>{{ item.quantity }}</td>
-            <td>{{ item.reorderLevel }}</td>
-            <td>
-              <nz-tag [nzColor]="item.quantity <= item.reorderLevel ? 'warning' : 'success'">
-                {{ item.quantity <= item.reorderLevel ? 'Low Stock' : 'In Stock' }}
-              </nz-tag>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </nz-table>
-  </nz-card>
-</div>
+      }
+    </tbody>
+  </nz-table>
+</nz-card>
 }

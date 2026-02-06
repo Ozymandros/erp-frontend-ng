@@ -15,7 +15,7 @@ h1 {
 }
 
 .delete-link {
-  color: #ff4d4f;
+  color: var(--app-error-text);
   margin-left: 8px;
 }
 

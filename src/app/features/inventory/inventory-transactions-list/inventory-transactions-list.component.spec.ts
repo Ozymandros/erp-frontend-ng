@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { ActivatedRoute, Router } from '@angular/router';
 import { InventoryTransactionsListComponent } from './inventory-transactions-list.component';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { InventoryTransactionsService } from '../../../core/services/inventory-transactions.service';
 import { FileService } from '../../../core/services/file.service';
@@ -15,6 +16,8 @@ describe('InventoryTransactionsListComponent', () => {
   let messageServiceSpy: jasmine.SpyObj<NzMessageService>;
   let fileServiceSpy: jasmine.SpyObj<FileService>;
   let modalServiceSpy: jasmine.SpyObj<NzModalService>;
+  let routerSpy: jasmine.SpyObj<Router>;
+  let activatedRouteSpy: any;
 
   const mockResponse = {
     items: [{ transactionType: 'Sale', productName: 'P1', quantity: 5, createdAt: new Date() }],
@@ -26,16 +29,22 @@ describe('InventoryTransactionsListComponent', () => {
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
     fileServiceSpy = jasmine.createSpyObj('FileService', ['saveFile']);
     modalServiceSpy = jasmine.createSpyObj('NzModalService', ['confirm']);
+    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    activatedRouteSpy = { queryParams: of({}) };
 
     inventoryTransactionsServiceSpy.getAll.and.returnValue(of(mockResponse as any));
 
     await TestBed.configureTestingModule({
-      imports: [ InventoryTransactionsListComponent, BrowserAnimationsModule, HttpClientTestingModule ],
+      imports: [ InventoryTransactionsListComponent ],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: InventoryTransactionsService, useValue: inventoryTransactionsServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
         { provide: FileService, useValue: fileServiceSpy },
-        { provide: NzModalService, useValue: modalServiceSpy }
+        { provide: NzModalService, useValue: modalServiceSpy },
+        { provide: Router, useValue: routerSpy },
+        { provide: ActivatedRoute, useValue: activatedRouteSpy }
       ]
     })
     .compileComponents();
@@ -58,5 +67,13 @@ describe('InventoryTransactionsListComponent', () => {
     component.searchTerm = 'query';
     component.onSearch();
     expect(inventoryTransactionsServiceSpy.getAll).toHaveBeenCalled();
+  });
+
+  it('should return correct transaction colors', () => {
+    expect(component.getTransactionColor('Purchase')).toBe('green');
+    expect(component.getTransactionColor('Sale')).toBe('blue');
+    expect(component.getTransactionColor('Transfer')).toBe('orange');
+    expect(component.getTransactionColor('Adjustment')).toBe('red');
+    expect(component.getTransactionColor('Unknown')).toBe('default');
   });
 });

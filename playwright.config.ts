@@ -4,8 +4,8 @@ import { defineConfig, devices } from '@playwright/test';
  * Playwright configuration for Angular E2E testing with API mocking
  */
 export default defineConfig({
-  globalSetup: require.resolve('./e2e/global-setup'),
-  globalTeardown: require.resolve('./e2e/global-teardown'),
+  globalSetup: './e2e/global-setup.ts',
+  globalTeardown: './e2e/global-teardown.ts',
   testDir: './e2e',
   timeout: 30 * 1000,
   expect: {
@@ -17,7 +17,7 @@ export default defineConfig({
   workers: process.env['CI'] ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:4200',
+    baseURL: 'http://localhost:4201',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
@@ -39,9 +39,9 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: 'npx serve -s dist/temp-ng-project/browser -p 4200',
-    url: 'http://localhost:4200',
-    reuseExistingServer: true,
+    command: 'pnpm exec http-server dist/temp-ng-project/browser -p 4201 --proxy http://localhost:4201?',
+    url: 'http://localhost:4201',
+    reuseExistingServer: false,
     timeout: 60 * 1000,
   },
 });

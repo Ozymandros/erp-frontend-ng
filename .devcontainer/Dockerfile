@@ -2,12 +2,14 @@
 # https://github.com/devcontainers/images/tree/main/src/javascript-node
 FROM mcr.microsoft.com/devcontainers/javascript-node:22
 
-# Enable Corepack for pnpm/yarn management
-RUN corepack enable && corepack prepare pnpm@latest --activate
+# Pin pnpm to match package.json packageManager (reproducible installs)
+ARG PNPM_VERSION=10.28.1
+RUN corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
 
-# Install Playwright system dependencies and common utilities
+# Install Chromium for Karma (ChromeHeadless) and Playwright system deps + utilities
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends \
+    chromium \
     # Playwright browser dependencies
     libnss3 \
     libnspr4 \
@@ -33,5 +35,8 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     bash-completion \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Set the default user to 'node'
+# Karma ChromeHeadless: use Chromium when CHROME_BIN not set
+ENV CHROME_BIN=/usr/bin/chromium
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1
+
 USER node

@@ -1,9 +1,10 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { ActivatedRoute, Router } from '@angular/router';
 import { WarehouseStocksListComponent } from './warehouse-stocks-list.component';
 import { WarehouseStocksService } from '../../../core/services/warehouse-stocks.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { FileService } from '../../../core/services/file.service';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -15,6 +16,8 @@ describe('WarehouseStocksListComponent', () => {
   let messageServiceSpy: jasmine.SpyObj<NzMessageService>;
   let fileServiceSpy: jasmine.SpyObj<FileService>;
   let modalServiceSpy: jasmine.SpyObj<NzModalService>;
+  let routerSpy: jasmine.SpyObj<Router>;
+  let activatedRouteSpy: any;
 
   const mockResponse = {
     items: [{ warehouseName: 'W1', productName: 'P1', quantity: 10, reorderLevel: 5 }],
@@ -26,16 +29,22 @@ describe('WarehouseStocksListComponent', () => {
     warehouseStocksServiceSpy = jasmine.createSpyObj('WarehouseStocksService', ['getAll']);
     fileServiceSpy = jasmine.createSpyObj('FileService', ['saveFile']);
     modalServiceSpy = jasmine.createSpyObj('NzModalService', ['confirm']);
+    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    activatedRouteSpy = { queryParams: of({}) };
 
     warehouseStocksServiceSpy.getAll.and.returnValue(of(mockResponse as any));
 
     await TestBed.configureTestingModule({
-      imports: [ WarehouseStocksListComponent, BrowserAnimationsModule, HttpClientTestingModule ],
+      imports: [ WarehouseStocksListComponent ],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: WarehouseStocksService, useValue: warehouseStocksServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
         { provide: FileService, useValue: fileServiceSpy },
-        { provide: NzModalService, useValue: modalServiceSpy }
+        { provide: NzModalService, useValue: modalServiceSpy },
+        { provide: Router, useValue: routerSpy },
+        { provide: ActivatedRoute, useValue: activatedRouteSpy }
       ]
     })
     .compileComponents();
@@ -54,9 +63,10 @@ describe('WarehouseStocksListComponent', () => {
     expect(component.total).toBe(1);
   });
   
-  it('should search stocks', () => {
+  it('should search stocks', fakeAsync(() => {
     component.searchTerm = 'query';
     component.onSearch();
-    expect(warehouseStocksServiceSpy.getAll).toHaveBeenCalledWith(jasmine.objectContaining({ search: 'query' }));
-  });
+    tick(300);
+    expect(warehouseStocksServiceSpy.getAll).toHaveBeenCalledWith(jasmine.objectContaining({ SearchTerm: 'query' }));
+  }));
 });

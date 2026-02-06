@@ -11,17 +11,17 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil, finalize } from 'rxjs';
 import { PermissionsService } from '../../../../core/services/permissions.service';
 import { RolesService } from '../../../../core/services/roles.service';
+import { compareByLocale } from '../../../../core/utils/string-utils';
 import { Permission } from '../../../../types/api.types';
+import { AppButtonComponent, AppInputComponent, AppSelectComponent } from '../../../../shared/components';
 import {
   PermissionGroup,
   PermissionGroupComponent,
@@ -36,12 +36,13 @@ const SEARCH_DEBOUNCE_MS = 300;
   imports: [
     CommonModule,
     FormsModule,
-    NzIconModule,
-    NzInputModule,
-    NzSelectModule,
     NzSpaceModule,
     NzSpinModule,
+    NzSelectModule,
     PermissionGroupComponent,
+    AppButtonComponent,
+    AppInputComponent,
+    AppSelectComponent
   ],
   templateUrl: './permission-selector.component.html',
   styleUrls: ['./permission-selector.component.css'],
@@ -68,6 +69,7 @@ export class PermissionSelectorComponent implements OnInit, OnChanges, OnDestroy
   private _lastSearchTerm = '';
   private _lastSelectedModule: string | null = null;
   private _lastAllPermissionsLength = 0;
+  private _lastPermissionsRef: Permission[] | null = null;
   private searchTerm$ = new Subject<string>();
   private destroy$ = new Subject<void>();
 
@@ -104,8 +106,8 @@ export class PermissionSelectorComponent implements OnInit, OnChanges, OnDestroy
   private updateAssignedPermissions(): void {
     const newIds = new Set(this.initialPermissions.map((p) => p.id));
     // Only update if contents actually changed to avoid unnecessary re-renders
-    const oldIds = Array.from(this.assignedPermissions).sort().join(',');
-    const newIdsStr = Array.from(newIds).sort().join(',');
+    const oldIds = Array.from(this.assignedPermissions).sort(compareByLocale).join(',');
+    const newIdsStr = Array.from(newIds).sort(compareByLocale).join(',');
     if (oldIds !== newIdsStr) {
       this.assignedPermissions = newIds;
     }
@@ -119,11 +121,11 @@ export class PermissionSelectorComponent implements OnInit, OnChanges, OnDestroy
       const currentValue = changes['initialPermissions'].currentValue || [];
       const previousIds = previousValue
         .map((p: Permission) => p.id)
-        .sort()
+        .sort(compareByLocale)
         .join(',');
       const currentIds = currentValue
         .map((p: Permission) => p.id)
-        .sort()
+        .sort(compareByLocale)
         .join(',');
 
       // Only update if IDs actually changed
@@ -408,7 +410,8 @@ export class PermissionSelectorComponent implements OnInit, OnChanges, OnDestroy
     const searchChanged = this._lastSearchTerm !== this.effectiveSearchTerm;
     const moduleChanged = this._lastSelectedModule !== this.selectedModule;
     const permissionsChanged =
-      this._lastAllPermissionsLength !== this.allPermissions.length;
+      this._lastAllPermissionsLength !== this.allPermissions.length ||
+      this._lastPermissionsRef !== this.allPermissions;
 
     if (
       this._filteredPermissions === null ||
@@ -438,6 +441,7 @@ export class PermissionSelectorComponent implements OnInit, OnChanges, OnDestroy
       this._lastSearchTerm = this.effectiveSearchTerm;
       this._lastSelectedModule = this.selectedModule;
       this._lastAllPermissionsLength = this.allPermissions.length;
+      this._lastPermissionsRef = this.allPermissions;
       // Clear grouped cache when filtered changes
       this._groupedPermissions = null;
     }
@@ -446,11 +450,13 @@ export class PermissionSelectorComponent implements OnInit, OnChanges, OnDestroy
   }
 
   get groupedPermissions(): PermissionGroup[] {
-    // Use cached value if available (cleared when filteredPermissions changes)
+    // Calling the getter ensures that cached _groupedPermissions is cleared if inputs changed
+    const filtered = this.filteredPermissions;
+    
     if (this._groupedPermissions === null) {
       const groups = new Map<string, Permission[]>();
 
-      this.filteredPermissions.forEach((permission) => {
+      filtered.forEach((permission) => {
         if (!groups.has(permission.module)) {
           groups.set(permission.module, []);
         }
@@ -461,7 +467,7 @@ export class PermissionSelectorComponent implements OnInit, OnChanges, OnDestroy
         ([module, permissions]): PermissionGroup => ({
           module,
           permissions: permissions.sort((a, b) =>
-            a.action.localeCompare(b.action),
+            compareByLocale(a.action, b.action),
           ),
         }),
       );
@@ -472,7 +478,7 @@ export class PermissionSelectorComponent implements OnInit, OnChanges, OnDestroy
 
   get modules(): string[] {
     const moduleSet = new Set(this.allPermissions.map((p) => p.module));
-    return Array.from(moduleSet).sort();
+    return Array.from(moduleSet).sort(compareByLocale);
   }
 
   get assignedCount(): number {

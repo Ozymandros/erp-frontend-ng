@@ -1,17 +1,9 @@
 <div class="sales-order-detail">
   <div class="page-header">
-    <button
-      type="button"
-      nz-button
-      nzType="default"
-      routerLink="/sales/orders"
-      class="back-button"
-      aria-label="Back to orders list"
-    >
-      <span nz-icon nzType="arrow-left"></span>
+    <app-button type="default" routerLink="/sales/orders" icon="arrow-left">
       Back to List
-    </button>
-    <h1>
+    </app-button>
+    <h1 nz-typography>
       {{
         isNewOrder
           ? "Create New Sales Order"
@@ -33,11 +25,10 @@
             <nz-form-item>
               <nz-form-label nzRequired>Order #</nz-form-label>
               <nz-form-control nzErrorTip="Please enter order number">
-                <input
-                  nz-input
+                <app-input
                   formControlName="orderNumber"
                   placeholder="SO-0001"
-                />
+                ></app-input>
               </nz-form-control>
             </nz-form-item>
           </div>
@@ -45,19 +36,13 @@
             <nz-form-item>
               <nz-form-label nzRequired>Customer</nz-form-label>
               <nz-form-control nzErrorTip="Please select a customer">
-                <nz-select
+                <app-select
                   formControlName="customerId"
-                  nzShowSearch
-                  nzAllowClear
+                  [options]="customers"
+                  labelKey="name"
+                  valueKey="id"
                   placeholder="Select customer"
-                >
-                  @for (customer of customers; track customer.id) {
-                    <nz-option
-                      [nzLabel]="customer.name"
-                      [nzValue]="customer.id"
-                    ></nz-option>
-                  }
-                </nz-select>
+                ></app-select>
               </nz-form-control>
             </nz-form-item>
           </div>
@@ -74,7 +59,7 @@
           </div>
         </div>
 
-        <h3 class="lines-title">Order Lines</h3>
+        <h3 nz-typography class="lines-title">Order Lines</h3>
         <nz-table
           #linesTable
           [nzData]="lines.controls"
@@ -83,11 +68,11 @@
         >
           <thead>
             <tr>
-              <th nzWidth="40%">Product</th>
-              <th nzWidth="15%">Quantity</th>
-              <th nzWidth="20%">Unit Price</th>
-              <th nzWidth="15%">Line Total</th>
-              <th nzWidth="10%"></th>
+              <th id="th-product" scope="col" nzWidth="40%">Product</th>
+              <th id="th-quantity" scope="col" nzWidth="15%">Quantity</th>
+              <th id="th-unit-price" scope="col" nzWidth="20%">Unit Price</th>
+              <th id="th-line-total" scope="col" nzWidth="15%">Line Total</th>
+              <th id="th-remove" scope="col" nzWidth="10%"></th>
             </tr>
           </thead>
           <tbody formArrayName="lines">
@@ -96,40 +81,34 @@
                 <td>
                   <nz-form-item>
                     <nz-form-control nzErrorTip="Product required">
-                      <nz-select
+                      <app-select
                         formControlName="productId"
-                        nzShowSearch
-                        nzAllowClear
+                        [options]="products"
+                        labelKey="name"
+                        valueKey="id"
                         placeholder="Select product"
-                      >
-                        @for (product of products; track product.id) {
-                          <nz-option
-                            [nzLabel]="product.name"
-                            [nzValue]="product.id"
-                          ></nz-option>
-                        }
-                      </nz-select>
+                      ></app-select>
                     </nz-form-control>
                   </nz-form-item>
                 </td>
                 <td>
                   <nz-form-item>
                     <nz-form-control nzErrorTip="Min 1">
-                      <nz-input-number
+                      <app-input-number
                         formControlName="quantity"
-                        [nzMin]="1"
-                      ></nz-input-number>
+                        [min]="1"
+                      ></app-input-number>
                     </nz-form-control>
                   </nz-form-item>
                 </td>
                 <td>
                   <nz-form-item>
                     <nz-form-control nzErrorTip="Required">
-                      <nz-input-number
+                      <app-input-number
                         formControlName="unitPrice"
-                        [nzMin]="0"
-                        [nzStep]="0.01"
-                      ></nz-input-number>
+                        [min]="0"
+                        [step]="0.01"
+                      ></app-input-number>
                     </nz-form-control>
                   </nz-form-item>
                 </td>
@@ -142,17 +121,13 @@
                   }}
                 </td>
                 <td>
-                  <button
-                    type="button"
-                    nz-button
-                    nzDanger
-                    nzShape="circle"
+                  <app-button
                     (click)="removeLine($index)"
-                    title="Remove line"
-                    aria-label="Remove line"
-                  >
-                    <span nz-icon nzType="minus"></span>
-                  </button>
+                    type="link"
+                    danger
+                    icon="minus"
+                    tooltip="Remove line"
+                  ></app-button>
                 </td>
               </tr>
             }
@@ -160,16 +135,14 @@
         </nz-table>
 
         <div class="form-actions">
-          <button
-            type="button"
-            nz-button
-            nzType="dashed"
+          <app-button
             (click)="addLine()"
+            type="dashed"
+            icon="plus"
             class="add-line-btn"
-            aria-label="Add order line"
           >
-            <span nz-icon nzType="plus"></span> Add Line
-          </button>
+            Add Line
+          </app-button>
 
           <div class="total-section">
             <span class="total-label">Grand Total:</span>
@@ -178,15 +151,13 @@
         </div>
 
         <div class="submit-section">
-          <button
-            type="submit"
-            nz-button
-            nzType="primary"
-            [nzLoading]="submitting"
-            aria-label="Create order"
+          <app-button
+            btnType="submit"
+            type="primary"
+            [loading]="submitting"
           >
             Create Order
-          </button>
+          </app-button>
         </div>
       </form>
     } @else {
@@ -216,7 +187,7 @@
           </div>
         </div>
 
-        <h3 class="lines-title">Order Lines</h3>
+        <h3 nz-typography class="lines-title">Order Lines</h3>
         <nz-table
           #linesTable
           [nzData]="o.lines || []"
@@ -225,10 +196,10 @@
         >
           <thead>
             <tr>
-              <th>Product</th>
-              <th nzAlign="right">Qty</th>
-              <th nzAlign="right">Unit Price</th>
-              <th nzAlign="right">Line Total</th>
+              <th id="th-lines-product" scope="col">Product</th>
+              <th id="th-lines-qty" scope="col" nzAlign="right">Qty</th>
+              <th id="th-lines-unit-price" scope="col" nzAlign="right">Unit Price</th>
+              <th id="th-lines-line-total" scope="col" nzAlign="right">Line Total</th>
             </tr>
           </thead>
           <tbody>

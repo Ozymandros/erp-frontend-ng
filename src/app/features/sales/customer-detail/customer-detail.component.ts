@@ -3,12 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { CustomersService } from '../../../core/services/customers.service';
-import { CustomerDto } from '../../../types/api.types';
+import { AppButtonComponent, AppInputComponent } from '../../../shared/components';
 
 @Component({
   selector: 'app-customer-detail',
@@ -18,9 +17,10 @@ import { CustomerDto } from '../../../types/api.types';
     ReactiveFormsModule,
     RouterLink,
     NzFormModule,
-    NzInputModule,
-    NzButtonModule,
-    NzCardModule
+    NzCardModule,
+    NzGridModule,
+    AppButtonComponent,
+    AppInputComponent
   ],
   templateUrl: './customer-detail.component.html',
   styleUrls: ['./customer-detail.component.css']

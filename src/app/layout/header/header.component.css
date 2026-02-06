@@ -1,7 +1,8 @@
 .app-header {
-  background: #fff;
+  background: transparent;
   padding: 0 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid var(--app-border-color);
+  color: var(--app-text-color);
 }
 
 .header-content {
@@ -15,8 +16,15 @@
   margin: 0;
   font-size: 20px;
   font-weight: 500;
+  color: inherit;
 }
 
 .header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-avatar {
   cursor: pointer;
 }

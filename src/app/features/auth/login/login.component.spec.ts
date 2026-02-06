@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { LoginComponent } from './login.component';
 import { AuthService } from '../../../core/services/auth.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
 
@@ -18,8 +18,10 @@ describe('LoginComponent', () => {
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
 
     await TestBed.configureTestingModule({
-      imports: [ LoginComponent, BrowserAnimationsModule, HttpClientTestingModule ],
+      imports: [ LoginComponent ],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: AuthService, useValue: authServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
         { provide: ActivatedRoute, useValue: {} } 
@@ -90,5 +92,38 @@ describe('LoginComponent', () => {
     expect(authServiceSpy.login).toHaveBeenCalled();
     expect(messageServiceSpy.error).toHaveBeenCalledWith('Invalid credentials');
     expect(component.isLoading).toBeFalse();
+  });
+
+  it('should handle login error without message', () => {
+    authServiceSpy.login.and.returnValue(throwError(() => ({})));
+    component.loginForm.controls['email'].setValue('test@example.com');
+    component.loginForm.controls['password'].setValue('wrong');
+    
+    component.onSubmit();
+    
+    expect(authServiceSpy.login).toHaveBeenCalled();
+    expect(messageServiceSpy.error).toHaveBeenCalledWith('Login failed');
+    expect(component.isLoading).toBeFalse();
+  });
+
+  it('should mark invalid controls as dirty when form is invalid', () => {
+    component.loginForm.controls['email'].setValue('');
+    component.loginForm.controls['password'].setValue('');
+    
+    component.onSubmit();
+    
+    expect(component.loginForm.controls['email'].dirty).toBeTrue();
+    expect(component.loginForm.controls['password'].dirty).toBeTrue();
+    expect(authServiceSpy.login).not.toHaveBeenCalled();
+  });
+
+  it('should mark only invalid email control as dirty', () => {
+    component.loginForm.controls['email'].setValue('invalid-email');
+    component.loginForm.controls['password'].setValue('password123');
+    
+    component.onSubmit();
+    
+    expect(component.loginForm.controls['email'].dirty).toBeTrue();
+    expect(authServiceSpy.login).not.toHaveBeenCalled();
   });
 });

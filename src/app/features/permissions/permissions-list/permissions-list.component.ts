@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -16,7 +16,6 @@ import { Permission } from '../../../types/api.types';
 import { BaseListComponent } from '../../../core/base/base-list.component';
 import { FileService } from '../../../core/services/file.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-permissions-list',
@@ -74,16 +73,16 @@ import { finalize } from 'rxjs';
           [nzFrontPagination]="false"
           (nzPageIndexChange)="loadPermissions()"
           (nzPageSizeChange)="loadPermissions()"
-          [nzScroll]="{ x: '800px', y: 'calc(100vh - 400px)' }"
+          [nzScroll]="{ x: '800px' }"
         >
           <thead>
             <tr>
-              <th>Module</th>
-              <th>Action</th>
-              <th>Description</th>
-              <th>Created At</th>
+              <th scope="col">Module</th>
+              <th scope="col">Action</th>
+              <th scope="col">Description</th>
+              <th scope="col">Created At</th>
               @if (p.canDelete) {
-                <th>Actions</th>
+                <th scope="col">Actions</th>
               }
             </tr>
           </thead>

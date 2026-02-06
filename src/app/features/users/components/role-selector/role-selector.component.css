@@ -5,16 +5,16 @@
 .summary {
   margin-bottom: 16px;
   font-weight: 500;
-  color: rgba(0, 0, 0, 0.65);
+  color: var(--app-text-secondary);
 }
 
 .error-message {
   padding: 12px;
   margin-bottom: 16px;
-  background-color: #fff2f0;
-  border: 1px solid #ffccc7;
+  background-color: var(--app-error-bg);
+  border: 1px solid var(--app-error-border);
   border-radius: 4px;
-  color: #cf1322;
+  color: var(--app-error-text);
 }
 
 .roles-grid {
@@ -24,12 +24,18 @@
 }
 
 .role-card {
-  transition: all 0.3s;
+  transition: border-color 0.3s, background-color 0.3s, box-shadow 0.3s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .role-card {
+    transition: none;
+  }
 }
 
 .role-card.assigned {
-  border-color: #52c41a;
-  background-color: #f6ffed;
+  border-color: var(--app-success-border);
+  background-color: var(--app-success-bg);
 }
 
 .role-header {
@@ -46,12 +52,12 @@
 }
 
 .check-icon {
-  color: #52c41a;
+  color: var(--app-success-text);
   font-size: 20px;
 }
 
 .role-description {
-  color: rgba(0, 0, 0, 0.65);
+  color: var(--app-text-secondary);
   font-size: 14px;
   margin-bottom: 12px;
   min-height: 40px;

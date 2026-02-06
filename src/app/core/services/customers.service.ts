@@ -1,12 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { ApiClientService } from '../api/http-client.service';
 import { SALES_ENDPOINTS } from '../api/endpoints.constants';
-import {
-  CustomerDto,
-  PaginatedResponse,
-  SearchParams
-} from '../types/api.types';
+import { CustomerDto } from '../../types/api.types';
 import { BaseApiService } from '../base/base-api.service';
 
 

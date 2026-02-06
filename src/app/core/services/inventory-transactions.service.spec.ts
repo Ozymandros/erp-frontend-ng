@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { InventoryTransactionsService } from './inventory-transactions.service';
 import { ApiClientService } from '../api/http-client.service';
-import { InventoryTransactionDto, PaginatedResponse } from '../types/api.types';
+import { InventoryTransactionDto, PaginatedResponse } from '../../types/api.types';
 
 describe('InventoryTransactionsService', () => {
   let service: InventoryTransactionsService;

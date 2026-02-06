@@ -5,6 +5,8 @@ export const mockPermissions: Permission[] = [
   { id: 'perm-2', module: 'Users', action: 'Create', description: 'Can create users', createdAt: '2024-01-01T00:00:00Z', createdBy: 'system' },
   { id: 'perm-5', module: 'Products', action: 'Read', description: 'Can view products', createdAt: '2024-01-01T00:00:00Z', createdBy: 'system' },
   { id: 'perm-7', module: 'Orders', action: 'Read', description: 'Can view orders', createdAt: '2024-01-01T00:00:00Z', createdBy: 'system' },
+  { id: 'perm-8', module: 'Sales', action: 'Read', description: 'Can view sales', createdAt: '2024-01-01T00:00:00Z', createdBy: 'system' },
+  { id: 'perm-9', module: 'Purchasing', action: 'Read', description: 'Can view purchasing', createdAt: '2024-01-01T00:00:00Z', createdBy: 'system' },
 ];
 
 export const mockRoles: Role[] = [

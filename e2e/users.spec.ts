@@ -12,19 +12,19 @@ test.describe('User Management', () => {
 
   test('should load users page and display list', async ({ page }) => {
     await page.goto('/users');
-    await expect(page.locator('.page-header h1')).toContainText('Users Management');
+    await expect(page.getByRole('heading', { name: 'Users Management' })).toBeVisible();
     await expect(page.locator('nz-table')).toBeVisible();
     await expect(page.locator('text=admin@example.com')).toBeVisible();
   });
 
   test('should navigate to roles page', async ({ page }) => {
     await page.goto('/roles');
-    await expect(page.locator('.page-header h1')).toContainText('Roles Management');
+    await expect(page.getByRole('heading', { name: 'Roles Management' })).toBeVisible();
   });
 
   test('should navigate to permissions page', async ({ page }) => {
     await page.goto('/permissions');
-    await expect(page.locator('.page-header h1')).toContainText('Permissions Management');
+    await expect(page.getByRole('heading', { name: 'Permissions Management' })).toBeVisible();
   });
 
   test('should open create user form', async ({ page }) => {

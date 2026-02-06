@@ -1,12 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { RoleDetailComponent } from './role-detail.component';
 import { RolesService } from '../../../core/services/roles.service';
 import { PermissionsService } from '../../../core/services/permissions.service';
+import { PermissionService } from '../../../core/services/permission.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('RoleDetailComponent', () => {
   let component: RoleDetailComponent;
@@ -20,18 +21,26 @@ describe('RoleDetailComponent', () => {
   const mockRole = { id: '1', name: 'Admin', permissions: [{ id: 'p1' }] };
 
   beforeEach(async () => {
-    rolesServiceSpy = jasmine.createSpyObj('RolesService', ['getById', 'create', 'update']);
+    rolesServiceSpy = jasmine.createSpyObj('RolesService', ['getById', 'create', 'update', 'getRolePermissions']);
     permissionsServiceSpy = jasmine.createSpyObj('PermissionsService', ['getAll']);
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
+    const mockPermissionService = {
+      hasPermission: jasmine.createSpy('hasPermission').and.returnValue(true)
+    };
+
     permissionsServiceSpy.getAll.and.returnValue(of(mockPermissions as any));
+    rolesServiceSpy.getRolePermissions.and.returnValue(of([]));
 
     await TestBed.configureTestingModule({
-      imports: [ RoleDetailComponent, BrowserAnimationsModule, HttpClientTestingModule ],
+      imports: [ RoleDetailComponent ],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: RolesService, useValue: rolesServiceSpy },
         { provide: PermissionsService, useValue: permissionsServiceSpy },
+        { provide: PermissionService, useValue: mockPermissionService },
         { provide: NzMessageService, useValue: messageServiceSpy },
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => 'new' } } } }

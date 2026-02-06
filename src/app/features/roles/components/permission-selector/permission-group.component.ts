@@ -9,9 +9,9 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { Permission } from '../../../../types/api.types';
+import { AppButtonComponent } from '../../../../shared/components';
 import { PermissionCardComponent } from './permission-card.component';
 
 export interface PermissionGroup {
@@ -25,8 +25,8 @@ export interface PermissionGroup {
   imports: [
     CommonModule,
     NzCardModule,
-    NzButtonModule,
     PermissionCardComponent,
+    AppButtonComponent
   ],
   templateUrl: './permission-group.component.html',
   styleUrls: ['./permission-group.component.css'],

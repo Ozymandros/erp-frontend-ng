@@ -3,10 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
-import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzGridModule } from 'ng-zorro-antd/grid';
@@ -17,6 +14,7 @@ import { PermissionService } from '../../../core/services/permission.service';
 import { PERMISSION_MODULES, PERMISSION_ACTIONS } from '../../../core/constants/permissions';
 import { RoleSelectorComponent } from '../components/role-selector/role-selector.component';
 import { User, Role } from '../../../types/api.types';
+import { AppButtonComponent, AppInputComponent } from '../../../shared/components';
 
 @Component({
   selector: 'app-user-detail',
@@ -26,14 +24,13 @@ import { User, Role } from '../../../types/api.types';
     ReactiveFormsModule,
     RouterLink,
     NzFormModule,
-    NzInputModule,
-    NzButtonModule,
     NzCardModule,
-    NzSelectModule,
     NzSwitchModule,
     NzBadgeModule,
     NzGridModule,
-    RoleSelectorComponent
+    RoleSelectorComponent,
+    AppButtonComponent,
+    AppInputComponent
   ],
   templateUrl: './user-detail.component.html',
   styleUrls: ['./user-detail.component.css']

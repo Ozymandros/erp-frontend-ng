@@ -3,15 +3,16 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzCardModule } from 'ng-zorro-antd/card';
-import { NzSelectModule } from 'ng-zorro-antd/select';
-import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { ProductsService } from '../../../core/services/products.service';
-import { ProductDto } from '../../../types/api.types';
+import { 
+  AppButtonComponent, 
+  AppInputComponent, 
+  AppTextareaComponent, 
+  AppInputNumberComponent 
+} from '../../../shared/components';
 
 @Component({
   selector: 'app-product-detail',
@@ -21,12 +22,12 @@ import { ProductDto } from '../../../types/api.types';
     ReactiveFormsModule,
     RouterLink,
     NzFormModule,
-    NzInputModule,
-    NzInputNumberModule,
-    NzButtonModule,
     NzCardModule,
-    NzSelectModule,
-    NzSwitchModule
+    NzTypographyModule,
+    AppButtonComponent,
+    AppInputComponent,
+    AppTextareaComponent,
+    AppInputNumberComponent
   ],
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.css']

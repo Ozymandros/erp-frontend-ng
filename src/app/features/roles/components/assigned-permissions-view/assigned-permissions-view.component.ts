@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
+import { compareByLocale } from '../../../../core/utils/string-utils';
 import { Permission } from '../../../../types/api.types';
 
 @Component({
@@ -29,14 +30,14 @@ export class AssignedPermissionsViewComponent {
       groups.get(module)!.push(permission);
     });
     // Sort permissions within each group by action
-    groups.forEach((permissions, module) => {
-      permissions.sort((a, b) => a.action.localeCompare(b.action));
+    groups.forEach((permissions, _module) => {
+      permissions.sort((a, b) => compareByLocale(a.action, b.action));
     });
     return groups;
   }
 
   // Get sorted module names for display
   getSortedModules(): string[] {
-    return Array.from(this.groupedPermissions.keys()).sort();
+    return Array.from(this.groupedPermissions.keys()).sort(compareByLocale);
   }
 }

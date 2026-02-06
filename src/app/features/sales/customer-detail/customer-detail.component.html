@@ -1,10 +1,9 @@
 <div class="customer-detail">
   <div class="page-header">
-    <button nz-button nzType="default" routerLink="/sales/customers">
-      <span nz-icon nzType="arrow-left"></span>
+    <app-button routerLink="/sales/customers" icon="arrow-left">
       Back to List
-    </button>
-    <h1>{{ isEditMode ? 'Edit Customer' : 'Create Customer' }}</h1>
+    </app-button>
+    <h1 nz-typography>{{ isEditMode ? 'Edit Customer' : 'Create Customer' }}</h1>
   </div>
 
   <nz-card [nzLoading]="loading">
@@ -14,7 +13,7 @@
           <nz-form-item>
             <nz-form-label nzRequired>Full Name</nz-form-label>
             <nz-form-control nzErrorTip="Please input customer name!">
-              <input nz-input formControlName="name" placeholder="John Doe" />
+              <app-input formControlName="name" placeholder="John Doe"></app-input>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -22,7 +21,7 @@
           <nz-form-item>
             <nz-form-label nzRequired>Email</nz-form-label>
             <nz-form-control nzErrorTip="Please input a valid email!">
-              <input nz-input formControlName="email" type="email" placeholder="john@example.com" />
+              <app-input formControlName="email" type="email" placeholder="john@example.com"></app-input>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -33,17 +32,17 @@
           <nz-form-item>
             <nz-form-label>Phone</nz-form-label>
             <nz-form-control>
-              <input nz-input formControlName="phoneNumber" placeholder="+1 234 567 890" />
+              <app-input formControlName="phoneNumber" placeholder="+1 234 567 890"></app-input>
             </nz-form-control>
           </nz-form-item>
         </div>
       </div>
 
       <div class="form-actions">
-        <button nz-button nzType="primary" [nzLoading]="saving" [disabled]="!customerForm.valid">
+        <app-button type="primary" btnType="submit" [loading]="saving" [disabled]="!customerForm.valid">
           {{ isEditMode ? 'Update' : 'Create' }}
-        </button>
-        <button nz-button nzType="default" type="button" routerLink="/sales/customers">Cancel</button>
+        </app-button>
+        <app-button type="default" btnType="button" routerLink="/sales/customers">Cancel</app-button>
       </div>
     </form>
   </nz-card>

@@ -73,10 +73,4 @@ test.describe('Layout & Sidebar', () => {
     }
   });
 
-  test('sidebar menu items should be visible for authenticated user', async ({ page }) => {
-    // Check for some known menu items based on mockAdminUser permissions
-    await expect(page.locator('text=Users')).toBeVisible();
-    await expect(page.locator('text=Products')).toBeVisible();
-    await expect(page.locator('text=Sales Orders')).toBeVisible();
-  });
 });

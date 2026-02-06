@@ -58,12 +58,12 @@ export class DashboardComponent implements OnInit {
       })
     )
     .subscribe({
-      next: (results: any) => {
+      next: (results: Record<string, unknown>) => {
         console.log('Dashboard stats results:', results);
-        this.userCount = this.extractTotal(results.users);
-        this.productCount = this.extractTotal(results.products);
-        this.customerCount = this.extractTotal(results.customers);
-        this.warehouseCount = this.extractTotal(results.warehouses);
+        this.userCount = this.extractTotal(results['users']);
+        this.productCount = this.extractTotal(results['products']);
+        this.customerCount = this.extractTotal(results['customers']);
+        this.warehouseCount = this.extractTotal(results['warehouses']);
       },
       error: (error) => {
         console.error('Failed to load dashboard stats', error);
@@ -71,12 +71,13 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  private extractTotal(response: any): number {
-    if (!response) return 0;
-    if (typeof response.total === 'number') return response.total;
-    if (typeof response.totalCount === 'number') return response.totalCount;
+  private extractTotal(response: unknown): number {
+    if (!response || typeof response !== 'object') return 0;
+    const r = response as Record<string, unknown>;
+    if (typeof r['total'] === 'number') return r['total'] as number;
+    if (typeof r['totalCount'] === 'number') return r['totalCount'] as number;
     if (Array.isArray(response)) return response.length;
-    if (response.items && Array.isArray(response.items)) return response.items.length;
+    if (r['items'] && Array.isArray(r['items'])) return (r['items'] as unknown[]).length;
     return 0;
   }
 }

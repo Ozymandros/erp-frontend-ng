@@ -5,18 +5,21 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "build:production": "ng build --configuration production",
+    "build:prod": "ng build --configuration production",
+    "build:dev": "ng build --configuration development",
+    "lint": "eslint src",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test --watch=false --browsers=ChromeHeadless",
+    "test": "pnpm lint && ng test",
     "test:watch": "ng test",
     "test:playwright": "playwright test",
-    "test:coverage": "ng test --code-coverage",
+    "test:coverage": "ng test --code-coverage && node scripts/check-coverage-warning.js",
     "test:coverage:playwright": "playwright test --coverage",
-    "e2e": "playwright test",
+    "test:e2e": "npx playwright test --reporter=junit --reporter=html --output=test-results",
     "e2e:report": "playwright show-report"
   },
   "private": true,
-  "packageManager": "pnpm@9.0.0",
+  "type": "module",
+  "packageManager": "pnpm@10.28.2",
   "dependencies": {
     "@angular/animations": "^21.1.0",
     "@angular/cdk": "^21.1.0",
@@ -38,11 +41,15 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^21.1.0",
+    "@angular-eslint/schematics": "21.2.0",
     "@angular/cli": "^21.1.0",
     "@angular/compiler-cli": "^21.1.0",
+    "@eslint/js": "^9.39.2",
     "@playwright/test": "^1.57.0",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^25.0.9",
+    "angular-eslint": "21.2.0",
+    "eslint": "^9.39.2",
     "http-server": "^14.1.1",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",
@@ -51,7 +58,8 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "testcontainers": "^11.11.0",
-    "typescript": ">=5.5.0"
+    "typescript": ">=5.5.0",
+    "typescript-eslint": "^8.54.0"
   },
   "pnpm": {
     "overrides": {
@@ -60,7 +68,15 @@
       "webpack-dev-server": ">=5.2.1",
       "tmp": ">=0.2.4",
       "tar": ">=7.5.4",
-      "lodash": ">=4.17.23"
+      "lodash": ">=4.17.23",
+      "hono": ">=4.11.7",
+      "tar@<7.5.7": ">=7.5.7",
+      "hono@<4.11.7": ">=4.11.7"
+    },
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "hono": ">=4.11.7"
+      }
     }
   }
 }

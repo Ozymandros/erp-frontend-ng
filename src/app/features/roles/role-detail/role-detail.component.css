@@ -29,6 +29,6 @@
 }
 
 .manage-permissions-subtitle {
-  color: rgba(0, 0, 0, 0.65);
+  color: var(--app-text-secondary);
 }
 

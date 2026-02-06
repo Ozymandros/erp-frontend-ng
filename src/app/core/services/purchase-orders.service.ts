@@ -6,10 +6,8 @@ import {
   PurchaseOrderDto,
   CreateUpdatePurchaseOrderDto,
   ApprovePurchaseOrderDto,
-  ReceivePurchaseOrderDto,
-  PaginatedResponse,
-  SearchParams
-} from '../types/api.types';
+  ReceivePurchaseOrderDto
+} from '../../types/api.types';
 import { BaseApiService } from '../base/base-api.service';
 
 @Injectable({

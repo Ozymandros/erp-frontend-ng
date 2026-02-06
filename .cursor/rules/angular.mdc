@@ -1,0 +1,71 @@
+---
+description: "Angular component and service patterns with standalone syntax, RxJS, and NG-Zorro"
+globs: ["**/*.component.ts", "**/*.service.ts", "**/*.module.ts"]
+alwaysApply: false
+---
+
+# Angular Patterns
+
+## Trigger-Action Rules
+
+### Component Creation
+**When creating a new Angular component:**
+- Use standalone syntax: `@Component({ standalone: true, imports: [...] })`
+- Reference: `@src/app/features/auth/login/login.component.ts` for canonical example
+- Extract logic to services if component exceeds 100 lines
+- Use `OnPush` change detection for components with >5 inputs or heavy templates
+
+**When adding component inputs:**
+- Use `input()` signal API for Angular 17+: `readonly userId = input.required<number>()`
+- For compatibility, use `@Input()` with `readonly` modifier
+- Never mutate inputs directly; use computed signals or effects
+
+**When using RxJS in components:**
+- Always use `async` pipe instead of manual subscriptions
+- If subscription required, use `takeUntilDestroyed()` from `@angular/core/rxjs-interop`
+- Never subscribe without cleanup; reference `@src/app/core/services/auth.service.ts` for patterns
+
+### Service Creation
+**When creating a service:**
+- Use `providedIn: 'root'` for singleton services
+- Use functional `provide*` pattern for feature-scoped services
+- Reference: `@src/app/core/services/api.service.ts` for HTTP client patterns
+- Never store component state in services; use signals or observables
+
+**When making HTTP calls:**
+- Use typed API clients generated from OpenAPI when available
+- Always handle errors with `catchError` operator
+- Reference: `@src/app/core/interceptors/error.interceptor.ts` for error handling
+
+### NG-Zorro Integration
+**When using NG-Zorro components:**
+- Import from `ng-zorro-antd` module, not individual packages
+- Use `nz-*` prefix consistently (e.g., `nz-button`, `nz-table`)
+- Reference: `@src/app/features/inventory/products-list/products-list.component.html` for table patterns
+- Never override NG-Zorro CSS with `!important` unless documented workaround
+
+**When creating forms:**
+- Use `nz-form` with reactive forms (`FormBuilder`, `FormGroup`)
+- Reference: `@src/app/features/auth/login/login.component.ts` for form patterns
+- Always include validation messages with `nz-form-control` and `nz-form-item`
+
+## Never Do
+- Never use `any` type; use `unknown` or generics
+- Never use `@Component` without `standalone: true` for new components
+- Never subscribe to observables without cleanup mechanism
+- Never mutate component inputs directly
+- Never use `setTimeout`/`setInterval` without `ngZone.runOutsideAngular()`
+- Never bypass TypeScript strict mode errors
+- Never use `*ngFor` without `trackBy` function for lists >10 items
+
+## Performance Rules
+**When component renders slowly:**
+- Check for missing `OnPush` change detection strategy
+- Verify `trackBy` functions in `*ngFor` loops
+- Use `async` pipe instead of manual subscriptions
+- Defer expensive computations with `computed()` signals
+
+**When bundle size increases:**
+- Verify tree-shaking: use named imports (`import { map } from 'rxjs'`)
+- Check for unnecessary NgModule imports in standalone components
+- Use lazy loading for feature modules

@@ -4,7 +4,7 @@ import { ApiClientService } from '../api/http-client.service';
 import { INVENTORY_ENDPOINTS } from '../api/endpoints.constants';
 import {
   StockOperationRequest
-} from '../types/api.types';
+} from '../../types/api.types';
 
 @Injectable({
   providedIn: 'root'

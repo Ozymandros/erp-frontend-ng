@@ -1,24 +1,25 @@
+
+> temp-ng-project@0.0.0 build C:\Projects\ERP_ASPIRE_APP\erp-frontend-ng
+> ng build
+
 Node.js version v25.2.1 detected.
 Odd numbered Node.js versions will not enter LTS status and should not be used for production. For more information, please see https://nodejs.org/en/about/previous-releases/.
-- Building...
+[33mÔØ»[39m Building...
+[32mÔ£ö[39m Building...
+Application bundle generation failed. [18.616 seconds] - 2026-02-02T11:21:24.933Z
 
-Application bundle generation failed. [4.975 seconds]
+Ôû▓ [WARNING] NG8113: AppButtonComponent is not used within the template of PermissionSelectorComponent [plugin angular-compiler]
 
-X [ERROR] Could not resolve "@ctrl/tinycolor"
-
-    node_modules/ng-zorro-antd/fesm2022/ng-zorro-antd-core-color.mjs:1:47:
-      1 Ôöé import { rgbToHsv, rgbToHex, inputToRGB } from '@ctrl/tinycolor';
-        ÔòÁ                                                ~~~~~~~~~~~~~~~~~
-
-  You can mark the path "@ctrl/tinycolor" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+    src/app/features/roles/components/permission-selector/permission-selector.component.ts:43:4:
+      43 Ôöé     AppButtonComponent,
+         ÔòÁ     ~~~~~~~~~~~~~~~~~~
 
 
-X [ERROR] Could not resolve "@ctrl/tinycolor"
+X [ERROR] TS2339: Property 'suppliers' does not exist on type 'SuppliersListComponent'. [plugin angular-compiler]
 
-    node_modules/ng-zorro-antd/fesm2022/ng-zorro-antd-core-config.mjs:5:26:
-      5 Ôöé import { TinyColor } from '@ctrl/tinycolor';
-        ÔòÁ                           ~~~~~~~~~~~~~~~~~
-
-  You can mark the path "@ctrl/tinycolor" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+    src/app/features/purchasing/suppliers-list/suppliers-list.component.spec.ts:60:21:
+      60 Ôöé     expect(component.suppliers.length).toBe(1);
+         ÔòÁ                      ~~~~~~~~~
 
 
+ÔÇëELIFECYCLEÔÇë Command failed with exit code 1.

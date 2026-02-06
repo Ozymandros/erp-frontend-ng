@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CustomerDetailComponent } from './customer-detail.component';
 import { CustomersService } from '../../../core/services/customers.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { ActivatedRoute, Router } from '@angular/router';
-import { of } from 'rxjs';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { of, throwError } from 'rxjs';
 
 describe('CustomerDetailComponent', () => {
   let component: CustomerDetailComponent;
@@ -23,8 +23,10 @@ describe('CustomerDetailComponent', () => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
-      imports: [ CustomerDetailComponent, BrowserAnimationsModule, HttpClientTestingModule ],
+      imports: [ CustomerDetailComponent ],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: CustomersService, useValue: customersServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
         { provide: Router, useValue: routerSpy },
@@ -65,5 +67,56 @@ describe('CustomerDetailComponent', () => {
     expect(customersServiceSpy.create).toHaveBeenCalled();
 
     expect(messageServiceSpy.success).toHaveBeenCalled();
+  });
+
+  it('should update existing customer', () => {
+    createComponent('1');
+    customersServiceSpy.update.and.returnValue(of(mockCustomer as any));
+    component.customerForm.patchValue({ name: 'Updated Customer' });
+    component.save();
+    expect(customersServiceSpy.update).toHaveBeenCalledWith('1', jasmine.any(Object));
+    expect(messageServiceSpy.success).toHaveBeenCalled();
+  });
+
+  it('should handle load customer error', () => {
+    createComponent('1');
+    customersServiceSpy.getById.and.returnValue(throwError(() => ({ message: 'Load error' })));
+    component.loadCustomer('1');
+    expect(messageServiceSpy.error).toHaveBeenCalledWith(jasmine.stringContaining('Failed to load customer'));
+  });
+
+  it('should handle create customer error', () => {
+    createComponent('new');
+    customersServiceSpy.create.and.returnValue(throwError(() => ({ message: 'Create error' })));
+    component.customerForm.patchValue({ name: 'Test', email: 'test@test.com' });
+    component.save();
+    expect(messageServiceSpy.error).toHaveBeenCalledWith(jasmine.stringContaining('Failed to create'));
+  });
+
+  it('should handle update customer error', () => {
+    createComponent('1');
+    customersServiceSpy.update.and.returnValue(throwError(() => ({ message: 'Update error' })));
+    component.customerForm.patchValue({ name: 'Updated' });
+    component.save();
+    expect(messageServiceSpy.error).toHaveBeenCalledWith(jasmine.stringContaining('Failed to update'));
+  });
+
+  it('should not save invalid form', () => {
+    createComponent('new');
+    component.customerForm.patchValue({ name: '' });
+    component.save();
+    expect(customersServiceSpy.create).not.toHaveBeenCalled();
+  });
+
+  it('should reject invalid email', () => {
+    createComponent('new');
+    component.customerForm.patchValue({ email: 'invalid-email' });
+    expect(component.customerForm.get('email')?.valid).toBe(false);
+  });
+
+  it('should accept valid email', () => {
+    createComponent('new');
+    component.customerForm.patchValue({ email: 'valid@example.com' });
+    expect(component.customerForm.get('email')?.valid).toBe(true);
   });
 });

@@ -28,14 +28,13 @@
 ### 🛠️ Tech Stack
 
 ![Node](https://img.shields.io/badge/node-20.x-green)
-![pnpm](https://img.shields.io/badge/pnpm-9.x-blue)
+![pnpm](https://img.shields.io/badge/pnpm-10.28.1-blue)
 
-![Angular](https://img.shields.io/badge/Angular-17-dd0031?logo=angular)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue?logo=typescript)
+![Angular](https://img.shields.io/badge/Angular-21-dd0031?logo=angular)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue?logo=typescript)
 ![RxJS](https://img.shields.io/badge/RxJS-7.8-B7178C?logo=rxjs)
 
-![NG-Zorro](https://img.shields.io/badge/NG%20Zorro-17.4-1890ff?logo=ant-design)
-![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4-blue?logo=tailwindcss)
+![NG-Zorro](https://img.shields.io/badge/NG%20Zorro-21-1890ff?logo=ant-design)
 
 ![Jasmine](https://img.shields.io/badge/Jasmine-5.1-8A4182?logo=jasmine)
 ![Karma](https://img.shields.io/badge/Karma-6.4-48C9B0?logo=karma)
@@ -53,19 +52,20 @@ A modern, type-safe ERP admin portal built with **Angular** and **TypeScript**. 
 - **👥 User Management**: Complete CRUD operations with role assignment and permission management.
 - **📦 Inventory Management**: Products, warehouses, stock operations, and transaction tracking.
 - **💰 Sales & Purchasing**: Order management, customer and supplier management.
-- **🎨 Modern UI**: Responsive design with **NG-Zorro Ant Design** components.
+- **🎨 Modern UI**: Responsive design with **NG-Zorro Ant Design** components and native **Dark Mode** support.
 - **🔒 Type Safety**: Full TypeScript coverage with strict mode.
+- **📡 Reactive State**: Modern state management using **Angular Signals**.
 - **🧪 Testing**: Comprehensive test suite with Jasmine/Karma (unit) and Playwright (E2E).
 - **🚀 CI/CD**: Automated testing, code quality checks, and dependency updates via GitHub Actions.
 
-## 🛠️ Tech Stack
+## ⚙️ Technical Details
 
-- **Framework**: Angular 17 (Standalone Components)
-- **Language**: TypeScript 5.4
+- **Framework**: Angular 21 (Standalone Components)
+- **Language**: TypeScript 5.5
 - **Styling**: SCSS, NG-Zorro (Ant Design), TailwindCSS
 - **Routing**: Angular Router
 - **HTTP Client**: Angular HttpClient (with Interceptors)
-- **State Management**: RxJS (Services + BehaviorSubjects)
+- **State Management**: RxJS + **Angular Signals** (Theming, reactive state)
 - **Validation**: Angular Reactive Forms
 - **UI Components**: NG-Zorro Antd
 - **Testing**: Jasmine, Karma, Playwright
@@ -74,7 +74,7 @@ A modern, type-safe ERP admin portal built with **Angular** and **TypeScript**. 
 ## 📋 Prerequisites
 
 - **Node.js**: 20.x or higher
-- **pnpm**: 9.x or higher ([Install pnpm](https://pnpm.io/installation))
+- **pnpm**: 10.28.1 or higher ([Install pnpm](https://pnpm.io/installation))
 
 ## 🚀 Quick Start
 
@@ -97,8 +97,10 @@ The application will be available at `http://localhost:4200`.
 ### Environment Variables
 
 The application uses standard Angular environment files (`src/environments`).
-*   `environment.ts`: Development configuration.
-*   `environment.prod.ts`: Production configuration.
+
+- `environment.ts`: Development configuration.
+
+- `environment.prod.ts`: Production configuration.
 
 Ensure `apiBaseUrl` points to your backend (default: `http://localhost:5000`).
 
@@ -129,7 +131,7 @@ pnpm exec playwright test # Run E2E tests
 pnpm test
 
 # Run code coverage
-pnpm exec ng test --code-coverage --watch=false --browsers=ChromeHeadless
+pnpm run test:coverage
 ```
 
 ### E2E Tests (Playwright)
@@ -139,24 +141,25 @@ pnpm exec ng test --code-coverage --watch=false --browsers=ChromeHeadless
 pnpm exec playwright install
 
 # Run E2E tests
-pnpm exec playwright test
+pnpm run test:playwright
 
 # Run E2E tests in UI mode
-pnpm exec playwright test --ui
+pnpm run test:playwright -- --ui
 ```
 
 **Note**: E2E tests use mocked API endpoints (`e2e/mocks/api-mocks.ts`) and mock data (`e2e/mocks/fixtures.ts`), so a running backend is NOT required for standard E2E runs.
 
 ## 🏗️ Project Structure
 
-```
+```text
 src/
 ├── app/
 │   ├── core/
 │   │   ├── guards/          # Auth and permission guards
 │   │   ├── interceptors/    # HTTP interceptors (Auth, Error)
 │   │   ├── services/        # Singleton services (API logic)
-│   │   └── types/           # Core TypeScript interfaces/types
+│   │   └── ...
+│   ├── types/               # Shared API types (api.types.ts)
 │   ├── features/            # Feature modules (Lazy loaded)
 │   │   ├── auth/            # Login, Register
 │   │   ├── dashboard/       # Dashboard widgets
@@ -175,8 +178,9 @@ src/
 
 The project includes automated CI/CD with GitHub Actions (`.github/workflows/ci.yml`):
 
-- **Linting**: GitHub workflow linting
-- **Build Verification**: `ng build` check
+- **Linting**: GitHub workflow linting (actionlint) and ESLint on `src/`
+- **Type Check**: `tsc --noEmit -p tsconfig.app.json`
+- **Build Verification**: `pnpm build` check
 - **Security Audit**: `pnpm audit`
 - **CodeQL**: Security analysis
 - **SonarQube**: Code quality/coverage scan
@@ -186,6 +190,7 @@ The project includes automated CI/CD with GitHub Actions (`.github/workflows/ci.
 
 ## 📚 Documentation
 
+- [Theming Guide](docs/THEMING.md) (Signal-based implementation)
 - [E2E Testing Guide](docs/E2E_TESTING.md) (See `e2e/` folder for implementation)
 - [Test Coverage](docs/TEST_COVERAGE.md) (Run coverage command to view)
 
@@ -195,7 +200,7 @@ The project includes automated CI/CD with GitHub Actions (`.github/workflows/ci.
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
 4. Write/update tests
-5. Ensure all tests pass (`pnpm test` and `pnpm exec playwright test`)
+5. Ensure all tests pass (`pnpm test` and `pnpm run test:playwright`)
 6. Commit your changes (`git commit -m 'Add amazing feature'`)
 7. Push to the branch (`git push origin feature/amazing-feature`)
 8. Open a Pull Request

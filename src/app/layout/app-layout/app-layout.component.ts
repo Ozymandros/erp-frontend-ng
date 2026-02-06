@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -48,7 +48,9 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
     .app-content {
       margin: 24px;
       padding: 24px;
-      background: #fff;
+      background: var(--app-card-bg);
+      color: var(--app-text-color);
+      border-radius: 8px;
       overflow: auto;
       flex: 1;
     }

@@ -18,13 +18,13 @@
 }
 
 .quantity-positive {
-  color: #3f8600;
+  color: var(--app-success-text);
 }
 
 .quantity-negative {
-  color: #cf1322;
+  color: var(--app-error-text);
 }
 
 .na-text {
-  color: #bfbfbf;
+  color: var(--app-muted-text);
 }

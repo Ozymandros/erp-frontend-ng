@@ -1,0 +1,29 @@
+name: "ERP Aspire Frontend CodeQL"
+
+# Use both security-extended and security-and-quality for thorough analysis.
+queries:
+  - uses: security-extended
+  - uses: security-and-quality
+
+# Focus analysis on source code while excluding generated artifacts.
+paths:
+  - src
+  - scripts
+  - e2e
+  - playwright.config.ts
+  - karma.conf.js
+  - eslint.config.js
+  - tsconfig*.json
+  - angular.json
+
+paths-ignore:
+  - "**/node_modules/**"
+  - "**/dist/**"
+  - "**/coverage/**"
+  - "**/playwright-report/**"
+  - "**/test-results/**"
+  - "**/source_temp/**"
+  - "**/temp-ng-project/**"
+  - "**/*.min.js"
+  - "**/*.bundle.js"
+  - "**/*.generated.*"

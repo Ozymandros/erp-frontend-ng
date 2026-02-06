@@ -4,6 +4,7 @@
 
 .dashboard-title {
   margin-bottom: 24px;
+  color: var(--app-text-color);
 }
 
 .stat-card {

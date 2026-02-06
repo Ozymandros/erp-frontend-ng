@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { UserDetailComponent } from './user-detail.component';
 import { UsersService } from '../../../core/services/users.service';
 import { RolesService } from '../../../core/services/roles.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('UserDetailComponent', () => {
   let component: UserDetailComponent;
@@ -39,8 +39,10 @@ describe('UserDetailComponent', () => {
     rolesServiceSpy.getAll.and.returnValue(of(mockRoles as any));
 
     await TestBed.configureTestingModule({
-      imports: [ UserDetailComponent, BrowserAnimationsModule, HttpClientTestingModule ],
+      imports: [ UserDetailComponent ],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: UsersService, useValue: usersServiceSpy },
         { provide: RolesService, useValue: rolesServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
@@ -114,5 +116,56 @@ describe('UserDetailComponent', () => {
     expect(usersServiceSpy.update).toHaveBeenCalledWith('1', jasmine.objectContaining({ firstName: 'Updated' }));
 
     expect(messageServiceSpy.success).toHaveBeenCalled();
+  });
+
+  it('should handle load user error', () => {
+    createComponent('1');
+    usersServiceSpy.getById.and.returnValue(throwError(() => ({ message: 'Load error' })));
+    component.loadUser('1');
+    expect(messageServiceSpy.error).toHaveBeenCalledWith(jasmine.stringContaining('Failed to load user'));
+  });
+
+  it('should handle create user error', () => {
+    createComponent('new');
+    usersServiceSpy.create.and.returnValue(throwError(() => ({ message: 'Create error' })));
+    component.userForm.patchValue({
+      username: 'newuser',
+      email: 'new@example.com',
+      password: 'password'
+    });
+    component.save();
+    expect(messageServiceSpy.error).toHaveBeenCalledWith(jasmine.stringContaining('Failed to create'));
+  });
+
+  it('should handle update user error', () => {
+    createComponent('1');
+    usersServiceSpy.update.and.returnValue(throwError(() => ({ message: 'Update error' })));
+    component.userForm.patchValue({ firstName: 'Updated' });
+    component.save();
+    expect(messageServiceSpy.error).toHaveBeenCalledWith(jasmine.stringContaining('Failed to update'));
+  });
+
+  it('should not save invalid form', () => {
+    createComponent('new');
+    component.userForm.patchValue({ username: '' });
+    component.save();
+    expect(usersServiceSpy.create).not.toHaveBeenCalled();
+  });
+
+  it('should reject invalid email', () => {
+    createComponent('new');
+    component.userForm.patchValue({ email: 'invalid-email' });
+    expect(component.userForm.get('email')?.valid).toBe(false);
+  });
+
+  it('should accept valid email', () => {
+    createComponent('new');
+    component.userForm.patchValue({ email: 'valid@example.com' });
+    expect(component.userForm.get('email')?.valid).toBe(true);
+  });
+
+  it('should load user data on init when in edit mode', () => {
+    createComponent('1');
+    expect(usersServiceSpy.getById).toHaveBeenCalledWith('1');
   });
 });

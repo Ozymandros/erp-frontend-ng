@@ -1,35 +1,41 @@
 <div class="warehouse-detail">
   <div class="page-header">
-    <button nz-button nzType="default" routerLink="/inventory/warehouses" class="back-button">
-      <i nz-icon nzType="arrow-left"></i> Back
-    </button>
-    <h1>{{ isEditMode ? 'Edit Warehouse' : 'Create Warehouse' }}</h1>
+    <app-button type="default" routerLink="/inventory/warehouses" icon="arrow-left">
+      Back to List
+    </app-button>
+    <h1 nz-typography>{{ isEditMode ? 'Edit Warehouse' : 'Create Warehouse' }}</h1>
   </div>
 
   <nz-card [nzLoading]="loading">
-    <form nz-form [formGroup]="warehouseForm" (ngSubmit)="save()">
-      <nz-form-item>
-        <nz-form-label [nzSpan]="4" nzRequired>Warehouse Name</nz-form-label>
-        <nz-form-control [nzSpan]="14" nzErrorTip="Please input warehouse name!">
-          <input nz-input formControlName="name" placeholder="e.g. Main Warehouse" />
-        </nz-form-control>
-      </nz-form-item>
+    <form nz-form [formGroup]="warehouseForm" (ngSubmit)="save()" nzLayout="vertical">
+      <div nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="24">
+          <nz-form-item>
+            <nz-form-label nzRequired>Warehouse Name</nz-form-label>
+            <nz-form-control nzErrorTip="Please input warehouse name!">
+              <app-input formControlName="name" placeholder="e.g. Main Warehouse"></app-input>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
 
-      <nz-form-item>
-        <nz-form-label [nzSpan]="4">Location/Address</nz-form-label>
-        <nz-form-control [nzSpan]="14">
-          <input nz-input formControlName="location" placeholder="e.g. 123 Industrial Rd, City" />
-        </nz-form-control>
-      </nz-form-item>
+      <div nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="24">
+          <nz-form-item>
+            <nz-form-label>Location/Address</nz-form-label>
+            <nz-form-control>
+              <app-input formControlName="location" placeholder="e.g. 123 Industrial Rd, City"></app-input>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
 
-      <nz-form-item>
-        <nz-form-control [nzOffset]="4" [nzSpan]="14">
-          <button nz-button nzType="primary" [nzLoading]="saving" [disabled]="!warehouseForm.valid">
-            {{ isEditMode ? 'Update' : 'Create' }}
-          </button>
-          <button nz-button nzType="default" type="button" routerLink="/inventory/warehouses" class="cancel-button">Cancel</button>
-        </nz-form-control>
-      </nz-form-item>
+      <div class="form-actions">
+        <app-button type="primary" [loading]="saving" [disabled]="!warehouseForm.valid" btnType="submit">
+          {{ isEditMode ? 'Update' : 'Create' }}
+        </app-button>
+        <app-button type="default" routerLink="/inventory/warehouses">Cancel</app-button>
+      </div>
     </form>
   </nz-card>
 </div>

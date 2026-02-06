@@ -1,23 +1,23 @@
 @if (permissions$ | async; as p) {
 <div>
   <div class="page-header users-list-header">
-    <h1>Users Management</h1>
+    <h1 nz-typography>Users Management</h1>
     <div class="header-actions">
       @if (p.canExport) {
-        <button nz-button (click)="exportToXlsx('users.xlsx')" class="export-button">
-          <span nz-icon nzType="file-excel"></span> Export XLSX
-        </button>
+        <app-button icon="file-excel" (click)="exportToXlsx('users.xlsx')" class="export-button">
+          Export XLSX
+        </app-button>
       }
       @if (p.canExport) {
-        <button nz-button (click)="exportToPdf('users.pdf')" class="export-button">
-          <span nz-icon nzType="file-pdf"></span> Export PDF
-        </button>
+        <app-button icon="file-pdf" (click)="exportToPdf('users.pdf')" class="export-button">
+          Export PDF
+        </app-button>
       }
 
       @if (p.canCreate) {
-        <button nz-button nzType="primary" routerLink="/users/new">
-          <i nz-icon nzType="plus"></i> Add User
-        </button>
+        <app-button type="primary" icon="plus" routerLink="/users/new">
+          Add User
+        </app-button>
       }
     </div>
   </div>
@@ -26,16 +26,11 @@
     <div class="list-search">
       <!--<span class="list-search__label">Search</span>-->
       <nz-space-compact nzSize="large" class="list-search__compact">
-        <nz-input-wrapper>
-          <nz-icon nzInputAddonBefore nzType="search" />
-          <input
-            type="text"
-            nz-input
-            placeholder="By username or email..."
-            [(ngModel)]="searchTerm"
-            (ngModelChange)="onSearch()"
-          />
-        </nz-input-wrapper>
+        <app-input
+          placeholder="By username or email..."
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearch()"
+        ></app-input>
       </nz-space-compact>
     </div>
 
@@ -47,19 +42,19 @@
       [(nzPageIndex)]="pageIndex"
       [(nzPageSize)]="pageSize"
       [nzFrontPagination]="false"
-      (nzPageIndexChange)="loadUsers()"
-      (nzPageSizeChange)="loadUsers()"
-      [nzScroll]="{ x: '1000px', y: 'calc(100vh - 400px)' }"
+      (nzPageIndexChange)="onPageChange($event)"
+      (nzPageSizeChange)="onPageSizeChange($event)"
+      [nzScroll]="{ x: '1000px' }"
     >
       <thead>
         <tr>
-          <th>Username</th>
-          <th>Email</th>
-          <th>Roles</th>
-          <th>Status</th>
-          <th>Created At</th>
+          <th id="th-username" scope="col">Username</th>
+          <th id="th-email" scope="col">Email</th>
+          <th id="th-roles" scope="col">Roles</th>
+          <th id="th-status" scope="col">Status</th>
+          <th id="th-created-at" scope="col">Created At</th>
           @if (p.canUpdate || p.canDelete) {
-            <th>Actions</th>
+            <th id="th-actions" scope="col">Actions</th>
           }
         </tr>
       </thead>
@@ -81,18 +76,34 @@
             <td>{{ data.createdAt | date:'short' }}</td>
             @if (p.canUpdate || p.canDelete) {
               <td>
-                @if (p.canUpdate) {
-                  <a [routerLink]="['/users', data.id]" class="edit-link">Edit</a>
-                }
-                @if (p.canDelete) {
-                  <a
-                    nz-popconfirm
-                    nzPopconfirmTitle="Are you sure delete this user?"
-                    (nzOnConfirm)="deleteUser(data.id)"
-                    nzPopconfirmPlacement="left"
-                    class="delete-link"
-                  >Delete</a>
-                }
+                <nz-space [nzSize]="8">
+                  @if (p.canUpdate) {
+                    <app-button
+                      *nzSpaceItem
+                      type="link"
+                      icon="edit"
+                      nz-tooltip
+                      nzTooltipTitle="Edit user"
+                      [routerLink]="['/users', data.id]"
+                      [attr.aria-label]="'Edit user ' + data.username"
+                    ></app-button>
+                  }
+                  @if (p.canDelete) {
+                    <app-button
+                      *nzSpaceItem
+                      type="link"
+                      danger
+                      icon="delete"
+                      nz-tooltip
+                      nzTooltipTitle="Delete user"
+                      [attr.aria-label]="'Delete user ' + data.username"
+                      nz-popconfirm
+                      nzPopconfirmTitle="Are you sure delete this user?"
+                      (nzOnConfirm)="deleteUser(data.id)"
+                      nzPopconfirmPlacement="left"
+                    ></app-button>
+                  }
+                </nz-space>
               </td>
             }
           </tr>

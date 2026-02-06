@@ -1,9 +1,9 @@
 <div class="role-detail">
   <div class="page-header">
-    <button nz-button nzType="default" routerLink="/roles" class="back-button">
-      <i nz-icon nzType="arrow-left"></i> Back
-    </button>
-    <h1>{{ isEditMode ? 'Edit Role' : 'Create Role' }}</h1>
+    <app-button routerLink="/roles" icon="arrow-left" class="back-button">
+      Back
+    </app-button>
+    <h1 nz-typography>{{ isEditMode ? 'Edit Role' : 'Create Role' }}</h1>
   </div>
 
   <nz-card [nzLoading]="loading">
@@ -11,23 +11,23 @@
       <nz-form-item>
         <nz-form-label [nzSpan]="4" nzRequired>Role Name</nz-form-label>
         <nz-form-control [nzSpan]="14" nzErrorTip="Please input role name!">
-          <input nz-input formControlName="name" placeholder="e.g. Administrator" />
+          <app-input formControlName="name" placeholder="e.g. Administrator"></app-input>
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
         <nz-form-label [nzSpan]="4">Description</nz-form-label>
         <nz-form-control [nzSpan]="14">
-          <textarea nz-input formControlName="description" placeholder="Role description..." [nzAutosize]="{ minRows: 2, maxRows: 6 }"></textarea>
+          <app-textarea formControlName="description" placeholder="Role description..." [rows]="3"></app-textarea>
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
         <nz-form-control [nzOffset]="4" [nzSpan]="14">
-          <button nz-button nzType="primary" [nzLoading]="saving" [disabled]="!roleForm.valid">
+          <app-button type="primary" btnType="submit" [loading]="saving" [disabled]="!roleForm.valid">
             {{ isEditMode ? 'Update' : 'Create' }}
-          </button>
-          <button nz-button nzType="default" type="button" routerLink="/roles" class="cancel-button">Cancel</button>
+          </app-button>
+          <app-button type="default" btnType="button" routerLink="/roles" class="cancel-button">Cancel</app-button>
         </nz-form-control>
       </nz-form-item>
     </form>
@@ -37,7 +37,7 @@
   @if (isEditMode && roleId && canUpdate()) {
     <nz-card id="manage-permissions" class="manage-permissions-card">
       <div class="manage-permissions-header">
-        <h3 class="manage-permissions-title">Manage Permissions</h3>
+        <h3 nz-typography class="manage-permissions-title">Manage Permissions</h3>
         <span class="manage-permissions-subtitle">Assign or unassign permissions to this role</span>
       </div>
       <app-permission-selector

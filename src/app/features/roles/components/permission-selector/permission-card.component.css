@@ -1,10 +1,16 @@
 .permission-card {
-  transition: all 0.3s;
+  transition: border-color 0.3s, background-color 0.3s, box-shadow 0.3s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .permission-card {
+    transition: none;
+  }
 }
 
 .permission-card.assigned {
-  border-color: #52c41a;
-  background-color: #f6ffed;
+  border-color: var(--app-success-border);
+  background-color: var(--app-success-bg);
 }
 
 .permission-header {
@@ -15,12 +21,12 @@
 }
 
 .check-icon {
-  color: #52c41a;
+  color: var(--app-success-text);
   font-size: 18px;
 }
 
 .permission-description {
-  color: rgba(0, 0, 0, 0.65);
+  color: var(--app-text-secondary);
   font-size: 13px;
   margin-bottom: 12px;
   min-height: 36px;

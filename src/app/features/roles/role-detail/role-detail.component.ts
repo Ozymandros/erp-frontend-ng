@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { RolesService } from '../../../core/services/roles.service';
@@ -13,8 +11,10 @@ import { PermissionService } from '../../../core/services/permission.service';
 import { PERMISSION_MODULES, PERMISSION_ACTIONS } from '../../../core/constants/permissions';
 import { PermissionSelectorComponent } from '../components/permission-selector/permission-selector.component';
 import { AssignedPermissionsViewComponent } from '../components/assigned-permissions-view/assigned-permissions-view.component';
+import { compareByLocale } from '../../../core/utils/string-utils';
 import { Role, Permission } from '../../../types/api.types';
 import { forkJoin, finalize } from 'rxjs';
+import { AppButtonComponent, AppInputComponent, AppTextareaComponent } from '../../../shared/components';
 
 @Component({
   selector: 'app-role-detail',
@@ -24,11 +24,12 @@ import { forkJoin, finalize } from 'rxjs';
     ReactiveFormsModule,
     RouterLink,
     NzFormModule,
-    NzInputModule,
-    NzButtonModule,
     NzCardModule,
     PermissionSelectorComponent,
-    AssignedPermissionsViewComponent
+    AssignedPermissionsViewComponent,
+    AppButtonComponent,
+    AppInputComponent,
+    AppTextareaComponent
   ],
   templateUrl: './role-detail.component.html',
   styleUrls: ['./role-detail.component.css']
@@ -95,7 +96,7 @@ export class RoleDetailComponent implements OnInit {
           description: role.description
         });
       },
-      error: (err) => {
+      error: (_err) => {
         this.message.error('Failed to load role');
       }
     });
@@ -103,8 +104,8 @@ export class RoleDetailComponent implements OnInit {
 
   onPermissionsChange(permissions: Permission[]): void {
     // Compare IDs to avoid unnecessary updates that cause re-renders
-    const oldIds = this.rolePermissions.map(p => p.id).sort().join(',');
-    const newIds = permissions.map(p => p.id).sort().join(',');
+    const oldIds = this.rolePermissions.map(p => p.id).sort(compareByLocale).join(',');
+    const newIds = permissions.map(p => p.id).sort(compareByLocale).join(',');
     
     if (oldIds !== newIds) {
       // Only update if IDs actually changed

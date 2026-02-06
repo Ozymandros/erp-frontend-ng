@@ -1,31 +1,31 @@
 @if (permissions$ | async; as p) {
   <div>
     <div class="page-header">
-      <h1>Roles Management</h1>
+      <h1 nz-typography>Roles Management</h1>
       <div class="header-actions">
         @if (p.canExport) {
-          <button
-            nz-button
+          <app-button
+            icon="file-excel"
             (click)="exportToXlsx('roles.xlsx')"
             class="export-button"
           >
-            <span nz-icon nzType="file-excel"></span> Export XLSX
-          </button>
+            Export XLSX
+          </app-button>
         }
         @if (p.canExport) {
-          <button
-            nz-button
+          <app-button
+            icon="file-pdf"
             (click)="exportToPdf('roles.pdf')"
             class="export-button"
           >
-            <span nz-icon nzType="file-pdf"></span> Export PDF
-          </button>
+            Export PDF
+          </app-button>
         }
 
         @if (p.canCreate) {
-          <button nz-button nzType="primary" routerLink="/roles/new">
-            <i nz-icon nzType="plus"></i> Add Role
-          </button>
+          <app-button type="primary" icon="plus" routerLink="/roles/new">
+            Add Role
+          </app-button>
         }
       </div>
     </div>
@@ -34,16 +34,11 @@
       <div class="list-search">
         <!--<span class="list-search__label">Search</span>-->
         <nz-space-compact nzSize="large" class="list-search__compact">
-          <nz-input-wrapper>
-            <nz-icon nzInputAddonBefore nzType="search" />
-            <input
-              type="text"
-              nz-input
-              placeholder="By name or description..."
-              [(ngModel)]="searchTerm"
-              (ngModelChange)="onSearch()"
-            />
-          </nz-input-wrapper>
+          <app-input
+            placeholder="By name or description..."
+            [(ngModel)]="searchTerm"
+            (ngModelChange)="onSearch()"
+          ></app-input>
         </nz-space-compact>
       </div>
 
@@ -57,16 +52,16 @@
         [nzFrontPagination]="false"
         (nzPageIndexChange)="loadRoles()"
         (nzPageSizeChange)="loadRoles()"
-        [nzScroll]="{ x: '1000px', y: 'calc(100vh - 400px)' }"
+        [nzScroll]="{ x: '1000px' }"
       >
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Permissions</th>
-            <th>Created At</th>
+            <th id="th-name" scope="col">Name</th>
+            <th id="th-description" scope="col">Description</th>
+            <th id="th-permissions" scope="col">Permissions</th>
+            <th id="th-created-at" scope="col">Created At</th>
             @if (p.canUpdate || p.canDelete) {
-              <th>Actions</th>
+              <th id="th-actions" scope="col">Actions</th>
             }
           </tr>
         </thead>
@@ -86,28 +81,39 @@
                     {{ perm.module }}:{{ perm.action }}
                   </nz-tag>
                 }
-                @if ((data.permissions?.length || 0) > 3) {
+                @if ((data.permissions.length || 0) > 3) {
                   <span>...</span>
                 }
               </td>
               <td>{{ data.createdAt | date: "short" }}</td>
               @if (p.canUpdate || p.canDelete) {
                 <td>
-                  @if (p.canUpdate) {
-                    <a [routerLink]="['/roles', data.id]" class="edit-link"
-                      >Edit</a
-                    >
-                  }
-                  @if (p.canDelete) {
-                    <a
-                      nz-popconfirm
-                      nzPopconfirmTitle="Are you sure delete this role?"
-                      (nzOnConfirm)="deleteRole(data.id)"
-                      nzPopconfirmPlacement="left"
-                      class="delete-link"
-                      >Delete</a
-                    >
-                  }
+                  <nz-space [nzSize]="8">
+                    @if (p.canUpdate) {
+                      <app-button
+                        *nzSpaceItem
+                        type="link"
+                        icon="edit"
+                        nz-tooltip
+                        nzTooltipTitle="Edit role"
+                        [routerLink]="['/roles', data.id]"
+                      ></app-button>
+                    }
+                    @if (p.canDelete) {
+                      <app-button
+                        *nzSpaceItem
+                        type="link"
+                        danger
+                        icon="delete"
+                        nz-tooltip
+                        nzTooltipTitle="Delete role"
+                        nz-popconfirm
+                        nzPopconfirmTitle="Are you sure delete this role?"
+                        (nzOnConfirm)="deleteRole(data.id)"
+                        nzPopconfirmPlacement="left"
+                      ></app-button>
+                    }
+                  </nz-space>
                 </td>
               }
             </tr>

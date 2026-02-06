@@ -1,0 +1,43 @@
+---
+description: "Project-wide Angular/TypeScript/NG-Zorro standards"
+alwaysApply: true
+---
+
+# Project Rules (Cursor)
+
+## Scope
+Applies to all code in this repository.
+
+## Skills
+- Angular (standalone components, RxJS, NgRx if applicable)
+- TypeScript (strict typing, generics, utility types)
+- NG-Zorro (Ant Design for Angular) components and theming
+- Accessibility (ARIA, keyboard navigation, focus management)
+- Testing (Jest/Karma, testing-library, mocking services)
+- CI/CD (GitHub Actions, pnpm, CodeQL, SonarQube)
+- Styling (SCSS, CSS variables, responsive layout)
+- API integration (OpenAPI, REST clients)
+
+## Core Rules
+- Use Angular best practices with strict TypeScript.
+- Prefer standalone components and functional providers.
+- Keep components small; move logic to services/helpers.
+- Use RxJS operators; always clean up subscriptions.
+- Follow NG‑Zorro patterns for forms, tables, modals, notifications.
+- Maintain accessibility (labels, ARIA, focus-visible, keyboard support).
+- Avoid `any`; prefer typed interfaces and generics.
+- Use explicit transitions (avoid `transition: all`).
+- Keep styles scoped; avoid `!important` unless overriding third‑party styles.
+
+## Testing
+- Add/update unit tests for behavior changes.
+- Mock Router/ActivatedRoute/HTTP in tests.
+- Cover error paths and edge cases.
+
+## Performance
+- Use `OnPush` for heavy components.
+- Prefer `async` pipe to manual subscriptions.
+
+## CI Discipline
+- Do not bypass linting or TypeScript errors.
+- Do not add dependencies without justification.
