@@ -1,0 +1,14 @@
+name: Dependency Security Audit (Deprecated)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deprecated:
+    name: Deprecated workflow placeholder
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Notice
+        run: echo "This workflow has been replaced by .github/workflows/security.yml."
