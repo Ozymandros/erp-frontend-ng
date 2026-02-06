@@ -21,7 +21,7 @@ import { PermissionsService } from '../../../../core/services/permissions.servic
 import { RolesService } from '../../../../core/services/roles.service';
 import { compareByLocale } from '../../../../core/utils/string-utils';
 import { Permission } from '../../../../types/api.types';
-import { AppButtonComponent, AppInputComponent, AppSelectComponent } from '../../../../shared/components';
+import { AppInputComponent, AppSelectComponent } from '../../../../shared/components';
 import {
   PermissionGroup,
   PermissionGroupComponent,
@@ -40,7 +40,6 @@ const SEARCH_DEBOUNCE_MS = 300;
     NzSpinModule,
     NzSelectModule,
     PermissionGroupComponent,
-    AppButtonComponent,
     AppInputComponent,
     AppSelectComponent
   ],

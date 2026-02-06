@@ -7,12 +7,10 @@ import {
 } from '../../types/api.types';
 import { BaseApiService } from '../base/base-api.service';
 
-
 @Injectable({
   providedIn: 'root'
 })
 export class WarehousesService extends BaseApiService<WarehouseDto, CreateUpdateWarehouseDto, CreateUpdateWarehouseDto> {
-
   constructor(apiClient: ApiClientService) {
     super(apiClient);
   }
@@ -21,4 +19,3 @@ export class WarehousesService extends BaseApiService<WarehouseDto, CreateUpdate
     return INVENTORY_ENDPOINTS.WAREHOUSES;
   }
 }
-

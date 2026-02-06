@@ -23,7 +23,6 @@ export abstract class BaseApiService<T, TCreate = Partial<T>, TUpdate = Partial<
     return this.apiClient.put<T>(`${this.getEndpoint()}/${id}`, data);
   }
 
-
   delete(id: string): Observable<void> {
     return this.apiClient.delete<void>(`${this.getEndpoint()}/${id}`);
   }
