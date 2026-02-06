@@ -41,8 +41,19 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Run tests with coverage
-        run: pnpm test -- --code-coverage
+        run: pnpm exec ng test --code-coverage --watch=false --browsers=ChromeHeadless
         continue-on-error: true
+      - name: Verify coverage file exists
+        run: |
+          if [ ! -f "coverage/lcov.info" ]; then
+            echo "ERROR: coverage/lcov.info not found!"
+            ls -la coverage/ || echo "coverage directory does not exist"
+            exit 1
+          else
+            echo "✓ Coverage file found at coverage/lcov.info"
+            echo "File size: $(wc -l < coverage/lcov.info) lines"
+            head -20 coverage/lcov.info
+          fi
       - name: Clean previous Sonar cache
         run: rm -rf .scannerwork
       - name: Remove cached Sonar Scanner (force fresh download)
