@@ -37,6 +37,8 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      - name: Install Angular CLI
+        run: pnpm add -g @angular/cli
       - name: Run unit tests with coverage
         run: ng test --code-coverage && node scripts/check-coverage-warning.js
       - name: Coverage warning check (60–80% target)
