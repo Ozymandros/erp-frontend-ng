@@ -7,7 +7,7 @@ ERP Aspire Frontend - Angular-based admin portal for ERP operations. Type-safe, 
 **Primary Language:** TypeScript  
 **Framework:** Angular 21 (Standalone Components)  
 **UI Library:** NG-Zorro Ant Design  
-**Package Manager:** pnpm 10.28.1  
+**Package Manager:** pnpm 10.28.2  
 **Node Version:** 20.x
 
 ## Skills Required
@@ -25,7 +25,7 @@ ERP Aspire Frontend - Angular-based admin portal for ERP operations. Type-safe, 
 ```bash
 pnpm install --frozen-lockfile
 ```
-- Precondition: Node 20.x, pnpm 10.28.1
+- Precondition: Node 20.x, pnpm 10.28.2
 - Time: 30-60 seconds
 - Never use `pnpm install` without `--frozen-lockfile` flag
 
