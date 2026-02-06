@@ -58,6 +58,21 @@ Total time: 3-5 minutes
 ```bash
 pnpm test  # Runs lint + ng test
 ```
+
+## PR Review Guidance
+When reviewing changes, prioritize:
+1. **Correctness & safety**: logic, edge cases, error handling, and regression risk.
+2. **Type safety**: no `any`, strict typing preserved, no ignored TS errors.
+3. **Angular best practices**: standalone components, `async` pipe usage, proper change detection, and RxJS cleanup.
+4. **Accessibility**: labels, focus states, keyboard support, and WCAG AA compliance.
+5. **NG-Zorro consistency**: proper `nz-*` usage and no forbidden styling overrides.
+6. **Test coverage**: new features include unit tests and relevant e2e updates.
+
+Review output format:
+- Provide a concise summary.
+- List blocking issues first (must-fix) and then non-blocking suggestions.
+- Reference concrete files/lines for each issue.
+- Avoid restating large diffs; focus on actionable feedback.
 - Coverage target: 60-80% per file
 - Coverage report: `pnpm run test:coverage`
 
