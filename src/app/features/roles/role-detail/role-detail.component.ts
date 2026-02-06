@@ -11,7 +11,6 @@ import { PermissionService } from '../../../core/services/permission.service';
 import { PERMISSION_MODULES, PERMISSION_ACTIONS } from '../../../core/constants/permissions';
 import { PermissionSelectorComponent } from '../components/permission-selector/permission-selector.component';
 import { AssignedPermissionsViewComponent } from '../components/assigned-permissions-view/assigned-permissions-view.component';
-import { compareByLocale } from '../../../core/utils/string-utils';
 import { Role, Permission } from '../../../types/api.types';
 import { forkJoin, finalize } from 'rxjs';
 import { AppButtonComponent, AppInputComponent, AppTextareaComponent } from '../../../shared/components';
@@ -53,13 +52,13 @@ export class RoleDetailComponent implements OnInit {
 
 
   constructor(
-    private fb: FormBuilder,
-    private rolesService: RolesService,
-    private permissionsService: PermissionsService,
-    private permissionService: PermissionService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private message: NzMessageService
+    private readonly fb: FormBuilder,
+    private readonly rolesService: RolesService,
+    private readonly permissionsService: PermissionsService,
+    private readonly permissionService: PermissionService,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly message: NzMessageService
   ) {
     this.roleForm = this.fb.group({
       name: ['', [Validators.required]],
@@ -104,8 +103,8 @@ export class RoleDetailComponent implements OnInit {
 
   onPermissionsChange(permissions: Permission[]): void {
     // Compare IDs to avoid unnecessary updates that cause re-renders
-    const oldIds = this.rolePermissions.map(p => p.id).sort(compareByLocale).join(',');
-    const newIds = permissions.map(p => p.id).sort(compareByLocale).join(',');
+    const oldIds = this.rolePermissions.map(p => p.id).sort((a, b) => a.localeCompare(b)).join(',');
+    const newIds = permissions.map(p => p.id).sort((a, b) => a.localeCompare(b)).join(',');
     
     if (oldIds !== newIds) {
       // Only update if IDs actually changed

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
@@ -18,7 +18,7 @@ import { AppButtonComponent } from '../../../../shared/components';
   styleUrls: ['./permission-card.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PermissionCardComponent implements OnChanges {
+export class PermissionCardComponent {
   @Input() permission!: Permission;
   @Input() isAssigned = false;
   @Input() saving = false;
@@ -27,11 +27,7 @@ export class PermissionCardComponent implements OnChanges {
   @Output() assign = new EventEmitter<Permission>();
   @Output() unassign = new EventEmitter<Permission>();
 
-  constructor(private cdr: ChangeDetectorRef) {}
-
-  ngOnChanges(_changes: SimpleChanges): void {
-    // Component uses OnPush change detection strategy
-  }
+  constructor(private readonly cdr: ChangeDetectorRef) {}
 
   onAssign(): void {
     if (!this.readonly && !this.saving) {

@@ -44,7 +44,7 @@ export class SalesOrdersListComponent extends BaseListComponent<SalesOrderDto> i
   }
 
   constructor(
-    private salesOrdersService: SalesOrdersService,
+    private readonly salesOrdersService: SalesOrdersService,
     message: NzMessageService,
     modal: NzModalService,
     fileService: FileService,

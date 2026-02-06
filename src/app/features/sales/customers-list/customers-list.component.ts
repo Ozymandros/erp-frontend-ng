@@ -50,7 +50,7 @@ export class CustomersListComponent extends BaseListComponent<CustomerDto> {
     fileService: FileService,
     cdr: ChangeDetectorRef,
     authService: AuthService,
-    public themeService: ThemeService
+    public readonly themeService: ThemeService
   ) {
     super(customersService, message, modal, fileService, cdr, authService);
   }

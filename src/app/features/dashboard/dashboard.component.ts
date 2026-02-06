@@ -29,11 +29,11 @@ export class DashboardComponent implements OnInit {
   loading = true;
 
   constructor(
-    private usersService: UsersService,
-    private productsService: ProductsService,
-    private warehousesService: WarehousesService,
-    private customersService: CustomersService,
-    private cdr: ChangeDetectorRef
+    private readonly usersService: UsersService,
+    private readonly productsService: ProductsService,
+    private readonly warehousesService: WarehousesService,
+    private readonly customersService: CustomersService,
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {

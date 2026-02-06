@@ -50,7 +50,7 @@ export class UsersListComponent extends BaseListComponent<User> {
     fileService: FileService,
     cdr: ChangeDetectorRef,
     authService: AuthService,
-    public themeService: ThemeService
+    public readonly themeService: ThemeService
   ) {
     super(usersService, message, modal, fileService, cdr, authService);
   }

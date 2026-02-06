@@ -19,6 +19,7 @@ import { ThemeService } from '../../../core/services/theme.service';
       [nzGhost]="ghost"
       [nzBlock]="block"
       [attr.type]="btnType"
+      [attr.aria-label]="ariaLabel"
     >
       @if (icon) {
         <span nz-icon [nzType]="icon"></span>
@@ -46,8 +47,9 @@ export class AppButtonComponent {
   @Input({ transform: booleanAttribute }) block = false;
   @Input() icon?: string;
   @Input() btnType: 'button' | 'submit' | 'reset' = 'button';
+  @Input() ariaLabel?: string;
 
-  constructor(private themeService: ThemeService) {}
+  constructor(private readonly themeService: ThemeService) {}
 
   isDark = computed(() => this.themeService.effectiveTheme() === 'dark');
 

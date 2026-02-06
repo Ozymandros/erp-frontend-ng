@@ -48,11 +48,11 @@ export class SupplierDetailComponent implements OnInit {
   saving = false;
 
   constructor(
-    private fb: FormBuilder,
-    private suppliersService: SuppliersService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private message: NzMessageService,
+    private readonly fb: FormBuilder,
+    private readonly suppliersService: SuppliersService,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly message: NzMessageService,
     private cdr: ChangeDetectorRef
   ) {
     this.supplierForm = this.fb.group({

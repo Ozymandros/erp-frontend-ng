@@ -36,10 +36,10 @@ export class ProfileComponent implements OnInit {
   updatingPassword = false;
 
   constructor(
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private usersService: UsersService,
-    private message: NzMessageService
+    private readonly fb: FormBuilder,
+    private readonly authService: AuthService,
+    private readonly usersService: UsersService,
+    private readonly message: NzMessageService
   ) {
     this.profileForm = this.fb.group({
       username: [''],

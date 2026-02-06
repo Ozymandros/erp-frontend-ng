@@ -1,101 +1,108 @@
 @if (permissions$ | async; as p) {
-<div class="page-header">
-  <h1 nz-typography>Sales Orders</h1>
-  <div class="header-actions">
-    @if (p.canExport) {
-      <app-button (click)="exportToXlsx('sales-orders.xlsx')" icon="file-excel">
-        Export XLSX
-      </app-button>
-    }
-    @if (p.canExport) {
-      <app-button (click)="exportToPdf('sales-orders.pdf')" icon="file-pdf">
-        Export PDF
-      </app-button>
-    }
-    @if (p.canCreate) {
-      <app-button type="primary" routerLink="/sales/orders/new" icon="plus">
-        New Order
-      </app-button>
-    }
-  </div>
-</div>
-
-<nz-card>
-  <div class="search-container">
-    <app-input
-      [(ngModel)]="searchTerm"
-      (ngModelChange)="onSearch()"
-      placeholder="By order number or customer..."
-      icon="search"
-      size="large"
-    ></app-input>
+  <div class="page-header">
+    <h1 nz-typography>Sales Orders</h1>
+    <div class="header-actions">
+      @if (p.canExport) {
+        <app-button
+          (click)="exportToXlsx('sales-orders.xlsx')"
+          icon="file-excel"
+        >
+          Export XLSX
+        </app-button>
+      }
+      @if (p.canExport) {
+        <app-button (click)="exportToPdf('sales-orders.pdf')" icon="file-pdf">
+          Export PDF
+        </app-button>
+      }
+      @if (p.canCreate) {
+        <app-button type="primary" routerLink="/sales/orders/new" icon="plus">
+          New Order
+        </app-button>
+      }
+    </div>
   </div>
 
-  <nz-table
-    #basicTable
-    [nzData]="data"
-    [nzLoading]="loading"
-    [nzTotal]="total"
-    [(nzPageIndex)]="pageIndex"
-    [(nzPageSize)]="pageSize"
-    [nzFrontPagination]="false"
-    (nzPageIndexChange)="onPageChange($event)"
-    (nzPageSizeChange)="onPageSizeChange($event)"
-  >
-    <thead>
-      <tr>
-        <th scope="col">Order #</th>
-        <th scope="col">Customer</th>
-        <th scope="col">Date</th>
-        <th scope="col">Status</th>
-        <th scope="col">Total</th>
-        @if (p.canUpdate || p.canDelete) {
-          <th scope="col">Actions</th>
-        }
-      </tr>
-    </thead>
-    <tbody>
-      @for (item of basicTable.data; track item.id) {
+  <nz-card>
+    <div class="search-container">
+      <app-input
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearch()"
+        placeholder="By order number or customer..."
+        icon="search"
+        size="large"
+      ></app-input>
+    </div>
+
+    <nz-table
+      #basicTable
+      [nzData]="data"
+      [nzLoading]="loading"
+      [nzTotal]="total"
+      [(nzPageIndex)]="pageIndex"
+      [(nzPageSize)]="pageSize"
+      [nzFrontPagination]="false"
+      (nzPageIndexChange)="onPageChange($event)"
+      (nzPageSizeChange)="onPageSizeChange($event)"
+    >
+      <thead>
         <tr>
-          <td><a [routerLink]="['/sales/orders', item.id]">{{ item.orderNumber }}</a></td>
-          <td>{{ item.customerName }}</td>
-          <td>{{ item.orderDate | date:'shortDate' }}</td>
-          <td>
-            <nz-tag [nzColor]="getStatusColor(item.status)">
-              {{ item.status }}
-            </nz-tag>
-          </td>
-          <td>{{ item.totalAmount | currency }}</td>
+          <th id="th-order-number" scope="col">Order #</th>
+          <th id="th-customer" scope="col">Customer</th>
+          <th id="th-date" scope="col">Date</th>
+          <th id="th-status" scope="col">Status</th>
+          <th id="th-total" scope="col">Total</th>
           @if (p.canUpdate || p.canDelete) {
-            <td>
-              <nz-space>
-                @if (p.canUpdate) {
-                  <app-button
-                    *nzSpaceItem
-                    type="link"
-                    [routerLink]="['/sales/orders', item.id]"
-                    icon="edit"
-                    tooltip="View/Edit Order"
-                  ></app-button>
-                }
-                @if (p.canDelete && (item.status === 'Draft' || item.status === 0)) {
-                  <app-button
-                    *nzSpaceItem
-                    type="link"
-                    danger
-                    nz-popconfirm
-                    nzPopconfirmTitle="Are you sure you want to delete this order?"
-                    (nzOnConfirm)="deleteOrder(item.id)"
-                    icon="delete"
-                    tooltip="Delete Order"
-                  ></app-button>
-                }
-              </nz-space>
-            </td>
+            <th id="th-actions" scope="col">Actions</th>
           }
         </tr>
-      }
-    </tbody>
-  </nz-table>
-</nz-card>
+      </thead>
+      <tbody>
+        @for (item of basicTable.data; track item.id) {
+          <tr>
+            <td>
+              <a [routerLink]="['/sales/orders', item.id]">{{
+                item.orderNumber
+              }}</a>
+            </td>
+            <td>{{ item.customerName }}</td>
+            <td>{{ item.orderDate | date: "shortDate" }}</td>
+            <td>
+              <nz-tag [nzColor]="getStatusColor(item.status)">
+                {{ item.status }}
+              </nz-tag>
+            </td>
+            <td>{{ item.totalAmount | currency }}</td>
+            @if (p.canUpdate || p.canDelete) {
+              <td>
+                <nz-space>
+                  @if (p.canUpdate) {
+                    <app-button
+                      *nzSpaceItem
+                      type="link"
+                      [routerLink]="['/sales/orders', item.id]"
+                      icon="edit"
+                      tooltip="View/Edit Order"
+                    ></app-button>
+                  }
+                  @if (p.canDelete && item.status === 0) {
+                    <app-button
+                      *nzSpaceItem
+                      type="link"
+                      danger
+                      nz-popconfirm
+                      nzPopconfirmTitle="Are you sure you want to delete this order?"
+                      (nzOnConfirm)="deleteOrder(item.id)"
+                      icon="delete"
+                      tooltip="Delete Order"
+                    ></app-button>
+                  }
+                </nz-space>
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+  </nz-card>
 }

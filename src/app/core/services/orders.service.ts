@@ -12,7 +12,7 @@ import {
   providedIn: 'root'
 })
 export class OrdersService {
-  constructor(private apiClient: ApiClientService) {}
+  constructor(private readonly apiClient: ApiClientService) {}
 
   getOrders(params?: SearchParams): Observable<PaginatedResponse<OrderDto>> {
     return this.apiClient.get<PaginatedResponse<OrderDto>>(ORDERS_ENDPOINTS.BASE, params as Record<string, unknown> | undefined);

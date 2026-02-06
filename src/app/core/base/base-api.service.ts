@@ -3,7 +3,7 @@ import { ApiClientService } from '../api/http-client.service';
 import { PaginatedResponse, SearchParams } from '../../types/api.types';
 
 export abstract class BaseApiService<T, TCreate = Partial<T>, TUpdate = Partial<T>> {
-  constructor(protected apiClient: ApiClientService) {}
+  constructor(protected readonly apiClient: ApiClientService) {}
 
   protected abstract getEndpoint(): string;
 

@@ -9,8 +9,8 @@ export class HasPermissionDirective implements OnInit, OnChanges {
   @Input() appHasPermission?: { module: string; action: string };
 
   constructor(
-    private templateRef: TemplateRef<unknown>,
-    private viewContainer: ViewContainerRef,
+    private readonly templateRef: TemplateRef<unknown>,
+    private readonly viewContainer: ViewContainerRef,
     private permissionService: PermissionService
   ) {}
 
