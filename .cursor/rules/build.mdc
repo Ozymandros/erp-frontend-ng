@@ -86,7 +86,7 @@ The CI pipeline (`.github/workflows/ci.yml`) runs in this sequence:
 4. Dependency Audit (`pnpm audit`)
 5. CodeQL Analysis
 6. SonarQube Scan (optional, `continue-on-error: true`)
-7. Unit Tests (`pnpm test -- --code-coverage`)
+7. Unit Tests (`ng test --code-coverage && node scripts/check-coverage-warning.js`)
 8. Playwright E2E Tests (`pnpm run test:playwright`)
 
 **Never skip steps** in this order; each step has dependencies.

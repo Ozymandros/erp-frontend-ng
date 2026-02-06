@@ -38,7 +38,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Run unit tests with coverage
-        run: pnpm test -- --code-coverage
+        run: ng test --code-coverage && node scripts/check-coverage-warning.js
       - name: Coverage warning check (60–80% target)
         if: success()
         run: node scripts/check-coverage-warning.js
