@@ -11,7 +11,7 @@ export class ApiClientService {
   private authToken: string | null = null;
   private baseUrl = environment.apiBaseUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   setAuthToken(token: string | null): void {
     this.authToken = token;

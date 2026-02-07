@@ -3,7 +3,7 @@
 FROM mcr.microsoft.com/devcontainers/javascript-node:22
 
 # Pin pnpm to match package.json packageManager (reproducible installs)
-ARG PNPM_VERSION=10.28.1
+ARG PNPM_VERSION=10.28.2
 RUN corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
 
 # Install Chromium for Karma (ChromeHeadless) and Playwright system deps + utilities

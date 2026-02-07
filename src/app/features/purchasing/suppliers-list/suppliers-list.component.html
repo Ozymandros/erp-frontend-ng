@@ -3,12 +3,12 @@
   <h1 nz-typography>Suppliers</h1>
   <div class="header-actions">
     @if (p.canExport) {
-      <app-button (click)="exportToXlsx('suppliers.xlsx')" icon="file-excel">
+      <app-button (click)="exportToXlsx('suppliers.xlsx')" icon="file-excel" ariaLabel="Export XLSX">
         Export XLSX
       </app-button>
     }
     @if (p.canExport) {
-      <app-button (click)="exportToPdf('suppliers.pdf')" icon="file-pdf">
+      <app-button (click)="exportToPdf('suppliers.pdf')" icon="file-pdf" ariaLabel="Export PDF">
         Export PDF
       </app-button>
     }
@@ -44,12 +44,12 @@
   >
     <thead>
       <tr>
-        <th scope="col">Name</th>
-        <th scope="col">Contact</th>
-        <th scope="col">Email</th>
-        <th scope="col">Phone</th>
+        <th id="th-name" scope="col">Name</th>
+        <th id="th-contact" scope="col">Contact</th>
+        <th id="th-email" scope="col">Email</th>
+        <th id="th-phone" scope="col">Phone</th>
         @if (p.canUpdate || p.canDelete) {
-          <th scope="col">Actions</th>
+          <th id="th-actions" scope="col">Actions</th>
         }
       </tr>
     </thead>

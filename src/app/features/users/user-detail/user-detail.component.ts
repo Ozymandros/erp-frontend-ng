@@ -53,13 +53,13 @@ export class UserDetailComponent implements OnInit {
   });
 
   constructor(
-    private fb: FormBuilder,
-    private usersService: UsersService,
-    private rolesService: RolesService,
-    private permissionService: PermissionService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private message: NzMessageService
+    private readonly fb: FormBuilder,
+    private readonly usersService: UsersService,
+    private readonly rolesService: RolesService,
+    private readonly permissionService: PermissionService,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly message: NzMessageService
   ) {
     this.userForm = this.fb.group({
       username: ['', [Validators.required]],

@@ -53,7 +53,6 @@ describe('UsersService', () => {
     });
   });
 
-  
   it('should export to XLSX', (done) => {
     const mockBlob = new Blob(['data'], { type: 'application/octet-stream' });
     apiClientSpy.download.and.returnValue(of(mockBlob));

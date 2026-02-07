@@ -4,10 +4,12 @@ on:
   pull_request:
     branches:
       - main
+      - master
       - develop
   push:
     branches:
       - main
+      - master
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -20,7 +22,8 @@ jobs:
     timeout-minutes: 5
     permissions:
       contents: read
+      pull-requests: write
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
-      - name: actionlint
-        uses: rhysd/actionlint@a0ce74d8cfe85724a6a47c62bc03a6929d7ad6ef  # v1.7.10
+      - name: Run actionlint
+        uses: devops-actions/actionlint@e7ee33fbf5aa8c9f9ee1145137f3e52e25d6a35b

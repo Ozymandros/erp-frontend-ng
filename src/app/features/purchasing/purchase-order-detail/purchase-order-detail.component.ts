@@ -57,16 +57,16 @@ export class PurchaseOrderDetailComponent implements OnInit {
   submitting = false;
   private lineProductSubs: Subscription[] = [];
 
-  private fb = inject(FormBuilder);
-  private message = inject(NzMessageService);
-  private router = inject(Router);
+  private readonly fb = inject(FormBuilder);
+  private readonly message = inject(NzMessageService);
+  private readonly router = inject(Router);
 
   constructor(
-    private route: ActivatedRoute,
-    private purchaseOrdersService: PurchaseOrdersService,
-    private productsService: ProductsService,
-    private suppliersService: SuppliersService,
-    private cdr: ChangeDetectorRef
+    private readonly route: ActivatedRoute,
+    private readonly purchaseOrdersService: PurchaseOrdersService,
+    private readonly productsService: ProductsService,
+    private readonly suppliersService: SuppliersService,
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {

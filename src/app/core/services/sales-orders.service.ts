@@ -19,7 +19,9 @@ export class SalesOrdersService extends BaseApiService<SalesOrderDto, CreateUpda
     return SALES_ENDPOINTS.ORDERS;
   }
 
-  constructor(protected override apiClient: ApiClientService) {
+  constructor(
+    protected override apiClient: ApiClientService
+  ) {
     super(apiClient);
   }
 

@@ -44,7 +44,7 @@ export class PurchaseOrdersListComponent extends BaseListComponent<PurchaseOrder
   }
 
   constructor(
-    private purchaseOrdersService: PurchaseOrdersService,
+    private readonly purchaseOrdersService: PurchaseOrdersService,
     message: NzMessageService,
     modal: NzModalService,
     fileService: FileService,

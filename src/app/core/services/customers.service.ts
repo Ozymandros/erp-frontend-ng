@@ -4,7 +4,6 @@ import { SALES_ENDPOINTS } from '../api/endpoints.constants';
 import { CustomerDto } from '../../types/api.types';
 import { BaseApiService } from '../base/base-api.service';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -17,4 +16,3 @@ export class CustomersService extends BaseApiService<CustomerDto> {
     return SALES_ENDPOINTS.CUSTOMERS;
   }
 }
-

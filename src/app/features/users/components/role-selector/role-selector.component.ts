@@ -47,13 +47,13 @@ export class RoleSelectorComponent implements OnInit, OnDestroy {
   loading = false;
   saving = false;
   error: string | null = null;
-  private searchTerm$ = new Subject<string>();
-  private destroy$ = new Subject<void>();
+  private readonly searchTerm$ = new Subject<string>();
+  private readonly destroy$ = new Subject<void>();
 
   constructor(
-    private usersService: UsersService,
-    private rolesService: RolesService,
-    private message: NzMessageService,
+    private readonly usersService: UsersService,
+    private readonly rolesService: RolesService,
+    private readonly message: NzMessageService,
     private cdr: ChangeDetectorRef
   ) {}
 

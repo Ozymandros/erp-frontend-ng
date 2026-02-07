@@ -48,7 +48,7 @@ alwaysApply: false
 
 **When tests fail in CI:**
 - Check Node version (must be 20.x)
-- Check pnpm version (must be 10.28.1)
+- Check pnpm version (must be 10.28.2)
 - Verify `--frozen-lockfile` flag is used
 - Check for flaky tests (timing issues, network mocks)
 

@@ -45,13 +45,13 @@ export class InventoryTransactionsListComponent extends BaseListComponent<Invent
   }
 
   constructor(
-    private inventoryTransactionsService: InventoryTransactionsService,
+    private readonly inventoryTransactionsService: InventoryTransactionsService,
     message: NzMessageService,
     modal: NzModalService,
     fileService: FileService,
     cdr: ChangeDetectorRef,
     authService: AuthService,
-    public themeService: ThemeService
+    public readonly themeService: ThemeService
   ) {
     super(inventoryTransactionsService, message, modal, fileService, cdr, authService);
   }

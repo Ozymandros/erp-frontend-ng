@@ -42,7 +42,7 @@ export class ProductsListComponent extends BaseListComponent<ProductDto> impleme
   }
 
   constructor(
-    private productsService: ProductsService,
+    private readonly productsService: ProductsService,
     message: NzMessageService,
     modal: NzModalService,
     fileService: FileService,

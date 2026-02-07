@@ -40,11 +40,11 @@ export class ProductDetailComponent implements OnInit {
   saving = false;
 
   constructor(
-    private fb: FormBuilder,
-    private productsService: ProductsService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private message: NzMessageService
+    private readonly fb: FormBuilder,
+    private readonly productsService: ProductsService,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly message: NzMessageService
   ) {
     this.productForm = this.fb.group({
       sku: ['', [Validators.required]],

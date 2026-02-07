@@ -8,11 +8,11 @@ import { BaseApiService } from '../base/base-api.service';
   providedIn: 'root'
 })
 export class WarehouseStocksService extends BaseApiService<WarehouseStockDto> {
-  protected getEndpoint(): string {
-    return INVENTORY_ENDPOINTS.WAREHOUSE_STOCKS;
-  }
-
   constructor(protected override apiClient: ApiClientService) {
     super(apiClient);
+  }
+
+  protected getEndpoint(): string {
+    return INVENTORY_ENDPOINTS.WAREHOUSE_STOCKS;
   }
 }
