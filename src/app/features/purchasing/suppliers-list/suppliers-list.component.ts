@@ -44,7 +44,7 @@ export class SuppliersListComponent extends BaseListComponent<SupplierDto> imple
   }
 
   constructor(
-    private suppliersService: SuppliersService,
+    private readonly suppliersService: SuppliersService,
     message: NzMessageService,
     modal: NzModalService,
     fileService: FileService,

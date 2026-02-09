@@ -33,11 +33,11 @@ export class WarehouseDetailComponent implements OnInit {
   saving = false;
 
   constructor(
-    private fb: FormBuilder,
-    private warehousesService: WarehousesService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private message: NzMessageService
+    private readonly fb: FormBuilder,
+    private readonly warehousesService: WarehousesService,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly message: NzMessageService
   ) {
     this.warehouseForm = this.fb.group({
       name: ['', [Validators.required]],

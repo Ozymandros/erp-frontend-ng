@@ -89,7 +89,7 @@ If any step fails, fix before committing.
 ## Error Handling
 **When encountering errors:**
 - Document error message and context
-- Check Node/pnpm versions first (Node 20.x, pnpm 10.28.1)
+- Check Node/pnpm versions first (Node 20.x, pnpm 10.28.2)
 - Verify `--frozen-lockfile` flag is used
 - Reference README.md and `.github/copilot-instructions.md` for build commands and common errors
 - Never bypass errors without understanding root cause

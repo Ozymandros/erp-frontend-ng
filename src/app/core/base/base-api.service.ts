@@ -3,7 +3,7 @@ import { ApiClientService } from '../api/http-client.service';
 import { PaginatedResponse, SearchParams } from '../../types/api.types';
 
 export abstract class BaseApiService<T, TCreate = Partial<T>, TUpdate = Partial<T>> {
-  constructor(protected apiClient: ApiClientService) {}
+  constructor(protected readonly apiClient: ApiClientService) {}
 
   protected abstract getEndpoint(): string;
 
@@ -22,7 +22,6 @@ export abstract class BaseApiService<T, TCreate = Partial<T>, TUpdate = Partial<
   update(id: string, data: TUpdate): Observable<T> {
     return this.apiClient.put<T>(`${this.getEndpoint()}/${id}`, data);
   }
-
 
   delete(id: string): Observable<void> {
     return this.apiClient.delete<void>(`${this.getEndpoint()}/${id}`);

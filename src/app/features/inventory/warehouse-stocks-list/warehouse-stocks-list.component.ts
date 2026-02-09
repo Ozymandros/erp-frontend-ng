@@ -36,7 +36,7 @@ export class WarehouseStocksListComponent extends BaseListComponent<WarehouseSto
   }
 
   constructor(
-    private warehouseStocksService: WarehouseStocksService,
+    private readonly warehouseStocksService: WarehouseStocksService,
     message: NzMessageService,
     modal: NzModalService,
     fileService: FileService,

@@ -47,7 +47,7 @@ export class PermissionGroupComponent implements OnChanges {
   private _isSaving = false; // Cache the saving state to avoid re-renders
   private _isDetached = false; // Track if component is detached from change detection
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  constructor(private readonly cdr: ChangeDetectorRef) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     // Reattach when group changes (for initial render or structural changes)

@@ -33,11 +33,11 @@ export class CustomerDetailComponent implements OnInit {
   saving = false;
 
   constructor(
-    private fb: FormBuilder,
-    private customersService: CustomersService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private message: NzMessageService
+    private readonly fb: FormBuilder,
+    private readonly customersService: CustomersService,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly message: NzMessageService
   ) {
     this.customerForm = this.fb.group({
       name: ['', [Validators.required]],

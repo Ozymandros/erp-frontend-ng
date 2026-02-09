@@ -10,12 +10,10 @@ import {
 } from '../../types/api.types';
 import { BaseApiService } from '../base/base-api.service';
 
-
 @Injectable({
   providedIn: 'root'
 })
 export class RolesService extends BaseApiService<Role, CreateRoleRequest, UpdateRoleRequest> {
-
   constructor(apiClient: ApiClientService) {
     super(apiClient);
   }

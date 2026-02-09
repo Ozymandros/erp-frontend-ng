@@ -52,9 +52,9 @@ export class SidebarComponent {
   });
 
   constructor(
-    private authService: AuthService,
-    private permissionService: PermissionService,
-    private themeService: ThemeService
+    private readonly authService: AuthService,
+    private readonly permissionService: PermissionService,
+    private readonly themeService: ThemeService
   ) {}
 }
 

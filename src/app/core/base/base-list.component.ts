@@ -31,12 +31,12 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
   searchTerm = '';
 
   /** Triggers a debounced load when search input changes. */
-  private searchTrigger$ = new Subject<void>();
-  protected destroy$ = new Subject<void>();
+  private readonly searchTrigger$ = new Subject<void>();
+  protected readonly destroy$ = new Subject<void>();
 
   // Inject Router and ActivatedRoute using standalone inject() API
-  protected router = inject(Router);
-  protected route = inject(ActivatedRoute);
+  protected readonly router = inject(Router);
+  protected readonly route = inject(ActivatedRoute);
 
   // Explicit orchestration: components define which module they belong to
   protected abstract get moduleName(): string;
@@ -52,12 +52,12 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
 
   constructor(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    protected service: BaseApiService<T, any, any>,
-    protected message: NzMessageService,
-    protected modal: NzModalService,
-    protected fileService: FileService,
-    protected cdr: ChangeDetectorRef,
-    protected authService: AuthService,
+    protected readonly service: BaseApiService<T, any, any>,
+    protected readonly message: NzMessageService,
+    protected readonly modal: NzModalService,
+    protected readonly fileService: FileService,
+    protected readonly cdr: ChangeDetectorRef,
+    protected readonly authService: AuthService,
   ) {}
 
   ngOnInit(): void {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
@@ -23,16 +23,15 @@ import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent {
-
+export class HeaderComponent implements OnInit {
   currentUser$ = this.authService.currentUser$;
 
   constructor(
-    private authService: AuthService,
-    private router: Router
+    private readonly authService: AuthService,
+    private readonly router: Router
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.currentUser$ = this.authService.currentUser$;
   }
 

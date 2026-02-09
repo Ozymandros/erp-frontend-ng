@@ -8,11 +8,11 @@ import { BaseApiService } from '../base/base-api.service';
   providedIn: 'root'
 })
 export class InventoryTransactionsService extends BaseApiService<InventoryTransactionDto> {
-  protected getEndpoint(): string {
-    return INVENTORY_ENDPOINTS.TRANSACTIONS;
-  }
-
   constructor(protected override apiClient: ApiClientService) {
     super(apiClient);
+  }
+
+  protected getEndpoint(): string {
+    return INVENTORY_ENDPOINTS.TRANSACTIONS;
   }
 }

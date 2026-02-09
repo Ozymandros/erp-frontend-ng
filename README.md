@@ -28,7 +28,7 @@
 ### 🛠️ Tech Stack
 
 ![Node](https://img.shields.io/badge/node-20.x-green)
-![pnpm](https://img.shields.io/badge/pnpm-10.28.1-blue)
+![pnpm](https://img.shields.io/badge/pnpm-10.28.2-blue)
 
 ![Angular](https://img.shields.io/badge/Angular-21-dd0031?logo=angular)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue?logo=typescript)
@@ -74,7 +74,7 @@ A modern, type-safe ERP admin portal built with **Angular** and **TypeScript**. 
 ## 📋 Prerequisites
 
 - **Node.js**: 20.x or higher
-- **pnpm**: 10.28.1 or higher ([Install pnpm](https://pnpm.io/installation))
+- **pnpm**: 10.28.2 or higher ([Install pnpm](https://pnpm.io/installation))
 
 ## 🚀 Quick Start
 

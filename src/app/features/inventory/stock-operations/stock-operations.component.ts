@@ -60,20 +60,20 @@ export class StockOperationsComponent implements OnInit, OnDestroy {
   productSearching = false;
   warehouseSearching = false;
 
-  private productSearch$ = new Subject<string>();
-  private warehouseSearch$ = new Subject<string>();
-  private destroy$ = new Subject<void>();
+  private readonly productSearch$ = new Subject<string>();
+  private readonly warehouseSearch$ = new Subject<string>();
+  private readonly destroy$ = new Subject<void>();
   private lastProductTerm = '';
   private lastWarehouseTerm = '';
 
   constructor(
-    private fb: FormBuilder,
-    private stockOperationsService: StockOperationsService,
-    private productsService: ProductsService,
-    private warehousesService: WarehousesService,
-    private message: NzMessageService,
-    private cdr: ChangeDetectorRef,
-    public themeService: ThemeService
+    private readonly fb: FormBuilder,
+    private readonly stockOperationsService: StockOperationsService,
+    private readonly productsService: ProductsService,
+    private readonly warehousesService: WarehousesService,
+    private readonly message: NzMessageService,
+    private readonly cdr: ChangeDetectorRef,
+    public readonly themeService: ThemeService
   ) {
     this.adjustmentForm = this.fb.group({
       productId: ['', [Validators.required]],

@@ -71,14 +71,14 @@ Your instruction files show good foundational structure but require significant 
 - ❌ **MISSING PROJECT LAYOUT**: No description of major architectural elements, config file locations
 - ❌ **MISSING VALIDATION STEPS**: No CI pipeline documentation (lint, type-check, build, test order)
 - ❌ **MISSING ERROR HANDLING**: No documented workarounds or known issues
-- ❌ **MISSING PRECONDITIONS**: No environment setup steps (Node 20, pnpm 10.28.1)
+- ❌ **MISSING PRECONDITIONS**: No environment setup steps (Node 20, pnpm 10.28.2)
 - ❌ Weak negative constraints (only 4 "Don't" statements)
 - ❌ No path-specific instructions (`.github/instructions/*.instructions.md`)
 
 **Example of Missing Pattern:**
 ```
 ❌ Current: "Build: pnpm build (if configured)"
-✅ Should be: "ALWAYS run `pnpm install --frozen-lockfile` before building. Build command: `pnpm build`. Expected output: dist/erp-frontend-ng/. Build time: ~2-3 minutes. If build fails, check Node version (must be 20.x) and pnpm version (must be 10.28.1)."
+✅ Should be: "ALWAYS run `pnpm install --frozen-lockfile` before building. Build command: `pnpm build`. Expected output: dist/erp-frontend-ng/. Build time: ~2-3 minutes. If build fails, check Node version (must be 20.x) and pnpm version (must be 10.28.2)."
 ```
 
 ---

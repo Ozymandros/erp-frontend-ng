@@ -4,10 +4,12 @@ on:
   pull_request:
     branches:
       - main
+      - master
       - develop
   push:
     branches:
       - main
+      - master
 
 concurrency:
   group: sonarqube-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -30,7 +32,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061  # v4
         with:
-          version: 10.28.1
+          version: 10.28.2
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v4
         with:
           node-version: 20
@@ -39,8 +41,19 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Run tests with coverage
-        run: pnpm test -- --code-coverage
+        run: pnpm exec ng test --code-coverage --watch=false --browsers=ChromeHeadless
         continue-on-error: true
+      - name: Verify coverage file exists
+        run: |
+          if [ ! -f "coverage/lcov.info" ]; then
+            echo "ERROR: coverage/lcov.info not found!"
+            ls -la coverage/ || echo "coverage directory does not exist"
+            exit 1
+          else
+            echo "✓ Coverage file found at coverage/lcov.info"
+            echo "File size: $(wc -l < coverage/lcov.info) lines"
+            head -20 coverage/lcov.info
+          fi
       - name: Clean previous Sonar cache
         run: rm -rf .scannerwork
       - name: Remove cached Sonar Scanner (force fresh download)

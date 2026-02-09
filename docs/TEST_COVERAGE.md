@@ -15,7 +15,7 @@ pnpm run test:coverage
 Or with explicit flags:
 
 ```bash
-pnpm test -- --code-coverage
+ng test --code-coverage && node scripts/check-coverage-warning.js
 ```
 
 The report will be generated in the `coverage/` directory. You can view it by opening `coverage/index.html` in your browser.
@@ -44,4 +44,4 @@ pnpm run test:coverage:playwright
 
 ## 🤖 CI Integration
 
-The CI pipeline (`.github/workflows/ci.yml`) runs unit tests with coverage (`pnpm test -- --code-coverage`). If coverage drops below the Karma thresholds in `karma.conf.js`, the build fails. Coverage is uploaded as an artifact and optionally to Codecov when `CODECOV_TOKEN` is set. Sonar reads `coverage/lcov.info`; raise Karma thresholds to 80% once coverage reaches that level to align with Sonar.
+The CI pipeline (`.github/workflows/ci.yml`) runs unit tests with coverage (`ng test --code-coverage && node scripts/check-coverage-warning.js`). If coverage drops below the Karma thresholds in `karma.conf.js`, the build fails. Coverage is uploaded as an artifact and optionally to Codecov when `CODECOV_TOKEN` is set. Sonar reads `coverage/lcov.info`; raise Karma thresholds to 80% once coverage reaches that level to align with Sonar.
