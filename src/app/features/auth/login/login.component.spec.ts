@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { LoginComponent } from './login.component';
@@ -82,7 +82,7 @@ describe('LoginComponent', () => {
     expect(messageServiceSpy.success).toHaveBeenCalledWith('Login successful!');
   });
 
-  it('should handle login error', () => {
+  it('should handle login error', fakeAsync(() => {
     authServiceSpy.login.and.returnValue(throwError(() => new Error('Invalid credentials')));
     component.loginForm.controls['email'].setValue('test@example.com');
     component.loginForm.controls['password'].setValue('wrong');
@@ -91,10 +91,11 @@ describe('LoginComponent', () => {
     
     expect(authServiceSpy.login).toHaveBeenCalled();
     expect(messageServiceSpy.error).toHaveBeenCalledWith('Invalid credentials');
+    tick();
     expect(component.isLoading).toBeFalse();
-  });
+  }));
 
-  it('should handle login error without message', () => {
+  it('should handle login error without message', fakeAsync(() => {
     authServiceSpy.login.and.returnValue(throwError(() => ({})));
     component.loginForm.controls['email'].setValue('test@example.com');
     component.loginForm.controls['password'].setValue('wrong');
@@ -103,8 +104,9 @@ describe('LoginComponent', () => {
     
     expect(authServiceSpy.login).toHaveBeenCalled();
     expect(messageServiceSpy.error).toHaveBeenCalledWith('Login failed');
+    tick();
     expect(component.isLoading).toBeFalse();
-  });
+  }));
 
   it('should mark invalid controls as dirty when form is invalid', () => {
     component.loginForm.controls['email'].setValue('');

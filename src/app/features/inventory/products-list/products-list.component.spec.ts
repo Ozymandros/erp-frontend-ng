@@ -5,10 +5,11 @@ import { ProductsListComponent } from './products-list.component';
 import { ProductsService } from '../../../core/services/products.service';
 import { ProductDto, PaginatedResponse } from '../../../types/api.types';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { AppConfirmDialogService } from '../../../shared/services/app-confirm-dialog.service';
 import { of, throwError } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { FileService } from '../../../core/services/file.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 
 describe('ProductsListComponent', () => {
@@ -16,7 +17,7 @@ describe('ProductsListComponent', () => {
   let fixture: ComponentFixture<ProductsListComponent>;
   let productsServiceSpy: jasmine.SpyObj<ProductsService>;
   let messageServiceSpy: jasmine.SpyObj<NzMessageService>;
-  let modalServiceSpy: jasmine.SpyObj<NzModalService>;
+  let confirmDialogSpy: jasmine.SpyObj<AppConfirmDialogService>;
   let fileServiceSpy: jasmine.SpyObj<FileService>;
 
   const mockResponse = {
@@ -28,8 +29,20 @@ describe('ProductsListComponent', () => {
     productsServiceSpy = jasmine.createSpyObj('ProductsService', ['getAll', 'delete', 'exportToXlsx', 'exportToPdf']);
     productsServiceSpy.getAll.and.returnValue(of({ items: [], total: 0 } as any));
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
-    modalServiceSpy = jasmine.createSpyObj('NzModalService', ['confirm', 'create', 'info', 'success', 'error', 'warning', 'open']);
+    confirmDialogSpy = jasmine.createSpyObj('AppConfirmDialogService', [
+      'deleteConfirm',
+      'confirm',
+      'create',
+      'info',
+      'success',
+      'error',
+      'warning',
+    ]);
     fileServiceSpy = jasmine.createSpyObj('FileService', ['saveFile']);
+    const authSpy = jasmine.createSpyObj('AuthService', ['getModulePermissions']);
+    authSpy.getModulePermissions.and.returnValue(
+      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: true }),
+    );
 
     productsServiceSpy.getAll.and.returnValue(of({
       items: mockResponse.items,
@@ -48,15 +61,16 @@ describe('ProductsListComponent', () => {
         provideHttpClientTesting(),
         { provide: ProductsService, useValue: productsServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
-        { provide: NzModalService, useValue: modalServiceSpy },
+        { provide: AppConfirmDialogService, useValue: confirmDialogSpy },
         { provide: FileService, useValue: fileServiceSpy },
+        { provide: AuthService, useValue: authSpy },
         { provide: ActivatedRoute, useValue: {} }
       ]
     })
     .overrideComponent(ProductsListComponent, {
       set: {
         providers: [
-          { provide: NzModalService, useValue: modalServiceSpy }
+          { provide: AppConfirmDialogService, useValue: confirmDialogSpy }
         ]
       }
     })
@@ -90,7 +104,7 @@ describe('ProductsListComponent', () => {
   });
 
   it('should delete product via modal', () => {
-    modalServiceSpy.confirm.and.callFake((options: any) => {
+    confirmDialogSpy.deleteConfirm.and.callFake((options: any) => {
       options.nzOnOk();
       return undefined as any;
     });
@@ -99,7 +113,7 @@ describe('ProductsListComponent', () => {
     
     component.deleteProduct(mockResponse.items[0] as any);
     
-    expect(modalServiceSpy.confirm).toHaveBeenCalled();
+    expect(confirmDialogSpy.deleteConfirm).toHaveBeenCalled();
     expect(productsServiceSpy.delete).toHaveBeenCalledWith('1');
     expect(messageServiceSpy.success).toHaveBeenCalled();
     });

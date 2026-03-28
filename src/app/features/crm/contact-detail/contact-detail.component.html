@@ -1,0 +1,61 @@
+<nz-spin [nzSpinning]="loading">
+  <nz-card [nzTitle]="isNewMode ? 'New contact' : 'Edit contact'">
+    <div class="actions-bar">
+      <app-button [routerLink]="paths.CONTACTS">Back to contacts</app-button>
+    </div>
+
+    <form nz-form [formGroup]="form" nzLayout="vertical">
+      <div nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="24" [nzMd]="12">
+          <nz-form-item>
+            <nz-form-label nzRequired>Account ID</nz-form-label>
+            <nz-form-control nzErrorTip="Required">
+              <app-input formControlName="accountId" aria-label="Account ID"></app-input>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="24" [nzMd]="12">
+          <nz-form-item>
+            <nz-form-label nzRequired>Full name</nz-form-label>
+            <nz-form-control nzErrorTip="Required">
+              <app-input formControlName="fullName"></app-input>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="24" [nzMd]="8">
+          <nz-form-item>
+            <nz-form-label>Email</nz-form-label>
+            <nz-form-control nzErrorTip="Please input a valid email!">
+              <app-input formControlName="email" type="email" placeholder="john@example.com"></app-input>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="24" [nzMd]="8">
+          <nz-form-item>
+            <nz-form-label>Phone</nz-form-label>
+            <nz-form-control nzErrorTip="Enter a valid phone number (e.g. +44 20 7123 4567, +33 1 23 45 67 89, 8–15 digits)">
+              <app-input formControlName="phone" placeholder="+44 20 7123 4567 or +33 1 23 45 67 89"></app-input>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="24" [nzMd]="8">
+          <nz-form-item>
+            <nz-form-label>Title</nz-form-label>
+            <nz-form-control>
+              <app-input formControlName="title"></app-input>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        @if (isNewMode) {
+          <div nz-col [nzSpan]="24">
+            <label nz-checkbox formControlName="isPrimary">Set as primary contact</label>
+          </div>
+        }
+      </div>
+
+      <app-button type="primary" [disabled]="saving" (click)="save()">
+        {{ isNewMode ? 'Create' : 'Save' }}
+      </app-button>
+    </form>
+  </nz-card>
+</nz-spin>

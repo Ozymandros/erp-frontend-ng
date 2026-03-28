@@ -1,0 +1,256 @@
+@if (isNewMode) {
+  <nz-card nzTitle="New opportunity">
+    <div class="actions-bar">
+      <app-button [routerLink]="paths.OPPORTUNITIES">Back</app-button>
+    </div>
+    <form nz-form [formGroup]="createForm" nzLayout="vertical">
+      <div nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="24" [nzMd]="12">
+          <nz-form-item>
+            <nz-form-label nzRequired>Customer</nz-form-label>
+            <nz-form-control nzErrorTip="Required">
+              <nz-select formControlName="customerId" nzPlaceHolder="Select customer" nzShowSearch>
+                @for (c of customers; track c.id) {
+                  <nz-option [nzValue]="c.id" [nzLabel]="c.name"></nz-option>
+                }
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="24" [nzMd]="12">
+          <nz-form-item>
+            <nz-form-label nzRequired>Name</nz-form-label>
+            <nz-form-control>
+              <app-input formControlName="name" aria-label="Opportunity name"></app-input>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="24" [nzMd]="12">
+          <nz-form-item>
+            <nz-form-label>Lead ID</nz-form-label>
+            <nz-form-control>
+              <app-input formControlName="leadId"></app-input>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <app-button type="primary" [disabled]="saving" (click)="createOpportunity()">Create</app-button>
+    </form>
+  </nz-card>
+} @else {
+  <nz-spin [nzSpinning]="loading">
+    @if (opportunity) {
+      <nz-card [nzTitle]="opportunity.name">
+        <div class="actions-bar">
+          <app-button [routerLink]="paths.OPPORTUNITIES">Back to opportunities</app-button>
+        </div>
+
+        <div class="detail-meta" role="region" aria-label="Opportunity summary">
+          <p><strong>Stage:</strong> <nz-tag>{{ opportunity.stage }}</nz-tag></p>
+          <p><strong>Owner:</strong> {{ opportunity.ownerUsername }}</p>
+          <p><strong>Customer ID:</strong> {{ opportunity.customerId }}</p>
+        </div>
+
+        @if (!isClosed()) {
+          <nz-card nzTitle="Forecast" nzType="inner" class="section-card">
+            <form nz-form [formGroup]="forecastForm" nzLayout="vertical">
+              <div nz-row [nzGutter]="16">
+                <div nz-col [nzSpan]="24" [nzMd]="8">
+                  <nz-form-item>
+                    <nz-form-label>Probability (%)</nz-form-label>
+                    <nz-form-control>
+                      <app-input type="number" formControlName="probability"></app-input>
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+                <div nz-col [nzSpan]="24" [nzMd]="8">
+                  <nz-form-item>
+                    <nz-form-label>Expected amount</nz-form-label>
+                    <nz-form-control>
+                      <app-input type="number" formControlName="expectedAmount"></app-input>
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+                <div nz-col [nzSpan]="24" [nzMd]="8">
+                  <nz-form-item>
+                    <nz-form-label>Expected close</nz-form-label>
+                    <nz-form-control>
+                      <nz-date-picker
+                        [(ngModel)]="expectedClose"
+                        [ngModelOptions]="{ standalone: true }"
+                        nzFormat="yyyy-MM-dd"
+                        style="width: 100%"
+                      ></nz-date-picker>
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+              </div>
+              <app-button type="primary" [disabled]="saving" (click)="saveForecast()">Save forecast</app-button>
+            </form>
+          </nz-card>
+
+          <nz-card nzTitle="Move stage" nzType="inner" class="section-card">
+            <nz-form-item>
+              <nz-form-label>Stage</nz-form-label>
+              <nz-form-control>
+                <nz-select [(ngModel)]="moveStage" [ngModelOptions]="{ standalone: true }" style="width: 240px">
+                  @for (s of stages; track s) {
+                    <nz-option [nzValue]="s" [nzLabel]="s"></nz-option>
+                  }
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+            <app-button [disabled]="saving" (click)="applyMoveStage()">Apply</app-button>
+          </nz-card>
+
+          <nz-card nzTitle="Lines" nzType="inner" class="section-card">
+            <app-button type="primary" (click)="openLineModal()" [disabled]="saving">Add line</app-button>
+            <nz-table [nzData]="lines" nzSize="small" class="lines-table">
+              <thead>
+                <tr>
+                  <th id="th-ln-desc" scope="col">Description</th>
+                  <th id="th-ln-qty" scope="col">Qty</th>
+                  <th id="th-ln-price" scope="col">Unit price</th>
+                  <th id="th-ln-total" scope="col">Line total</th>
+                  <th id="th-ln-act" scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (line of lines; track line.id) {
+                  <tr>
+                    <td>{{ line.description }}</td>
+                    <td>{{ line.quantity }}</td>
+                    <td>{{ line.unitPrice | number: '1.2-2' }}</td>
+                    <td>{{ line.lineTotal | number: '1.2-2' }}</td>
+                    <td>
+                      <nz-space [nzSize]="8">
+                        <app-button *nzSpaceItem type="link" (click)="openLineModal(line)">Edit</app-button>
+                        <app-button *nzSpaceItem type="link" danger (click)="removeLine(line)">Remove</app-button>
+                      </nz-space>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </nz-table>
+          </nz-card>
+
+          <div class="close-actions">
+            <app-button type="primary" (click)="openWon()" [disabled]="saving">Mark won</app-button>
+            <app-button danger (click)="openLost()" [disabled]="saving">Mark lost</app-button>
+          </div>
+        }
+      </nz-card>
+    }
+  </nz-spin>
+}
+
+<nz-modal
+  [(nzVisible)]="lineModalVisible"
+  [nzTitle]="editingLine ? 'Edit line' : 'Add line'"
+  (nzOnCancel)="lineModalVisible = false"
+  (nzOnOk)="saveLine()"
+  [nzOkLoading]="saving"
+>
+  <ng-container *nzModalContent>
+    <form nz-form [formGroup]="lineForm" nzLayout="vertical">
+      <nz-form-item>
+        <nz-form-label nzRequired>Description</nz-form-label>
+        <nz-form-control>
+          <app-input formControlName="description"></app-input>
+        </nz-form-control>
+      </nz-form-item>
+      <div nz-row [nzGutter]="8">
+        <div nz-col [nzSpan]="8">
+          <nz-form-item>
+            <nz-form-label>Qty</nz-form-label>
+            <nz-form-control>
+              <app-input type="number" formControlName="quantity"></app-input>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="8">
+          <nz-form-item>
+            <nz-form-label>Unit price</nz-form-label>
+            <nz-form-control>
+              <app-input type="number" formControlName="unitPrice"></app-input>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="8">
+          <nz-form-item>
+            <nz-form-label>Discount %</nz-form-label>
+            <nz-form-control>
+              <app-input type="number" formControlName="discountPercent"></app-input>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <nz-form-item>
+        <nz-form-label>Product (optional)</nz-form-label>
+        <nz-form-control>
+          <nz-select formControlName="productId" nzAllowClear nzPlaceHolder="Select product" nzShowSearch>
+            @for (p of products; track p.id) {
+              <nz-option [nzValue]="p.id" [nzLabel]="p.name + ' (' + p.sku + ')'"></nz-option>
+            }
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </ng-container>
+</nz-modal>
+
+<nz-modal
+  appThemedModal
+  [(nzVisible)]="lostModalVisible"
+  nzTitle="Mark lost"
+  (nzOnCancel)="lostModalVisible = false"
+  (nzOnOk)="confirmLost()"
+  [nzOkLoading]="lostSaving"
+>
+  <ng-container *nzModalContent>
+    <label for="lost-reason">Reason</label>
+    <app-input id="lost-reason" [(ngModel)]="lostReason" [ngModelOptions]="{ standalone: true }"></app-input>
+  </ng-container>
+</nz-modal>
+
+<nz-modal
+  appThemedModal
+  [(nzVisible)]="wonModalVisible"
+  nzTitle="Mark won"
+  (nzOnCancel)="wonModalVisible = false"
+  (nzOnOk)="confirmWon()"
+  [nzOkLoading]="wonSaving"
+  nzWidth="720px"
+>
+  <ng-container *nzModalContent>
+    <label>
+      <input type="checkbox" [(ngModel)]="wonConvert" [ngModelOptions]="{ standalone: true }" />
+      Convert to quote
+    </label>
+    @if (wonConvert) {
+      <div class="quote-block">
+        <nz-form-item>
+          <nz-form-label>Validity (days)</nz-form-label>
+          <app-input type="number" [(ngModel)]="quoteValidityDays" [ngModelOptions]="{ standalone: true }"></app-input>
+        </nz-form-item>
+        <app-button (click)="addQuoteLine()">Add line</app-button>
+        @for (line of quoteLines; track $index; let i = $index) {
+          <div class="quote-line-row">
+            <nz-select
+              [(ngModel)]="line.productId"
+              [ngModelOptions]="{ standalone: true }"
+              nzPlaceHolder="Product"
+              style="width: 200px"
+            >
+              @for (p of products; track p.id) {
+                <nz-option [nzValue]="p.id" [nzLabel]="p.name"></nz-option>
+              }
+            </nz-select>
+            <app-input type="number" placeholder="Qty" [(ngModel)]="line.quantity" [ngModelOptions]="{ standalone: true }"></app-input>
+            <app-input type="number" placeholder="Unit price" [(ngModel)]="line.unitPrice" [ngModelOptions]="{ standalone: true }"></app-input>
+          </div>
+        }
+      </div>
+    }
+  </ng-container>
+</nz-modal>

@@ -4,16 +4,19 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CustomersListComponent } from './customers-list.component';
 import { CustomersService } from '../../../core/services/customers.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { AppConfirmDialogService } from '../../../shared/services/app-confirm-dialog.service';
 import { of, throwError } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
+import { FileService } from '../../../core/services/file.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { ThemeService } from '../../../core/services/theme.service';
 
 describe('CustomersListComponent', () => {
   let component: CustomersListComponent;
   let fixture: ComponentFixture<CustomersListComponent>;
   let customersServiceSpy: jasmine.SpyObj<CustomersService>;
   let messageServiceSpy: jasmine.SpyObj<NzMessageService>;
-  let modalServiceSpy: jasmine.SpyObj<NzModalService>;
+  let confirmDialogSpy: jasmine.SpyObj<AppConfirmDialogService>;
 
   const mockResponse = {
     items: [{ id: '1', name: 'Customer 1', email: 'c@c.com', isActive: true }],
@@ -23,9 +26,21 @@ describe('CustomersListComponent', () => {
   beforeEach(async () => {
     customersServiceSpy = jasmine.createSpyObj('CustomersService', ['getAll', 'delete', 'exportToXlsx', 'exportToPdf']);
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
-    modalServiceSpy = jasmine.createSpyObj('NzModalService', ['confirm', 'create', 'info', 'success', 'error', 'warning', 'open']);
+    confirmDialogSpy = jasmine.createSpyObj('AppConfirmDialogService', [
+      'deleteConfirm',
+      'confirm',
+      'create',
+      'info',
+      'success',
+      'error',
+      'warning',
+    ]);
 
     customersServiceSpy.getAll.and.returnValue(of(mockResponse as any));
+    const authSpy = jasmine.createSpyObj('AuthService', ['getModulePermissions']);
+    authSpy.getModulePermissions.and.returnValue(
+      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: true }),
+    );
 
     await TestBed.configureTestingModule({
       imports: [ CustomersListComponent ],
@@ -34,14 +49,17 @@ describe('CustomersListComponent', () => {
         provideHttpClientTesting(),
         { provide: CustomersService, useValue: customersServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
-        { provide: NzModalService, useValue: modalServiceSpy },
+        { provide: AppConfirmDialogService, useValue: confirmDialogSpy },
+        { provide: FileService, useValue: jasmine.createSpyObj('FileService', ['saveFile']) },
+        { provide: AuthService, useValue: authSpy },
+        { provide: ThemeService, useValue: { effectiveTheme: () => 'light' } },
         { provide: ActivatedRoute, useValue: {} }
       ]
     })
     .overrideComponent(CustomersListComponent, {
       set: {
         providers: [
-          { provide: NzModalService, useValue: modalServiceSpy }
+          { provide: AppConfirmDialogService, useValue: confirmDialogSpy }
         ]
       }
     })
@@ -62,7 +80,7 @@ describe('CustomersListComponent', () => {
   });
 
   it('should delete customer', () => {
-    modalServiceSpy.confirm.and.callFake((options: any) => {
+    confirmDialogSpy.deleteConfirm.and.callFake((options: any) => {
       options.nzOnOk();
       return undefined as any;
     });
@@ -76,7 +94,7 @@ describe('CustomersListComponent', () => {
   });
 
   it('should not call delete when user cancels modal', () => {
-    modalServiceSpy.confirm.and.callFake((_options: any) => {
+    confirmDialogSpy.deleteConfirm.and.callFake((_options: any) => {
       // Do not call nzOnOk - user cancelled
       return undefined as any;
     });
@@ -127,7 +145,7 @@ describe('CustomersListComponent', () => {
 
   it('should show error when delete fails', () => {
     spyOn(console, 'error');
-    modalServiceSpy.confirm.and.callFake((options: any) => {
+    confirmDialogSpy.deleteConfirm.and.callFake((options: any) => {
       options.nzOnOk();
       return undefined as any;
     });

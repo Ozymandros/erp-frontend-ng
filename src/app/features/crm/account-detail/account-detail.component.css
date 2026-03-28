@@ -1,0 +1,25 @@
+.actions-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.readonly-block p {
+  margin: 8px 0;
+}
+
+.owner-card,
+.contacts-card {
+  margin-top: 16px;
+}
+
+.contacts-toolbar {
+  margin-bottom: 12px;
+}
+
+.empty-hint {
+  color: var(--app-text-secondary);
+  margin: 8px 0 0;
+}

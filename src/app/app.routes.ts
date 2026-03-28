@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { permissionGuard } from './core/guards/permission.guard';
 import { APP_ROUTES } from './core/constants/routes.constants';
+import { PERMISSION_ACTIONS, PERMISSION_MODULES } from './core/constants/permissions';
 
 export const routes: Routes = [
   {
@@ -144,6 +145,90 @@ export const routes: Routes = [
         canActivate: [permissionGuard],
         data: { module: 'purchasing', action: 'read' },
         loadComponent: () => import('./features/purchasing/purchase-order-detail/purchase-order-detail.component').then(m => m.PurchaseOrderDetailComponent)
+      },
+      {
+        path: APP_ROUTES.CRM.LEADS,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.CRM, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/crm/leads-list/leads-list.component').then(m => m.LeadsListComponent)
+      },
+      {
+        path: APP_ROUTES.CRM.LEAD_NEW,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.CRM, action: PERMISSION_ACTIONS.CREATE },
+        loadComponent: () => import('./features/crm/lead-detail/lead-detail.component').then(m => m.LeadDetailComponent)
+      },
+      {
+        path: APP_ROUTES.CRM.LEAD_DETAIL,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.CRM, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/crm/lead-detail/lead-detail.component').then(m => m.LeadDetailComponent)
+      },
+      {
+        path: APP_ROUTES.CRM.OPPORTUNITIES,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.CRM, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/crm/opportunities-list/opportunities-list.component').then(m => m.OpportunitiesListComponent)
+      },
+      {
+        path: APP_ROUTES.CRM.OPPORTUNITY_NEW,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.CRM, action: PERMISSION_ACTIONS.CREATE },
+        loadComponent: () => import('./features/crm/opportunity-detail/opportunity-detail.component').then(m => m.OpportunityDetailComponent)
+      },
+      {
+        path: APP_ROUTES.CRM.OPPORTUNITY_DETAIL,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.CRM, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/crm/opportunity-detail/opportunity-detail.component').then(m => m.OpportunityDetailComponent)
+      },
+      {
+        path: APP_ROUTES.CRM.ACTIVITIES,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.CRM, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/crm/activities-list/activities-list.component').then(m => m.ActivitiesListComponent)
+      },
+      {
+        path: APP_ROUTES.CRM.ACTIVITY_NEW,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.CRM, action: PERMISSION_ACTIONS.CREATE },
+        loadComponent: () => import('./features/crm/activity-detail/activity-detail.component').then(m => m.ActivityDetailComponent)
+      },
+      {
+        path: APP_ROUTES.CRM.ACTIVITY_DETAIL,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.CRM, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/crm/activity-detail/activity-detail.component').then(m => m.ActivityDetailComponent)
+      },
+      {
+        path: APP_ROUTES.CRM.ACCOUNTS,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.CRM, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/crm/accounts-list/accounts-list.component').then(m => m.AccountsListComponent)
+      },
+      {
+        path: APP_ROUTES.CRM.ACCOUNT_DETAIL,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.CRM, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/crm/account-detail/account-detail.component').then(m => m.AccountDetailComponent)
+      },
+      {
+        path: APP_ROUTES.CRM.CONTACTS,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.CRM, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/crm/contacts-list/contacts-list.component').then(m => m.ContactsListComponent)
+      },
+      {
+        path: APP_ROUTES.CRM.CONTACT_NEW,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.CRM, action: PERMISSION_ACTIONS.CREATE },
+        loadComponent: () => import('./features/crm/contact-detail/contact-detail.component').then(m => m.ContactDetailComponent)
+      },
+      {
+        path: APP_ROUTES.CRM.CONTACT_DETAIL,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.CRM, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/crm/contact-detail/contact-detail.component').then(m => m.ContactDetailComponent)
       }
     ]
   },

@@ -1,0 +1,106 @@
+@if (permissions$ | async; as p) {
+<div class="crm-list">
+  <div class="page-header">
+    <h1 nz-typography>CRM — Opportunities</h1>
+    <div class="header-actions">
+      @if (p.canCreate) {
+        <app-button type="primary" icon="plus" [routerLink]="paths.OPPORTUNITY_NEW">
+          New opportunity
+        </app-button>
+      }
+    </div>
+  </div>
+
+  <nz-card nzTitle="Forecast summary" class="forecast-card">
+    <nz-spin [nzSpinning]="loadingForecast">
+      @if (forecast) {
+        <div class="forecast-grid detail-readonly" role="region" aria-label="Forecast summary">
+          <p><strong>Total count:</strong> {{ forecast.totalCount }}</p>
+          <p><strong>Total expected:</strong> {{ forecast.totalExpectedAmount ?? '—' }}</p>
+          <p><strong>Total weighted:</strong> {{ forecast.totalWeightedAmount | number: '1.2-2' }}</p>
+        </div>
+        <nz-table [nzData]="forecast.byStage" nzSize="small" [nzShowPagination]="false">
+          <thead>
+            <tr>
+              <th id="th-f-stage" scope="col">Stage</th>
+              <th id="th-f-count" scope="col">Count</th>
+              <th id="th-f-weighted" scope="col">Weighted</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of forecast.byStage; track row.stage) {
+              <tr>
+                <td>{{ row.stage }}</td>
+                <td>{{ row.count }}</td>
+                <td>{{ row.weightedAmount | number: '1.2-2' }}</td>
+              </tr>
+            }
+          </tbody>
+        </nz-table>
+      } @else if (!loadingForecast) {
+        <p class="empty-hint">No forecast data.</p>
+      }
+    </nz-spin>
+  </nz-card>
+
+  <div class="list-search">
+    <nz-space-compact nzSize="large" class="list-search__compact">
+      <app-input
+        placeholder="Search (min 3 characters)..."
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearch()"
+        aria-label="Search opportunities"
+      ></app-input>
+    </nz-space-compact>
+  </div>
+
+  <nz-table
+    #tbl
+    [nzData]="opportunities"
+    [nzLoading]="loading"
+    [nzPageSize]="pageSize"
+    [nzPageIndex]="pageIndex"
+    [nzTotal]="total"
+    [nzFrontPagination]="false"
+    (nzPageIndexChange)="onPageChange($event)"
+    (nzPageSizeChange)="onPageSizeChange($event)"
+    [nzScroll]="{ x: '1200px' }"
+  >
+    <thead>
+      <tr>
+        <th id="th-opp-name" scope="col">Name</th>
+        <th id="th-opp-stage" scope="col">Stage</th>
+        <th id="th-opp-prob" scope="col">Probability</th>
+        <th id="th-opp-amt" scope="col">Expected amount</th>
+        <th id="th-opp-owner" scope="col">Owner</th>
+        @if (p.canUpdate) {
+          <th id="th-opp-actions" scope="col" nzWidth="100px">Actions</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (o of tbl.data; track o.id) {
+        <tr>
+          <td><strong>{{ o.name }}</strong></td>
+          <td><nz-tag>{{ o.stage }}</nz-tag></td>
+          <td>{{ o.probability }}%</td>
+          <td>{{ o.expectedAmount ?? '—' }}</td>
+          <td>{{ o.ownerUsername }}</td>
+          @if (p.canUpdate) {
+            <td>
+              <app-button
+                type="link"
+                icon="edit"
+                nz-tooltip
+                nzTooltipTitle="Open opportunity"
+                [routerLink]="[paths.OPPORTUNITY_DETAIL(o.id)]"
+                ariaLabel="Open opportunity"
+              ></app-button>
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </nz-table>
+</div>
+}

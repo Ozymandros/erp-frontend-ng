@@ -7,7 +7,9 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { of } from 'rxjs';
 import { InventoryTransactionsService } from '../../../core/services/inventory-transactions.service';
 import { FileService } from '../../../core/services/file.service';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { AuthService } from '../../../core/services/auth.service';
+import { ThemeService } from '../../../core/services/theme.service';
+import { AppConfirmDialogService } from '../../../shared/services/app-confirm-dialog.service';
 
 describe('InventoryTransactionsListComponent', () => {
   let component: InventoryTransactionsListComponent;
@@ -15,7 +17,7 @@ describe('InventoryTransactionsListComponent', () => {
   let inventoryTransactionsServiceSpy: jasmine.SpyObj<InventoryTransactionsService>;
   let messageServiceSpy: jasmine.SpyObj<NzMessageService>;
   let fileServiceSpy: jasmine.SpyObj<FileService>;
-  let modalServiceSpy: jasmine.SpyObj<NzModalService>;
+  let confirmDialogSpy: jasmine.SpyObj<AppConfirmDialogService>;
   let routerSpy: jasmine.SpyObj<Router>;
   let activatedRouteSpy: any;
 
@@ -28,11 +30,15 @@ describe('InventoryTransactionsListComponent', () => {
     inventoryTransactionsServiceSpy = jasmine.createSpyObj('InventoryTransactionsService', ['getAll']);
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
     fileServiceSpy = jasmine.createSpyObj('FileService', ['saveFile']);
-    modalServiceSpy = jasmine.createSpyObj('NzModalService', ['confirm']);
+    confirmDialogSpy = jasmine.createSpyObj('AppConfirmDialogService', ['deleteConfirm']);
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     activatedRouteSpy = { queryParams: of({}) };
 
     inventoryTransactionsServiceSpy.getAll.and.returnValue(of(mockResponse as any));
+    const authSpy = jasmine.createSpyObj('AuthService', ['getModulePermissions']);
+    authSpy.getModulePermissions.and.returnValue(
+      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: false }),
+    );
 
     await TestBed.configureTestingModule({
       imports: [ InventoryTransactionsListComponent ],
@@ -42,7 +48,9 @@ describe('InventoryTransactionsListComponent', () => {
         { provide: InventoryTransactionsService, useValue: inventoryTransactionsServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
         { provide: FileService, useValue: fileServiceSpy },
-        { provide: NzModalService, useValue: modalServiceSpy },
+        { provide: AppConfirmDialogService, useValue: confirmDialogSpy },
+        { provide: AuthService, useValue: authSpy },
+        { provide: ThemeService, useValue: { effectiveTheme: () => 'light' } },
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: activatedRouteSpy }
       ]

@@ -1,0 +1,91 @@
+@if (permissions$ | async; as p) {
+<div class="crm-list">
+  <div class="page-header">
+    <h1 nz-typography>CRM — Contacts</h1>
+    <div class="header-actions">
+      @if (p.canCreate) {
+        <app-button type="primary" icon="plus" [routerLink]="paths.CONTACT_NEW" [queryParamsHandling]="'merge'">
+          New contact
+        </app-button>
+      }
+    </div>
+  </div>
+
+  <div class="list-search">
+    <nz-space-compact nzSize="large" class="list-search__compact">
+      <app-input
+        placeholder="Search (min 3 characters)..."
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearch()"
+        aria-label="Search contacts"
+      ></app-input>
+    </nz-space-compact>
+  </div>
+
+  <nz-table
+    #tbl
+    [nzData]="contacts"
+    [nzLoading]="loading"
+    [nzPageSize]="pageSize"
+    [nzPageIndex]="pageIndex"
+    [nzTotal]="total"
+    [nzFrontPagination]="false"
+    (nzPageIndexChange)="onPageChange($event)"
+    (nzPageSizeChange)="onPageSizeChange($event)"
+    [nzScroll]="{ x: '1100px' }"
+  >
+    <thead>
+      <tr>
+        <th id="th-ct-name" scope="col">Name</th>
+        <th id="th-ct-email" scope="col">Email</th>
+        <th id="th-ct-account" scope="col">Account ID</th>
+        <th id="th-ct-primary" scope="col">Primary</th>
+        @if (p.canUpdate || p.canDelete) {
+          <th id="th-ct-actions" scope="col" nzWidth="160px">Actions</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (c of tbl.data; track c.id) {
+        <tr>
+          <td><strong>{{ c.fullName }}</strong></td>
+          <td>{{ c.email || '—' }}</td>
+          <td>
+            <a [routerLink]="paths.ACCOUNT_DETAIL(c.accountId)">{{ c.accountId }}</a>
+          </td>
+          <td>
+            <nz-tag [nzColor]="c.isPrimary ? 'blue' : 'default'">{{ c.isPrimary ? 'Yes' : 'No' }}</nz-tag>
+          </td>
+          @if (p.canUpdate || p.canDelete) {
+            <td>
+              <nz-space [nzSize]="8">
+                @if (p.canUpdate) {
+                  <app-button
+                    *nzSpaceItem
+                    type="link"
+                    icon="edit"
+                    [routerLink]="[paths.CONTACT_DETAIL(c.id)]"
+                    ariaLabel="Edit contact"
+                  ></app-button>
+                }
+                @if (p.canDelete) {
+                  <app-button
+                    *nzSpaceItem
+                    type="link"
+                    danger
+                    icon="delete"
+                    nz-popconfirm
+                    nzPopconfirmTitle="Delete this contact?"
+                    (nzOnConfirm)="deleteContact(c)"
+                    ariaLabel="Delete contact"
+                  ></app-button>
+                }
+              </nz-space>
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </nz-table>
+</div>
+}

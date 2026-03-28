@@ -1,0 +1,74 @@
+@if (permissions$ | async; as p) {
+<div class="crm-list">
+  <div class="page-header">
+    <h1 nz-typography>CRM — Activities</h1>
+    <div class="header-actions">
+      @if (p.canCreate) {
+        <app-button type="primary" icon="plus" [routerLink]="paths.ACTIVITY_NEW">
+          New activity
+        </app-button>
+      }
+    </div>
+  </div>
+
+  <div class="list-search">
+    <nz-space-compact nzSize="large" class="list-search__compact">
+      <app-input
+        placeholder="Search (min 3 characters)..."
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearch()"
+        aria-label="Search activities"
+      ></app-input>
+    </nz-space-compact>
+  </div>
+
+  <nz-table
+    #tbl
+    [nzData]="activities"
+    [nzLoading]="loading"
+    [nzPageSize]="pageSize"
+    [nzPageIndex]="pageIndex"
+    [nzTotal]="total"
+    [nzFrontPagination]="false"
+    (nzPageIndexChange)="onPageChange($event)"
+    (nzPageSizeChange)="onPageSizeChange($event)"
+    [nzScroll]="{ x: '1200px' }"
+  >
+    <thead>
+      <tr>
+        <th id="th-act-subject" scope="col">Subject</th>
+        <th id="th-act-type" scope="col">Type</th>
+        <th id="th-act-status" scope="col">Status</th>
+        <th id="th-act-due" scope="col">Due</th>
+        <th id="th-act-assignee" scope="col">Assigned to</th>
+        @if (p.canUpdate) {
+          <th id="th-act-actions" scope="col" nzWidth="100px">Actions</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (a of tbl.data; track a.id) {
+        <tr>
+          <td><strong>{{ a.subject }}</strong></td>
+          <td><nz-tag>{{ a.type }}</nz-tag></td>
+          <td>{{ a.status }}</td>
+          <td>{{ a.dueAt | date: 'medium' }}</td>
+          <td>{{ a.assignedToUsername }}</td>
+          @if (p.canUpdate) {
+            <td>
+              <app-button
+                type="link"
+                icon="right-circle"
+                nz-tooltip
+                nzTooltipTitle="Open activity"
+                [routerLink]="[paths.ACTIVITY_DETAIL(a.id)]"
+                ariaLabel="Open activity"
+              ></app-button>
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </nz-table>
+</div>
+}

@@ -1,0 +1,89 @@
+<nz-spin [nzSpinning]="loading">
+  @if (account) {
+    <nz-card nzTitle="Account">
+      <div class="actions-bar">
+        <app-button [routerLink]="paths.ACCOUNTS">Back to accounts</app-button>
+        <a [routerLink]="paths.CONTACTS" [queryParams]="{ accountId: account.id }">View contacts filtered</a>
+      </div>
+
+      <div class="readonly-block detail-readonly" role="region" aria-label="Account details">
+        <p><strong>Name:</strong> {{ account.name }}</p>
+        <p><strong>Customer ID:</strong> {{ account.customerId }}</p>
+        <p><strong>Tax ID:</strong> {{ account.taxId || '—' }}</p>
+        <p><strong>Billing:</strong> {{ account.billingAddress || '—' }}</p>
+        <p><strong>Shipping:</strong> {{ account.shippingAddress || '—' }}</p>
+        <p><strong>Last synced:</strong> {{ account.lastSyncedAt | date: 'medium' }}</p>
+      </div>
+
+      @if (canUpdateOwner()) {
+        <nz-card nzTitle="Change owner" nzType="inner" class="owner-card">
+          <form nz-form [formGroup]="ownerForm" nzLayout="inline" (ngSubmit)="saveOwner()">
+            <nz-form-item>
+              <nz-form-label nzRequired>Owner username</nz-form-label>
+              <nz-form-control>
+                <app-input formControlName="ownerUsername" aria-label="Owner username"></app-input>
+              </nz-form-control>
+            </nz-form-item>
+            <app-button type="primary" [disabled]="savingOwner" btnType="submit">Save owner</app-button>
+          </form>
+        </nz-card>
+      }
+
+      <nz-card nzTitle="Contacts" nzType="inner" class="contacts-card">
+        <div class="contacts-toolbar">
+          <app-button type="primary" [routerLink]="paths.CONTACT_NEW" [queryParams]="{ accountId: account.id }">
+            New contact
+          </app-button>
+        </div>
+        <nz-spin [nzSpinning]="loadingContacts">
+          <nz-table [nzData]="contacts" nzSize="small" [nzShowPagination]="false">
+            <thead>
+              <tr>
+                <th id="th-c-name" scope="col">Name</th>
+                <th id="th-c-email" scope="col">Email</th>
+                <th id="th-c-primary" scope="col">Primary</th>
+                <th id="th-c-actions" scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (c of contacts; track c.id) {
+                <tr>
+                  <td>{{ c.fullName }}</td>
+                  <td>{{ c.email || '—' }}</td>
+                  <td>
+                    <nz-tag [nzColor]="c.isPrimary ? 'blue' : 'default'">{{ c.isPrimary ? 'Yes' : 'No' }}</nz-tag>
+                  </td>
+                  <td>
+                    <nz-space [nzSize]="8">
+                      <app-button
+                        *nzSpaceItem
+                        type="link"
+                        icon="edit"
+                        [routerLink]="[paths.CONTACT_DETAIL(c.id)]"
+                        ariaLabel="Edit contact"
+                      ></app-button>
+                      @if (!c.isPrimary && c.isActive) {
+                        <app-button
+                          *nzSpaceItem
+                          type="link"
+                          [disabled]="settingPrimary === c.id"
+                          (click)="setPrimary(c)"
+                          ariaLabel="Set primary contact"
+                        >
+                          Set primary
+                        </app-button>
+                      }
+                    </nz-space>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </nz-table>
+          @if (!contacts.length && !loadingContacts) {
+            <p class="empty-hint">No contacts for this account.</p>
+          }
+        </nz-spin>
+      </nz-card>
+    </nz-card>
+  }
+</nz-spin>

@@ -13,7 +13,7 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { InventoryTransactionsService } from '../../../core/services/inventory-transactions.service';
 import { InventoryTransactionDto } from '../../../types/api.types';
 import { BaseListComponent } from '../../../core/base/base-list.component';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { AppConfirmDialogService } from '../../../shared/services/app-confirm-dialog.service';
 import { FileService } from '../../../core/services/file.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ThemeService } from '../../../core/services/theme.service';
@@ -47,13 +47,13 @@ export class InventoryTransactionsListComponent extends BaseListComponent<Invent
   constructor(
     private readonly inventoryTransactionsService: InventoryTransactionsService,
     message: NzMessageService,
-    modal: NzModalService,
+    confirmDialog: AppConfirmDialogService,
     fileService: FileService,
     cdr: ChangeDetectorRef,
     authService: AuthService,
     public readonly themeService: ThemeService
   ) {
-    super(inventoryTransactionsService, message, modal, fileService, cdr, authService);
+    super(inventoryTransactionsService, message, confirmDialog, fileService, cdr, authService);
   }
 
   override ngOnInit(): void {
