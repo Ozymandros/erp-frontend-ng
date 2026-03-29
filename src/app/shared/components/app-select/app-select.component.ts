@@ -1,7 +1,11 @@
 import { Component, Input, Output, EventEmitter, forwardRef, TemplateRef, booleanAttribute } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NG_VALUE_ACCESSOR, ControlValueAccessor, ReactiveFormsModule } from '@angular/forms';
+import type { NzSafeAny } from 'ng-zorro-antd/core/types';
 import { NzSelectModule, NzSelectModeType } from 'ng-zorro-antd/select';
+
+/** Row object or primitive used as both label and value when no keys match */
+export type AppSelectOption = string | number | boolean | Record<string, unknown>;
 
 @Component({
   selector: 'app-select',
@@ -33,10 +37,10 @@ import { NzSelectModule, NzSelectModeType } from 'ng-zorro-antd/select';
       style="width: 100%"
     >
       @if (options && options.length > 0) {
-        @for (opt of options; track (opt[valueKey] || opt)) {
+        @for (opt of options; track optionTrackKey(opt)) {
           <nz-option
-            [nzLabel]="opt[labelKey] || opt"
-            [nzValue]="opt[valueKey] || opt"
+            [nzLabel]="optionLabel(opt)"
+            [nzValue]="optionValue(opt)"
           ></nz-option>
         }
       } @else {
@@ -57,22 +61,22 @@ export class AppSelectComponent implements ControlValueAccessor {
   @Input() mode: NzSelectModeType = 'default';
   @Input({ transform: booleanAttribute }) showArrow = true;
   
-  @Input() options: any[] = [];
+  @Input() options: AppSelectOption[] = [];
   @Input() labelKey = 'label';
   @Input() valueKey = 'value';
 
   @Output() searchQuery = new EventEmitter<string>();
   @Output() openChange = new EventEmitter<boolean>();
 
-  value: any;
-  onChange: (value: any) => void = () => {};
+  value: unknown;
+  onChange: (value: unknown) => void = () => {};
   onTouched: () => void = () => {};
 
-  writeValue(value: any): void {
+  writeValue(value: unknown): void {
     this.value = value;
   }
 
-  registerOnChange(fn: (value: any) => void): void {
+  registerOnChange(fn: (value: unknown) => void): void {
     this.onChange = fn;
   }
 
@@ -82,5 +86,30 @@ export class AppSelectComponent implements ControlValueAccessor {
 
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
+  }
+
+  optionLabel(opt: AppSelectOption): string | number | null {
+    const raw = this.resolveOptionField(opt, this.labelKey);
+    if (raw === null || raw === undefined) return null;
+    if (typeof raw === 'string' || typeof raw === 'number') return raw;
+    if (typeof raw === 'boolean') return raw ? 'true' : 'false';
+    return String(raw);
+  }
+
+  optionValue(opt: AppSelectOption): NzSafeAny | null {
+    const raw = this.resolveOptionField(opt, this.valueKey);
+    return raw === undefined ? null : (raw as NzSafeAny);
+  }
+
+  optionTrackKey(opt: AppSelectOption): NzSafeAny | null {
+    return this.optionValue(opt);
+  }
+
+  private resolveOptionField(opt: AppSelectOption, key: string): unknown {
+    if (typeof opt === 'object' && opt !== null) {
+      const row = opt as Record<string, unknown>;
+      return row[key] ?? opt;
+    }
+    return opt;
   }
 }

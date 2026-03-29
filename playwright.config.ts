@@ -1,4 +1,31 @@
+import path from 'path';
 import { defineConfig, devices } from '@playwright/test';
+import type { MonocartReporterOptions } from 'monocart-reporter';
+
+const pwCoverage = process.env['PW_COVERAGE'] === '1';
+
+function getMonocartReporterOptions(): MonocartReporterOptions {
+  const reportDir = path.resolve(process.cwd(), 'playwright-report');
+  const codeCoverageDir = path.join(reportDir, 'code-coverage');
+  return {
+    name: 'ERP Aspire E2E coverage',
+    outputFile: path.join(reportDir, 'monocart-report.html'),
+    coverage: {
+      outputDir: codeCoverageDir,
+      reportPath: path.join(codeCoverageDir, 'v8', 'index.html'),
+      reports: [
+        ['v8', { outputFile: 'v8/index.html', inline: true, metrics: ['lines'] }],
+        ['console-summary', { metrics: ['lines'] }],
+        ['lcovonly', { file: 'lcov/lcov.info' }],
+      ],
+      entryFilter: (entry) => {
+        const url = entry.url ?? '';
+        return !url.includes('fonts.googleapis.com') && !url.includes('chrome-extension://');
+      },
+      sourceFilter: (sourcePath: string) => /src\//u.test(sourcePath),
+    },
+  };
+}
 
 /**
  * Playwright configuration for Angular E2E testing with API mocking
@@ -15,7 +42,13 @@ export default defineConfig({
   forbidOnly: !!process.env['CI'],
   retries: process.env['CI'] ? 2 : 0,
   workers: process.env['CI'] ? 1 : undefined,
-  reporter: 'html',
+  reporter: pwCoverage
+    ? [
+        ['list'],
+        ['html', { open: 'never' }],
+        ['monocart-reporter', getMonocartReporterOptions()],
+      ]
+    : 'html',
   use: {
     baseURL: 'http://localhost:4201',
     trace: 'on-first-retry',

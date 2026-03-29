@@ -10,7 +10,8 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
-import { finalize } from 'rxjs/operators';
+import { of, TimeoutError } from 'rxjs';
+import { catchError, finalize, takeUntil, timeout } from 'rxjs/operators';
 import { CrmOpportunitiesService } from '../../../core/services/crm-opportunities.service';
 import { ForecastSummaryDto, OpportunityDto } from '../../../types/crm.types';
 import { BaseListComponent } from '../../../core/base/base-list.component';
@@ -19,6 +20,9 @@ import { AuthService } from '../../../core/services/auth.service';
 import { ThemeService } from '../../../core/services/theme.service';
 import { AppButtonComponent, AppInputComponent } from '../../../shared/components';
 import { APP_PATHS } from '../../../core/constants/routes.constants';
+
+/** Abort hanging forecast API calls so the summary card cannot spin forever. */
+const FORECAST_REQUEST_TIMEOUT_MS = 60_000;
 
 @Component({
   selector: 'app-opportunities-list',
@@ -70,10 +74,26 @@ export class OpportunitiesListComponent extends BaseListComponent<OpportunityDto
     this.loadingForecast = true;
     this.opportunitiesService
       .getForecastSummary({})
-      .pipe(finalize(() => (this.loadingForecast = false)))
+      .pipe(
+        takeUntil(this.destroy$),
+        timeout(FORECAST_REQUEST_TIMEOUT_MS),
+        catchError((err: unknown) => {
+          console.error('Forecast summary failed', err);
+          this.message.error(
+            err instanceof TimeoutError ? 'Forecast summary request timed out' : 'Failed to load forecast summary',
+          );
+          return of(null);
+        }),
+        finalize(() => {
+          this.loadingForecast = false;
+          // Same pattern as BaseListComponent.loadData — avoid stuck spinner when async updates land in the same CD turn
+          queueMicrotask(() => this.cdr.detectChanges());
+        }),
+      )
       .subscribe({
-        next: (f) => (this.forecast = f),
-        error: () => this.message.error('Failed to load forecast summary'),
+        next: (f) => {
+          this.forecast = f;
+        },
       });
   }
 

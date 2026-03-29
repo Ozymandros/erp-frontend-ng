@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures/app-fixtures';
 import { mockLogin, mockAuthenticatedState, mockGetUsers, mockGetRoles, mockGetPermissions } from './mocks/api-mocks';
 import { mockAuthResponse, mockAdminUser, mockRoles, mockPermissions } from './mocks/fixtures';
 

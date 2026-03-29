@@ -24,4 +24,47 @@ describe('CrmAccountsService', () => {
       done();
     });
   });
+
+  it('should GET accounts list via base endpoint', (done) => {
+    apiClientSpy.get.and.returnValue(of([]));
+    service.getAll().subscribe(() => {
+      expect(apiClientSpy.get).toHaveBeenCalledWith(CRM_ENDPOINTS.ACCOUNTS, undefined);
+      done();
+    });
+  });
+
+  it('should throw from create', (done) => {
+    service.create(undefined as never).subscribe({
+      next: () => fail('expected error'),
+      error: (err: Error) => {
+        expect(err.message).toContain('Accounts are synced from Sales');
+        done();
+      },
+    });
+  });
+
+  it('should throw from update', (done) => {
+    service.update('acc-1', undefined as never).subscribe({
+      next: () => fail('expected error'),
+      error: (err: Error) => {
+        expect(err.message).toContain('Use updateOwner');
+        done();
+      },
+    });
+  });
+
+  it('should throw from delete', (done) => {
+    service.delete('acc-1').subscribe({
+      next: () => fail('expected error'),
+      error: (err: Error) => {
+        expect(err.message).toContain('cannot be deleted');
+        done();
+      },
+    });
+  });
+
+  it('should throw from export methods', () => {
+    expect(() => service.exportToXlsx()).toThrowError('CRM accounts export is not available');
+    expect(() => service.exportToPdf()).toThrowError('CRM accounts export is not available');
+  });
 });

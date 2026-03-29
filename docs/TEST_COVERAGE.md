@@ -1,6 +1,6 @@
 # 📊 Test Coverage Guide
 
-Maintaining high test coverage is essential for the stability of the ERP Aspire portal. We use **Karma-Coverage** (Istanbul) for unit tests and Playwright's built-in coverage tools for E2E tests.
+Maintaining high test coverage is essential for the stability of the ERP Aspire portal. We use **Karma-Coverage** (Istanbul) for unit tests. For E2E, Playwright does not provide a `--coverage` CLI flag; this repo uses **Chromium V8 coverage** plus **monocart-reporter** (see `e2e/fixtures/` and `playwright.config.ts`).
 
 ## 📈 Generating Coverage Reports
 
@@ -21,11 +21,14 @@ ng test --code-coverage && node scripts/check-coverage-warning.js
 The report will be generated in the `coverage/` directory. You can view it by opening `coverage/index.html` in your browser.
 
 ### E2E Tests (Playwright)
-To run E2E tests with coverage:
+To run E2E tests with V8 coverage (Chromium only; requires a production build so `dist/temp-ng-project/browser` exists for the static server):
 
 ```bash
+pnpm build
 pnpm run test:coverage:playwright
 ```
+
+Reports are written under `playwright-report/` (for example `playwright-report/code-coverage/` and `playwright-report/monocart-report.html`). View the combined report with `pnpm exec monocart show-report playwright-report/monocart-report.html` when needed.
 
 ## 🎯 Coverage Goals and Enforcement
 

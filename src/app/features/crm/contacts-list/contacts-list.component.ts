@@ -8,7 +8,6 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { AppConfirmDialogService } from '../../../shared/services/app-confirm-dialog.service';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
-import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { distinctUntilChanged, map, skip } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';

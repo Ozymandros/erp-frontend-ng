@@ -108,7 +108,7 @@ describe('SidebarComponent', () => {
 
   it('should filter out groups with no visible children', () => {
     // Mock permission to block all Users, Roles but allow other permissions
-    mockPermissionService.hasPermission.and.callFake((module: string, action: string) => {
+    mockPermissionService.hasPermission.and.callFake((module: string, _action: string) => {
       return module !== 'Users' && module !== 'Roles' && module !== 'Permissions';
     });
     mockAuthService.currentUser.set({ ...mockUser, isAdmin: false });

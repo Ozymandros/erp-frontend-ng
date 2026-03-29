@@ -32,4 +32,17 @@ describe('CrmContactsService', () => {
       done();
     });
   });
+
+  it('should GET contacts list via base endpoint', (done) => {
+    apiClientSpy.get.and.returnValue(of([]));
+    service.getAll().subscribe(() => {
+      expect(apiClientSpy.get).toHaveBeenCalledWith(CRM_ENDPOINTS.CONTACTS, undefined);
+      done();
+    });
+  });
+
+  it('should throw from export methods', () => {
+    expect(() => service.exportToXlsx()).toThrowError('CRM contacts export is not available');
+    expect(() => service.exportToPdf()).toThrowError('CRM contacts export is not available');
+  });
 });

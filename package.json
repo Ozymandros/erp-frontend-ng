@@ -15,7 +15,7 @@
     "test:watch": "ng test",
     "test:playwright": "playwright test",
     "test:coverage": "ng test --code-coverage && node scripts/check-coverage-warning.js",
-    "test:coverage:playwright": "playwright test --coverage",
+    "test:coverage:playwright": "node scripts/run-playwright-coverage.mjs",
     "test:e2e": "npx playwright test --reporter=junit --reporter=html --output=test-results",
     "e2e:report": "playwright show-report"
   },
@@ -59,6 +59,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "monocart-reporter": "^2.10.0",
     "testcontainers": "^11.11.0",
     "typescript": ">=5.5.0",
     "typescript-eslint": "^8.54.0"
