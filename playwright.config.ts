@@ -3,6 +3,20 @@ import { defineConfig, devices } from '@playwright/test';
 import type { MonocartReporterOptions } from 'monocart-reporter';
 
 const pwCoverage = process.env['PW_COVERAGE'] === '1';
+const ALLOWED_COVERAGE_HOSTS = new Set(['localhost', '127.0.0.1', '::1']);
+
+function isAllowedCoverageEntry(entryUrl: string): boolean {
+  try {
+    const parsed = new URL(entryUrl);
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+      return false;
+    }
+    return ALLOWED_COVERAGE_HOSTS.has(parsed.hostname);
+  } catch {
+    // Ignore malformed/non-URL entries from coverage input.
+    return false;
+  }
+}
 
 function getMonocartReporterOptions(): MonocartReporterOptions {
   const reportDir = path.resolve(process.cwd(), 'playwright-report');
@@ -20,7 +34,7 @@ function getMonocartReporterOptions(): MonocartReporterOptions {
       ],
       entryFilter: (entry) => {
         const url = entry.url ?? '';
-        return !url.includes('fonts.googleapis.com') && !url.includes('chrome-extension://');
+        return isAllowedCoverageEntry(url);
       },
       sourceFilter: (sourcePath: string) => /src\//u.test(sourcePath),
     },
