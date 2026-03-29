@@ -7,7 +7,8 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { of, throwError } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { FileService } from '../../../core/services/file.service';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { AuthService } from '../../../core/services/auth.service';
+import { AppConfirmDialogService } from '../../../shared/services/app-confirm-dialog.service';
 
 describe('SalesOrdersListComponent', () => {
   let component: SalesOrdersListComponent;
@@ -15,7 +16,7 @@ describe('SalesOrdersListComponent', () => {
   let salesOrdersServiceSpy: jasmine.SpyObj<SalesOrdersService>;
   let messageServiceSpy: jasmine.SpyObj<NzMessageService>;
   let fileServiceSpy: jasmine.SpyObj<FileService>;
-  let modalServiceSpy: jasmine.SpyObj<NzModalService>;
+  let confirmDialogSpy: jasmine.SpyObj<AppConfirmDialogService>;
 
   const mockResponse = {
     items: [{ id: '1', orderNumber: 'SO-1', customerName: 'C1', totalAmount: 100, status: 'Confirmed', orderDate: new Date() }],
@@ -26,9 +27,13 @@ describe('SalesOrdersListComponent', () => {
     salesOrdersServiceSpy = jasmine.createSpyObj('SalesOrdersService', ['getAll', 'delete', 'exportToXlsx', 'exportToPdf']);
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
     fileServiceSpy = jasmine.createSpyObj('FileService', ['saveFile']);
-    modalServiceSpy = jasmine.createSpyObj('NzModalService', ['confirm']);
+    confirmDialogSpy = jasmine.createSpyObj('AppConfirmDialogService', ['deleteConfirm']);
 
     salesOrdersServiceSpy.getAll.and.returnValue(of(mockResponse as any));
+    const authSpy = jasmine.createSpyObj('AuthService', ['getModulePermissions']);
+    authSpy.getModulePermissions.and.returnValue(
+      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: false }),
+    );
 
     await TestBed.configureTestingModule({
       imports: [ SalesOrdersListComponent ],
@@ -38,7 +43,8 @@ describe('SalesOrdersListComponent', () => {
         { provide: SalesOrdersService, useValue: salesOrdersServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
         { provide: FileService, useValue: fileServiceSpy },
-        { provide: NzModalService, useValue: modalServiceSpy },
+        { provide: AppConfirmDialogService, useValue: confirmDialogSpy },
+        { provide: AuthService, useValue: authSpy },
         { provide: ActivatedRoute, useValue: {} }
       ]
     })
@@ -60,7 +66,7 @@ describe('SalesOrdersListComponent', () => {
 
   it('should delete order', () => {
     salesOrdersServiceSpy.delete.and.returnValue(of(void 0));
-    modalServiceSpy.confirm.and.callFake((options: any) => {
+    confirmDialogSpy.deleteConfirm.and.callFake((options: any) => {
       options.nzOnOk();
       return undefined as any;
     });

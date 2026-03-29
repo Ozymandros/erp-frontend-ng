@@ -1,0 +1,61 @@
+@if (permissions$ | async; as p) {
+<div class="crm-list">
+  <div class="page-header">
+    <h1 nz-typography>CRM — Accounts</h1>
+  </div>
+
+  <div class="list-search">
+    <nz-space-compact nzSize="large" class="list-search__compact">
+      <app-input
+        placeholder="Search (min 3 characters)..."
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearch()"
+        aria-label="Search accounts"
+      ></app-input>
+    </nz-space-compact>
+  </div>
+
+  <nz-table
+    #tbl
+    [nzData]="accounts"
+    [nzLoading]="loading"
+    [nzPageSize]="pageSize"
+    [nzPageIndex]="pageIndex"
+    [nzTotal]="total"
+    [nzFrontPagination]="false"
+    (nzPageIndexChange)="onPageChange($event)"
+    (nzPageSizeChange)="onPageSizeChange($event)"
+    [nzScroll]="{ x: '1000px' }"
+  >
+    <thead>
+      <tr>
+        <th id="th-acc-name" scope="col">Name</th>
+        <th id="th-acc-owner" scope="col">Owner</th>
+        <th id="th-acc-active" scope="col">Active</th>
+        <th id="th-acc-actions" scope="col" nzWidth="120px">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (a of tbl.data; track a.id) {
+        <tr>
+          <td><strong>{{ a.name }}</strong></td>
+          <td>{{ a.ownerUsername || '—' }}</td>
+          <td>
+            <nz-tag [nzColor]="a.isActive ? 'green' : 'default'">{{ a.isActive ? 'Yes' : 'No' }}</nz-tag>
+          </td>
+          <td>
+            <app-button
+              type="link"
+              icon="eye"
+              nz-tooltip
+              nzTooltipTitle="View account"
+              [routerLink]="[paths.ACCOUNT_DETAIL(a.id)]"
+              ariaLabel="View account"
+            ></app-button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </nz-table>
+</div>
+}

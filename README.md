@@ -71,6 +71,10 @@ A modern, type-safe ERP admin portal built with **Angular** and **TypeScript**. 
 - **Testing**: Jasmine, Karma, Playwright
 - **Package Manager**: pnpm
 
+## 📄 API contracts
+
+- **Paginated lists**: [docs/api-contract-paginated.md](./docs/api-contract-paginated.md) — single canonical JSON shape (**camelCase**) for gateway and all microservices; backend teams should align serializers to this contract.
+
 ## 📋 Prerequisites
 
 - **Node.js**: 20.x or higher
@@ -92,7 +96,7 @@ pnpm install
 pnpm start
 ```
 
-The application will be available at `http://localhost:4200`.
+The application will be available at `http://localhost:3000`.
 
 ### Environment Variables
 
@@ -190,6 +194,7 @@ The project includes automated CI/CD with GitHub Actions (`.github/workflows/ci.
 
 ## 📚 Documentation
 
+- [App modals (confirm + theme)](docs/app-modals.md) (`AppConfirmDialogService`, `appThemedModal`)
 - [Theming Guide](docs/THEMING.md) (Signal-based implementation)
 - [E2E Testing Guide](docs/E2E_TESTING.md) (See `e2e/` folder for implementation)
 - [Test Coverage](docs/TEST_COVERAGE.md) (Run coverage command to view)

@@ -6,15 +6,17 @@ import { RolesService } from '../../../core/services/roles.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { AppConfirmDialogService } from '../../../shared/services/app-confirm-dialog.service';
 import { FileService } from '../../../core/services/file.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { ThemeService } from '../../../core/services/theme.service';
 
 describe('RolesListComponent', () => {
   let component: RolesListComponent;
   let fixture: ComponentFixture<RolesListComponent>;
   let rolesServiceSpy: jasmine.SpyObj<RolesService>;
   let messageServiceSpy: jasmine.SpyObj<NzMessageService>;
-  let modalServiceSpy: jasmine.SpyObj<NzModalService>;
+  let confirmDialogSpy: jasmine.SpyObj<AppConfirmDialogService>;
   let fileServiceSpy: jasmine.SpyObj<FileService>;
 
   const mockResponse = {
@@ -25,10 +27,14 @@ describe('RolesListComponent', () => {
   beforeEach(async () => {
     rolesServiceSpy = jasmine.createSpyObj('RolesService', ['getAll', 'delete', 'exportToXlsx', 'exportToPdf']);
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
-    modalServiceSpy = jasmine.createSpyObj('NzModalService', ['confirm']);
+    confirmDialogSpy = jasmine.createSpyObj('AppConfirmDialogService', ['deleteConfirm']);
     fileServiceSpy = jasmine.createSpyObj('FileService', ['saveFile']);
 
     rolesServiceSpy.getAll.and.returnValue(of(mockResponse as any));
+    const authSpy = jasmine.createSpyObj('AuthService', ['getModulePermissions']);
+    authSpy.getModulePermissions.and.returnValue(
+      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: true }),
+    );
 
     await TestBed.configureTestingModule({
       imports: [ RolesListComponent ],
@@ -37,15 +43,17 @@ describe('RolesListComponent', () => {
         provideHttpClientTesting(),
         { provide: RolesService, useValue: rolesServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
-        { provide: NzModalService, useValue: modalServiceSpy },
+        { provide: AppConfirmDialogService, useValue: confirmDialogSpy },
         { provide: FileService, useValue: fileServiceSpy },
+        { provide: AuthService, useValue: authSpy },
+        { provide: ThemeService, useValue: { effectiveTheme: () => 'light' } },
         { provide: ActivatedRoute, useValue: {} }
       ]
     })
     .overrideComponent(RolesListComponent, {
       set: {
         providers: [
-          { provide: NzModalService, useValue: modalServiceSpy }
+          { provide: AppConfirmDialogService, useValue: confirmDialogSpy }
         ]
       }
     })
@@ -66,7 +74,7 @@ describe('RolesListComponent', () => {
   });
 
   it('should delete role', () => {
-    modalServiceSpy.confirm.and.callFake((options: any) => {
+    confirmDialogSpy.deleteConfirm.and.callFake((options: any) => {
       options.nzOnOk();
       return undefined as any;
     });

@@ -9,7 +9,7 @@ import { WarehouseStocksService } from '../../../core/services/warehouse-stocks.
 import { WarehouseStockDto } from '../../../types/api.types';
 import { BaseListComponent } from '../../../core/base/base-list.component';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { AppConfirmDialogService } from '../../../shared/services/app-confirm-dialog.service';
 import { FileService } from '../../../core/services/file.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { AppButtonComponent, AppInputComponent } from '../../../shared/components';
@@ -38,12 +38,12 @@ export class WarehouseStocksListComponent extends BaseListComponent<WarehouseSto
   constructor(
     private readonly warehouseStocksService: WarehouseStocksService,
     message: NzMessageService,
-    modal: NzModalService,
+    confirmDialog: AppConfirmDialogService,
     fileService: FileService,
     cdr: ChangeDetectorRef,
     authService: AuthService
   ) {
-    super(warehouseStocksService, message, modal, fileService, cdr, authService);
+    super(warehouseStocksService, message, confirmDialog, fileService, cdr, authService);
   }
 
   override ngOnInit(): void {

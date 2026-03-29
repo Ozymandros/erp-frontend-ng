@@ -1,0 +1,100 @@
+<nz-spin [nzSpinning]="loading">
+  <nz-card [nzTitle]="isNewMode ? 'New activity' : 'Activity'">
+    <div class="actions-bar">
+      <app-button [routerLink]="paths.ACTIVITIES">Back to activities</app-button>
+    </div>
+
+    @if (isNewMode) {
+      <form nz-form [formGroup]="form" nzLayout="vertical">
+        <div nz-row [nzGutter]="16">
+          <div nz-col [nzSpan]="24" [nzMd]="12">
+            <nz-form-item>
+              <nz-form-label nzRequired>Subject</nz-form-label>
+              <nz-form-control nzErrorTip="Required">
+                <app-input formControlName="subject" aria-label="Activity subject"></app-input>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="24" [nzMd]="12">
+            <nz-form-item>
+              <nz-form-label nzRequired>Type</nz-form-label>
+              <nz-form-control>
+                <nz-select formControlName="type" nzPlaceHolder="Type">
+                  @for (t of activityTypes; track t) {
+                    <nz-option [nzValue]="t" [nzLabel]="t"></nz-option>
+                  }
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="24" [nzMd]="12">
+            <nz-form-item>
+              <nz-form-label nzRequired>Due</nz-form-label>
+              <nz-form-control>
+                <nz-date-picker
+                  [(ngModel)]="dueDate"
+                  [ngModelOptions]="{ standalone: true }"
+                  nzShowTime
+                  nzFormat="yyyy-MM-dd HH:mm"
+                  style="width: 100%"
+                  aria-label="Activity due date"
+                ></nz-date-picker>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="24" [nzMd]="12">
+            <nz-form-item>
+              <nz-form-label nzRequired>Assigned to (username)</nz-form-label>
+              <nz-form-control>
+                <app-input formControlName="assignedToUsername"></app-input>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="24" [nzMd]="8">
+            <nz-form-item>
+              <nz-form-label>Lead ID</nz-form-label>
+              <nz-form-control>
+                <app-input formControlName="leadId"></app-input>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="24" [nzMd]="8">
+            <nz-form-item>
+              <nz-form-label>Opportunity ID</nz-form-label>
+              <nz-form-control>
+                <app-input formControlName="opportunityId"></app-input>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="24" [nzMd]="8">
+            <nz-form-item>
+              <nz-form-label>Customer ID</nz-form-label>
+              <nz-form-control>
+                <app-input formControlName="customerId"></app-input>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+        <app-button type="primary" [disabled]="saving" (click)="save()">Create</app-button>
+      </form>
+    } @else if (activity) {
+      <div class="readonly-block detail-readonly" role="region" aria-label="Activity details">
+        <p><strong>Subject:</strong> {{ activity.subject }}</p>
+        <p><strong>Type:</strong> {{ activity.type }} · <strong>Status:</strong> {{ activity.status }}</p>
+        <p><strong>Due:</strong> {{ activity.dueAt | date: 'medium' }}</p>
+        @if (activity.completedAt) {
+          <p><strong>Completed:</strong> {{ activity.completedAt | date: 'medium' }}</p>
+        }
+        <p><strong>Assigned:</strong> {{ activity.assignedToUsername }}</p>
+      </div>
+
+      @if (!isCompleted()) {
+        <div class="complete-section">
+          <label for="complete-note">Completion note (optional)</label>
+          <app-input id="complete-note" [(ngModel)]="completeNote" [ngModelOptions]="{ standalone: true }"></app-input>
+          <app-button type="primary" [disabled]="completing" (click)="complete()">Mark complete</app-button>
+        </div>
+      }
+    }
+  </nz-card>
+</nz-spin>

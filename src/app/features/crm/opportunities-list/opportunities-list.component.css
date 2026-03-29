@@ -1,0 +1,42 @@
+.crm-list {
+  padding: 0 0 24px;
+}
+
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.forecast-card {
+  margin-bottom: 16px;
+}
+
+.forecast-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.list-search {
+  margin-bottom: 16px;
+}
+
+.list-search__compact {
+  max-width: 420px;
+}
+
+.empty-hint {
+  color: var(--app-text-secondary);
+  margin: 0;
+}

@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { AppConfirmDialogService } from '../../../shared/services/app-confirm-dialog.service';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
@@ -176,12 +176,12 @@ export class WarehousesListComponent extends BaseListComponent<WarehouseDto> {
   constructor(
     warehousesService: WarehousesService,
     message: NzMessageService,
-    modal: NzModalService,
+    confirmDialog: AppConfirmDialogService,
     fileService: FileService,
     cdr: ChangeDetectorRef,
     authService: AuthService
   ) {
-    super(warehousesService, message, modal, fileService, cdr, authService);
+    super(warehousesService, message, confirmDialog, fileService, cdr, authService);
   }
 
   get warehouses(): WarehouseDto[] {

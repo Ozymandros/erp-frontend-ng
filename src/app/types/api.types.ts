@@ -99,6 +99,7 @@ export interface ProblemDetails {
 }
 
 // Pagination and Query Types
+/** Canonical wire format for all paginated lists — see `docs/api-contract-paginated.md` (camelCase JSON). */
 export interface PaginatedResponse<T> {
   items: T[];
   page: number; // Maps to backend PageNumber

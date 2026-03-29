@@ -21,6 +21,20 @@ html {
   --app-header-bg: #001529;
 }
 
+// Read-only detail / summary blocks (CRM, cards): labels use secondary, values primary text
+.detail-readonly,
+.detail-meta {
+  color: var(--app-text-color);
+}
+.detail-readonly strong,
+.detail-meta strong {
+  color: var(--app-text-secondary);
+  font-weight: 600;
+}
+.detail-meta {
+  margin: 12px 0 20px;
+}
+
 // Dark Mode overrides (variable theme bakes light colors; we override body + components)
 .dark {
   --ant-primary-color: #177ddc;
@@ -155,6 +169,42 @@ html {
   .ant-card-body {
     color: var(--app-text-color);
   }
+  // NG-Zorro variable.css hardcodes light text on typography, descriptions, card tabs/extras
+  .ant-typography {
+    color: var(--app-text-color) !important;
+  }
+  .ant-typography.ant-typography-secondary {
+    color: var(--app-text-secondary) !important;
+  }
+  .ant-typography.ant-typography-disabled {
+    color: rgba(255, 255, 255, 0.25) !important;
+  }
+  h1.ant-typography,
+  h2.ant-typography,
+  h3.ant-typography,
+  h4.ant-typography,
+  h5.ant-typography,
+  div.ant-typography-h1,
+  div.ant-typography-h2,
+  div.ant-typography-h3,
+  div.ant-typography-h4,
+  div.ant-typography-h5 {
+    color: var(--app-text-color) !important;
+  }
+  .ant-descriptions-title,
+  .ant-descriptions-extra,
+  .ant-descriptions-item-label,
+  .ant-descriptions-item-content {
+    color: var(--app-text-color) !important;
+  }
+  .ant-card-extra,
+  .ant-card-head .ant-tabs-top {
+    color: var(--app-text-color) !important;
+  }
+  .ant-checkbox-wrapper,
+  .ant-radio-wrapper {
+    color: var(--app-text-color) !important;
+  }
 
   // Inputs & selects
   .ant-input,
@@ -257,6 +307,64 @@ html {
   .ant-modal-close-x {
     color: rgba(255, 255, 255, 0.65);
   }
+  // Confirm preset (NG-Zorro uses hardcoded rgba(0,0,0,...) on title/content)
+  .ant-modal-confirm-body .ant-modal-confirm-title,
+  .ant-modal-confirm-body .ant-modal-confirm-content {
+    color: var(--app-text-color) !important;
+  }
+  .app-modal-wrap .ant-modal-confirm-body .ant-modal-confirm-title,
+  .app-modal-wrap .ant-modal-confirm-body .ant-modal-confirm-content {
+    color: var(--app-text-color) !important;
+  }
+
+  // Popover & Popconfirm (nz-popconfirm; rendered in overlay — default is light #fff)
+  .ant-popover {
+    --antd-arrow-background-color: var(--app-card-bg);
+  }
+  .ant-popover-inner {
+    background-color: var(--app-card-bg) !important;
+    border: 1px solid var(--app-border-color);
+    box-shadow:
+      0 3px 6px -4px rgba(0, 0, 0, 0.48),
+      0 6px 16px 0 rgba(0, 0, 0, 0.32),
+      0 9px 28px 8px rgba(0, 0, 0, 0.2);
+  }
+  .ant-popover-title {
+    color: var(--app-text-color) !important;
+    border-bottom-color: var(--app-border-color) !important;
+  }
+  .ant-popover-inner-content {
+    color: var(--app-text-color) !important;
+  }
+  .ant-popover-message {
+    color: var(--app-text-color) !important;
+  }
+  .ant-popover-message-icon .anticon {
+    color: var(--ant-warning-color) !important;
+  }
+  .ant-popover-buttons {
+    .ant-btn-default,
+    .ant-btn:not(.ant-btn-primary):not(.ant-btn-danger) {
+      color: var(--app-text-color) !important;
+      background: transparent !important;
+      border-color: #434343 !important;
+    }
+    .ant-btn-default:hover,
+    .ant-btn:not(.ant-btn-primary):not(.ant-btn-danger):hover {
+      color: var(--ant-primary-color) !important;
+      border-color: var(--ant-primary-color) !important;
+    }
+    .ant-btn-primary {
+      color: #fff !important;
+      background-color: var(--ant-primary-color) !important;
+      border-color: var(--ant-primary-color) !important;
+    }
+    .ant-btn-primary:hover {
+      background-color: var(--ant-primary-color-hover, #3c9ae8) !important;
+      border-color: var(--ant-primary-color-hover, #3c9ae8) !important;
+    }
+  }
+
   .ant-dropdown-menu,
   .ant-menu-sub,
   .ant-menu-vertical .ant-menu-sub {
@@ -403,7 +511,7 @@ html {
   }
 
   .ant-form-item-label > label {
-    color: var(--app-text-color);
+    color: var(--app-text-color) !important;
   }
 
   // Buttons – all types: ensure proper text/icon colors

@@ -1,5 +1,5 @@
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures/app-fixtures';
 import { mockAuthenticatedState, mockGetSuppliers, mockGetPurchaseOrders } from './mocks/api-mocks';
 import { mockAdminUser, mockSuppliers, mockPurchaseOrders } from './mocks/fixtures';
 

@@ -33,5 +33,11 @@ describe('routes.config', () => {
     expect(titles).toContain('Inventory');
     expect(titles).toContain('Sales');
     expect(titles).toContain('Purchasing');
+    expect(titles).toContain('CRM');
+  });
+
+  it('should return CRM permission for leads list', () => {
+    const permission = getRoutePermission(APP_PATHS.CRM.LEADS);
+    expect(permission).toEqual(createPermission(PERMISSION_MODULES.CRM, PERMISSION_ACTIONS.READ));
   });
 });

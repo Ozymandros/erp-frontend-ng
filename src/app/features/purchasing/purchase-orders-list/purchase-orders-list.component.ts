@@ -8,7 +8,7 @@ import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { AppConfirmDialogService } from '../../../shared/services/app-confirm-dialog.service';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { PurchaseOrdersService } from '../../../core/services/purchase-orders.service';
@@ -46,12 +46,12 @@ export class PurchaseOrdersListComponent extends BaseListComponent<PurchaseOrder
   constructor(
     private readonly purchaseOrdersService: PurchaseOrdersService,
     message: NzMessageService,
-    modal: NzModalService,
+    confirmDialog: AppConfirmDialogService,
     fileService: FileService,
     cdr: ChangeDetectorRef,
     authService: AuthService
   ) {
-    super(purchaseOrdersService, message, modal, fileService, cdr, authService);
+    super(purchaseOrdersService, message, confirmDialog, fileService, cdr, authService);
   }
 
   override ngOnInit(): void {

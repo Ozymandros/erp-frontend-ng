@@ -4,16 +4,18 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { SuppliersListComponent } from './suppliers-list.component';
 import { SuppliersService } from '../../../core/services/suppliers.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { AppConfirmDialogService } from '../../../shared/services/app-confirm-dialog.service';
+import { FileService } from '../../../core/services/file.service';
 import { of } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 
 describe('SuppliersListComponent', () => {
   let component: SuppliersListComponent;
   let fixture: ComponentFixture<SuppliersListComponent>;
   let suppliersServiceSpy: jasmine.SpyObj<SuppliersService>;
   let messageServiceSpy: jasmine.SpyObj<NzMessageService>;
-  let modalServiceSpy: jasmine.SpyObj<NzModalService>;
+  let confirmDialogSpy: jasmine.SpyObj<AppConfirmDialogService>;
 
   const mockResponse = {
     items: [{ id: '1', name: 'Supplier 1', email: 's@s.com', isActive: true }],
@@ -21,9 +23,21 @@ describe('SuppliersListComponent', () => {
   };
 
   beforeEach(async () => {
+    const authSpy = jasmine.createSpyObj('AuthService', ['getModulePermissions']);
+    authSpy.getModulePermissions.and.returnValue(
+      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: false }),
+    );
     suppliersServiceSpy = jasmine.createSpyObj('SuppliersService', ['getAll', 'delete', 'exportToXlsx', 'exportToPdf']);
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
-    modalServiceSpy = jasmine.createSpyObj('NzModalService', ['confirm', 'create', 'info', 'success', 'error', 'warning', 'open']);
+    confirmDialogSpy = jasmine.createSpyObj('AppConfirmDialogService', [
+      'deleteConfirm',
+      'confirm',
+      'create',
+      'info',
+      'success',
+      'error',
+      'warning',
+    ]);
 
     suppliersServiceSpy.getAll.and.returnValue(of(mockResponse as any));
 
@@ -34,14 +48,16 @@ describe('SuppliersListComponent', () => {
         provideHttpClientTesting(),
         { provide: SuppliersService, useValue: suppliersServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
-        { provide: NzModalService, useValue: modalServiceSpy },
+        { provide: AppConfirmDialogService, useValue: confirmDialogSpy },
+        { provide: FileService, useValue: jasmine.createSpyObj('FileService', ['saveFile']) },
+        { provide: AuthService, useValue: authSpy },
         { provide: ActivatedRoute, useValue: {} }
       ]
     })
     .overrideComponent(SuppliersListComponent, {
       set: {
         providers: [
-          { provide: NzModalService, useValue: modalServiceSpy }
+          { provide: AppConfirmDialogService, useValue: confirmDialogSpy }
         ]
       }
     })
@@ -62,7 +78,7 @@ describe('SuppliersListComponent', () => {
   });
 
   it('should delete supplier', () => {
-    modalServiceSpy.confirm.and.callFake((options: any) => {
+    confirmDialogSpy.deleteConfirm.and.callFake((options: any) => {
       options.nzOnOk();
       return undefined as any;
     });

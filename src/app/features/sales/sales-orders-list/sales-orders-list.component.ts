@@ -8,7 +8,7 @@ import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { AppConfirmDialogService } from '../../../shared/services/app-confirm-dialog.service';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { BaseListComponent } from '../../../core/base/base-list.component';
@@ -46,12 +46,12 @@ export class SalesOrdersListComponent extends BaseListComponent<SalesOrderDto> i
   constructor(
     private readonly salesOrdersService: SalesOrdersService,
     message: NzMessageService,
-    modal: NzModalService,
+    confirmDialog: AppConfirmDialogService,
     fileService: FileService,
     cdr: ChangeDetectorRef,
     authService: AuthService
   ) {
-    super(salesOrdersService, message, modal, fileService, cdr, authService);
+    super(salesOrdersService, message, confirmDialog, fileService, cdr, authService);
   }
 
   override ngOnInit(): void {
