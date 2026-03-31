@@ -4,11 +4,12 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { WarehousesListComponent } from './warehouses-list.component';
 import { WarehousesService } from '../../../core/services/warehouses.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { AppConfirmDialogService } from '../../../shared/services/app-confirm-dialog.service';
 import { FileService } from '../../../core/services/file.service';
 
 import { of } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 
 describe('WarehousesListComponent', () => {
   let component: WarehousesListComponent;
@@ -26,6 +27,10 @@ describe('WarehousesListComponent', () => {
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
     warehousesServiceSpy.getAll.and.returnValue(of(mockResponse as any));
     warehousesServiceSpy.delete.and.returnValue(of(void 0));
+    const authSpy = jasmine.createSpyObj('AuthService', ['getModulePermissions']);
+    authSpy.getModulePermissions.and.returnValue(
+      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: false }),
+    );
 
     await TestBed.configureTestingModule({
       imports: [ WarehousesListComponent ],
@@ -34,13 +39,14 @@ describe('WarehousesListComponent', () => {
         provideHttpClientTesting(),
         { provide: WarehousesService, useValue: warehousesServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
-        { 
-          provide: NzModalService, 
+        {
+          provide: AppConfirmDialogService,
           useValue: {
-            confirm: (options: any) => options.nzOnOk()
-          }
+            deleteConfirm: (options: { nzOnOk?: () => void }) => options.nzOnOk?.(),
+          },
         },
         { provide: FileService, useValue: jasmine.createSpyObj('FileService', ['saveFile']) },
+        { provide: AuthService, useValue: authSpy },
         { provide: ActivatedRoute, useValue: {} }
 
 

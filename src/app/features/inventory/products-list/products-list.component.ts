@@ -7,7 +7,7 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { AppConfirmDialogService } from '../../../shared/services/app-confirm-dialog.service';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { ProductsService } from '../../../core/services/products.service';
@@ -44,12 +44,12 @@ export class ProductsListComponent extends BaseListComponent<ProductDto> impleme
   constructor(
     private readonly productsService: ProductsService,
     message: NzMessageService,
-    modal: NzModalService,
+    confirmDialog: AppConfirmDialogService,
     fileService: FileService,
     cdr: ChangeDetectorRef,
     authService: AuthService
   ) {
-    super(productsService, message, modal, fileService, cdr, authService);
+    super(productsService, message, confirmDialog, fileService, cdr, authService);
   }
 
   override ngOnInit(): void {

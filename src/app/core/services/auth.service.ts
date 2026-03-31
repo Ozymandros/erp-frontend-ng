@@ -51,8 +51,14 @@ export class AuthService {
 
   private initializeAuth(): void {
     const token = this.getAccessToken();
-    if (token && !this.isTokenExpired()) {
-      this.apiClient.setAuthToken(token);
+    // Expired token in sessionStorage leaves ApiClient without Bearer; clear so user can re-login.
+    if (token && this.isTokenExpired()) {
+      this.clearTokens();
+    }
+
+    const activeToken = this.getAccessToken();
+    if (activeToken && !this.isTokenExpired()) {
+      this.apiClient.setAuthToken(activeToken);
       this.fetchCurrentUser().subscribe({
         next: () => {
           this.isLoadingSubject.next(false);
@@ -65,6 +71,7 @@ export class AuthService {
         }
       });
     } else {
+      this.apiClient.setAuthToken(null);
       this.isLoadingSubject.next(false);
       this.isLoadingSignal.set(false);
     }

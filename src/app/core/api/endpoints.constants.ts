@@ -6,6 +6,7 @@ const INVENTORY_SERVICE_BASE = "/inventory/api/inventory";
 const ORDERS_SERVICE_BASE = "/orders/api";
 const SALES_SERVICE_BASE = "/sales/api/sales";
 const PURCHASING_SERVICE_BASE = "/purchasing/api/purchasing";
+const CRM_SERVICE_BASE = "/crm/api/crm";
 
 export const AUTH_ENDPOINTS = {
   LOGIN: `${AUTH_SERVICE_BASE}/auth/login`,
@@ -91,4 +92,31 @@ export const PURCHASING_ENDPOINTS = {
 export const ORDERS_ENDPOINTS = {
   BASE: `${ORDERS_SERVICE_BASE}/orders`,
   BY_ID: (id: string) => `${ORDERS_SERVICE_BASE}/orders/${id}`,
+} as const;
+
+export const CRM_ENDPOINTS = {
+  LEADS: `${CRM_SERVICE_BASE}/leads`,
+  LEAD_BY_ID: (id: string) => `${CRM_SERVICE_BASE}/leads/${id}`,
+  LEAD_QUALIFY: (id: string) => `${CRM_SERVICE_BASE}/leads/${id}/qualify`,
+  OPPORTUNITIES: `${CRM_SERVICE_BASE}/opportunities`,
+  OPPORTUNITY_BY_ID: (id: string) => `${CRM_SERVICE_BASE}/opportunities/${id}`,
+  OPPORTUNITY_FORECAST: `${CRM_SERVICE_BASE}/opportunities/forecast`,
+  OPPORTUNITY_FORECAST_BY_ID: (id: string) => `${CRM_SERVICE_BASE}/opportunities/${id}/forecast`,
+  OPPORTUNITY_MOVE_STAGE: (id: string) => `${CRM_SERVICE_BASE}/opportunities/${id}/move-stage`,
+  OPPORTUNITY_MARK_WON: (id: string) => `${CRM_SERVICE_BASE}/opportunities/${id}/mark-won`,
+  OPPORTUNITY_MARK_LOST: (id: string) => `${CRM_SERVICE_BASE}/opportunities/${id}/mark-lost`,
+  OPPORTUNITY_LINES: (id: string) => `${CRM_SERVICE_BASE}/opportunities/${id}/lines`,
+  OPPORTUNITY_LINE_BY_ID: (id: string, lineId: string) =>
+    `${CRM_SERVICE_BASE}/opportunities/${id}/lines/${lineId}`,
+  ACTIVITIES: `${CRM_SERVICE_BASE}/activities`,
+  ACTIVITY_BY_ID: (id: string) => `${CRM_SERVICE_BASE}/activities/${id}`,
+  ACTIVITY_COMPLETE: (id: string) => `${CRM_SERVICE_BASE}/activities/${id}/complete`,
+  ACCOUNTS: `${CRM_SERVICE_BASE}/accounts`,
+  ACCOUNT_BY_ID: (id: string) => `${CRM_SERVICE_BASE}/accounts/${id}`,
+  ACCOUNT_OWNER: (id: string) => `${CRM_SERVICE_BASE}/accounts/${id}/owner`,
+  CONTACTS: `${CRM_SERVICE_BASE}/contacts`,
+  CONTACT_BY_ID: (id: string) => `${CRM_SERVICE_BASE}/contacts/${id}`,
+  ACCOUNT_CONTACTS: (accountId: string) => `${CRM_SERVICE_BASE}/accounts/${accountId}/contacts`,
+  CONTACT_SET_PRIMARY: (accountId: string, contactId: string) =>
+    `${CRM_SERVICE_BASE}/accounts/${accountId}/contacts/${contactId}/set-primary`,
 } as const;

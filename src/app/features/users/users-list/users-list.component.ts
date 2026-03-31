@@ -8,7 +8,7 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzCardModule } from 'ng-zorro-antd/card';
-import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { AppConfirmDialogService } from '../../../shared/services/app-confirm-dialog.service';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { UsersService } from '../../../core/services/users.service';
 import { User } from '../../../types/api.types';
@@ -30,7 +30,6 @@ import { AppButtonComponent, AppInputComponent } from '../../../shared/component
     NzTagModule,
     NzPopconfirmModule,
     NzCardModule,
-    NzModalModule,
     NzTooltipModule,
     AppButtonComponent,
     AppInputComponent
@@ -46,13 +45,13 @@ export class UsersListComponent extends BaseListComponent<User> {
   constructor(
     usersService: UsersService,
     message: NzMessageService,
-    modal: NzModalService,
+    confirmDialog: AppConfirmDialogService,
     fileService: FileService,
     cdr: ChangeDetectorRef,
     authService: AuthService,
     public readonly themeService: ThemeService
   ) {
-    super(usersService, message, modal, fileService, cdr, authService);
+    super(usersService, message, confirmDialog, fileService, cdr, authService);
   }
 
   // Computed property to check if dark mode is active

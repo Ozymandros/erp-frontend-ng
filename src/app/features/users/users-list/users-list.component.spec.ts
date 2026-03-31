@@ -7,15 +7,17 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { of, throwError } from 'rxjs';
 import { PaginatedResponse, User } from '../../../types/api.types';
 import { ActivatedRoute } from '@angular/router';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { AppConfirmDialogService } from '../../../shared/services/app-confirm-dialog.service';
 import { FileService } from '../../../core/services/file.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { ThemeService } from '../../../core/services/theme.service';
 
 describe('UsersListComponent', () => {
   let component: UsersListComponent;
   let fixture: ComponentFixture<UsersListComponent>;
   let usersServiceSpy: jasmine.SpyObj<UsersService>;
   let messageServiceSpy: jasmine.SpyObj<NzMessageService>;
-  let modalServiceSpy: jasmine.SpyObj<NzModalService>;
+  let confirmDialogSpy: jasmine.SpyObj<AppConfirmDialogService>;
   let fileServiceSpy: jasmine.SpyObj<FileService>;
 
   const mockUsers: PaginatedResponse<User> = {
@@ -49,10 +51,14 @@ describe('UsersListComponent', () => {
   beforeEach(async () => {
     usersServiceSpy = jasmine.createSpyObj('UsersService', ['getAll', 'delete', 'exportToXlsx', 'exportToPdf']);
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
-    modalServiceSpy = jasmine.createSpyObj('NzModalService', ['confirm']);
+    confirmDialogSpy = jasmine.createSpyObj('AppConfirmDialogService', ['deleteConfirm']);
     fileServiceSpy = jasmine.createSpyObj('FileService', ['saveFile']);
 
     usersServiceSpy.getAll.and.returnValue(of(mockResponse as any));
+    const authSpy = jasmine.createSpyObj('AuthService', ['getModulePermissions']);
+    authSpy.getModulePermissions.and.returnValue(
+      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: true }),
+    );
 
     await TestBed.configureTestingModule({
       imports: [ UsersListComponent ],
@@ -61,15 +67,17 @@ describe('UsersListComponent', () => {
         provideHttpClientTesting(),
         { provide: UsersService, useValue: usersServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
-        { provide: NzModalService, useValue: modalServiceSpy },
+        { provide: AppConfirmDialogService, useValue: confirmDialogSpy },
         { provide: FileService, useValue: fileServiceSpy },
+        { provide: AuthService, useValue: authSpy },
+        { provide: ThemeService, useValue: { effectiveTheme: () => 'light' } },
         { provide: ActivatedRoute, useValue: {} }
       ]
     })
     .overrideComponent(UsersListComponent, {
       set: {
         providers: [
-          { provide: NzModalService, useValue: modalServiceSpy }
+          { provide: AppConfirmDialogService, useValue: confirmDialogSpy }
         ]
       }
     })
@@ -98,7 +106,7 @@ describe('UsersListComponent', () => {
   }));
 
   it('should delete user', () => {
-    modalServiceSpy.confirm.and.callFake((options: any) => {
+    confirmDialogSpy.deleteConfirm.and.callFake((options: any) => {
       options.nzOnOk();
       return undefined as any;
     });
@@ -110,7 +118,7 @@ describe('UsersListComponent', () => {
 
   it('should handle delete error', () => {
     spyOn(console, 'error');
-    modalServiceSpy.confirm.and.callFake((options: any) => {
+    confirmDialogSpy.deleteConfirm.and.callFake((options: any) => {
       options.nzOnOk();
       return undefined as any;
     });

@@ -1,0 +1,61 @@
+import { Component, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzSpaceModule } from 'ng-zorro-antd/space';
+import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { AppConfirmDialogService } from '../../../shared/services/app-confirm-dialog.service';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
+import { CrmActivitiesService } from '../../../core/services/crm-activities.service';
+import { ActivityDto } from '../../../types/crm.types';
+import { BaseListComponent } from '../../../core/base/base-list.component';
+import { FileService } from '../../../core/services/file.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { ThemeService } from '../../../core/services/theme.service';
+import { AppButtonComponent, AppInputComponent } from '../../../shared/components';
+import { APP_PATHS } from '../../../core/constants/routes.constants';
+
+@Component({
+  selector: 'app-activities-list',
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterLink,
+    FormsModule,
+    NzTableModule,
+    NzSpaceModule,
+    NzTagModule,
+    NzCardModule,
+    NzTooltipModule,
+    AppButtonComponent,
+    AppInputComponent,
+  ],
+  templateUrl: './activities-list.component.html',
+  styleUrls: ['./activities-list.component.css'],
+})
+export class ActivitiesListComponent extends BaseListComponent<ActivityDto> {
+  readonly paths = APP_PATHS.CRM;
+
+  protected override get moduleName(): string {
+    return 'crm';
+  }
+
+  constructor(
+    svc: CrmActivitiesService,
+    message: NzMessageService,
+    confirmDialog: AppConfirmDialogService,
+    fileService: FileService,
+    cdr: ChangeDetectorRef,
+    authService: AuthService,
+    public readonly themeService: ThemeService,
+  ) {
+    super(svc, message, confirmDialog, fileService, cdr, authService);
+  }
+
+  get activities(): ActivityDto[] {
+    return this.data;
+  }
+}

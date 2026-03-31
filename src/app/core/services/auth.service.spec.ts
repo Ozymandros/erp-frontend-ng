@@ -229,6 +229,7 @@ describe('AuthService', () => {
     const router = jasmine.createSpyObj('Router', ['navigate']);
     new AuthService(apiSpy as unknown as ApiClientService, router as unknown as Router);
     expect(apiSpy.get).not.toHaveBeenCalled();
+    expect(apiSpy.setAuthToken).toHaveBeenCalledWith(null);
   });
 
   it('should handle login error gracefully', (done) => {

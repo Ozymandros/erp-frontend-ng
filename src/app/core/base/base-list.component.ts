@@ -7,12 +7,13 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { AppConfirmDialogService } from '../../shared/services/app-confirm-dialog.service';
 import { Observable, Subject, debounceTime, finalize, of, takeUntil } from 'rxjs';
 import { ModulePermissions } from '../../types/api.types';
 import { AuthService } from '../services/auth.service';
 import { FileService } from '../services/file.service';
 import { BaseApiService } from './base-api.service';
+import { normalizePaginatedResponse } from '../utils/paginated-response.util';
 
 /** Min characters before search is sent to the API; fewer means no SearchTerm param (show all). */
 const SEARCH_MIN_LENGTH = 3;
@@ -54,7 +55,7 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     protected readonly service: BaseApiService<T, any, any>,
     protected readonly message: NzMessageService,
-    protected readonly modal: NzModalService,
+    protected readonly confirmDialog: AppConfirmDialogService,
     protected readonly fileService: FileService,
     protected readonly cdr: ChangeDetectorRef,
     protected readonly authService: AuthService,
@@ -121,19 +122,9 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (response: { items?: T[]; total?: number } | T[]) => {
-          // Handle both wrapper and direct array responses for flexibility, though BaseApi expects wrapper
-          this.data =
-            (response && typeof response === 'object' && 'items' in response
-              ? response.items
-              : Array.isArray(response)
-                ? response
-                : []) ?? [];
-          this.total =
-            (response && typeof response === 'object' && 'total' in response
-              ? response.total
-              : Array.isArray(response)
-                ? response.length
-                : 0) ?? 0;
+          const { items, total } = normalizePaginatedResponse<T>(response);
+          this.data = items;
+          this.total = total;
         },
         error: (error) => {
           this.message.error('Failed to load data');
@@ -187,11 +178,8 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
   }
 
   deleteItem(id: string, name: string = 'item', displayName?: string): void {
-    this.modal.confirm({
-      nzTitle: `Delete ${name}`,
-      nzContent: `Are you sure you want to delete this ${name}?`,
-      nzOkText: 'Delete',
-      nzOkDanger: true,
+    this.confirmDialog.deleteConfirm({
+      entityLabel: name,
       nzOnOk: () => {
         this.service
           .delete(id)

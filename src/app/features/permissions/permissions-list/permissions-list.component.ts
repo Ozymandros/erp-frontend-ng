@@ -10,7 +10,7 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzCardModule } from 'ng-zorro-antd/card';
-import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { AppConfirmDialogService } from '../../../shared/services/app-confirm-dialog.service';
 import { PermissionsService } from '../../../core/services/permissions.service';
 import { Permission } from '../../../types/api.types';
 import { BaseListComponent } from '../../../core/base/base-list.component';
@@ -31,7 +31,6 @@ import { AuthService } from '../../../core/services/auth.service';
     NzTagModule,
     NzPopconfirmModule,
     NzCardModule,
-    NzModalModule
   ],
   template: `
     @if (permissions$ | async; as p) {
@@ -142,12 +141,12 @@ export class PermissionsListComponent extends BaseListComponent<Permission> {
   constructor(
     permissionsService: PermissionsService,
     message: NzMessageService,
-    modal: NzModalService,
+    confirmDialog: AppConfirmDialogService,
     fileService: FileService,
     cdr: ChangeDetectorRef,
     authService: AuthService
   ) {
-    super(permissionsService, message, modal, fileService, cdr, authService);
+    super(permissionsService, message, confirmDialog, fileService, cdr, authService);
   }
 
   get permissions(): Permission[] {

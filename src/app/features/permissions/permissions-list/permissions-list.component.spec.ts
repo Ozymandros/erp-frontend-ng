@@ -5,16 +5,17 @@ import { PermissionsListComponent } from './permissions-list.component';
 import { PermissionsService } from '../../../core/services/permissions.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { of } from 'rxjs';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { AppConfirmDialogService } from '../../../shared/services/app-confirm-dialog.service';
 import { FileService } from '../../../core/services/file.service';
 import { ActivatedRoute } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 
 describe('PermissionsListComponent', () => {
   let component: PermissionsListComponent;
   let fixture: ComponentFixture<PermissionsListComponent>;
   let permissionsServiceSpy: jasmine.SpyObj<PermissionsService>;
   let messageServiceSpy: jasmine.SpyObj<NzMessageService>;
-  let modalServiceSpy: jasmine.SpyObj<NzModalService>;
+  let confirmDialogSpy: jasmine.SpyObj<AppConfirmDialogService>;
   let fileServiceSpy: jasmine.SpyObj<FileService>;
 
   const mockResponse = {
@@ -25,10 +26,14 @@ describe('PermissionsListComponent', () => {
   beforeEach(async () => {
     permissionsServiceSpy = jasmine.createSpyObj('PermissionsService', ['getAll', 'delete', 'exportToXlsx', 'exportToPdf']);
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
-    modalServiceSpy = jasmine.createSpyObj('NzModalService', ['confirm']);
+    confirmDialogSpy = jasmine.createSpyObj('AppConfirmDialogService', ['deleteConfirm']);
     fileServiceSpy = jasmine.createSpyObj('FileService', ['saveFile']);
 
     permissionsServiceSpy.getAll.and.returnValue(of(mockResponse as any));
+    const authSpy = jasmine.createSpyObj('AuthService', ['getModulePermissions']);
+    authSpy.getModulePermissions.and.returnValue(
+      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: true }),
+    );
 
     await TestBed.configureTestingModule({
       imports: [ PermissionsListComponent ],
@@ -37,15 +42,16 @@ describe('PermissionsListComponent', () => {
         provideHttpClientTesting(),
         { provide: PermissionsService, useValue: permissionsServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
-        { provide: NzModalService, useValue: modalServiceSpy },
+        { provide: AppConfirmDialogService, useValue: confirmDialogSpy },
         { provide: FileService, useValue: fileServiceSpy },
+        { provide: AuthService, useValue: authSpy },
         { provide: ActivatedRoute, useValue: {} }
       ]
     })
     .overrideComponent(PermissionsListComponent, {
       set: {
         providers: [
-          { provide: NzModalService, useValue: modalServiceSpy }
+          { provide: AppConfirmDialogService, useValue: confirmDialogSpy }
         ]
       }
     })
@@ -66,7 +72,7 @@ describe('PermissionsListComponent', () => {
   });
   
   it('should delete permission', () => {
-    modalServiceSpy.confirm.and.callFake((options: any) => {
+    confirmDialogSpy.deleteConfirm.and.callFake((options: any) => {
       options.nzOnOk();
       return undefined as any;
     });

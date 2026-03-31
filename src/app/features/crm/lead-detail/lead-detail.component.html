@@ -1,0 +1,93 @@
+<nz-spin [nzSpinning]="loading">
+  <nz-card [nzTitle]="isNewMode ? 'New lead' : 'Edit lead'">
+    <div class="actions-bar">
+      <app-button routerLink="/crm/leads">Back to leads</app-button>
+      @if (!isNewMode && lead && canQualify()) {
+        <app-button type="primary" (click)="openQualifyModal()" ariaLabel="Qualify lead">
+          Qualify
+        </app-button>
+      }
+    </div>
+
+    <form nz-form [formGroup]="form" nzLayout="vertical">
+      <div nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="24" [nzMd]="12">
+          <nz-form-item>
+            <nz-form-label nzRequired>Title</nz-form-label>
+            <nz-form-control nzErrorTip="Required">
+              <app-input formControlName="title" aria-label="Lead title"></app-input>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="24" [nzMd]="12">
+          <nz-form-item>
+            <nz-form-label>Source</nz-form-label>
+            <nz-form-control>
+              <app-input formControlName="source" aria-label="Lead source"></app-input>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="24" [nzMd]="8">
+          <nz-form-item>
+            <nz-form-label>Contact name</nz-form-label>
+            <nz-form-control>
+              <app-input formControlName="contactName"></app-input>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="24" [nzMd]="8">
+          <nz-form-item>
+            <nz-form-label>Contact email</nz-form-label>
+            <nz-form-control nzErrorTip="Please input a valid email!">
+              <app-input formControlName="contactEmail" type="email" placeholder="john@example.com"></app-input>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="24" [nzMd]="8">
+          <nz-form-item>
+            <nz-form-label>Contact phone</nz-form-label>
+            <nz-form-control nzErrorTip="Enter a valid phone number (e.g. +44 20 7123 4567, +33 1 23 45 67 89, 8–15 digits)">
+              <app-input formControlName="contactPhone" placeholder="+44 20 7123 4567 or +33 1 23 45 67 89"></app-input>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+
+      @if (!isNewMode && lead) {
+        <p class="detail-meta">
+          <strong>Status:</strong> {{ lead.status }} · <strong>Owner:</strong> {{ lead.ownerUsername }}
+        </p>
+      }
+
+      <app-button type="primary" [disabled]="saving" (click)="save()">
+        {{ isNewMode ? 'Create' : 'Save' }}
+      </app-button>
+    </form>
+  </nz-card>
+</nz-spin>
+
+<nz-modal
+  appThemedModal
+  [(nzVisible)]="qualifyModalVisible"
+  nzTitle="Qualify lead"
+  (nzOnCancel)="qualifyModalVisible = false"
+  (nzOnOk)="confirmQualify()"
+  [nzOkLoading]="qualifying"
+>
+  <ng-container *nzModalContent>
+    <nz-spin [nzSpinning]="loadingCustomers">
+      <label class="sr-only" for="qualify-customer">Customer</label>
+      <nz-select
+        id="qualify-customer"
+        style="width: 100%"
+        nzPlaceHolder="Select customer"
+        [(ngModel)]="qualifyCustomerId"
+        [ngModelOptions]="{ standalone: true }"
+      >
+        @for (c of customers; track c.id) {
+          <nz-option [nzValue]="c.id" [nzLabel]="c.name"></nz-option>
+        }
+      </nz-select>
+    </nz-spin>
+  </ng-container>
+</nz-modal>

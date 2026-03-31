@@ -22,6 +22,20 @@ export const ROUTE_PERMISSIONS: Record<string, RoutePermission> = {
   [`/${APP_ROUTES.PURCHASING.SUPPLIER_DETAIL}`]: createPermission(PERMISSION_MODULES.PURCHASING, PERMISSION_ACTIONS.READ),
   [APP_PATHS.PURCHASING.ORDERS]: createPermission(PERMISSION_MODULES.PURCHASING, PERMISSION_ACTIONS.READ),
   [`/${APP_ROUTES.PURCHASING.ORDER_DETAIL}`]: createPermission(PERMISSION_MODULES.PURCHASING, PERMISSION_ACTIONS.READ),
+  [APP_PATHS.CRM.LEADS]: createPermission(PERMISSION_MODULES.CRM, PERMISSION_ACTIONS.READ),
+  [`/${APP_ROUTES.CRM.LEAD_DETAIL}`]: createPermission(PERMISSION_MODULES.CRM, PERMISSION_ACTIONS.READ),
+  [APP_PATHS.CRM.LEAD_NEW]: createPermission(PERMISSION_MODULES.CRM, PERMISSION_ACTIONS.CREATE),
+  [APP_PATHS.CRM.OPPORTUNITIES]: createPermission(PERMISSION_MODULES.CRM, PERMISSION_ACTIONS.READ),
+  [APP_PATHS.CRM.OPPORTUNITY_NEW]: createPermission(PERMISSION_MODULES.CRM, PERMISSION_ACTIONS.CREATE),
+  [`/${APP_ROUTES.CRM.OPPORTUNITY_DETAIL}`]: createPermission(PERMISSION_MODULES.CRM, PERMISSION_ACTIONS.READ),
+  [APP_PATHS.CRM.ACTIVITIES]: createPermission(PERMISSION_MODULES.CRM, PERMISSION_ACTIONS.READ),
+  [`/${APP_ROUTES.CRM.ACTIVITY_DETAIL}`]: createPermission(PERMISSION_MODULES.CRM, PERMISSION_ACTIONS.READ),
+  [APP_PATHS.CRM.ACTIVITY_NEW]: createPermission(PERMISSION_MODULES.CRM, PERMISSION_ACTIONS.CREATE),
+  [APP_PATHS.CRM.ACCOUNTS]: createPermission(PERMISSION_MODULES.CRM, PERMISSION_ACTIONS.READ),
+  [`/${APP_ROUTES.CRM.ACCOUNT_DETAIL}`]: createPermission(PERMISSION_MODULES.CRM, PERMISSION_ACTIONS.READ),
+  [APP_PATHS.CRM.CONTACTS]: createPermission(PERMISSION_MODULES.CRM, PERMISSION_ACTIONS.READ),
+  [`/${APP_ROUTES.CRM.CONTACT_DETAIL}`]: createPermission(PERMISSION_MODULES.CRM, PERMISSION_ACTIONS.READ),
+  [APP_PATHS.CRM.CONTACT_NEW]: createPermission(PERMISSION_MODULES.CRM, PERMISSION_ACTIONS.CREATE),
 };
 
 export function getRoutePermission(path: string): RoutePermission | undefined {
@@ -130,6 +144,42 @@ export const NAV_ITEMS_CONFIG: NavItemConfig[] = [
         href: APP_PATHS.SALES.ORDERS,
         icon: 'shopping-cart',
         permission: createPermission(PERMISSION_MODULES.SALES, PERMISSION_ACTIONS.READ),
+      },
+    ]
+  },
+  {
+    title: 'CRM',
+    icon: 'team',
+    children: [
+      {
+        title: 'Leads',
+        href: APP_PATHS.CRM.LEADS,
+        icon: 'user',
+        permission: createPermission(PERMISSION_MODULES.CRM, PERMISSION_ACTIONS.READ),
+      },
+      {
+        title: 'Opportunities',
+        href: APP_PATHS.CRM.OPPORTUNITIES,
+        icon: 'line-chart',
+        permission: createPermission(PERMISSION_MODULES.CRM, PERMISSION_ACTIONS.READ),
+      },
+      {
+        title: 'Activities',
+        href: APP_PATHS.CRM.ACTIVITIES,
+        icon: 'ordered-list',
+        permission: createPermission(PERMISSION_MODULES.CRM, PERMISSION_ACTIONS.READ),
+      },
+      {
+        title: 'Accounts',
+        href: APP_PATHS.CRM.ACCOUNTS,
+        icon: 'home',
+        permission: createPermission(PERMISSION_MODULES.CRM, PERMISSION_ACTIONS.READ),
+      },
+      {
+        title: 'Contacts',
+        href: APP_PATHS.CRM.CONTACTS,
+        icon: 'team',
+        permission: createPermission(PERMISSION_MODULES.CRM, PERMISSION_ACTIONS.READ),
       },
     ]
   },

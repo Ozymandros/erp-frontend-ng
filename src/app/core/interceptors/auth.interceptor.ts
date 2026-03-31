@@ -13,7 +13,14 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError(error => {
       if (error.status === 401) {
-        // Unauthorized - redirect to login
+        sessionStorage.clear();
+        router.navigate(['/login']);
+      }
+      // Some gateways return 403 for invalid/expired JWT on /users/me; treat like session loss.
+      if (
+        error.status === 403 &&
+        (req.url.includes('/auth/api/users/me') || (error.url && String(error.url).includes('/auth/api/users/me')))
+      ) {
         sessionStorage.clear();
         router.navigate(['/login']);
       }

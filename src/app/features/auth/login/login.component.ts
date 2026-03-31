@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -9,6 +9,7 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { AuthService } from '../../../core/services/auth.service';
 import { LoginRequest } from '../../../types/api.types';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -32,7 +33,8 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private cdr: ChangeDetectorRef
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -45,15 +47,25 @@ export class LoginComponent {
       this.isLoading = true;
       const credentials: LoginRequest = this.loginForm.value;
 
-      this.authService.login(credentials).subscribe({
-        next: () => {
-          this.message.success('Login successful!');
-        },
-        error: (error) => {
-          this.message.error(error.message || 'Login failed');
-          this.isLoading = false;
-        }
-      });
+      this.authService
+        .login(credentials)
+        .pipe(
+          finalize(() => {
+            // Avoid NG0100: finalize + error/next can run in the same CD turn as the submit click.
+            queueMicrotask(() => {
+              this.isLoading = false;
+              this.cdr.markForCheck();
+            });
+          }),
+        )
+        .subscribe({
+          next: () => {
+            this.message.success('Login successful!');
+          },
+          error: (error) => {
+            this.message.error(error.message || 'Login failed');
+          },
+        });
     } else {
       Object.values(this.loginForm.controls).forEach(control => {
         if (control.invalid) {

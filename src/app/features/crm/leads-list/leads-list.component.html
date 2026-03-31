@@ -1,0 +1,92 @@
+@if (permissions$ | async; as p) {
+<div class="crm-list">
+  <div class="page-header">
+    <h1 nz-typography>CRM — Leads</h1>
+    <div class="header-actions">
+      @if (p.canCreate) {
+        <app-button type="primary" icon="plus" [routerLink]="paths.LEAD_NEW">
+          New lead
+        </app-button>
+      }
+    </div>
+  </div>
+
+  <div class="list-search">
+    <nz-space-compact nzSize="large" class="list-search__compact">
+      <app-input
+        placeholder="Search (min 3 characters)..."
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearch()"
+        aria-label="Search leads"
+      ></app-input>
+    </nz-space-compact>
+  </div>
+
+  <nz-table
+    #leadsTable
+    [nzData]="leads"
+    [nzLoading]="loading"
+    [nzPageSize]="pageSize"
+    [nzPageIndex]="pageIndex"
+    [nzTotal]="total"
+    [nzFrontPagination]="false"
+    (nzPageIndexChange)="onPageChange($event)"
+    (nzPageSizeChange)="onPageSizeChange($event)"
+    [nzScroll]="{ x: '1100px' }"
+  >
+    <thead>
+      <tr>
+        <th id="th-lead-title" scope="col">Title</th>
+        <th id="th-lead-status" scope="col">Status</th>
+        <th id="th-lead-contact" scope="col">Contact</th>
+        <th id="th-lead-owner" scope="col">Owner</th>
+        @if (p.canUpdate || p.canDelete) {
+          <th id="th-lead-actions" scope="col" nzWidth="160px">Actions</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (lead of leadsTable.data; track lead.id) {
+        <tr>
+          <td><strong>{{ lead.title }}</strong></td>
+          <td><nz-tag>{{ lead.status }}</nz-tag></td>
+          <td>{{ lead.contactName || lead.contactEmail || '—' }}</td>
+          <td>{{ lead.ownerUsername }}</td>
+          @if (p.canUpdate || p.canDelete) {
+            <td>
+              <nz-space [nzSize]="8">
+                @if (p.canUpdate) {
+                  <app-button
+                    *nzSpaceItem
+                    type="link"
+                    icon="edit"
+                    nz-tooltip
+                    nzTooltipTitle="View or edit lead"
+                    [routerLink]="[paths.LEAD_DETAIL(lead.id)]"
+                    ariaLabel="Edit lead"
+                  ></app-button>
+                }
+                @if (p.canDelete) {
+                  <app-button
+                    *nzSpaceItem
+                    type="link"
+                    danger
+                    icon="delete"
+                    nz-tooltip
+                    nzTooltipTitle="Delete lead"
+                    nz-popconfirm
+                    nzPopconfirmTitle="Delete this lead?"
+                    (nzOnConfirm)="deleteLead(lead)"
+                    nzPopconfirmPlacement="left"
+                    ariaLabel="Delete lead"
+                  ></app-button>
+                }
+              </nz-space>
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </nz-table>
+</div>
+}
