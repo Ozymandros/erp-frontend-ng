@@ -80,7 +80,7 @@ jobs:
         run: node scripts/check-coverage-warning.js
       - name: Upload coverage artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage
           path: coverage/
@@ -112,7 +112,7 @@ jobs:
       - name: Run Build
         run: pnpm run build
       - name: Upload dist artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: dist
           path: dist/
@@ -146,7 +146,7 @@ jobs:
         run: xvfb-run --auto-servernum pnpm run test:playwright
       - name: Upload Playwright report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-report
           path: playwright-report/
