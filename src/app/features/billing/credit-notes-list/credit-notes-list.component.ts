@@ -8,7 +8,7 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, take } from 'rxjs';
 import { InvoiceDto, CreditNoteDto } from '../../../types/api.types';
 import { InvoicesService } from '../../../core/services/invoices.service';
 import { CreditNotesService } from '../../../core/services/credit-notes.service';
@@ -41,6 +41,7 @@ export class CreditNotesListComponent implements OnInit {
 
   invoiceOptions: InvoiceDto[] = [];
   selectedInvoiceId: string | null = null;
+  selectedInvoice: InvoiceDto | null = null;
 
   readonly paths = APP_PATHS.BILLING;
 
@@ -56,6 +57,7 @@ export class CreditNotesListComponent implements OnInit {
   loadInvoices(): void {
     this.invoicesLoading = true;
     this.invoicesService.getAllList().pipe(
+      take(1),
       takeUntil(this.destroy$)
     ).subscribe({
       next: (invoices) => {
@@ -71,6 +73,7 @@ export class CreditNotesListComponent implements OnInit {
 
   onInvoiceChange(invoiceId: string | null): void {
     this.selectedInvoiceId = invoiceId;
+    this.selectedInvoice = invoiceId ? this.invoiceOptions.find(i => i.id === invoiceId) || null : null;
     if (invoiceId) {
       this.loadCreditNotes(invoiceId);
     } else {
@@ -81,6 +84,7 @@ export class CreditNotesListComponent implements OnInit {
   loadCreditNotes(invoiceId: string): void {
     this.loading = true;
     this.creditNotesService.getByInvoice(invoiceId).pipe(
+      take(1),
       takeUntil(this.destroy$)
     ).subscribe({
       next: (notes) => {

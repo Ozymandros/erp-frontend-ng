@@ -17,7 +17,10 @@
       [allowClear]="true"
       style="width: 300px"
     ></app-select>
+    <button (click)="testLoad()" style="margin-left: 10px;">Test Load</button>
   </div>
+
+  
 
   <nz-spin [nzSpinning]="loading">
     <nz-table
@@ -27,7 +30,7 @@
     >
       <thead>
         <tr>
-          <th scope="col">ID</th>
+          <th scope="col">Invoice #</th>
           <th scope="col">Amount</th>
           <th scope="col">Currency</th>
           <th scope="col">Method</th>
@@ -38,7 +41,7 @@
       <tbody>
         @for (item of paymentsTable.data; track item.id) {
           <tr>
-            <td>{{ item.id.substring(0, 8) }}...</td>
+            <td>{{ selectedInvoice?.invoiceNumber || item.invoiceId.substring(0, 8) + '...' }}</td>
             <td>{{ item.amount | currency:item.currency }}</td>
             <td>{{ item.currency }}</td>
             <td>{{ item.method }}</td>

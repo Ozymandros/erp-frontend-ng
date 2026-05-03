@@ -27,7 +27,7 @@
     >
       <thead>
         <tr>
-          <th scope="col">ID</th>
+          <th scope="col">Invoice #</th>
           <th scope="col">Reason</th>
           <th scope="col">Status</th>
           <th scope="col">Net Amount</th>
@@ -39,7 +39,7 @@
       <tbody>
         @for (item of creditNotesTable.data; track item.id) {
           <tr>
-            <td>{{ item.id.substring(0, 8) }}...</td>
+            <td>{{ selectedInvoice?.invoiceNumber || item.originalInvoiceId.substring(0, 8) + '...' }}</td>
             <td>{{ item.reason }}</td>
             <td>
               <nz-tag [nzColor]="getStatusColor(item.status)">

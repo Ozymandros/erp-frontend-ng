@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -12,10 +12,12 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { BaseListComponent } from '../../../core/base/base-list.component';
 import { InvoiceDto } from '../../../types/api.types';
 import { InvoicesService } from '../../../core/services/invoices.service';
+import { CustomersService } from '../../../core/services/customers.service';
 import { FileService } from '../../../core/services/file.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { AppButtonComponent, AppInputComponent } from '../../../shared/components';
 import { APP_PATHS } from '../../../core/constants/routes.constants';
+import { takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-invoices-list',
@@ -41,6 +43,9 @@ export class InvoicesListComponent extends BaseListComponent<InvoiceDto> {
   }
 
   readonly paths = APP_PATHS.BILLING;
+  customerMap = new Map<string, string>();
+
+  private readonly customersService = inject(CustomersService);
 
   constructor(
     invoicesService: InvoicesService,
@@ -51,6 +56,27 @@ export class InvoicesListComponent extends BaseListComponent<InvoiceDto> {
     authService: AuthService
   ) {
     super(invoicesService, message, confirmDialog, fileService, cdr, authService);
+  }
+
+  override ngOnInit(): void {
+    super.ngOnInit();
+    this.loadCustomers();
+  }
+
+  getCustomerName(customerId: string): string {
+    return this.customerMap.get(customerId) || customerId;
+  }
+
+  private loadCustomers(): void {
+    this.customersService.getAll({ page: 1, pageSize: 1000 }).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (response) => {
+        response.items.forEach(customer => {
+          this.customerMap.set(customer.id, customer.name);
+        });
+      }
+    });
   }
 
   getStatusColor(status: string): string {

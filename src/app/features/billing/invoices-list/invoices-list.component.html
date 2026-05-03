@@ -60,7 +60,7 @@
                 item.invoiceNumber
               }}</a>
             </td>
-            <td>{{ item.customerId.substring(0, 8) }}...</td>
+            <td>{{ getCustomerName(item.customerId) }}</td>
             <td>{{ item.issueDate | date: 'shortDate' }}</td>
             <td>{{ item.dueDate | date: 'shortDate' }}</td>
             <td>{{ item.currency }}</td>

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -8,7 +8,7 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
-import { Subject, takeUntil } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { InvoiceDto, PaymentDto } from '../../../types/api.types';
 import { InvoicesService } from '../../../core/services/invoices.service';
 import { PaymentsService } from '../../../core/services/payments.service';
@@ -18,6 +18,7 @@ import { APP_PATHS } from '../../../core/constants/routes.constants';
 @Component({
   selector: 'app-payments-list',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     FormsModule,
@@ -33,14 +34,13 @@ import { APP_PATHS } from '../../../core/constants/routes.constants';
   styleUrls: ['./payments-list.component.css']
 })
 export class PaymentsListComponent implements OnInit {
-  protected readonly destroy$ = new Subject<void>();
-
   data: PaymentDto[] = [];
   loading = false;
   invoicesLoading = false;
 
   invoiceOptions: InvoiceDto[] = [];
   selectedInvoiceId: string | null = null;
+  selectedInvoice: InvoiceDto | null = null;
 
   readonly paths = APP_PATHS.BILLING;
 
@@ -49,28 +49,39 @@ export class PaymentsListComponent implements OnInit {
   private readonly message = inject(NzMessageService);
   private readonly cdr = inject(ChangeDetectorRef);
 
+  private invoicesSub?: Subscription;
+  private paymentsSub?: Subscription;
+
   ngOnInit(): void {
     this.loadInvoices();
   }
 
   loadInvoices(): void {
     this.invoicesLoading = true;
-    this.invoicesService.getAllList().pipe(
-      takeUntil(this.destroy$)
-    ).subscribe({
+    this.cdr.detectChanges();
+    this.invoicesSub = this.invoicesService.getAllList().subscribe({
       next: (invoices) => {
+        console.log('Invoices loaded:', invoices.length);
         this.invoiceOptions = invoices;
         this.invoicesLoading = false;
+        this.cdr.detectChanges();
       },
-      error: () => {
+      error: (err) => {
+        console.error('Failed to load invoices:', err);
         this.invoicesLoading = false;
+        this.cdr.detectChanges();
         this.message.error('Failed to load invoices');
       }
     });
   }
 
   onInvoiceChange(invoiceId: string | null): void {
+    console.log('Invoice changed:', invoiceId);
     this.selectedInvoiceId = invoiceId;
+    this.selectedInvoice = invoiceId 
+      ? this.invoiceOptions.find(i => i.id === invoiceId) || null 
+      : null;
+    
     if (invoiceId) {
       this.loadPayments(invoiceId);
     } else {
@@ -79,19 +90,33 @@ export class PaymentsListComponent implements OnInit {
   }
 
   loadPayments(invoiceId: string): void {
+    console.log('Loading payments for invoice:', invoiceId);
     this.loading = true;
-    this.paymentsService.getByInvoice(invoiceId).pipe(
-      takeUntil(this.destroy$)
-    ).subscribe({
+    this.cdr.detectChanges();
+    this.paymentsSub = this.paymentsService.getByInvoice(invoiceId).subscribe({
       next: (payments) => {
+        console.log('Payments loaded:', payments.length);
         this.data = payments;
         this.loading = false;
+        this.cdr.detectChanges();
       },
-      error: () => {
+      error: (err) => {
+        console.error('Failed to load payments:', err);
         this.loading = false;
+        this.cdr.detectChanges();
         this.message.error('Failed to load payments');
       }
     });
+  }
+
+  testLoad(): void {
+    console.log('Test button clicked, selectedInvoiceId:', this.selectedInvoiceId);
+    if (this.selectedInvoiceId) {
+      this.loadPayments(this.selectedInvoiceId);
+    } else if (this.invoiceOptions.length > 0) {
+      console.log('Using first invoice');
+      this.loadPayments(this.invoiceOptions[0].id);
+    }
   }
 
   getStatusColor(status: string): string {
@@ -105,7 +130,7 @@ export class PaymentsListComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    this.invoicesSub?.unsubscribe();
+    this.paymentsSub?.unsubscribe();
   }
 }
