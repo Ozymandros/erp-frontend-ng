@@ -1,0 +1,212 @@
+@if (invoice) {
+  <div class="page-header">
+    <div>
+      <a routerLink="/billing/invoices" nz-typography class="back-link">
+        ← Back to Invoices
+      </a>
+      <h1 nz-typography>Invoice {{ invoice.invoiceNumber }}</h1>
+    </div>
+    <div class="header-actions">
+      @if (canIssue()) {
+        <app-button (click)="showIssueModal = true" icon="send">
+          Issue Invoice
+        </app-button>
+      }
+      @if (canRecordPayment()) {
+        <app-button (click)="showPaymentModal = true" icon="dollar">
+          Record Payment
+        </app-button>
+      }
+      @if (canCancel()) {
+        <app-button danger (click)="showCancelModal = true" icon="close-circle">
+          Cancel Invoice
+        </app-button>
+      }
+    </div>
+  </div>
+
+  <nz-card>
+    <nz-descriptions [nzColumn]="3" nzBordered>
+      <nz-descriptions-item nzTitle="Status">
+        <nz-tag [nzColor]="getStatusColor(invoice.status)">
+          {{ invoice.status }}
+        </nz-tag>
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Currency">{{ invoice.currency }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Customer">
+        <a [routerLink]="['/sales/customers', invoice.customerId]">
+          {{ invoice.customerId.substring(0, 8) }}...
+        </a>
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Issue Date">{{ invoice.issueDate | date: 'mediumDate' }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Due Date">{{ invoice.dueDate | date: 'mediumDate' }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Order ID">{{ invoice.orderId || '-' }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Total Net">{{ invoice.totalNet | currency:invoice.currency }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Total Tax">{{ invoice.totalTax | currency:invoice.currency }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Total Gross">{{ invoice.totalGross | currency:invoice.currency }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Outstanding">{{ invoice.outstandingAmount | currency:invoice.currency }}</nz-descriptions-item>
+    </nz-descriptions>
+  </nz-card>
+
+  <nz-card nzTitle="Invoice Lines" style="margin-top: 16px;">
+    <nz-table #linesTable [nzData]="invoice.lines" [nzShowPagination]="false" nzSize="small">
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th>Quantity</th>
+          <th>Unit Price</th>
+          <th>Discount</th>
+          <th>Tax Rate</th>
+          <th>Net</th>
+          <th>Tax</th>
+          <th>Gross</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (line of linesTable.data; track line.id) {
+          <tr>
+            <td>{{ line.description }}</td>
+            <td>{{ line.quantity }}</td>
+            <td>{{ line.unitPrice | currency:invoice.currency }}</td>
+            <td>{{ line.discount | currency:invoice.currency }}</td>
+            <td>{{ line.taxRate }}%</td>
+            <td>{{ line.lineNet | currency:invoice.currency }}</td>
+            <td>{{ line.lineTax | currency:invoice.currency }}</td>
+            <td>{{ line.lineGross | currency:invoice.currency }}</td>
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+  </nz-card>
+
+  @if (payments.length > 0) {
+    <nz-card nzTitle="Payments" style="margin-top: 16px;">
+      <nz-table #paymentsTable [nzData]="payments" [nzShowPagination]="false" nzSize="small">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Method</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (payment of paymentsTable.data; track payment.id) {
+            <tr>
+              <td>{{ payment.paidAt | date: 'medium' }}</td>
+              <td>{{ payment.amount | currency:payment.currency }}</td>
+              <td>{{ payment.method }}</td>
+              <td>
+                <nz-tag [nzColor]="payment.status === 'Completed' ? 'green' : 'default'">
+                  {{ payment.status }}
+                </nz-tag>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </nz-table>
+    </nz-card>
+  }
+
+  @if (creditNotes.length > 0) {
+    <nz-card nzTitle="Credit Notes" style="margin-top: 16px;">
+      <nz-table #creditNotesTable [nzData]="creditNotes" [nzShowPagination]="false" nzSize="small">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Reason</th>
+            <th>Status</th>
+            <th>Amount</th>
+            <th>Created</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (cn of creditNotesTable.data; track cn.id) {
+            <tr>
+              <td>{{ cn.id.substring(0, 8) }}...</td>
+              <td>{{ cn.reason }}</td>
+              <td>
+                <nz-tag [nzColor]="cn.status === 'Applied' ? 'green' : 'default'">
+                  {{ cn.status }}
+                </nz-tag>
+              </td>
+              <td>{{ cn.totalGross | currency:invoice.currency }}</td>
+              <td>{{ cn.createdAt | date: 'medium' }}</td>
+            </tr>
+          }
+        </tbody>
+      </nz-table>
+    </nz-card>
+  }
+}
+
+<!-- Issue Invoice Modal -->
+<nz-modal
+  [(nzVisible)]="showIssueModal"
+  nzTitle="Issue Invoice"
+  [nzOkLoading]="saving"
+  (nzOnOk)="onIssueInvoice()"
+  (nzOnCancel)="showIssueModal = false"
+>
+  @if (showIssueModal) {
+    <ng-container *nzModalContent>
+      <div class="form-group">
+        <span class="form-label">Invoice Number</span>
+        <app-input [(ngModel)]="issueForm.invoiceNumber" placeholder="Invoice number"></app-input>
+      </div>
+      <div class="form-group">
+        <span class="form-label">Issue Date</span>
+        <app-input [(ngModel)]="issueForm.issueDate" type="datetime-local"></app-input>
+      </div>
+    </ng-container>
+  }
+</nz-modal>
+
+<!-- Record Payment Modal -->
+<nz-modal
+  [(nzVisible)]="showPaymentModal"
+  nzTitle="Record Payment"
+  [nzOkLoading]="saving"
+  (nzOnOk)="onRecordPayment()"
+  (nzOnCancel)="showPaymentModal = false"
+  (nzOnOpen)="initPaymentForm()"
+>
+  <ng-container *nzModalContent>
+    <div class="form-group">
+      <span class="form-label">Amount (Outstanding: {{ invoice?.outstandingAmount || invoice?.totalGross || 0 }})</span>
+      <input type="number" [(ngModel)]="paymentForm.amount" class="ant-input" placeholder="Enter amount">
+    </div>
+    <div class="form-group">
+      <span class="form-label">Payment Method</span>
+      <select [(ngModel)]="paymentForm.method" class="ant-input">
+        <option value="Cash">Cash</option>
+        <option value="Card">Card</option>
+        <option value="BankTransfer">Bank Transfer</option>
+        <option value="Cheque">Cheque</option>
+        <option value="OnlinePayment">Online Payment</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <span class="form-label">Payment Date</span>
+      <input type="datetime-local" [(ngModel)]="paymentForm.paidAt" class="ant-input">
+    </div>
+  </ng-container>
+</nz-modal>
+
+<!-- Cancel Invoice Modal -->
+<nz-modal
+  [(nzVisible)]="showCancelModal"
+  nzTitle="Cancel Invoice"
+  [nzOkLoading]="saving"
+  (nzOnOk)="onCancelInvoice()"
+  (nzOnCancel)="showCancelModal = false"
+>
+  @if (showCancelModal) {
+    <ng-container *nzModalContent>
+      <div class="form-group">
+        <span class="form-label">Reason for Cancellation</span>
+        <textarea [(ngModel)]="cancelForm.reason" class="ant-input" rows="3"></textarea>
+      </div>
+    </ng-container>
+  }
+</nz-modal>

@@ -36,6 +36,10 @@ export const ROUTE_PERMISSIONS: Record<string, RoutePermission> = {
   [APP_PATHS.CRM.CONTACTS]: createPermission(PERMISSION_MODULES.CRM, PERMISSION_ACTIONS.READ),
   [`/${APP_ROUTES.CRM.CONTACT_DETAIL}`]: createPermission(PERMISSION_MODULES.CRM, PERMISSION_ACTIONS.READ),
   [APP_PATHS.CRM.CONTACT_NEW]: createPermission(PERMISSION_MODULES.CRM, PERMISSION_ACTIONS.CREATE),
+  [APP_PATHS.BILLING.INVOICES]: createPermission(PERMISSION_MODULES.BILLING, PERMISSION_ACTIONS.READ),
+  [`/${APP_ROUTES.BILLING.INVOICE_DETAIL}`]: createPermission(PERMISSION_MODULES.BILLING, PERMISSION_ACTIONS.READ),
+  [APP_PATHS.BILLING.CREDIT_NOTES]: createPermission(PERMISSION_MODULES.BILLING, PERMISSION_ACTIONS.READ),
+  [APP_PATHS.BILLING.PAYMENTS]: createPermission(PERMISSION_MODULES.BILLING, PERMISSION_ACTIONS.READ),
 };
 
 export function getRoutePermission(path: string): RoutePermission | undefined {
@@ -211,6 +215,30 @@ export const NAV_ITEMS_CONFIG: NavItemConfig[] = [
         icon: 'ordered-list',
         permission: createPermission(PERMISSION_MODULES.SALES, PERMISSION_ACTIONS.READ),
       }
+    ]
+  },
+  {
+    title: 'Billing',
+    icon: 'file-text',
+    children: [
+      {
+        title: 'Invoices',
+        href: APP_PATHS.BILLING.INVOICES,
+        icon: 'file-text',
+        permission: createPermission(PERMISSION_MODULES.BILLING, PERMISSION_ACTIONS.READ),
+      },
+      {
+        title: 'Credit Notes',
+        href: APP_PATHS.BILLING.CREDIT_NOTES,
+        icon: 'rollback',
+        permission: createPermission(PERMISSION_MODULES.BILLING, PERMISSION_ACTIONS.READ),
+      },
+      {
+        title: 'Payments',
+        href: APP_PATHS.BILLING.PAYMENTS,
+        icon: 'dollar',
+        permission: createPermission(PERMISSION_MODULES.BILLING, PERMISSION_ACTIONS.READ),
+      },
     ]
   }
 ];

@@ -53,6 +53,12 @@
     "changeOrigin": true,
     "logLevel": "debug"
   },
+  "/billing/api/billing": {
+    "target": "http://localhost:5000",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
   "/api": {
     "target": "http://localhost:5000",
     "secure": false,

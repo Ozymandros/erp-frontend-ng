@@ -1,0 +1,43 @@
+<div class="page-header">
+  <h1 nz-typography>Credit Note Details</h1>
+  <div class="header-actions">
+    <app-button routerLink="/billing/credit-notes" icon="arrow-left">
+      Back to Credit Notes
+    </app-button>
+  </div>
+</div>
+
+@if (creditNote) {
+  <nz-card>
+    <nz-descriptions [nzColumn]="2" nzBordered>
+      <nz-descriptions-item nzTitle="Credit Note ID">
+        {{ creditNote.id }}
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Original Invoice">
+        <a [routerLink]="[paths.INVOICE_DETAIL(creditNote.originalInvoiceId)]">
+          {{ creditNote.originalInvoiceId.substring(0, 8) }}...
+        </a>
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Reason" [nzSpan]="2">
+        {{ creditNote.reason }}
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Status">
+        <nz-tag [nzColor]="getStatusColor(creditNote.status)">
+          {{ creditNote.status }}
+        </nz-tag>
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Created At">
+        {{ creditNote.createdAt | date: 'medium' }}
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Net Amount">
+        {{ creditNote.totalNet | currency }}
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Tax">
+        {{ creditNote.totalTax | currency }}
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Total Gross" [nzSpan]="2">
+        {{ creditNote.totalGross | currency }}
+      </nz-descriptions-item>
+    </nz-descriptions>
+  </nz-card>
+}

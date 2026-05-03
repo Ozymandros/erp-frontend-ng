@@ -1,0 +1,68 @@
+<div class="page-header">
+  <h1 nz-typography>Credit Notes</h1>
+</div>
+
+<nz-card>
+  <div class="filter-container">
+    <label for="invoice-select">Select Invoice:</label>
+    <app-select
+      id="invoice-select"
+      [(ngModel)]="selectedInvoiceId"
+      (ngModelChange)="onInvoiceChange($event)"
+      [options]="invoiceOptions"
+      [loading]="invoicesLoading"
+      placeholder="Select an invoice"
+      labelKey="invoiceNumber"
+      valueKey="id"
+      [allowClear]="true"
+      style="width: 300px"
+    ></app-select>
+  </div>
+
+  <nz-spin [nzSpinning]="loading">
+    <nz-table
+      #creditNotesTable
+      [nzData]="data"
+      [nzShowPagination]="false"
+    >
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Reason</th>
+          <th scope="col">Status</th>
+          <th scope="col">Net Amount</th>
+          <th scope="col">Tax</th>
+          <th scope="col">Total</th>
+          <th scope="col">Created</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of creditNotesTable.data; track item.id) {
+          <tr>
+            <td>{{ item.id.substring(0, 8) }}...</td>
+            <td>{{ item.reason }}</td>
+            <td>
+              <nz-tag [nzColor]="getStatusColor(item.status)">
+                {{ item.status }}
+              </nz-tag>
+            </td>
+            <td>{{ item.totalNet | currency }}</td>
+            <td>{{ item.totalTax | currency }}</td>
+            <td>{{ item.totalGross | currency }}</td>
+            <td>{{ item.createdAt | date: 'medium' }}</td>
+          </tr>
+        } @empty {
+          @if (!selectedInvoiceId) {
+            <tr>
+              <td colspan="7" class="empty-message">Select an invoice to view its credit notes</td>
+            </tr>
+          } @else if (!loading) {
+            <tr>
+              <td colspan="7" class="empty-message">No credit notes found for this invoice</td>
+            </tr>
+          }
+        }
+      </tbody>
+    </nz-table>
+  </nz-spin>
+</nz-card>

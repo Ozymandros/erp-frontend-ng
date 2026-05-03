@@ -7,6 +7,7 @@ const ORDERS_SERVICE_BASE = "/orders/api";
 const SALES_SERVICE_BASE = "/sales/api/sales";
 const PURCHASING_SERVICE_BASE = "/purchasing/api/purchasing";
 const CRM_SERVICE_BASE = "/crm/api/crm";
+const BILLING_SERVICE_BASE = "/billing/api/billing";
 
 export const AUTH_ENDPOINTS = {
   LOGIN: `${AUTH_SERVICE_BASE}/auth/login`,
@@ -119,4 +120,27 @@ export const CRM_ENDPOINTS = {
   ACCOUNT_CONTACTS: (accountId: string) => `${CRM_SERVICE_BASE}/accounts/${accountId}/contacts`,
   CONTACT_SET_PRIMARY: (accountId: string, contactId: string) =>
     `${CRM_SERVICE_BASE}/accounts/${accountId}/contacts/${contactId}/set-primary`,
+} as const;
+
+export const BILLING_ENDPOINTS = {
+  INVOICES: `${BILLING_SERVICE_BASE}/invoices`,
+  INVOICE_BY_ID: (id: string) => `${BILLING_SERVICE_BASE}/invoices/${id}`,
+  INVOICES_BY_CUSTOMER: (customerId: string) => `${BILLING_SERVICE_BASE}/invoices/customer/${customerId}`,
+  INVOICES_BY_ORDER: (orderId: string) => `${BILLING_SERVICE_BASE}/invoices/order/${orderId}`,
+  INVOICES_EXPORT_XLSX: `${BILLING_SERVICE_BASE}/invoices/export-xlsx`,
+  INVOICES_EXPORT_PDF: `${BILLING_SERVICE_BASE}/invoices/export-pdf`,
+  INVOICE_ISSUE: (id: string) => `${BILLING_SERVICE_BASE}/invoices/${id}/issue`,
+  INVOICE_PAYMENTS: (id: string) => `${BILLING_SERVICE_BASE}/invoices/${id}/payments`,
+  INVOICE_CANCEL: (id: string) => `${BILLING_SERVICE_BASE}/invoices/${id}/cancel`,
+  INVOICE_CREDIT_NOTES: (id: string) => `${BILLING_SERVICE_BASE}/invoices/${id}/credit-notes`,
+  CREDIT_NOTES: `${BILLING_SERVICE_BASE}/credit-notes`,
+  CREDIT_NOTE_BY_ID: (id: string) => `${BILLING_SERVICE_BASE}/credit-notes/${id}`,
+  CREDIT_NOTES_BY_INVOICE: (invoiceId: string) => `${BILLING_SERVICE_BASE}/credit-notes/invoice/${invoiceId}`,
+  CREDIT_NOTES_EXPORT_XLSX: `${BILLING_SERVICE_BASE}/credit-notes/export-xlsx`,
+  CREDIT_NOTES_EXPORT_PDF: `${BILLING_SERVICE_BASE}/credit-notes/export-pdf`,
+  PAYMENTS: `${BILLING_SERVICE_BASE}/payments`,
+  PAYMENT_BY_ID: (id: string) => `${BILLING_SERVICE_BASE}/payments/${id}`,
+  PAYMENTS_BY_INVOICE: (invoiceId: string) => `${BILLING_SERVICE_BASE}/payments/invoice/${invoiceId}`,
+  PAYMENTS_EXPORT_XLSX: `${BILLING_SERVICE_BASE}/payments/export-xlsx`,
+  PAYMENTS_EXPORT_PDF: `${BILLING_SERVICE_BASE}/payments/export-pdf`,
 } as const;

@@ -53,6 +53,14 @@ export const APP_ROUTES = {
     CONTACT_NEW: 'crm/contacts/new',
     CONTACT_DETAIL: 'crm/contacts/:id',
   },
+  BILLING: {
+    INVOICES: 'billing/invoices',
+    INVOICE_DETAIL: 'billing/invoices/:id',
+    CREDIT_NOTES: 'billing/credit-notes',
+    CREDIT_NOTE_DETAIL: 'billing/credit-notes/:id',
+    PAYMENTS: 'billing/payments',
+    PAYMENT_DETAIL: 'billing/payments/:id',
+  },
 } as const;
 
 export const APP_PATHS = {
@@ -109,5 +117,13 @@ export const APP_PATHS = {
     CONTACTS: `/${APP_ROUTES.CRM.CONTACTS}`,
     CONTACT_NEW: `/${APP_ROUTES.CRM.CONTACT_NEW}`,
     CONTACT_DETAIL: (id: string) => `/${APP_ROUTES.CRM.CONTACTS}/${id}`,
+  },
+  BILLING: {
+    INVOICES: `/${APP_ROUTES.BILLING.INVOICES}`,
+    INVOICE_DETAIL: (id: string) => `/${APP_ROUTES.BILLING.INVOICES}/${id}`,
+    CREDIT_NOTES: `/${APP_ROUTES.BILLING.CREDIT_NOTES}`,
+    CREDIT_NOTE_DETAIL: (id: string) => `/${APP_ROUTES.BILLING.CREDIT_NOTES}/${id}`,
+    PAYMENTS: `/${APP_ROUTES.BILLING.PAYMENTS}`,
+    PAYMENT_DETAIL: (id: string) => `/${APP_ROUTES.BILLING.PAYMENTS}/${id}`,
   },
 } as const;
