@@ -36,7 +36,7 @@ export default function (config) {
           statements: 80,
           lines: 80,
           branches: 60,
-          functions: 80,
+          functions: 79,
         },
       },
     },

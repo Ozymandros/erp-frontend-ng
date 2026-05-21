@@ -2,9 +2,12 @@ import { Injectable, signal, effect, computed, PLATFORM_ID, inject } from '@angu
 import { isPlatformBrowser } from '@angular/common';
 
 export type ThemeMode = 'light' | 'dark' | 'system';
+export type EffectiveTheme = 'light' | 'dark';
 
 const STORAGE_KEY = 'app-theme';
 const DARK_CLASS = 'dark';
+const THEME_COLOR_LIGHT = '#f0f2f5';
+const THEME_COLOR_DARK = '#141414';
 
 /**
  * Service to manage the application's theme state.
@@ -20,38 +23,34 @@ export class ThemeService {
   /** Boolean flag indicating if the service is running in a browser environment */
   private readonly isBrowser = isPlatformBrowser(this.platformId);
 
+  /** OS color-scheme preference (updated via matchMedia listener) */
+  private readonly systemPref = signal<EffectiveTheme>(
+    this.readSystemPreference()
+  );
+
   /** User's selected theme preference */
   readonly theme = signal<ThemeMode>(this.loadTheme());
 
   /** The actual applied theme (resolves 'system' to 'light' or 'dark') */
-  readonly effectiveTheme = computed(() => {
+  readonly effectiveTheme = computed<EffectiveTheme>(() => {
     const mode = this.theme();
     if (mode === 'system') {
-      return this.getSystemPreference();
+      return this.systemPref();
     }
     return mode;
   });
 
-  private mediaQuery: MediaQueryList | null = null;
-
   constructor() {
-    // Apply theme changes to DOM
     effect(() => {
       this.applyTheme(this.effectiveTheme());
     });
 
-    // Listen for OS theme changes (only in browser)
     if (this.isBrowser) {
-      this.mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      this.mediaQuery.addEventListener('change', () => {
-        // Re-trigger computed when in system mode
-        if (this.theme() === 'system') {
-          // Force reactivity update by toggling and resetting
-          const current = this.theme();
-          this.theme.set('light');
-          this.theme.set(current);
-        }
-      });
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const onSystemChange = (event: MediaQueryListEvent): void => {
+        this.systemPref.set(event.matches ? 'dark' : 'light');
+      };
+      mediaQuery.addEventListener('change', onSystemChange);
     }
   }
 
@@ -77,27 +76,19 @@ export class ThemeService {
     if (stored && ['light', 'dark', 'system'].includes(stored)) {
       return stored;
     }
-    return 'system'; // Default to system preference
+    return 'system';
   }
 
-  /**
-   * Detects the current OS theme preference.
-   * @returns 'dark' or 'light'
-   * @private
-   */
-  private getSystemPreference(): 'light' | 'dark' {
+  private readSystemPreference(): EffectiveTheme {
     if (!this.isBrowser) {
       return 'light';
     }
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light';
   }
 
-  /**
-   * Applies the theme to the DOM by adding/removing the 'dark' class on the document element.
-   * @param theme The theme to apply ('light' or 'dark')
-   * @private
-   */
-  private applyTheme(theme: 'light' | 'dark'): void {
+  private applyTheme(theme: EffectiveTheme): void {
     if (!this.isBrowser) {
       return;
     }
@@ -106,6 +97,17 @@ export class ThemeService {
       root.classList.add(DARK_CLASS);
     } else {
       root.classList.remove(DARK_CLASS);
+    }
+    this.updateThemeColorMeta(theme);
+  }
+
+  private updateThemeColorMeta(theme: EffectiveTheme): void {
+    const meta = document.querySelector<HTMLMetaElement>(
+      'meta[name="theme-color"][data-app-theme]'
+    );
+    if (meta) {
+      meta.content =
+        theme === 'dark' ? THEME_COLOR_DARK : THEME_COLOR_LIGHT;
     }
   }
 }

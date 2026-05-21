@@ -143,21 +143,33 @@ describe('ThemeService', () => {
     it('should return light when system prefers light', () => {
       mockMatchMedia.and.returnValue({
         matches: false,
-        addEventListener: jasmine.createSpy('addEventListener')
+        addEventListener: (_event: string, callback: (e: MediaQueryListEvent) => void) => {
+          mediaQueryListeners.push(callback);
+        },
+        removeEventListener: jasmine.createSpy('removeEventListener')
       } as unknown as MediaQueryList);
-      
-      service.setTheme('system');
-      expect(service.effectiveTheme()).toBe('light');
+
+      const lightSystemService = TestBed.runInInjectionContext(
+        () => new ThemeService()
+      );
+      lightSystemService.setTheme('system');
+      expect(lightSystemService.effectiveTheme()).toBe('light');
     });
 
     it('should return dark when system prefers dark', () => {
       mockMatchMedia.and.returnValue({
         matches: true,
-        addEventListener: jasmine.createSpy('addEventListener')
+        addEventListener: (_event: string, callback: (e: MediaQueryListEvent) => void) => {
+          mediaQueryListeners.push(callback);
+        },
+        removeEventListener: jasmine.createSpy('removeEventListener')
       } as unknown as MediaQueryList);
-      
-      service.setTheme('system');
-      expect(service.effectiveTheme()).toBe('dark');
+
+      const darkSystemService = TestBed.runInInjectionContext(
+        () => new ThemeService()
+      );
+      darkSystemService.setTheme('system');
+      expect(darkSystemService.effectiveTheme()).toBe('dark');
     });
   });
 
@@ -189,24 +201,42 @@ describe('ThemeService', () => {
   describe('system theme changes', () => {
     it('should update effective theme when OS theme changes in system mode', () => {
       service.setTheme('system');
-      
-      // Mock listener trigger
+      expect(service.effectiveTheme()).toBe('light');
+
       const changeEvent = { matches: true } as MediaQueryListEvent;
       mediaQueryListeners.forEach(listener => listener(changeEvent));
-      
-      // The listener toggles theme to trigger signal reactivity
+
       expect(service.theme()).toBe('system');
+      expect(service.effectiveTheme()).toBe('dark');
     });
 
-    it('should not trigger reactivity update if not in system mode', () => {
+    it('should not change effective theme when OS changes while not in system mode', () => {
       service.setTheme('dark');
-      const spy = spyOn(service.theme, 'set').and.callThrough();
-      
+      expect(service.effectiveTheme()).toBe('dark');
+
       const changeEvent = { matches: false } as MediaQueryListEvent;
       mediaQueryListeners.forEach(listener => listener(changeEvent));
-      
-      // set('light') and set(current) should NOT happen
-      expect(spy).not.toHaveBeenCalled();
+
+      expect(service.effectiveTheme()).toBe('dark');
+    });
+
+    it('should update theme-color meta when theme is applied', () => {
+      const meta = document.createElement('meta');
+      meta.name = 'theme-color';
+      meta.setAttribute('data-app-theme', '');
+      meta.content = '#f0f2f5';
+      document.head.appendChild(meta);
+
+      service.setTheme('dark');
+      TestBed.flushEffects();
+
+      expect(meta.content).toBe('#141414');
+
+      service.setTheme('light');
+      TestBed.flushEffects();
+
+      expect(meta.content).toBe('#f0f2f5');
+      meta.remove();
     });
   });
 });

@@ -91,10 +91,7 @@ import { ThemeService, ThemeMode } from '../../core/services/theme.service';
       padding: 4px 8px;
     }
     .theme-toggle-btn:hover {
-      background: rgba(0, 0, 0, 0.05);
-    }
-    :host-context(.dark) .theme-toggle-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
+      background: var(--app-hover-bg);
     }
     .theme-icon {
       font-size: 18px;
