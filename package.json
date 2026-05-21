@@ -17,7 +17,8 @@
     "test:coverage": "ng test --code-coverage && node scripts/check-coverage-warning.js",
     "test:coverage:playwright": "node scripts/run-playwright-coverage.mjs",
     "test:e2e": "npx playwright test --reporter=junit --reporter=html --output=test-results",
-    "e2e:report": "playwright show-report"
+    "e2e:report": "playwright show-report",
+    "check:all": "pnpm typecheck & pnpm lint & pnpm test:coverage:playwright"
   },
   "private": true,
   "type": "module",

@@ -5,17 +5,33 @@
     <title>TempNgProject</title>
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- theme-color: Supported by Chromium/Safari; Firefox ignores. Use media for light/dark. -->
+    <!-- Updated at runtime by ThemeService; FOUC script sets initial class before paint -->
     <meta
       name="theme-color"
+      data-app-theme
       content="#f0f2f5"
-      media="(prefers-color-scheme: light)"
     />
-    <meta
-      name="theme-color"
-      content="#141414"
-      media="(prefers-color-scheme: dark)"
-    />
+    <script>
+      (function () {
+        var key = 'app-theme';
+        var stored = localStorage.getItem(key);
+        var mode =
+          stored === 'light' || stored === 'dark' || stored === 'system'
+            ? stored
+            : 'system';
+        var dark =
+          mode === 'dark' ||
+          (mode === 'system' &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (dark) {
+          document.documentElement.classList.add('dark');
+          var meta = document.querySelector(
+            'meta[name="theme-color"][data-app-theme]'
+          );
+          if (meta) meta.setAttribute('content', '#141414');
+        }
+      })();
+    </script>
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
   </head>
   <body>

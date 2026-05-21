@@ -81,7 +81,7 @@
                     {{ perm.module }}:{{ perm.action }}
                   </nz-tag>
                 }
-                @if ((data.permissions.length || 0) > 3) {
+                @if (((data.permissions || []).length) > 3) {
                   <span>...</span>
                 }
               </td>

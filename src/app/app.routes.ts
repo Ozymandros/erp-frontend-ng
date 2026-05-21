@@ -229,6 +229,42 @@ export const routes: Routes = [
         canActivate: [permissionGuard],
         data: { module: PERMISSION_MODULES.CRM, action: PERMISSION_ACTIONS.READ },
         loadComponent: () => import('./features/crm/contact-detail/contact-detail.component').then(m => m.ContactDetailComponent)
+      },
+      {
+        path: APP_ROUTES.BILLING.INVOICES,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.BILLING, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/billing/invoices-list/invoices-list.component').then(m => m.InvoicesListComponent)
+      },
+      {
+        path: APP_ROUTES.BILLING.INVOICE_DETAIL,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.BILLING, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/billing/invoice-detail/invoice-detail.component').then(m => m.InvoiceDetailComponent)
+      },
+      {
+        path: APP_ROUTES.BILLING.CREDIT_NOTES,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.BILLING, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/billing/credit-notes-list/credit-notes-list.component').then(m => m.CreditNotesListComponent)
+      },
+      {
+        path: APP_ROUTES.BILLING.PAYMENTS,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.BILLING, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/billing/payments-list/payments-list.component').then(m => m.PaymentsListComponent)
+      },
+      {
+        path: APP_ROUTES.BILLING.PAYMENT_DETAIL,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.BILLING, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/billing/payment-detail/payment-detail.component').then(m => m.PaymentDetailComponent)
+      },
+      {
+        path: APP_ROUTES.BILLING.CREDIT_NOTE_DETAIL,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.BILLING, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/billing/credit-note-detail/credit-note-detail.component').then(m => m.CreditNoteDetailComponent)
       }
     ]
   },

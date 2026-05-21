@@ -4,12 +4,10 @@ on:
   pull_request:
     branches:
       - main
-      - master
       - develop
   push:
     branches:
       - main
-      - master
 
 concurrency:
   group: codeql-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}

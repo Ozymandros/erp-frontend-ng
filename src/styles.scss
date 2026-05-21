@@ -16,9 +16,20 @@ html {
   --app-bg-color: #f0f2f5;
   --app-text-color: rgba(0, 0, 0, 0.85);
   --app-text-secondary: rgba(0, 0, 0, 0.65);
+  --app-muted-text: rgba(0, 0, 0, 0.45);
   --app-border-color: #d9d9d9;
   --app-card-bg: #ffffff;
   --app-header-bg: #001529;
+  --app-hover-bg: rgba(0, 0, 0, 0.05);
+  --app-focus-ring: rgba(24, 144, 255, 0.2);
+
+  // Semantic state tokens
+  --app-success-bg: #f6ffed;
+  --app-success-border: #b7eb8f;
+  --app-success-text: #389e0d;
+  --app-error-bg: #fff2f0;
+  --app-error-border: #ffccc7;
+  --app-error-text: #cf1322;
 }
 
 // Read-only detail / summary blocks (CRM, cards): labels use secondary, values primary text
@@ -49,9 +60,20 @@ html {
   --app-bg-color: #141414;
   --app-text-color: rgba(255, 255, 255, 0.85);
   --app-text-secondary: rgba(255, 255, 255, 0.65);
+  --app-muted-text: rgba(255, 255, 255, 0.45);
   --app-border-color: #434343;
   --app-card-bg: #1f1f1f;
   --app-header-bg: #1f1f1f;
+  --app-hover-bg: rgba(255, 255, 255, 0.1);
+  --app-focus-ring: rgba(23, 125, 220, 0.2);
+
+  // Semantic state tokens - dark
+  --app-success-bg: #162312;
+  --app-success-border: #274916;
+  --app-success-text: #49aa19;
+  --app-error-bg: #2a1215;
+  --app-error-border: #58181c;
+  --app-error-text: #a61d24;
 
   .ant-layout {
     background-color: var(--app-bg-color);

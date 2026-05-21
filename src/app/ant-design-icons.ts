@@ -28,7 +28,8 @@ import {
   SunFill,
   MoonOutline,
   MoonFill,
-  LaptopOutline
+  LaptopOutline,
+  RollbackOutline
 } from '@ant-design/icons-angular/icons';
 
 export const icons = [
@@ -61,5 +62,6 @@ export const icons = [
   SunFill,
   MoonOutline,
   MoonFill,
-  LaptopOutline
+  LaptopOutline,
+  RollbackOutline
 ];

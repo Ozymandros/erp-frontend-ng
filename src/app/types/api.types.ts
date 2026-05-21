@@ -129,6 +129,7 @@ export interface PaginationParams {
 
 export interface SearchParams extends PaginationParams {
   search?: string;
+  searchFields?: string;
 }
 
 // ==================== AUTH MODULE ====================
@@ -539,4 +540,130 @@ export enum AdjustmentType {
   Lost = "Lost",
   Damaged = "Damaged",
   Expired = "Expired",
+}
+
+// ==================== BILLING MODULE ====================
+
+export enum InvoiceStatus {
+  Draft = "Draft",
+  Issued = "Issued",
+  Paid = "Paid",
+  PartiallyPaid = "PartiallyPaid",
+  Overdue = "Overdue",
+  Cancelled = "Cancelled",
+}
+
+export enum PaymentMethod {
+  Cash = "Cash",
+  Card = "Card",
+  BankTransfer = "BankTransfer",
+  Cheque = "Cheque",
+  OnlinePayment = "OnlinePayment",
+}
+
+export enum PaymentStatus {
+  Pending = "Pending",
+  Completed = "Completed",
+  Failed = "Failed",
+  Refunded = "Refunded",
+}
+
+export enum CreditNoteStatus {
+  Pending = "Pending",
+  Applied = "Applied",
+  Cancelled = "Cancelled",
+}
+
+export interface InvoiceDto extends IAuditableDto<string> {
+  invoiceNumber: string;
+  customerId: string;
+  orderId?: string;
+  currency: string;
+  status: InvoiceStatus | string;
+  issueDate: string;
+  dueDate: string;
+  totalNet: number;
+  totalTax: number;
+  totalGross: number;
+  outstandingAmount: number;
+  lines: InvoiceLineDto[];
+}
+
+export interface InvoiceLineDto {
+  id: string;
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  discount: number;
+  taxRate: number;
+  lineNet: number;
+  lineTax: number;
+  lineGross: number;
+}
+
+export interface CreateInvoiceDto {
+  invoiceNumber: string;
+  customerId: string;
+  orderId?: string;
+  currency: string;
+  lines: CreateInvoiceLineDto[];
+  paymentTermsDays?: number;
+}
+
+export interface CreateInvoiceLineDto {
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  taxRate: number;
+  discount?: number;
+}
+
+export interface IssueInvoiceRequest {
+  invoiceNumber: string;
+  issueDate: string;
+}
+
+export interface CancelInvoiceRequest {
+  reason: string;
+}
+
+export interface RecordPaymentDto {
+  invoiceId: string;
+  amount: number;
+  method: PaymentMethod | string;
+  paidAt: string;
+  externalPaymentId?: string;
+}
+
+export interface PaymentDto extends IAuditableDto<string> {
+  invoiceId: string;
+  amount: number;
+  currency: string;
+  method: PaymentMethod | string;
+  status: PaymentStatus | string;
+  paidAt: string;
+}
+
+export interface CreditNoteDto extends IAuditableDto<string> {
+  originalInvoiceId: string;
+  reason: string;
+  status: CreditNoteStatus | string;
+  totalNet: number;
+  totalTax: number;
+  totalGross: number;
+  createdAt: string;
+}
+
+export interface CreditNoteLineDto {
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  taxRate: number;
+  discount?: number;
+}
+
+export interface CreateCreditNoteDto {
+  invoiceId: string;
+  lines: CreditNoteLineDto[];
+  reason: string;
 }

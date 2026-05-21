@@ -1,0 +1,40 @@
+<div class="page-header">
+  <h1 nz-typography>Payment Details</h1>
+  <div class="header-actions">
+    <app-button routerLink="/billing/payments" icon="arrow-left">
+      Back to Payments
+    </app-button>
+  </div>
+</div>
+
+@if (payment) {
+  <nz-card>
+    <nz-descriptions [nzColumn]="2" nzBordered>
+      <nz-descriptions-item nzTitle="Payment ID">
+        {{ payment.id }}
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Invoice">
+        <a [routerLink]="[paths.INVOICE_DETAIL(payment.invoiceId)]">
+          {{ payment.invoiceId.substring(0, 8) }}...
+        </a>
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Amount">
+        {{ payment.amount | currency:payment.currency }}
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Currency">
+        {{ payment.currency }}
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Method">
+        {{ payment.method }}
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Status">
+        <nz-tag [nzColor]="getStatusColor(payment.status)">
+          {{ payment.status }}
+        </nz-tag>
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Paid At" [nzSpan]="2">
+        {{ payment.paidAt | date: 'medium' }}
+      </nz-descriptions-item>
+    </nz-descriptions>
+  </nz-card>
+}
