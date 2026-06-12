@@ -6,6 +6,7 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { finalize } from 'rxjs/operators';
 import { ProductsService } from '../../../core/services/products.service';
 import { 
   AppButtonComponent, 
@@ -67,14 +68,14 @@ export class ProductDetailComponent implements OnInit {
 
   loadProduct(id: string): void {
     this.loading = true;
-    this.productsService.getById(id).subscribe({
+    this.productsService.getById(id).pipe(
+      finalize(() => { this.loading = false; })
+    ).subscribe({
       next: (product) => {
         this.productForm.patchValue(product);
-        this.loading = false;
       },
       error: (err) => {
         this.message.error('Failed to load product: ' + err.message);
-        this.loading = false;
       }
     });
   }

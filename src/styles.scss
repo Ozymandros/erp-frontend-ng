@@ -30,6 +30,10 @@ html {
   --app-error-bg: #fff2f0;
   --app-error-border: #ffccc7;
   --app-error-text: #cf1322;
+
+  --json-viewer-bg: #f5f5f5;
+  --json-viewer-border: #d9d9d9;
+  --json-viewer-text: rgba(0, 0, 0, 0.85);
 }
 
 // Read-only detail / summary blocks (CRM, cards): labels use secondary, values primary text
@@ -74,6 +78,10 @@ html {
   --app-error-bg: #2a1215;
   --app-error-border: #58181c;
   --app-error-text: #a61d24;
+
+  --json-viewer-bg: #141414;
+  --json-viewer-border: #434343;
+  --json-viewer-text: rgba(255, 255, 255, 0.85);
 
   .ant-layout {
     background-color: var(--app-bg-color);
@@ -218,6 +226,15 @@ html {
   .ant-descriptions-item-label,
   .ant-descriptions-item-content {
     color: var(--app-text-color) !important;
+  }
+  .ant-descriptions-bordered .ant-descriptions-item-label,
+  .ant-descriptions-bordered .ant-descriptions-item-content,
+  .ant-descriptions-bordered .ant-descriptions-view {
+    background: #141414 !important;
+    border-color: #434343 !important;
+  }
+  .ant-descriptions-bordered .ant-descriptions-row {
+    border-color: #434343 !important;
   }
   .ant-card-extra,
   .ant-card-head .ant-tabs-top {

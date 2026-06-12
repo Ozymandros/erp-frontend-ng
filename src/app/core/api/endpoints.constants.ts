@@ -8,6 +8,7 @@ const SALES_SERVICE_BASE = "/sales/api/sales";
 const PURCHASING_SERVICE_BASE = "/purchasing/api/purchasing";
 const CRM_SERVICE_BASE = "/crm/api/crm";
 const BILLING_SERVICE_BASE = "/billing/api/billing";
+const AUDIT_SERVICE_BASE = "/audit/api/audit";
 
 export const AUTH_ENDPOINTS = {
   LOGIN: `${AUTH_SERVICE_BASE}/auth/login`,
@@ -143,4 +144,11 @@ export const BILLING_ENDPOINTS = {
   PAYMENTS_BY_INVOICE: (invoiceId: string) => `${BILLING_SERVICE_BASE}/payments/invoice/${invoiceId}`,
   PAYMENTS_EXPORT_XLSX: `${BILLING_SERVICE_BASE}/payments/export-xlsx`,
   PAYMENTS_EXPORT_PDF: `${BILLING_SERVICE_BASE}/payments/export-pdf`,
+} as const;
+
+export const AUDIT_ENDPOINTS = {
+  ENTITY_CHANGES: `${AUDIT_SERVICE_BASE}/entity-changes`,
+  BY_ID: (id: string) => `${AUDIT_SERVICE_BASE}/entity-changes/${id}`,
+  BY_ENTITY: (entityName: string, entityId: string) =>
+    `${AUDIT_SERVICE_BASE}/entity-changes/by-entity/${encodeURIComponent(entityName)}/${entityId}`,
 } as const;
