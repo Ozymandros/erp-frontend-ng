@@ -16,6 +16,10 @@ export const APP_ROUTES = {
   PERMISSIONS: {
     ROOT: 'permissions',
   },
+  AUDIT: {
+    ROOT: 'audit/entity-changes',
+    DETAIL: 'audit/entity-changes/:id',
+  },
   INVENTORY: {
     PRODUCTS: 'inventory/products',
     PRODUCT_DETAIL: 'inventory/products/:id',
@@ -80,6 +84,10 @@ export const APP_PATHS = {
   },
   PERMISSIONS: {
     ROOT: `/${APP_ROUTES.PERMISSIONS.ROOT}`,
+  },
+  AUDIT: {
+    ROOT: `/${APP_ROUTES.AUDIT.ROOT}`,
+    DETAIL: (id: string) => `/${APP_ROUTES.AUDIT.ROOT}/${id}`,
   },
   INVENTORY: {
     PRODUCTS: `/${APP_ROUTES.INVENTORY.PRODUCTS}`,

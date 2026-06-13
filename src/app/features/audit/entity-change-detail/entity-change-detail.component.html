@@ -1,0 +1,199 @@
+<nz-spin [nzSpinning]="loading">
+
+  @if (notFound) {
+
+    <nz-result
+
+      nzStatus="404"
+
+      nzTitle="Audit entry not found"
+
+      nzSubTitle="This change record may have been removed or the link is invalid."
+
+    >
+
+      <div nz-result-extra>
+
+        <a [routerLink]="listPath" [queryParamsHandling]="'preserve'">Back to audit log</a>
+
+      </div>
+
+    </nz-result>
+
+  } @else if (change) {
+
+    <div class="entity-change-detail">
+
+      <div class="page-header">
+
+        <a [routerLink]="listPath" [queryParamsHandling]="'preserve'" class="back-link">← Back to audit log</a>
+
+        <h1 nz-typography>Entity change details</h1>
+
+      </div>
+
+
+
+      <nz-card nzTitle="Summary">
+
+        <dl class="audit-summary-grid" aria-label="Change summary">
+
+          <div class="audit-summary-item">
+
+            <dt>Entity</dt>
+
+            <dd>
+
+              <nz-tag [nzColor]="'cyan'">{{ change.entityName }}</nz-tag>
+
+            </dd>
+
+          </div>
+
+          <div class="audit-summary-item">
+
+            <dt>Change type</dt>
+
+            <dd>
+
+              <nz-tag [nzColor]="getChangeTypeColor(change.changeType)">{{ change.changeType }}</nz-tag>
+
+            </dd>
+
+          </div>
+
+          <div class="audit-summary-item">
+
+            <dt>Created at</dt>
+
+            <dd>{{ change.createdAt | date: 'medium' }}</dd>
+
+          </div>
+
+          <div class="audit-summary-item">
+
+            <dt>Created by</dt>
+
+            <dd>{{ change.createdBy }}</dd>
+
+          </div>
+
+          <div class="audit-summary-item">
+
+            <dt>Updated at</dt>
+
+            <dd>{{ change.updatedAt | date: 'medium' }}</dd>
+
+          </div>
+
+          <div class="audit-summary-item">
+
+            <dt>Updated by</dt>
+
+            <dd>{{ change.updatedBy || '—' }}</dd>
+
+          </div>
+
+          <div class="audit-summary-item audit-summary-item--wide">
+
+            <dt>Entity ID</dt>
+
+            <dd class="mono">{{ change.entityId }}</dd>
+
+          </div>
+
+          <div class="audit-summary-item audit-summary-item--wide">
+
+            <dt>Record ID</dt>
+
+            <dd class="mono">{{ change.id }}</dd>
+
+          </div>
+
+        </dl>
+
+      </nz-card>
+
+
+
+      @if (showPropertyChangesSection()) {
+        <nz-card class="section-card" nzTitle="Property changes">
+          <h2 class="visually-hidden">Property-level changes</h2>
+          @if (displayPropertyChanges.length) {
+            <div class="table-scroll">
+              <nz-table
+                #propsTable
+                [nzData]="displayPropertyChanges"
+                [nzShowPagination]="false"
+                nzSize="small"
+              >
+                <thead>
+                  <tr>
+                    <th scope="col">Property</th>
+                    <th scope="col">Original value</th>
+                    <th scope="col">New value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (prop of propsTable.data; track prop.id) {
+                    <tr>
+                      <td class="property-name">{{ prop.propertyName }}</td>
+                      <td class="value-cell">
+                        @if (showJsonViewer(prop.originalValue)) {
+                          <app-safe-json-viewer [value]="prop.originalValue" [compact]="true" />
+                        } @else {
+                          <span class="plain-value">{{ prop.originalValue ?? '—' }}</span>
+                        }
+                      </td>
+                      <td class="value-cell">
+                        @if (showJsonViewer(prop.newValue)) {
+                          <app-safe-json-viewer [value]="prop.newValue" [compact]="true" />
+                        } @else {
+                          <span class="plain-value">{{ prop.newValue ?? '—' }}</span>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </nz-table>
+            </div>
+          } @else {
+            <p class="empty-hint" role="status">No individual property changes were recorded for this entry.</p>
+          }
+        </nz-card>
+      }
+
+
+
+      <nz-card class="section-card">
+
+        <h2 class="section-title">Entity snapshots</h2>
+
+        <div class="snapshots-grid">
+
+          <app-safe-json-viewer
+
+            label="Original value"
+
+            [value]="change.originalValue"
+
+          />
+
+          <app-safe-json-viewer
+
+            label="New value"
+
+            [value]="change.newValue"
+
+          />
+
+        </div>
+
+      </nz-card>
+
+    </div>
+
+  }
+
+</nz-spin>
+

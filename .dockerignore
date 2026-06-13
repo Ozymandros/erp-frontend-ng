@@ -19,6 +19,7 @@ test-results
 .idea
 .vscode
 *.log
+*.txt
 
 # Documentation and local config (optional: remove if you want them in image)
 *.md

@@ -59,6 +59,12 @@
     "changeOrigin": true,
     "logLevel": "debug"
   },
+  "/audit/api": {
+    "target": "http://localhost:5000",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
   "/api": {
     "target": "http://localhost:5000",
     "secure": false,

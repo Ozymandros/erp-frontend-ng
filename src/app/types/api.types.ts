@@ -667,3 +667,33 @@ export interface CreateCreditNoteDto {
   lines: CreditNoteLineDto[];
   reason: string;
 }
+
+// ==================== AUDIT MODULE ====================
+
+export interface PropertyChangeDto {
+  id: string;
+  propertyName: string;
+  originalValue: string | null;
+  newValue: string | null;
+}
+
+export interface EntityChangeDto {
+  id: string;
+  entityName: string;
+  entityId: string;
+  changeType: string;
+  originalValue: string | null;
+  newValue: string | null;
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+  updatedBy: string | null;
+  propertyChanges: PropertyChangeDto[];
+}
+
+export interface EntityChangeListParams extends SearchParams {
+  sortDesc?: boolean;
+  filters?: Record<string, string>;
+  searchFields?: string;
+  searchTerm?: string;
+}
