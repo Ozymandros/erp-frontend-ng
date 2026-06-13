@@ -9,6 +9,10 @@ import { AUDIT_ENDPOINTS } from '../api/endpoints.constants';
 import { EntityChangeDto, PaginatedResponse } from '../../types/api.types';
 
 describe('buildEntityChangeListQueryParams', () => {
+  it('returns empty object when params undefined', () => {
+    expect(buildEntityChangeListQueryParams()).toEqual({});
+  });
+
   it('flattens filters to Filters[key] keys', () => {
     const q = buildEntityChangeListQueryParams({
       page: 2,
@@ -24,6 +28,23 @@ describe('buildEntityChangeListQueryParams', () => {
     expect(q['Filters[changeType]']).toBe('Updated');
     expect(q['searchTerm']).toBe('admin');
     expect(q['sortDesc']).toBe(true);
+  });
+
+  it('maps sortOrder asc/desc and search alias', () => {
+    const asc = buildEntityChangeListQueryParams({ sortOrder: 'asc' });
+    expect(asc['sortDesc']).toBe(false);
+    const desc = buildEntityChangeListQueryParams({ sortOrder: 'desc' });
+    expect(desc['sortDesc']).toBe(true);
+    const search = buildEntityChangeListQueryParams({ search: 'term' });
+    expect(search['searchTerm']).toBe('term');
+  });
+
+  it('skips empty filter values', () => {
+    const q = buildEntityChangeListQueryParams({
+      filters: { entityName: '', changeType: 'Updated' },
+    });
+    expect(q['Filters[entityName]']).toBeUndefined();
+    expect(q['Filters[changeType]']).toBe('Updated');
   });
 });
 
@@ -85,6 +106,16 @@ describe('AuditEntityChangesService', () => {
     service.getById('1').subscribe((result) => {
       expect(result).toEqual(item);
       expect(apiClientSpy.get).toHaveBeenCalledWith(AUDIT_ENDPOINTS.BY_ID('1'));
+      done();
+    });
+  });
+
+  it('should encode entity name in by-entity path', (done) => {
+    apiClientSpy.get.and.returnValue(of([]));
+    service.getByEntity('Role/User', 'id-1').subscribe(() => {
+      expect(apiClientSpy.get).toHaveBeenCalledWith(
+        AUDIT_ENDPOINTS.BY_ENTITY('Role/User', 'id-1'),
+      );
       done();
     });
   });

@@ -20,6 +20,24 @@ describe('audit-property-changes.util', () => {
     propertyChanges: [],
   };
 
+  it('returns empty array for non-array propertyChanges', () => {
+    expect(normalizePropertyChanges(null)).toEqual([]);
+    expect(normalizePropertyChanges({})).toEqual([]);
+  });
+
+  it('skips invalid property change rows', () => {
+    const rows = normalizePropertyChanges([
+      null,
+      'invalid',
+      { PropertyName: '' },
+      { propertyName: 'Valid', originalValue: 1, newValue: true },
+    ]);
+    expect(rows.length).toBe(1);
+    expect(rows[0].propertyName).toBe('Valid');
+    expect(rows[0].originalValue).toBe('1');
+    expect(rows[0].newValue).toBe('true');
+  });
+
   it('normalizes PascalCase propertyChanges from API', () => {
     const rows = normalizePropertyChanges([
       {
@@ -35,6 +53,17 @@ describe('audit-property-changes.util', () => {
     expect(rows[0].newValue).toBe('New');
   });
 
+  it('prefers API propertyChanges over snapshot derivation', () => {
+    const rows = resolvePropertyChanges({
+      ...baseChange,
+      propertyChanges: [{ id: 'p1', propertyName: 'FromApi', originalValue: 'a', newValue: 'b' }],
+      originalValue: JSON.stringify({ other: 'x' }),
+      newValue: JSON.stringify({ other: 'y' }),
+    });
+    expect(rows.length).toBe(1);
+    expect(rows[0].propertyName).toBe('FromApi');
+  });
+
   it('derives Updated property rows from JSON snapshots when API list is empty', () => {
     const rows = resolvePropertyChanges({
       ...baseChange,
@@ -46,6 +75,18 @@ describe('audit-property-changes.util', () => {
     expect(rows.map((r) => r.propertyName).sort()).toEqual(['name', 'price']);
     expect(rows.find((r) => r.propertyName === 'name')?.originalValue).toBe('Widget');
     expect(rows.find((r) => r.propertyName === 'name')?.newValue).toBe('Widget Pro');
+  });
+
+  it('handles added and removed keys in Updated snapshots', () => {
+    const rows = resolvePropertyChanges({
+      ...baseChange,
+      changeType: 'Updated',
+      originalValue: JSON.stringify({ kept: 'same', removed: 'gone' }),
+      newValue: JSON.stringify({ kept: 'same', added: 'new' }),
+    });
+    expect(rows.map((r) => r.propertyName).sort()).toEqual(['added', 'removed']);
+    expect(rows.find((r) => r.propertyName === 'removed')?.newValue).toBeNull();
+    expect(rows.find((r) => r.propertyName === 'added')?.originalValue).toBeNull();
   });
 
   it('derives Created rows from new snapshot only', () => {
@@ -70,14 +111,27 @@ describe('audit-property-changes.util', () => {
     expect(rows[0].newValue).toBeNull();
   });
 
-  it('shows property section for Updated even when rows must be derived', () => {
-    const change = {
+  it('returns empty rows when snapshots are not JSON objects', () => {
+    const rows = resolvePropertyChanges({
       ...baseChange,
       changeType: 'Updated',
-      originalValue: '{"a":1}',
-      newValue: '{"a":2}',
-    };
-    const rows = resolvePropertyChanges(change);
-    expect(shouldShowPropertyChangesSection(change, rows)).toBeTrue();
+      originalValue: 'plain',
+      newValue: '[1,2,3]',
+    });
+    expect(rows).toEqual([]);
+  });
+
+  it('shows property section when rows exist', () => {
+    expect(shouldShowPropertyChangesSection(baseChange, [{ id: '1', propertyName: 'x', originalValue: null, newValue: 'y' }])).toBeTrue();
+  });
+
+  it('shows property section for known change types without rows', () => {
+    expect(shouldShowPropertyChangesSection({ ...baseChange, changeType: 'Created' }, [])).toBeTrue();
+    expect(shouldShowPropertyChangesSection({ ...baseChange, changeType: 'Deleted' }, [])).toBeTrue();
+    expect(shouldShowPropertyChangesSection({ ...baseChange, changeType: 'Modified' }, [])).toBeTrue();
+  });
+
+  it('hides property section for unknown change types without rows', () => {
+    expect(shouldShowPropertyChangesSection({ ...baseChange, changeType: 'Archived' }, [])).toBeFalse();
   });
 });
