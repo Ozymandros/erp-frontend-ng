@@ -194,10 +194,10 @@ describe('EntityChangesListComponent', () => {
     authSpy.getModulePermissions.and.returnValue(
       of({ canRead: false, canCreate: false, canUpdate: false, canDelete: false, canExport: false }),
     );
-    fixture = TestBed.createComponent(EntityChangesListComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-    await fixture.whenStable();
-    expect(fixture.nativeElement.textContent).toContain('do not have permission');
+    const deniedFixture = TestBed.createComponent(EntityChangesListComponent);
+    deniedFixture.detectChanges();
+    await deniedFixture.whenStable();
+    deniedFixture.detectChanges();
+    expect(deniedFixture.nativeElement.textContent).toContain('do not have permission');
   });
 });

@@ -7,6 +7,7 @@ import {
   CreateUpdateSalesOrderDto,
   CreateQuoteDto,
   ConfirmQuoteDto,
+  CreateSalesReturnDto,
   StockAvailabilityCheckDto
 } from '../../types/api.types';
 import { BaseApiService } from '../base/base-api.service';
@@ -38,5 +39,9 @@ export class SalesOrdersService extends BaseApiService<SalesOrderDto, CreateUpda
       SALES_ENDPOINTS.CHECK_STOCK, 
       { productIds, quantities }
     );
+  }
+
+  createReturn(salesOrderId: string, dto: CreateSalesReturnDto): Observable<SalesOrderDto> {
+    return this.apiClient.post<SalesOrderDto>(SALES_ENDPOINTS.CREATE_RETURN(salesOrderId), dto);
   }
 }

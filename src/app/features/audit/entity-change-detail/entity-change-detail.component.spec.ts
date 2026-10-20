@@ -60,6 +60,7 @@ describe('EntityChangeDetailComponent', () => {
 
     fixture = TestBed.createComponent(EntityChangeDetailComponent);
     component = fixture.componentInstance;
+    fixture.detectChanges();
     paramMap$.next(convertToParamMap({ id: '1' }));
     fixture.detectChanges();
   });

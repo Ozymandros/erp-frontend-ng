@@ -180,6 +180,22 @@
         </div>
       }
       @if (order; as o) {
+        <div class="order-actions">
+          <nz-space>
+            <app-button (click)="approveOrder()" [loading]="actionLoading" icon="check" ariaLabel="Approve purchase order">
+              Approve
+            </app-button>
+            <app-button (click)="openReceiveModal()" [loading]="actionLoading" icon="inbox" ariaLabel="Receive goods">
+              Receive
+            </app-button>
+            <app-button (click)="openSupplierInvoiceModal()" [loading]="actionLoading" icon="file-add" ariaLabel="Add supplier invoice">
+              Supplier invoice
+            </app-button>
+            <app-button type="primary" (click)="runMatch()" [loading]="actionLoading" icon="audit" ariaLabel="Run three-way match">
+              Match
+            </app-button>
+          </nz-space>
+        </div>
         <div class="order-info">
           <div class="info-row">
             <span class="info-label">Supplier</span>
@@ -199,6 +215,24 @@
             <span class="info-label">Status</span>
             <nz-tag [nzColor]="getStatusColor(o.status)">{{ o.status }}</nz-tag>
           </div>
+          <div class="info-row">
+            <span class="info-label">Match status</span>
+            <nz-tag [nzColor]="getMatchStatusColor(o.matchStatus ?? 'Unmatched')">
+              {{ o.matchStatus ?? 'Unmatched' }}
+            </nz-tag>
+          </div>
+          @if (o.matchedAt) {
+            <div class="info-row">
+              <span class="info-label">Matched at</span>
+              <span>{{ o.matchedAt | date: 'medium' }}</span>
+            </div>
+          }
+          @if (matchResult?.summary) {
+            <div class="info-row">
+              <span class="info-label">Match summary</span>
+              <span>{{ matchResult?.summary }}</span>
+            </div>
+          }
           <div class="info-row">
             <span class="info-label">Total Amount</span>
             <span>${{ o.totalAmount.toFixed(2) }}</span>
@@ -231,7 +265,115 @@
             }
           </tbody>
         </nz-table>
+
+        <h3 nz-typography class="lines-title">Supplier invoices</h3>
+        <nz-table
+          [nzData]="supplierInvoices"
+          [nzLoading]="loadingSupplierInvoices"
+          [nzShowPagination]="false"
+          [nzSize]="'small'"
+        >
+          <thead>
+            <tr>
+              <th id="th-si-number" scope="col">Invoice #</th>
+              <th id="th-si-currency" scope="col">Currency</th>
+              <th id="th-si-total" scope="col" nzAlign="right">Total gross</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (si of supplierInvoices; track si.id) {
+              <tr>
+                <td>{{ si.invoiceNumber }}</td>
+                <td>{{ si.currency }}</td>
+                <td nzAlign="right">
+                  @if (si.totalGross !== null && si.totalGross !== undefined) {
+                    ${{ si.totalGross.toFixed(2) }}
+                  } @else {
+                    —
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </nz-table>
       }
     }
   </nz-card>
 </div>
+
+@if (showSupplierInvoiceModal && supplierInvoiceForm) {
+  <nz-modal
+    [(nzVisible)]="showSupplierInvoiceModal"
+    nzTitle="Create supplier invoice"
+    [nzOkLoading]="actionLoading"
+    (nzOnOk)="submitSupplierInvoice()"
+    (nzOnCancel)="showSupplierInvoiceModal = false"
+  >
+    <ng-container *nzModalContent>
+      <form [formGroup]="supplierInvoiceForm" nz-form nzLayout="vertical">
+        <nz-form-item>
+          <nz-form-label nzRequired>Invoice number</nz-form-label>
+          <nz-form-control>
+            <app-input formControlName="invoiceNumber"></app-input>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzRequired>Currency</nz-form-label>
+          <nz-form-control>
+            <app-input formControlName="currency"></app-input>
+          </nz-form-control>
+        </nz-form-item>
+        <div formArrayName="lines">
+          @for (lineCtrl of supplierInvoiceLines.controls; track $index) {
+            <div [formGroupName]="$index" class="return-line-row">
+              <app-input formControlName="productId" placeholder="Product ID"></app-input>
+              <app-input-number formControlName="quantity" [min]="1"></app-input-number>
+              <app-input-number formControlName="unitPrice" [min]="0" [step]="0.01"></app-input-number>
+            </div>
+          }
+        </div>
+      </form>
+    </ng-container>
+  </nz-modal>
+}
+
+@if (showReceiveModal && receiveForm) {
+  <nz-modal
+    [(nzVisible)]="showReceiveModal"
+    nzTitle="Receive purchase order"
+    [nzOkLoading]="actionLoading"
+    (nzOnOk)="submitReceive()"
+    (nzOnCancel)="showReceiveModal = false"
+  >
+    <ng-container *nzModalContent>
+      <form [formGroup]="receiveForm" nz-form nzLayout="vertical">
+        <nz-form-item>
+          <nz-form-label nzRequired>Warehouse</nz-form-label>
+          <nz-form-control>
+            <app-select
+              formControlName="warehouseId"
+              [options]="warehouses"
+              labelKey="name"
+              valueKey="id"
+              placeholder="Select warehouse"
+            ></app-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzRequired>Received date</nz-form-label>
+          <nz-form-control>
+            <nz-date-picker formControlName="receivedDate" class="full-width"></nz-date-picker>
+          </nz-form-control>
+        </nz-form-item>
+        <div formArrayName="lines">
+          @for (lineCtrl of receiveLines.controls; track $index) {
+            <div [formGroupName]="$index" class="return-line-row">
+              <app-input formControlName="purchaseOrderLineId" placeholder="Line ID"></app-input>
+              <app-input-number formControlName="receivedQuantity" [min]="0"></app-input-number>
+            </div>
+          }
+        </div>
+      </form>
+    </ng-container>
+  </nz-modal>
+}

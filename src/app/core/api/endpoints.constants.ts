@@ -78,6 +78,7 @@ export const SALES_ENDPOINTS = {
   CREATE_QUOTE: `${SALES_SERVICE_BASE}/orders/quote`,
   CONFIRM_QUOTE: (id: string) => `${SALES_SERVICE_BASE}/orders/quote/${id}/confirm`,
   CHECK_STOCK: `${SALES_SERVICE_BASE}/orders/check-stock`,
+  CREATE_RETURN: (id: string) => `${SALES_SERVICE_BASE}/orders/${id}/returns`,
 } as const;
 
 export const PURCHASING_ENDPOINTS = {
@@ -85,6 +86,7 @@ export const PURCHASING_ENDPOINTS = {
   ORDER_BY_ID: (id: string) => `${PURCHASING_SERVICE_BASE}/orders/${id}`,
   APPROVE: (id: string) => `${PURCHASING_SERVICE_BASE}/orders/${id}/approve`,
   RECEIVE: (id: string) => `${PURCHASING_SERVICE_BASE}/orders/${id}/receive`,
+  MATCH: (id: string) => `${PURCHASING_SERVICE_BASE}/orders/${id}/match`,
   EXPORT_XLSX: `${PURCHASING_SERVICE_BASE}/orders/export-xlsx`,
   EXPORT_PDF: `${PURCHASING_SERVICE_BASE}/orders/export-pdf`,
   SUPPLIERS: `${PURCHASING_SERVICE_BASE}/suppliers`,
@@ -144,6 +146,10 @@ export const BILLING_ENDPOINTS = {
   PAYMENTS_BY_INVOICE: (invoiceId: string) => `${BILLING_SERVICE_BASE}/payments/invoice/${invoiceId}`,
   PAYMENTS_EXPORT_XLSX: `${BILLING_SERVICE_BASE}/payments/export-xlsx`,
   PAYMENTS_EXPORT_PDF: `${BILLING_SERVICE_BASE}/payments/export-pdf`,
+  SUPPLIER_INVOICES: `${BILLING_SERVICE_BASE}/supplier-invoices`,
+  SUPPLIER_INVOICE_BY_ID: (id: string) => `${BILLING_SERVICE_BASE}/supplier-invoices/${id}`,
+  SUPPLIER_INVOICES_BY_PO: (purchaseOrderId: string) =>
+    `${BILLING_SERVICE_BASE}/supplier-invoices/by-purchase-order/${purchaseOrderId}`,
 } as const;
 
 export const AUDIT_ENDPOINTS = {

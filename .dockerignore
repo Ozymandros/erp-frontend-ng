@@ -1,4 +1,4 @@
-# Dependencies and build outputs (reinstalled or rebuilt in container)
+# Dependencies and build outputs (reinstalled or rebuilt in the image)
 node_modules
 dist
 tmp
@@ -7,28 +7,43 @@ bazel-out
 .angular
 *.tsbuildinfo
 
-# Test and coverage (not needed for image context)
+# Test, coverage, and E2E artifacts
 coverage
 playwright-report
 test-results
 .nyc_output
+e2e
+karma.conf.js
+playwright.config.ts
+**/*.spec.ts
 
-# Git and IDE
+# Git, IDE, and local editor config
 .git
 .gitignore
+.gitattributes
 .idea
 .vscode
+.cursor
 *.log
-*.txt
 
-# Documentation and local config (optional: remove if you want them in image)
+# Dev containers and agent tooling (not used in production image)
+.devcontainer
+.agents
+
+# CI, quality, and docs (not required for ng build)
+.github
+sonar-project.properties
+codecov.yml
+docs
 *.md
 !README.md
+
+# Environment and secrets
 .env
 .env.*
 !.env.example
 
-# Lockfiles: keep pnpm-lock.yaml so install is reproducible; ignore others
+# Alternate lockfiles (pnpm-lock.yaml is required)
 package-lock.json
 yarn.lock
 bun.lock
@@ -37,3 +52,5 @@ bun.lock
 .DS_Store
 Thumbs.db
 *.local
+*.swp
+*.swo

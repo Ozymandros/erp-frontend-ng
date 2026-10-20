@@ -169,6 +169,13 @@
         </div>
       }
       @if (order; as o) {
+        <div class="order-actions">
+          @if (canReturn()) {
+            <app-button type="primary" (click)="openReturnModal()" icon="rollback" ariaLabel="Create return">
+              Create return
+            </app-button>
+          }
+        </div>
         <div class="order-info">
           <div class="info-row">
             <span class="info-label">Customer</span>
@@ -180,8 +187,14 @@
           </div>
           <div class="info-row">
             <span class="info-label">Status</span>
-            <nz-tag [nzColor]="getStatusColor(o.status)">{{ o.status }}</nz-tag>
+            <nz-tag [nzColor]="getStatusColor(o.status)">{{ getStatusLabel(o.status) }}</nz-tag>
           </div>
+          @if (o.returnOrderId) {
+            <div class="info-row">
+              <span class="info-label">Return order</span>
+              <span>{{ o.returnOrderId }}</span>
+            </div>
+          }
           <div class="info-row">
             <span class="info-label">Total</span>
             <span>${{ o.totalAmount.toFixed(2) }}</span>
@@ -214,7 +227,70 @@
             }
           </tbody>
         </nz-table>
+
+        <h3 nz-typography class="lines-title">Linked invoices</h3>
+        <nz-table
+          [nzData]="linkedInvoices"
+          [nzLoading]="loadingInvoices"
+          [nzShowPagination]="false"
+          [nzSize]="'small'"
+        >
+          <thead>
+            <tr>
+              <th id="th-inv-number" scope="col">Invoice #</th>
+              <th id="th-inv-status" scope="col">Status</th>
+              <th id="th-inv-gross" scope="col" nzAlign="right">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (inv of linkedInvoices; track inv.id) {
+              <tr>
+                <td>
+                  <a [routerLink]="['/billing/invoices', inv.id]">{{ inv.invoiceNumber }}</a>
+                </td>
+                <td>{{ inv.status }}</td>
+                <td nzAlign="right">${{ inv.totalGross.toFixed(2) }}</td>
+              </tr>
+            }
+          </tbody>
+        </nz-table>
       }
     }
   </nz-card>
 </div>
+
+@if (showReturnModal && returnForm) {
+  <nz-modal
+    [(nzVisible)]="showReturnModal"
+    nzTitle="Create sales return"
+    [nzOkLoading]="returnSubmitting"
+    (nzOnOk)="submitReturn()"
+    (nzOnCancel)="showReturnModal = false"
+  >
+    <ng-container *nzModalContent>
+      <form [formGroup]="returnForm" nz-form nzLayout="vertical">
+        <nz-form-item>
+          <nz-form-label nzRequired>Warehouse</nz-form-label>
+          <nz-form-control nzErrorTip="Select a warehouse">
+            <app-select
+              formControlName="warehouseId"
+              [options]="warehouses"
+              labelKey="name"
+              valueKey="id"
+              placeholder="Select warehouse"
+            ></app-select>
+          </nz-form-control>
+        </nz-form-item>
+        <p nz-typography>Return quantities (max = order line qty)</p>
+        <div formArrayName="lines">
+          @for (lineCtrl of returnLines.controls; track $index) {
+            <div [formGroupName]="$index" class="return-line-row">
+              <span class="return-product-id">{{ lineCtrl.get('productId')?.value }}</span>
+              <app-input-number formControlName="quantity" [min]="1"></app-input-number>
+            </div>
+          }
+        </div>
+      </form>
+    </ng-container>
+  </nz-modal>
+}

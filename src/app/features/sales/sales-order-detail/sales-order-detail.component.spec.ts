@@ -5,6 +5,9 @@ import { SalesOrderDetailComponent } from './sales-order-detail.component';
 import { SalesOrdersService } from '../../../core/services/sales-orders.service';
 import { CustomersService } from '../../../core/services/customers.service';
 import { ProductsService } from '../../../core/services/products.service';
+import { InvoicesService } from '../../../core/services/invoices.service';
+import { WarehousesService } from '../../../core/services/warehouses.service';
+import { SalesOrderStatus } from '../../../types/api.types';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -15,8 +18,12 @@ describe('SalesOrderDetailComponent', () => {
   let salesOrdersServiceSpy: jasmine.SpyObj<SalesOrdersService>;
   let customersServiceSpy: jasmine.SpyObj<CustomersService>;
   let productsServiceSpy: jasmine.SpyObj<ProductsService>;
+  let invoicesServiceSpy: jasmine.SpyObj<InvoicesService>;
+  let warehousesServiceSpy: jasmine.SpyObj<WarehousesService>;
   let messageServiceSpy: jasmine.SpyObj<NzMessageService>;
   let routerSpy: jasmine.SpyObj<Router>;
+
+  const emptyPage = { items: [], total: 0, page: 1, pageSize: 10, totalPages: 0, hasPreviousPage: false, hasNextPage: false };
 
   const mockOrder = { 
     id: '1', 
@@ -31,9 +38,13 @@ describe('SalesOrderDetailComponent', () => {
   const mockProducts = { items: [{ id: 'P1', name: 'Product 1', unitPrice: 100 }], total: 1 };
 
   beforeEach(async () => {
-    salesOrdersServiceSpy = jasmine.createSpyObj('SalesOrdersService', ['getById', 'create']);
+    salesOrdersServiceSpy = jasmine.createSpyObj('SalesOrdersService', ['getById', 'create', 'createReturn']);
     customersServiceSpy = jasmine.createSpyObj('CustomersService', ['getAll']);
     productsServiceSpy = jasmine.createSpyObj('ProductsService', ['getAll']);
+    invoicesServiceSpy = jasmine.createSpyObj('InvoicesService', ['getByOrder']);
+    warehousesServiceSpy = jasmine.createSpyObj('WarehousesService', ['getAll']);
+    invoicesServiceSpy.getByOrder.and.returnValue(of([]));
+    warehousesServiceSpy.getAll.and.returnValue(of(emptyPage as any));
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error', 'warning']);
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
@@ -48,6 +59,8 @@ describe('SalesOrderDetailComponent', () => {
         { provide: SalesOrdersService, useValue: salesOrdersServiceSpy },
         { provide: CustomersService, useValue: customersServiceSpy },
         { provide: ProductsService, useValue: productsServiceSpy },
+        { provide: InvoicesService, useValue: invoicesServiceSpy },
+        { provide: WarehousesService, useValue: warehousesServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
         { provide: Router, useValue: routerSpy },
         { provide: NZ_I18N, useValue: en_US },
@@ -63,7 +76,13 @@ describe('SalesOrderDetailComponent', () => {
     mockOrder,
     orderNumberPrefix: 'SO',
     entityIdField: 'customerId',
-    entityIdValue: 'C1'
+    entityIdValue: 'C1',
+    statusColorExpectations: [
+      [0, 'default'],
+      [1, 'blue'],
+      [2, 'purple'],
+      [4, 'red'],
+    ],
   });
 
   describe('Additional coverage tests', () => {
@@ -86,6 +105,8 @@ describe('SalesOrderDetailComponent', () => {
           { provide: SalesOrdersService, useValue: salesOrdersServiceSpy },
           { provide: CustomersService, useValue: customersServiceSpy },
           { provide: ProductsService, useValue: productsServiceSpy },
+          { provide: InvoicesService, useValue: invoicesServiceSpy },
+          { provide: WarehousesService, useValue: warehousesServiceSpy },
           { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
           { provide: NzMessageService, useValue: messageServiceSpy },
           { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => '1' } } } }
@@ -112,6 +133,8 @@ describe('SalesOrderDetailComponent', () => {
           { provide: SalesOrdersService, useValue: salesOrdersServiceSpy },
           { provide: CustomersService, useValue: customersServiceSpy },
           { provide: ProductsService, useValue: productsServiceSpy },
+          { provide: InvoicesService, useValue: invoicesServiceSpy },
+          { provide: WarehousesService, useValue: warehousesServiceSpy },
           { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
           { provide: NzMessageService, useValue: messageServiceSpy },
           { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => '1' } } } }
@@ -182,6 +205,32 @@ describe('SalesOrderDetailComponent', () => {
       component.lines.at(1).patchValue({ quantity: 3, unitPrice: 5 });
       
       expect(component.calculateTotal()).toBe(35);
+    });
+
+    it('should allow return when order is Shipped and has no returnOrderId', () => {
+      component.order = {
+        ...mockOrder,
+        status: SalesOrderStatus.Shipped,
+        lines: mockOrder.lines,
+      } as any;
+      expect(component.canReturn()).toBeTrue();
+    });
+
+    it('should submit return via sales orders service', () => {
+      component.order = {
+        ...mockOrder,
+        id: '1',
+        status: SalesOrderStatus.Shipped,
+        lines: mockOrder.lines,
+      } as any;
+      (component as unknown as { orderId: string }).orderId = '1';
+      component.openReturnModal();
+      component.returnForm.patchValue({ warehouseId: 'w1' });
+      salesOrdersServiceSpy.createReturn.and.returnValue(
+        of({ ...mockOrder, returnOrderId: 'ret-1' } as any),
+      );
+      component.submitReturn();
+      expect(salesOrdersServiceSpy.createReturn).toHaveBeenCalled();
     });
   });
 });
