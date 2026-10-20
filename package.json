@@ -59,6 +59,7 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "monocart-reporter": "^2.15.1",
     "testcontainers": "^11.14.0",
+    "typescript": "~6.0.2",
     "typescript-eslint": "^8.72.0"
   },
   "pnpm": {
