@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { HasPermissionDirective } from './has-permission.directive';
@@ -7,6 +7,7 @@ import { PermissionService } from '../services/permission.service';
 @Component({
   standalone: true,
   imports: [HasPermissionDirective],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: '<div *appHasPermission>visible</div>'
 })
 class HostNoInputComponent {}
@@ -14,6 +15,7 @@ class HostNoInputComponent {}
 @Component({
   standalone: true,
   imports: [HasPermissionDirective],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div *appHasPermission>visible</div>
     <span *appHasPermission="{ module: 'Users', action: 'Read' }">with-permission</span>

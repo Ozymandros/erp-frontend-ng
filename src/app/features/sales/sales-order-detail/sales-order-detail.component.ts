@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
@@ -60,6 +60,7 @@ import {
     AppInputNumberComponent,
   ],
   templateUrl: './sales-order-detail.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./sales-order-detail.component.css'],
 })
 export class SalesOrderDetailComponent implements OnInit {

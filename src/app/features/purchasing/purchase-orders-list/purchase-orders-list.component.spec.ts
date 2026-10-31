@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { PurchaseOrdersListComponent } from './purchase-orders-list.component';
 import { PurchaseOrdersService } from '../../../core/services/purchase-orders.service';
@@ -38,7 +38,7 @@ describe('PurchaseOrdersListComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ PurchaseOrdersListComponent ],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: PurchaseOrdersService, useValue: purchaseOrdersServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
@@ -91,11 +91,11 @@ describe('PurchaseOrdersListComponent', () => {
     expect(component.getStatusColor(1)).toBe('orange');
   });
 
-  it('should return correct color for Confirmed status (string)', () => {
-    expect(component.getStatusColor('Confirmed')).toBe('blue');
+  it('should return correct color for Approved status (string)', () => {
+    expect(component.getStatusColor('Approved')).toBe('blue');
   });
 
-  it('should return correct color for Confirmed status (number)', () => {
+  it('should return correct color for Approved status (number)', () => {
     expect(component.getStatusColor(2)).toBe('blue');
   });
 
@@ -104,7 +104,7 @@ describe('PurchaseOrdersListComponent', () => {
   });
 
   it('should return correct color for Received status (number)', () => {
-    expect(component.getStatusColor(3)).toBe('green');
+    expect(component.getStatusColor(4)).toBe('green');
   });
 
   it('should return correct color for Cancelled status (string)', () => {
@@ -112,7 +112,12 @@ describe('PurchaseOrdersListComponent', () => {
   });
 
   it('should return correct color for Cancelled status (number)', () => {
-    expect(component.getStatusColor(4)).toBe('red');
+    expect(component.getStatusColor(5)).toBe('red');
+  });
+
+  it('should resolve numeric status to label', () => {
+    expect(component.getStatusLabel(2)).toBe('Approved');
+    expect(component.getStatusLabel(4)).toBe('Received');
   });
 
   it('should return default color for unknown status', () => {

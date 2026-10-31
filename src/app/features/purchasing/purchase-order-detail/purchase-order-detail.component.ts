@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
@@ -34,7 +34,14 @@ import {
   AppSelectComponent,
   AppInputNumberComponent,
 } from '../../../shared/components';
-import { getPurchaseOrderMatchStatusColor } from '../purchase-order-match.util';
+import {
+  getPurchaseOrderMatchStatusColor,
+  resolvePurchaseOrderMatchStatusLabel,
+} from '../purchase-order-match.util';
+import {
+  getPurchaseOrderStatusColor,
+  resolvePurchaseOrderStatusLabel,
+} from '../purchase-order-status.util';
 
 @Component({
   selector: 'app-purchase-order-detail',
@@ -57,6 +64,7 @@ import { getPurchaseOrderMatchStatusColor } from '../purchase-order-match.util';
     AppInputNumberComponent,
   ],
   templateUrl: './purchase-order-detail.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./purchase-order-detail.component.css'],
 })
 export class PurchaseOrderDetailComponent implements OnInit {
@@ -350,8 +358,16 @@ export class PurchaseOrderDetailComponent implements OnInit {
     return this.receiveForm.get('lines') as FormArray;
   }
 
-  getMatchStatusColor(status: PurchaseOrderMatchStatus | string | undefined): string {
+  getMatchStatusLabel(status: PurchaseOrderMatchStatus | string | number | undefined): string {
+    return resolvePurchaseOrderMatchStatusLabel(status);
+  }
+
+  getMatchStatusColor(status: PurchaseOrderMatchStatus | string | number | undefined): string {
     return getPurchaseOrderMatchStatusColor(status);
+  }
+
+  getStatusLabel(status: unknown): string {
+    return resolvePurchaseOrderStatusLabel(status as string | number | undefined);
   }
 
   submitOrder(): void {
@@ -393,27 +409,6 @@ export class PurchaseOrderDetailComponent implements OnInit {
   }
 
   getStatusColor(status: unknown): string {
-    switch (status) {
-      case 'Draft':
-      case 0:
-        return 'default';
-      case 'Pending':
-      case 1:
-        return 'orange';
-      case 'Approved':
-      case 2:
-        return 'blue';
-      case 'PartiallyReceived':
-      case 3:
-        return 'cyan';
-      case 'Received':
-      case 4:
-        return 'green';
-      case 'Cancelled':
-      case 5:
-        return 'red';
-      default:
-        return 'default';
-    }
+    return getPurchaseOrderStatusColor(status as string | number | undefined);
   }
 }

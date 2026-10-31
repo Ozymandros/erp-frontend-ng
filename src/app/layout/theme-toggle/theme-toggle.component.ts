@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzDropdownModule } from 'ng-zorro-antd/dropdown';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
@@ -15,7 +15,7 @@ import { ThemeService, ThemeMode } from '../../core/services/theme.service';
   standalone: true,
   imports: [
     CommonModule,
-    NzDropDownModule,
+    NzDropdownModule,
     NzButtonModule,
     NzIconModule,
     NzTooltipModule
@@ -83,6 +83,7 @@ import { ThemeService, ThemeMode } from '../../core/services/theme.service';
       </ul>
     </nz-dropdown-menu>
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     .theme-toggle-btn {
       display: flex;

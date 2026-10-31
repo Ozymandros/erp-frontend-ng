@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { PermissionsListComponent } from './permissions-list.component';
 import { PermissionsService } from '../../../core/services/permissions.service';
@@ -38,7 +38,7 @@ describe('PermissionsListComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ PermissionsListComponent ],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: PermissionsService, useValue: permissionsServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },

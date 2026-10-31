@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -34,6 +34,7 @@ import { AppButtonComponent, AppInputComponent } from '../../../shared/component
     AppInputComponent
   ],
   templateUrl: './products-list.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./products-list.component.css']
 })
 export class ProductsListComponent extends BaseListComponent<ProductDto> implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef, booleanAttribute } from '@angular/core';
+import { Component, Input, forwardRef, booleanAttribute, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NG_VALUE_ACCESSOR, ControlValueAccessor, ReactiveFormsModule } from '@angular/forms';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
@@ -14,6 +14,7 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
       multi: true
     }
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nz-input-number
       [(ngModel)]="value"

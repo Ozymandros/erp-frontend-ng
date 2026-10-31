@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -38,6 +38,7 @@ const SEARCH_MIN = 3;
     AppInputComponent,
   ],
   templateUrl: './contacts-list.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./contacts-list.component.css'],
 })
 export class ContactsListComponent extends BaseListComponent<ContactDto> implements OnInit {

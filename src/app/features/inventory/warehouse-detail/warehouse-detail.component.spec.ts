@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { WarehouseDetailComponent } from './warehouse-detail.component';
 import { WarehousesService } from '../../../core/services/warehouses.service';
@@ -28,7 +28,7 @@ describe('WarehouseDetailComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ WarehouseDetailComponent ],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: WarehousesService, useValue: warehousesServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },

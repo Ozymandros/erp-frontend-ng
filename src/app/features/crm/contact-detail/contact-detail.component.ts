@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -42,6 +42,7 @@ function phoneNumberValidator(control: AbstractControl): ValidationErrors | null
     AppInputComponent,
   ],
   templateUrl: './contact-detail.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./contact-detail.component.css'],
 })
 export class ContactDetailComponent implements OnInit {

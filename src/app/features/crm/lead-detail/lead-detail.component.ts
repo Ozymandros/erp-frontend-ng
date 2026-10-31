@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   AbstractControl,
@@ -57,6 +57,7 @@ function phoneNumberValidator(control: AbstractControl): ValidationErrors | null
     AppThemedModalDirective,
   ],
   templateUrl: './lead-detail.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./lead-detail.component.css'],
 })
 export class LeadDetailComponent implements OnInit {

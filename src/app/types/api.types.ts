@@ -318,7 +318,7 @@ export interface OrderDto extends IAuditableDto<string> {
   sourceId: string;
   targetId: string;
   externalOrderId?: string;
-  orderLines: OrderLineDto[];
+  lines: OrderLineDto[];
 }
 
 export interface OrderLineDto {
@@ -447,7 +447,7 @@ export enum PurchaseOrderMatchStatus {
 
 export interface PurchaseOrderMatchResultDto {
   purchaseOrderId: string;
-  matchStatus: PurchaseOrderMatchStatus | string;
+  matchStatus: PurchaseOrderMatchStatus | string | number;
   matchedAt?: string;
   summary?: string;
 }
@@ -456,13 +456,13 @@ export interface PurchaseOrderDto extends IAuditableDto<string> {
   orderNumber: string;
   supplierId: string;
   supplierName?: string;
-  status: number;
+  status: number | string;
   orderDate: string;
   expectedDeliveryDate?: string;
   totalAmount: number;
   lines: PurchaseOrderLineDto[];
   supplier?: SupplierDto;
-  matchStatus?: PurchaseOrderMatchStatus | string;
+  matchStatus?: PurchaseOrderMatchStatus | string | number;
   matchedAt?: string;
 }
 

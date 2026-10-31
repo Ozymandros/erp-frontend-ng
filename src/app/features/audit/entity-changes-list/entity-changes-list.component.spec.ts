@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter, Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
@@ -64,7 +64,7 @@ describe('EntityChangesListComponent', () => {
     await TestBed.configureTestingModule({
       imports: [EntityChangesListComponent],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: AuditEntityChangesService, useValue: auditServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },

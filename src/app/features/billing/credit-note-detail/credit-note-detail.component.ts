@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NzCardModule } from 'ng-zorro-antd/card';
@@ -28,6 +28,7 @@ imports: [
     NzButtonModule
   ],
   templateUrl: './credit-note-detail.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./credit-note-detail.component.css']
 })
 export class CreditNoteDetailComponent implements OnInit {

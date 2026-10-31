@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef, booleanAttribute } from '@angular/core';
+import { Component, Input, forwardRef, booleanAttribute, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NG_VALUE_ACCESSOR, ControlValueAccessor, ReactiveFormsModule } from '@angular/forms';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -28,6 +28,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
       (blur)="onTouched()"
     />
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     :host {
       display: block;

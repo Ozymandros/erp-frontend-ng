@@ -213,12 +213,12 @@
           }
           <div class="info-row">
             <span class="info-label">Status</span>
-            <nz-tag [nzColor]="getStatusColor(o.status)">{{ o.status }}</nz-tag>
+            <nz-tag [nzColor]="getStatusColor(o.status)">{{ getStatusLabel(o.status) }}</nz-tag>
           </div>
           <div class="info-row">
             <span class="info-label">Match status</span>
-            <nz-tag [nzColor]="getMatchStatusColor(o.matchStatus ?? 'Unmatched')">
-              {{ o.matchStatus ?? 'Unmatched' }}
+            <nz-tag [nzColor]="getMatchStatusColor(o.matchStatus)">
+              {{ getMatchStatusLabel(o.matchStatus) }}
             </nz-tag>
           </div>
           @if (o.matchedAt) {

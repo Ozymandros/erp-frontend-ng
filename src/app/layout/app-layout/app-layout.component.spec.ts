@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { AppLayoutComponent } from './app-layout.component';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { HeaderComponent } from '../header/header.component';
 import { ActivatedRoute } from '@angular/router';
@@ -12,6 +12,7 @@ import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-sidebar',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: ''
 })
 class MockSidebarComponent {}
@@ -19,6 +20,7 @@ class MockSidebarComponent {}
 @Component({
   selector: 'app-header',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: ''
 })
 class MockHeaderComponent {}
@@ -31,7 +33,7 @@ describe('AppLayoutComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ AppLayoutComponent ],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: ActivatedRoute, useValue: {} }
       ]

@@ -1,5 +1,5 @@
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { SalesOrderDetailComponent } from './sales-order-detail.component';
 import { SalesOrdersService } from '../../../core/services/sales-orders.service';
@@ -54,7 +54,7 @@ describe('SalesOrderDetailComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ SalesOrderDetailComponent ],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: SalesOrdersService, useValue: salesOrdersServiceSpy },
         { provide: CustomersService, useValue: customersServiceSpy },
@@ -99,7 +99,7 @@ describe('SalesOrderDetailComponent', () => {
       TestBed.configureTestingModule({
         imports: [SalesOrderDetailComponent],
         providers: [
-          provideHttpClient(),
+          provideHttpClient(withXhr()),
           provideHttpClientTesting(),
           { provide: NZ_I18N, useValue: en_US },
           { provide: SalesOrdersService, useValue: salesOrdersServiceSpy },
@@ -127,7 +127,7 @@ describe('SalesOrderDetailComponent', () => {
       TestBed.configureTestingModule({
         imports: [SalesOrderDetailComponent],
         providers: [
-          provideHttpClient(),
+          provideHttpClient(withXhr()),
           provideHttpClientTesting(),
           { provide: NZ_I18N, useValue: en_US },
           { provide: SalesOrdersService, useValue: salesOrdersServiceSpy },

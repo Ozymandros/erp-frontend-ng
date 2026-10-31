@@ -1,4 +1,4 @@
-import { Component, Input, computed, booleanAttribute } from '@angular/core';
+import { Component, Input, computed, booleanAttribute, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NzButtonModule, NzButtonType, NzButtonSize } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -27,6 +27,7 @@ import { ThemeService } from '../../../core/services/theme.service';
       <ng-content></ng-content>
     </button>
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     :host {
       display: inline-block;

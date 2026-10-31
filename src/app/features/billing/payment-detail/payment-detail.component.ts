@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NzCardModule } from 'ng-zorro-antd/card';
@@ -28,6 +28,7 @@ import { AppButtonComponent } from '../../../shared/components';
     AppButtonComponent
   ],
   templateUrl: './payment-detail.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./payment-detail.component.css']
 })
 export class PaymentDetailComponent implements OnInit {

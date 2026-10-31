@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -49,6 +49,7 @@ const CHANGE_TYPE_OPTIONS = [
     AppSelectComponent,
   ],
   templateUrl: './entity-changes-list.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./entity-changes-list.component.css'],
 })
 export class EntityChangesListComponent extends BaseListComponent<EntityChangeDto> implements OnInit {

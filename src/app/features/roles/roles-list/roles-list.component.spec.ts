@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { RolesListComponent } from './roles-list.component';
 import { RolesService } from '../../../core/services/roles.service';
@@ -39,7 +39,7 @@ describe('RolesListComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ RolesListComponent ],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: RolesService, useValue: rolesServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },

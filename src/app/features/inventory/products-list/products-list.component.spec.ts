@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ProductsListComponent } from './products-list.component';
 import { ProductsService } from '../../../core/services/products.service';
@@ -57,7 +57,7 @@ describe('ProductsListComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ ProductsListComponent ],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: ProductsService, useValue: productsServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },

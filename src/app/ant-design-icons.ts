@@ -22,6 +22,8 @@ import {
   EyeOutline,
   FileExcelOutline,
   FilePdfOutline,
+  FileAddOutline,
+  AuditOutline,
   ArrowLeftOutline,
   TeamOutline,
   SunOutline,
@@ -29,7 +31,15 @@ import {
   MoonOutline,
   MoonFill,
   LaptopOutline,
-  RollbackOutline
+  RollbackOutline,
+  CheckOutline,
+  CheckCircleFill,
+  CloseOutline,
+  CloseCircleOutline,
+  CopyOutline,
+  ExclamationCircleOutline,
+  RightCircleOutline,
+  SendOutline
 } from '@ant-design/icons-angular/icons';
 
 export const icons = [
@@ -56,6 +66,8 @@ export const icons = [
   EyeOutline,
   FileExcelOutline,
   FilePdfOutline,
+  FileAddOutline,
+  AuditOutline,
   ArrowLeftOutline,
   TeamOutline,
   SunOutline,
@@ -63,5 +75,13 @@ export const icons = [
   MoonOutline,
   MoonFill,
   LaptopOutline,
-  RollbackOutline
+  RollbackOutline,
+  CheckOutline,
+  CheckCircleFill,
+  CloseOutline,
+  CloseCircleOutline,
+  CopyOutline,
+  ExclamationCircleOutline,
+  RightCircleOutline,
+  SendOutline
 ];

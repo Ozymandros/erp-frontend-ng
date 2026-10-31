@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -62,7 +62,7 @@ describe('PurchaseOrderDetailComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ PurchaseOrderDetailComponent ],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: PurchaseOrdersService, useValue: purchaseOrdersServiceSpy },
         { provide: ProductsService, useValue: productsServiceSpy },
@@ -101,7 +101,7 @@ describe('PurchaseOrderDetailComponent', () => {
       TestBed.configureTestingModule({
         imports: [PurchaseOrderDetailComponent],
         providers: [
-          provideHttpClient(),
+          provideHttpClient(withXhr()),
           provideHttpClientTesting(),
           { provide: NZ_I18N, useValue: en_US },
           { provide: PurchaseOrdersService, useValue: purchaseOrdersServiceSpy },
@@ -129,7 +129,7 @@ describe('PurchaseOrderDetailComponent', () => {
       TestBed.configureTestingModule({
         imports: [PurchaseOrderDetailComponent],
         providers: [
-          provideHttpClient(),
+          provideHttpClient(withXhr()),
           provideHttpClientTesting(),
           { provide: NZ_I18N, useValue: en_US },
           { provide: PurchaseOrdersService, useValue: purchaseOrdersServiceSpy },

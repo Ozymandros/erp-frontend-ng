@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -35,6 +35,7 @@ import { AppButtonComponent, AppInputComponent } from '../../../shared/component
     AppInputComponent
   ],
   templateUrl: './customers-list.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./customers-list.component.css']
 })
 export class CustomersListComponent extends BaseListComponent<CustomerDto> {

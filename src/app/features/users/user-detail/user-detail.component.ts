@@ -1,4 +1,4 @@
-import { Component, OnInit, computed } from '@angular/core';
+import { Component, OnInit, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -33,6 +33,7 @@ import { AppButtonComponent, AppInputComponent } from '../../../shared/component
     AppInputComponent
   ],
   templateUrl: './user-detail.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./user-detail.component.css']
 })
 export class UserDetailComponent implements OnInit {

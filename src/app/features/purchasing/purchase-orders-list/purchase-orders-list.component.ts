@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -17,6 +17,10 @@ import { BaseListComponent } from '../../../core/base/base-list.component';
 import { FileService } from '../../../core/services/file.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { AppButtonComponent, AppInputComponent } from '../../../shared/components';
+import {
+  getPurchaseOrderStatusColor,
+  resolvePurchaseOrderStatusLabel,
+} from '../purchase-order-status.util';
 
 @Component({
   selector: 'app-purchase-orders-list',
@@ -36,6 +40,7 @@ import { AppButtonComponent, AppInputComponent } from '../../../shared/component
     AppInputComponent
   ],
   templateUrl: './purchase-orders-list.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./purchase-orders-list.component.css']
 })
 export class PurchaseOrdersListComponent extends BaseListComponent<PurchaseOrderDto> implements OnInit {
@@ -62,19 +67,11 @@ export class PurchaseOrdersListComponent extends BaseListComponent<PurchaseOrder
     this.deleteItem(id, 'order');
   }
 
+  getStatusLabel(status: number | string): string {
+    return resolvePurchaseOrderStatusLabel(status);
+  }
+
   getStatusColor(status: number | string): string {
-    switch (status) {
-      case 'Draft': 
-      case 0: return 'default';
-      case 'Pending':
-      case 1: return 'orange';
-      case 'Confirmed':
-      case 2: return 'blue';
-      case 'Received':
-      case 3: return 'green';
-      case 'Cancelled':
-      case 4: return 'red';
-      default: return 'default';
-    }
+    return getPurchaseOrderStatusColor(status);
   }
 }

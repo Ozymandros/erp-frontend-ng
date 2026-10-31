@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
-import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzDropdownModule } from 'ng-zorro-antd/dropdown';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { AuthService } from '../../core/services/auth.service';
@@ -15,12 +15,13 @@ import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
   imports: [
     CommonModule,
     NzLayoutModule,
-    NzDropDownModule,
+    NzDropdownModule,
     NzAvatarModule,
     NzIconModule,
     ThemeToggleComponent
   ],
   templateUrl: './header.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {

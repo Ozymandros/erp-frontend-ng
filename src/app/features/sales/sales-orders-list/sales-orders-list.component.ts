@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -40,6 +40,7 @@ import {
     AppInputComponent
   ],
   templateUrl: './sales-orders-list.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./sales-orders-list.component.css']
 })
 export class SalesOrdersListComponent extends BaseListComponent<SalesOrderDto> implements OnInit {
