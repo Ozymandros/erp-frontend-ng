@@ -11,13 +11,13 @@ const __dirname = dirname(__filename);
 export default function (config) {
   config.set({
     basePath: '',
-    frameworks: ['jasmine', '@angular-devkit/build-angular'],
+    // With @angular/build:karma the Angular framework/plugin is registered by the builder.
+    frameworks: ['jasmine'],
     plugins: [
       'karma-jasmine',
       'karma-chrome-launcher',
       'karma-jasmine-html-reporter',
       'karma-coverage',
-      '@angular-devkit/build-angular/plugins/karma',
     ],
     jasmineHtmlReporter: {
       suppressAll: true,

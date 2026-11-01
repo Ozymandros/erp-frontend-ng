@@ -12,6 +12,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
+import { provideNzDateFnsAdapter } from 'ng-zorro-antd/core/time';
 import { runCommonOrderDetailTests } from '../../../core/testing/order-detail-spec.helper';
 
 describe('SalesOrderDetailComponent', () => {
@@ -64,6 +65,7 @@ describe('SalesOrderDetailComponent', () => {
         { provide: NzMessageService, useValue: messageServiceSpy },
         { provide: Router, useValue: routerSpy },
         { provide: NZ_I18N, useValue: en_US },
+        provideNzDateFnsAdapter(),
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => 'new' } } } }
       ]
     })
@@ -102,6 +104,7 @@ describe('SalesOrderDetailComponent', () => {
           provideHttpClient(withXhr()),
           provideHttpClientTesting(),
           { provide: NZ_I18N, useValue: en_US },
+          provideNzDateFnsAdapter(),
           { provide: SalesOrdersService, useValue: salesOrdersServiceSpy },
           { provide: CustomersService, useValue: customersServiceSpy },
           { provide: ProductsService, useValue: productsServiceSpy },
@@ -130,6 +133,7 @@ describe('SalesOrderDetailComponent', () => {
           provideHttpClient(withXhr()),
           provideHttpClientTesting(),
           { provide: NZ_I18N, useValue: en_US },
+          provideNzDateFnsAdapter(),
           { provide: SalesOrdersService, useValue: salesOrdersServiceSpy },
           { provide: CustomersService, useValue: customersServiceSpy },
           { provide: ProductsService, useValue: productsServiceSpy },
