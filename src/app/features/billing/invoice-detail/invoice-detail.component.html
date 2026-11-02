@@ -40,7 +40,13 @@
       </nz-descriptions-item>
       <nz-descriptions-item nzTitle="Issue Date">{{ invoice.issueDate | date: 'mediumDate' }}</nz-descriptions-item>
       <nz-descriptions-item nzTitle="Due Date">{{ invoice.dueDate | date: 'mediumDate' }}</nz-descriptions-item>
-      <nz-descriptions-item nzTitle="Order ID">{{ invoice.orderId || '-' }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Sales order">
+        @if (invoice.orderId) {
+          <a [routerLink]="['/sales/orders', invoice.orderId]">{{ invoice.orderId }}</a>
+        } @else {
+          -
+        }
+      </nz-descriptions-item>
       <nz-descriptions-item nzTitle="Total Net">{{ invoice.totalNet | currency:invoice.currency }}</nz-descriptions-item>
       <nz-descriptions-item nzTitle="Total Tax">{{ invoice.totalTax | currency:invoice.currency }}</nz-descriptions-item>
       <nz-descriptions-item nzTitle="Total Gross">{{ invoice.totalGross | currency:invoice.currency }}</nz-descriptions-item>

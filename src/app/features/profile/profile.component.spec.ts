@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ProfileComponent } from './profile.component';
 import { AuthService } from '../../core/services/auth.service';
@@ -44,7 +44,7 @@ describe('ProfileComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ ProfileComponent ],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: AuthService, useValue: authServiceSpy },
         { provide: UsersService, useValue: usersServiceSpy },

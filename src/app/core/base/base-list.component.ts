@@ -4,6 +4,7 @@ import {
   OnDestroy,
   OnInit,
   inject,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -21,6 +22,7 @@ const SEARCH_MIN_LENGTH = 3;
 const SEARCH_DEBOUNCE_MS = 300;
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: '',
 })
 export abstract class BaseListComponent<T> implements OnInit, OnDestroy {

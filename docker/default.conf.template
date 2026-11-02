@@ -1,0 +1,103 @@
+server {
+    listen 8080;
+    server_name _;
+
+    root /usr/share/nginx/html;
+    index index.html;
+
+    server_tokens off;
+
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 256;
+    gzip_types
+        text/plain
+        text/css
+        application/json
+        application/javascript
+        text/xml
+        application/xml
+        image/svg+xml;
+
+    location = /health {
+        access_log off;
+        default_type text/plain;
+        return 200 'healthy\n';
+    }
+
+    # API gateway proxy paths (aligned with proxy.conf.json for local dev).
+    # proxy_pass without a URI suffix forwards the original request path unchanged.
+    location /auth/api {
+        proxy_pass ${API_GATEWAY_URL};
+        include /etc/nginx/proxy-params.conf;
+    }
+
+    location /users {
+        proxy_pass ${API_GATEWAY_URL};
+        include /etc/nginx/proxy-params.conf;
+    }
+
+    location /roles {
+        proxy_pass ${API_GATEWAY_URL};
+        include /etc/nginx/proxy-params.conf;
+    }
+
+    location /permissions {
+        proxy_pass ${API_GATEWAY_URL};
+        include /etc/nginx/proxy-params.conf;
+    }
+
+    location /sales/api/sales {
+        proxy_pass ${API_GATEWAY_URL};
+        include /etc/nginx/proxy-params.conf;
+    }
+
+    location /orders/api {
+        proxy_pass ${API_GATEWAY_URL};
+        include /etc/nginx/proxy-params.conf;
+    }
+
+    location /inventory/api/inventory {
+        proxy_pass ${API_GATEWAY_URL};
+        include /etc/nginx/proxy-params.conf;
+    }
+
+    location /purchasing/api/purchasing {
+        proxy_pass ${API_GATEWAY_URL};
+        include /etc/nginx/proxy-params.conf;
+    }
+
+    location /crm/api/crm {
+        proxy_pass ${API_GATEWAY_URL};
+        include /etc/nginx/proxy-params.conf;
+    }
+
+    location /billing/api/billing {
+        proxy_pass ${API_GATEWAY_URL};
+        include /etc/nginx/proxy-params.conf;
+    }
+
+    location /audit/api {
+        proxy_pass ${API_GATEWAY_URL};
+        include /etc/nginx/proxy-params.conf;
+    }
+
+    location /api {
+        proxy_pass ${API_GATEWAY_URL};
+        include /etc/nginx/proxy-params.conf;
+    }
+
+    location ~* \.(?:css|js|mjs|woff2?|ttf|eot|svg|ico|webp)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+        try_files $uri =404;
+    }
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}

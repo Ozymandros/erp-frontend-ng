@@ -62,7 +62,7 @@
           <td>{{ item.orderDate | date:'shortDate' }}</td>
           <td>
             <nz-tag [nzColor]="getStatusColor(item.status)">
-              {{ item.status }}
+              {{ getStatusLabel(item.status) }}
             </nz-tag>
           </td>
           <td>{{ item.totalAmount | currency }}</td>

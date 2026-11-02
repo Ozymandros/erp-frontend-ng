@@ -1,4 +1,4 @@
-import { Component, OnInit, computed } from '@angular/core';
+import { Component, OnInit, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -31,6 +31,7 @@ import { AppButtonComponent, AppInputComponent, AppTextareaComponent } from '../
     AppTextareaComponent
   ],
   templateUrl: './role-detail.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./role-detail.component.css']
 })
 export class RoleDetailComponent implements OnInit {

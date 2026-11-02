@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, ChangeDetectorRef, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -35,6 +35,7 @@ import { takeUntil } from 'rxjs';
     AppInputComponent
   ],
   templateUrl: './invoices-list.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./invoices-list.component.css']
 })
 export class InvoicesListComponent extends BaseListComponent<InvoiceDto> {

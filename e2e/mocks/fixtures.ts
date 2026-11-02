@@ -70,3 +70,26 @@ export const mockPurchaseOrders = [
 export const mockSuppliers = [
   { id: 'sup-1', name: 'Global Supplies', contactName: 'John Doe', email: 'john@globalsupplies.com', phone: '555-0123' }
 ];
+
+export const mockEntityChanges = [
+  {
+    id: 'ec-1',
+    entityName: 'User',
+    entityId: '550e8400-e29b-41d4-a716-446655440000',
+    changeType: 'Updated',
+    originalValue: '{"email":"old@example.com"}',
+    newValue: '{"email":"new@example.com"}',
+    createdAt: '2025-01-15T10:00:00Z',
+    createdBy: 'admin',
+    updatedAt: '2025-01-15T10:00:00Z',
+    updatedBy: null,
+    propertyChanges: [
+      {
+        id: 'pc-1',
+        propertyName: 'Email',
+        originalValue: 'old@example.com',
+        newValue: 'new@example.com',
+      },
+    ],
+  },
+];

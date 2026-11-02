@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { CreditNotesService } from './credit-notes.service';
 import { BILLING_ENDPOINTS } from '../api/endpoints.constants';
+import { apiUrl } from '../testing/api-url.helper';
 
 describe('CreditNotesService', () => {
   let service: CreditNotesService;
@@ -29,7 +30,7 @@ describe('CreditNotesService', () => {
     service.getAll({ page: 1, pageSize: 10 }).subscribe(response => {
       expect(response).toBeTruthy();
     });
-    const req = httpMock.expectOne(req => req.url === BILLING_ENDPOINTS.CREDIT_NOTES);
+    const req = httpMock.expectOne(req => req.url === apiUrl(BILLING_ENDPOINTS.CREDIT_NOTES));
     expect(req.request.method).toBe('GET');
     req.flush(mockResponse);
   });
@@ -39,7 +40,7 @@ describe('CreditNotesService', () => {
     service.getById('cn-1').subscribe(creditNote => {
       expect(creditNote).toBeTruthy();
     });
-    const req = httpMock.expectOne(`${BILLING_ENDPOINTS.CREDIT_NOTES}/cn-1`);
+    const req = httpMock.expectOne(apiUrl(`${BILLING_ENDPOINTS.CREDIT_NOTES}/cn-1`));
     expect(req.request.method).toBe('GET');
     req.flush(mockCreditNote);
   });
@@ -49,7 +50,7 @@ describe('CreditNotesService', () => {
     service.getByInvoice('inv-1').subscribe(notes => {
       expect(notes).toBeTruthy();
     });
-    const req = httpMock.expectOne(BILLING_ENDPOINTS.CREDIT_NOTES_BY_INVOICE('inv-1'));
+    const req = httpMock.expectOne(apiUrl(BILLING_ENDPOINTS.CREDIT_NOTES_BY_INVOICE('inv-1')));
     expect(req.request.method).toBe('GET');
     req.flush(mockNotes);
   });
@@ -60,7 +61,7 @@ describe('CreditNotesService', () => {
     service.create(request).subscribe(creditNote => {
       expect(creditNote).toBeTruthy();
     });
-    const req = httpMock.expectOne(BILLING_ENDPOINTS.CREDIT_NOTES);
+    const req = httpMock.expectOne(apiUrl(BILLING_ENDPOINTS.CREDIT_NOTES));
     expect(req.request.method).toBe('POST');
     req.flush(mockCreditNote);
   });
@@ -69,7 +70,7 @@ describe('CreditNotesService', () => {
     service.delete('cn-1').subscribe(response => {
       expect(response).toBeTruthy();
     });
-    const req = httpMock.expectOne(`${BILLING_ENDPOINTS.CREDIT_NOTES}/cn-1`);
+    const req = httpMock.expectOne(apiUrl(`${BILLING_ENDPOINTS.CREDIT_NOTES}/cn-1`));
     expect(req.request.method).toBe('DELETE');
     req.flush({});
   });
@@ -80,7 +81,7 @@ describe('CreditNotesService', () => {
     service.update('cn-1', update).subscribe(creditNote => {
       expect(creditNote).toBeTruthy();
     });
-    const req = httpMock.expectOne(`${BILLING_ENDPOINTS.CREDIT_NOTES}/cn-1`);
+    const req = httpMock.expectOne(apiUrl(`${BILLING_ENDPOINTS.CREDIT_NOTES}/cn-1`));
     expect(req.request.method).toBe('PUT');
     req.flush(mockCreditNote);
   });
@@ -90,7 +91,7 @@ describe('CreditNotesService', () => {
     service.exportToXlsx().subscribe(data => {
       expect(data).toBeTruthy();
     });
-    const req = httpMock.expectOne(BILLING_ENDPOINTS.CREDIT_NOTES_EXPORT_XLSX);
+    const req = httpMock.expectOne(apiUrl(BILLING_ENDPOINTS.CREDIT_NOTES_EXPORT_XLSX));
     expect(req.request.method).toBe('GET');
     req.flush(blob);
   });
@@ -100,7 +101,7 @@ describe('CreditNotesService', () => {
     service.exportToPdf().subscribe(data => {
       expect(data).toBeTruthy();
     });
-    const req = httpMock.expectOne(BILLING_ENDPOINTS.CREDIT_NOTES_EXPORT_PDF);
+    const req = httpMock.expectOne(apiUrl(BILLING_ENDPOINTS.CREDIT_NOTES_EXPORT_PDF));
     expect(req.request.method).toBe('GET');
     req.flush(blob);
   });

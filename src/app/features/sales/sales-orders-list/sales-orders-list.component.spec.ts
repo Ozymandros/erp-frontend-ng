@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { SalesOrdersListComponent } from './sales-orders-list.component';
 import { SalesOrdersService } from '../../../core/services/sales-orders.service';
@@ -38,7 +38,7 @@ describe('SalesOrdersListComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ SalesOrdersListComponent ],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: SalesOrdersService, useValue: salesOrdersServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
@@ -130,23 +130,23 @@ describe('SalesOrdersListComponent', () => {
   });
 
   it('should return correct color for Confirmed status (number)', () => {
-    expect(component.getStatusColor(2)).toBe('blue');
+    expect(component.getStatusColor(1)).toBe('blue');
+  });
+
+  it('should return correct color for Invoiced status (string)', () => {
+    expect(component.getStatusColor('Invoiced')).toBe('purple');
+  });
+
+  it('should return correct color for Invoiced status (number)', () => {
+    expect(component.getStatusColor(2)).toBe('purple');
   });
 
   it('should return correct color for Shipped status (string)', () => {
-    expect(component.getStatusColor('Shipped')).toBe('green');
+    expect(component.getStatusColor('Shipped')).toBe('cyan');
   });
 
   it('should return correct color for Shipped status (number)', () => {
-    expect(component.getStatusColor(3)).toBe('green');
-  });
-
-  it('should return correct color for Delivered status (string)', () => {
-    expect(component.getStatusColor('Delivered')).toBe('cyan');
-  });
-
-  it('should return correct color for Delivered status (number)', () => {
-    expect(component.getStatusColor(4)).toBe('cyan');
+    expect(component.getStatusColor(3)).toBe('cyan');
   });
 
   it('should return correct color for Cancelled status (string)', () => {
@@ -154,7 +154,11 @@ describe('SalesOrdersListComponent', () => {
   });
 
   it('should return correct color for Cancelled status (number)', () => {
-    expect(component.getStatusColor(5)).toBe('red');
+    expect(component.getStatusColor(4)).toBe('red');
+  });
+
+  it('should resolve Invoiced status label from numeric value', () => {
+    expect(component.getStatusLabel(2)).toBe('Invoiced');
   });
 
   it('should return default color for unknown status', () => {

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -45,7 +45,7 @@ describe('LeadsListComponent', () => {
     await TestBed.configureTestingModule({
       imports: [LeadsListComponent],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: CrmLeadsService, useValue: leadsServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },

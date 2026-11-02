@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, OnInit, inject } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -30,6 +30,7 @@ import { APP_PATHS } from '../../../core/constants/routes.constants';
     AppSelectComponent
   ],
   templateUrl: './credit-notes-list.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./credit-notes-list.component.css']
 })
 export class CreditNotesListComponent implements OnInit {

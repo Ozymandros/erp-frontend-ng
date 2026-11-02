@@ -8,6 +8,7 @@ export const PERMISSION_MODULES = {
   PURCHASING: "Purchasing",
   CRM: "CRM",
   BILLING: "Billing",
+  AUDIT: "Audit",
 } as const;
 
 export const PERMISSION_ACTIONS = {

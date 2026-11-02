@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -17,6 +17,10 @@ import { SalesOrdersService } from '../../../core/services/sales-orders.service'
 import { FileService } from '../../../core/services/file.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { AppButtonComponent, AppInputComponent } from '../../../shared/components';
+import {
+  getSalesOrderStatusColor,
+  resolveSalesOrderStatusLabel,
+} from '../sales-order-status.util';
 
 @Component({
   selector: 'app-sales-orders-list',
@@ -36,6 +40,7 @@ import { AppButtonComponent, AppInputComponent } from '../../../shared/component
     AppInputComponent
   ],
   templateUrl: './sales-orders-list.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./sales-orders-list.component.css']
 })
 export class SalesOrdersListComponent extends BaseListComponent<SalesOrderDto> implements OnInit {
@@ -63,19 +68,11 @@ export class SalesOrdersListComponent extends BaseListComponent<SalesOrderDto> i
   }
 
   getStatusColor(status: string | number): string {
-    switch (status) {
-      case 'Draft': 
-      case 0: return 'default';
-      case 'Confirmed': 
-      case 2: return 'blue';
-      case 'Shipped': 
-      case 3: return 'green';
-      case 'Delivered': 
-      case 4: return 'cyan';
-      case 'Cancelled': 
-      case 5: return 'red';
-      default: return 'default';
-    }
+    return getSalesOrderStatusColor(status);
+  }
+
+  getStatusLabel(status: string | number): string {
+    return resolveSalesOrderStatusLabel(status);
   }
 
   // exportToXlsx and exportToPdf are inherited from BaseListComponent

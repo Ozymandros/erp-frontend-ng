@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { UserDetailComponent } from './user-detail.component';
 import { UsersService } from '../../../core/services/users.service';
@@ -41,7 +41,7 @@ describe('UserDetailComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ UserDetailComponent ],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: UsersService, useValue: usersServiceSpy },
         { provide: RolesService, useValue: rolesServiceSpy },

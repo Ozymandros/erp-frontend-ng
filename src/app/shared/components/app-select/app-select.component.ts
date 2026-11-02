@@ -1,11 +1,15 @@
-import { Component, Input, Output, EventEmitter, forwardRef, TemplateRef, booleanAttribute } from '@angular/core';
+import { Component, Input, Output, EventEmitter, forwardRef, TemplateRef, booleanAttribute, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NG_VALUE_ACCESSOR, ControlValueAccessor, ReactiveFormsModule } from '@angular/forms';
 import type { NzSafeAny } from 'ng-zorro-antd/core/types';
 import { NzSelectModule, NzSelectModeType } from 'ng-zorro-antd/select';
 
-/** Row object or primitive used as both label and value when no keys match */
-export type AppSelectOption = string | number | boolean | Record<string, unknown>;
+/**
+ * Row object or primitive used as both label and value when no keys match.
+ * Uses `object` (not `Record<string, unknown>`) so DTO interfaces without an
+ * index signature remain assignable when bound via `[options]`.
+ */
+export type AppSelectOption = string | number | boolean | object;
 
 @Component({
   selector: 'app-select',
@@ -18,6 +22,7 @@ export type AppSelectOption = string | number | boolean | Record<string, unknown
       multi: true
     }
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nz-select
       [(ngModel)]="value"

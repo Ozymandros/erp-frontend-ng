@@ -3,6 +3,7 @@ import { of } from 'rxjs';
 import { PurchaseOrdersService } from './purchase-orders.service';
 import { ApiClientService } from '../api/http-client.service';
 import { PurchaseOrderDto, PaginatedResponse } from '../../types/api.types';
+import { PURCHASING_ENDPOINTS } from '../api/endpoints.constants';
 
 describe('PurchaseOrdersService', () => {
   let service: PurchaseOrdersService;
@@ -40,6 +41,17 @@ describe('PurchaseOrdersService', () => {
     service.getAll().subscribe(response => {
       expect(response).toEqual(mockOrders);
       expect(apiClientSpy.get).toHaveBeenCalled();
+      done();
+    });
+  });
+
+  it('should POST match purchase order', (done) => {
+    const result = { purchaseOrderId: '1', matchStatus: 'Matched', summary: 'OK' };
+    apiClientSpy.post.and.returnValue(of(result));
+
+    service.matchPurchaseOrder('1').subscribe((response) => {
+      expect(response).toEqual(result);
+      expect(apiClientSpy.post).toHaveBeenCalledWith(PURCHASING_ENDPOINTS.MATCH('1'), {});
       done();
     });
   });

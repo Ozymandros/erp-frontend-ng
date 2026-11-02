@@ -1,6 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     // 'baseUrl' is deprecated in TS 5.0, see https://aka.ms/ts6
     "baseUrl": "./",
     "paths": {

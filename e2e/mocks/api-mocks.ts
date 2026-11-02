@@ -141,6 +141,14 @@ export async function mockGetSuppliers(page: Page, suppliers: any[]): Promise<vo
   await mockPaginatedResponse(page, new RegExp(`/purchasing/api/purchasing/suppliers${OPTIONAL_QUERY}`), suppliers);
 }
 
+export async function mockGetEntityChanges(page: Page, changes: unknown[]): Promise<void> {
+  await mockPaginatedResponse(page, new RegExp(`/audit/api/audit/entity-changes${OPTIONAL_QUERY}`), changes);
+}
+
+export async function mockGetEntityChangeById(page: Page, id: string, change: unknown): Promise<void> {
+  await mockApiSuccess(page, new RegExp(`/audit/api/audit/entity-changes/${id}${OPTIONAL_QUERY}`), change);
+}
+
 export async function mockLogout(page: Page): Promise<void> {
   await mockApiSuccess(page, '**/auth/api/auth/logout', { success: true });
 }

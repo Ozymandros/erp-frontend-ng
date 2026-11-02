@@ -57,6 +57,18 @@ export const routes: Routes = [
         loadComponent: () => import('./features/permissions/permissions-list/permissions-list.component').then(m => m.PermissionsListComponent)
       },
       {
+        path: APP_ROUTES.AUDIT.ROOT,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.AUDIT, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/audit/entity-changes-list/entity-changes-list.component').then(m => m.EntityChangesListComponent)
+      },
+      {
+        path: APP_ROUTES.AUDIT.DETAIL,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.AUDIT, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/audit/entity-change-detail/entity-change-detail.component').then(m => m.EntityChangeDetailComponent)
+      },
+      {
         path: APP_ROUTES.INVENTORY.PRODUCTS,
         canActivate: [permissionGuard],
         data: { module: 'products', action: 'read' },

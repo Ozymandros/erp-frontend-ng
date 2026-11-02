@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
@@ -13,6 +13,7 @@ import { Permission } from '../../../../types/api.types';
     NzBadgeModule
   ],
   templateUrl: './assigned-permissions-view.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./assigned-permissions-view.component.css']
 })
 export class AssignedPermissionsViewComponent {

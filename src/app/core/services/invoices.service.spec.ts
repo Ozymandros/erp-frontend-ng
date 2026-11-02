@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { InvoicesService } from './invoices.service';
 import { BILLING_ENDPOINTS } from '../api/endpoints.constants';
+import { apiUrl } from '../testing/api-url.helper';
 
 describe('InvoicesService', () => {
   let service: InvoicesService;
@@ -29,7 +30,7 @@ describe('InvoicesService', () => {
     service.getAll({ page: 1, pageSize: 10 }).subscribe(response => {
       expect(response).toBeTruthy();
     });
-    const req = httpMock.expectOne(req => req.url === BILLING_ENDPOINTS.INVOICES);
+    const req = httpMock.expectOne(req => req.url === apiUrl(BILLING_ENDPOINTS.INVOICES));
     expect(req.request.method).toBe('GET');
     req.flush(mockResponse);
   });
@@ -39,7 +40,7 @@ describe('InvoicesService', () => {
     service.getById('123').subscribe(invoice => {
       expect(invoice).toBeTruthy();
     });
-    const req = httpMock.expectOne(`${BILLING_ENDPOINTS.INVOICES}/123`);
+    const req = httpMock.expectOne(apiUrl(`${BILLING_ENDPOINTS.INVOICES}/123`));
     expect(req.request.method).toBe('GET');
     req.flush(mockInvoice);
   });
@@ -49,7 +50,7 @@ describe('InvoicesService', () => {
     service.getByCustomer('cust-1').subscribe(invoices => {
       expect(invoices).toBeTruthy();
     });
-    const req = httpMock.expectOne(BILLING_ENDPOINTS.INVOICES_BY_CUSTOMER('cust-1'));
+    const req = httpMock.expectOne(apiUrl(BILLING_ENDPOINTS.INVOICES_BY_CUSTOMER('cust-1')));
     expect(req.request.method).toBe('GET');
     req.flush(mockInvoices);
   });
@@ -59,7 +60,7 @@ describe('InvoicesService', () => {
     service.getByOrder('order-1').subscribe(invoices => {
       expect(invoices).toBeTruthy();
     });
-    const req = httpMock.expectOne(BILLING_ENDPOINTS.INVOICES_BY_ORDER('order-1'));
+    const req = httpMock.expectOne(apiUrl(BILLING_ENDPOINTS.INVOICES_BY_ORDER('order-1')));
     expect(req.request.method).toBe('GET');
     req.flush(mockInvoices);
   });
@@ -70,7 +71,7 @@ describe('InvoicesService', () => {
     service.create(request).subscribe(invoice => {
       expect(invoice).toBeTruthy();
     });
-    const req = httpMock.expectOne(BILLING_ENDPOINTS.INVOICES);
+    const req = httpMock.expectOne(apiUrl(BILLING_ENDPOINTS.INVOICES));
     expect(req.request.method).toBe('POST');
     req.flush(mockInvoice);
   });
@@ -81,7 +82,7 @@ describe('InvoicesService', () => {
     service.update('123', update).subscribe(invoice => {
       expect(invoice).toBeTruthy();
     });
-    const req = httpMock.expectOne(`${BILLING_ENDPOINTS.INVOICES}/123`);
+    const req = httpMock.expectOne(apiUrl(`${BILLING_ENDPOINTS.INVOICES}/123`));
     expect(req.request.method).toBe('PUT');
     req.flush(mockInvoice);
   });
@@ -90,7 +91,7 @@ describe('InvoicesService', () => {
     service.delete('123').subscribe(response => {
       expect(response).toBeTruthy();
     });
-    const req = httpMock.expectOne(`${BILLING_ENDPOINTS.INVOICES}/123`);
+    const req = httpMock.expectOne(apiUrl(`${BILLING_ENDPOINTS.INVOICES}/123`));
     expect(req.request.method).toBe('DELETE');
     req.flush({});
   });
@@ -101,7 +102,7 @@ describe('InvoicesService', () => {
     service.issue('123', request).subscribe(invoice => {
       expect(invoice).toBeTruthy();
     });
-    const req = httpMock.expectOne(BILLING_ENDPOINTS.INVOICE_ISSUE('123'));
+    const req = httpMock.expectOne(apiUrl(BILLING_ENDPOINTS.INVOICE_ISSUE('123')));
     expect(req.request.method).toBe('POST');
     req.flush(mockInvoice);
   });
@@ -112,7 +113,7 @@ describe('InvoicesService', () => {
     service.cancel('123', request).subscribe(invoice => {
       expect(invoice).toBeTruthy();
     });
-    const req = httpMock.expectOne(BILLING_ENDPOINTS.INVOICE_CANCEL('123'));
+    const req = httpMock.expectOne(apiUrl(BILLING_ENDPOINTS.INVOICE_CANCEL('123')));
     expect(req.request.method).toBe('POST');
     req.flush(mockInvoice);
   });
@@ -123,7 +124,7 @@ describe('InvoicesService', () => {
     service.recordPayment('123', request).subscribe(invoice => {
       expect(invoice).toBeTruthy();
     });
-    const req = httpMock.expectOne(BILLING_ENDPOINTS.INVOICE_PAYMENTS('123'));
+    const req = httpMock.expectOne(apiUrl(BILLING_ENDPOINTS.INVOICE_PAYMENTS('123')));
     expect(req.request.method).toBe('POST');
     req.flush(mockInvoice);
   });
@@ -133,7 +134,7 @@ describe('InvoicesService', () => {
     service.getCreditNotes('123').subscribe(notes => {
       expect(notes).toBeTruthy();
     });
-    const req = httpMock.expectOne(BILLING_ENDPOINTS.CREDIT_NOTES_BY_INVOICE('123'));
+    const req = httpMock.expectOne(apiUrl(BILLING_ENDPOINTS.CREDIT_NOTES_BY_INVOICE('123')));
     expect(req.request.method).toBe('GET');
     req.flush(mockNotes);
   });
@@ -143,7 +144,7 @@ describe('InvoicesService', () => {
     service.getPayments('123').subscribe(payments => {
       expect(payments).toBeTruthy();
     });
-    const req = httpMock.expectOne(BILLING_ENDPOINTS.PAYMENTS_BY_INVOICE('123'));
+    const req = httpMock.expectOne(apiUrl(BILLING_ENDPOINTS.PAYMENTS_BY_INVOICE('123')));
     expect(req.request.method).toBe('GET');
     req.flush(mockPayments);
   });
@@ -153,7 +154,7 @@ describe('InvoicesService', () => {
     service.exportToXlsx().subscribe(data => {
       expect(data).toBeTruthy();
     });
-    const req = httpMock.expectOne(BILLING_ENDPOINTS.INVOICES_EXPORT_XLSX);
+    const req = httpMock.expectOne(apiUrl(BILLING_ENDPOINTS.INVOICES_EXPORT_XLSX));
     expect(req.request.method).toBe('GET');
     req.flush(blob);
   });
@@ -163,7 +164,7 @@ describe('InvoicesService', () => {
     service.exportToPdf().subscribe(data => {
       expect(data).toBeTruthy();
     });
-    const req = httpMock.expectOne(BILLING_ENDPOINTS.INVOICES_EXPORT_PDF);
+    const req = httpMock.expectOne(apiUrl(BILLING_ENDPOINTS.INVOICES_EXPORT_PDF));
     expect(req.request.method).toBe('GET');
     req.flush(blob);
   });
@@ -173,7 +174,7 @@ describe('InvoicesService', () => {
     service.getByOrder('order-1').subscribe(invoices => {
       expect(invoices).toBeTruthy();
     });
-    const req = httpMock.expectOne(BILLING_ENDPOINTS.INVOICES_BY_ORDER('order-1'));
+    const req = httpMock.expectOne(apiUrl(BILLING_ENDPOINTS.INVOICES_BY_ORDER('order-1')));
     expect(req.request.method).toBe('GET');
     req.flush(mockInvoices);
   });
@@ -183,7 +184,7 @@ describe('InvoicesService', () => {
     service.getAll().subscribe(response => {
       expect(response).toBeTruthy();
     });
-    const req = httpMock.expectOne(req => req.url === BILLING_ENDPOINTS.INVOICES);
+    const req = httpMock.expectOne(req => req.url === apiUrl(BILLING_ENDPOINTS.INVOICES));
     expect(req.request.method).toBe('GET');
     req.flush(mockResponse);
   });

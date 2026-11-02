@@ -1,6 +1,6 @@
 import { ApplicationConfig, importProvidersFrom, APP_INITIALIZER } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideNzI18n, en_US } from 'ng-zorro-antd/i18n';
 import { NzModalModule } from 'ng-zorro-antd/modal';
@@ -9,6 +9,8 @@ import { icons } from './ant-design-icons';
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { ThemeService } from './core/services/theme.service';
+import { provideNzDateFnsAdapter } from 'ng-zorro-antd/core/time';
+
 
 /**
  * Initialize theme service on app startup to ensure theme is applied immediately
@@ -24,7 +26,7 @@ function initializeTheme(_themeService: ThemeService) {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(withXhr(), withInterceptors([authInterceptor])),
     provideAnimations(),
     provideNzI18n(en_US),
     importProvidersFrom(NzModalModule),
@@ -34,7 +36,7 @@ export const appConfig: ApplicationConfig = {
       useFactory: initializeTheme,
       deps: [ThemeService],
       multi: true
-    }
+    }, provideNzDateFnsAdapter()
   ]
 };
 
