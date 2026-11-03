@@ -1,0 +1,80 @@
+<div class="panel-toolbar">
+  <label for="planning-task-filter">Filter by task</label>
+  <nz-select
+    id="planning-task-filter"
+    [ngModel]="filterTaskId"
+    (ngModelChange)="onFilterChange($event)"
+    nzAllowClear
+    nzPlaceHolder="All tasks"
+    style="min-width: 200px"
+  >
+    @for (t of tasks; track t.id) {
+      <nz-option [nzValue]="t.id" [nzLabel]="t.taskNo"></nz-option>
+    }
+  </nz-select>
+  @if (permissions?.canCreate) {
+    <app-button type="primary" icon="plus" (click)="openCreate()">Add line</app-button>
+  }
+  @if (permissions?.canExport) {
+    <app-button icon="file-excel" (click)="exportXlsx()">Export XLSX</app-button>
+  }
+</div>
+
+<nz-table [nzData]="lines" [nzLoading]="loading" [nzScroll]="{ x: '1000px' }">
+  <thead>
+    <tr>
+      <th id="th-pl-no" scope="col">Line</th>
+      <th id="th-pl-kind" scope="col">Kind</th>
+      <th id="th-pl-qty" scope="col">Qty</th>
+      <th id="th-pl-amount" scope="col">Amount</th>
+      <th id="th-pl-actions" scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (line of lines; track line.id) {
+      <tr>
+        <td>{{ line.lineNo }} — {{ line.description }}</td>
+        <td>{{ line.kind }}</td>
+        <td>{{ line.quantity }}</td>
+        <td>{{ line.lineAmount }}</td>
+        <td>
+          @if (permissions?.canUpdate) {
+            <app-button type="link" icon="edit" (click)="openEdit(line)" ariaLabel="Edit planning line"></app-button>
+          }
+          @if (permissions?.canDelete) {
+            <app-button
+              type="link"
+              danger
+              icon="delete"
+              nz-popconfirm
+              nzPopconfirmTitle="Delete line?"
+              (nzOnConfirm)="deleteLine(line)"
+              ariaLabel="Delete planning line"
+            ></app-button>
+          }
+        </td>
+      </tr>
+    }
+  </tbody>
+</nz-table>
+
+<nz-modal
+  [(nzVisible)]="modalVisible"
+  [nzTitle]="editingLine ? 'Edit planning line' : 'New planning line'"
+  (nzOnCancel)="modalVisible = false"
+  (nzOnOk)="saveLine()"
+  appThemedModal
+>
+  <ng-container *nzModalContent>
+    <form [formGroup]="form">
+      <label for="pl-task">Task</label>
+      <nz-select id="pl-task" formControlName="projectTaskId" style="width: 100%">
+        @for (t of tasks; track t.id) {
+          <nz-option [nzValue]="t.id" [nzLabel]="t.taskNo + ' — ' + t.description"></nz-option>
+        }
+      </nz-select>
+      <app-input-number formControlName="quantity" label="Quantity" inputId="pl-qty"></app-input-number>
+      <app-input formControlName="description" label="Description" inputId="pl-desc"></app-input>
+    </form>
+  </ng-container>
+</nz-modal>

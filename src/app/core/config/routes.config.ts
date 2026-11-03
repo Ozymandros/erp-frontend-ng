@@ -42,6 +42,18 @@ export const ROUTE_PERMISSIONS: Record<string, RoutePermission> = {
   [`/${APP_ROUTES.BILLING.INVOICE_DETAIL}`]: createPermission(PERMISSION_MODULES.BILLING, PERMISSION_ACTIONS.READ),
   [APP_PATHS.BILLING.CREDIT_NOTES]: createPermission(PERMISSION_MODULES.BILLING, PERMISSION_ACTIONS.READ),
   [APP_PATHS.BILLING.PAYMENTS]: createPermission(PERMISSION_MODULES.BILLING, PERMISSION_ACTIONS.READ),
+  [APP_PATHS.PROJECTS.ROOT]: createPermission(PERMISSION_MODULES.PROJECTS, PERMISSION_ACTIONS.READ),
+  [`/${APP_ROUTES.PROJECTS.NEW}`]: createPermission(PERMISSION_MODULES.PROJECTS, PERMISSION_ACTIONS.CREATE),
+  [`/${APP_ROUTES.PROJECTS.DETAIL}`]: createPermission(PERMISSION_MODULES.PROJECTS, PERMISSION_ACTIONS.READ),
+  [APP_PATHS.PROJECTS.CURRENCIES]: createPermission(PERMISSION_MODULES.PROJECTS, PERMISSION_ACTIONS.READ),
+  [`/${APP_ROUTES.PROJECTS.CURRENCY_NEW}`]: createPermission(PERMISSION_MODULES.PROJECTS, PERMISSION_ACTIONS.CREATE),
+  [`/${APP_ROUTES.PROJECTS.CURRENCY_DETAIL}`]: createPermission(PERMISSION_MODULES.PROJECTS, PERMISSION_ACTIONS.READ),
+  [APP_PATHS.PROJECTS.RESOURCES]: createPermission(PERMISSION_MODULES.PROJECTS, PERMISSION_ACTIONS.READ),
+  [`/${APP_ROUTES.PROJECTS.RESOURCE_NEW}`]: createPermission(PERMISSION_MODULES.PROJECTS, PERMISSION_ACTIONS.CREATE),
+  [`/${APP_ROUTES.PROJECTS.RESOURCE_DETAIL}`]: createPermission(PERMISSION_MODULES.PROJECTS, PERMISSION_ACTIONS.READ),
+  [APP_PATHS.PROJECTS.RESOURCE_GROUPS]: createPermission(PERMISSION_MODULES.PROJECTS, PERMISSION_ACTIONS.READ),
+  [`/${APP_ROUTES.PROJECTS.RESOURCE_GROUP_NEW}`]: createPermission(PERMISSION_MODULES.PROJECTS, PERMISSION_ACTIONS.CREATE),
+  [`/${APP_ROUTES.PROJECTS.RESOURCE_GROUP_DETAIL}`]: createPermission(PERMISSION_MODULES.PROJECTS, PERMISSION_ACTIONS.READ),
 };
 
 export function getRoutePermission(path: string): RoutePermission | undefined {
@@ -224,6 +236,36 @@ export const NAV_ITEMS_CONFIG: NavItemConfig[] = [
         permission: createPermission(PERMISSION_MODULES.SALES, PERMISSION_ACTIONS.READ),
       }
     ]
+  },
+  {
+    title: 'Projects',
+    icon: 'project',
+    children: [
+      {
+        title: 'Projects',
+        href: APP_PATHS.PROJECTS.ROOT,
+        icon: 'project',
+        permission: createPermission(PERMISSION_MODULES.PROJECTS, PERMISSION_ACTIONS.READ),
+      },
+      {
+        title: 'Currencies',
+        href: APP_PATHS.PROJECTS.CURRENCIES,
+        icon: 'dollar',
+        permission: createPermission(PERMISSION_MODULES.PROJECTS, PERMISSION_ACTIONS.READ),
+      },
+      {
+        title: 'Resources',
+        href: APP_PATHS.PROJECTS.RESOURCES,
+        icon: 'team',
+        permission: createPermission(PERMISSION_MODULES.PROJECTS, PERMISSION_ACTIONS.READ),
+      },
+      {
+        title: 'Resource Groups',
+        href: APP_PATHS.PROJECTS.RESOURCE_GROUPS,
+        icon: 'apartment',
+        permission: createPermission(PERMISSION_MODULES.PROJECTS, PERMISSION_ACTIONS.READ),
+      },
+    ],
   },
   {
     title: 'Billing',

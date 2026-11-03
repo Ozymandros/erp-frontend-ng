@@ -1,0 +1,12 @@
+.projects-list .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.projects-list .header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}

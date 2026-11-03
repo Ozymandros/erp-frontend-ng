@@ -1,0 +1,98 @@
+@if (permissions$ | async; as p) {
+<div class="projects-list">
+  <div class="page-header">
+    <h1 nz-typography>Projects</h1>
+    <div class="header-actions">
+      @if (p.canExport) {
+        <app-button icon="file-excel" (click)="exportToXlsx('projects.xlsx')">Export XLSX</app-button>
+        <app-button icon="file-pdf" (click)="exportToPdf('projects.pdf')">Export PDF</app-button>
+      }
+      @if (p.canCreate) {
+        <app-button type="primary" icon="plus" [routerLink]="paths.NEW">New project</app-button>
+      }
+    </div>
+  </div>
+
+  <div class="list-search">
+    <nz-space-compact nzSize="large" class="list-search__compact">
+      <app-input
+        placeholder="Search (min 3 characters)..."
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearch()"
+        aria-label="Search projects"
+      ></app-input>
+    </nz-space-compact>
+  </div>
+
+  <nz-table
+    #projectsTable
+    [nzData]="projects"
+    [nzLoading]="loading"
+    [nzPageSize]="pageSize"
+    [nzPageIndex]="pageIndex"
+    [nzTotal]="total"
+    [nzFrontPagination]="false"
+    (nzPageIndexChange)="onPageChange($event)"
+    (nzPageSizeChange)="onPageSizeChange($event)"
+    [nzScroll]="{ x: '1200px' }"
+  >
+    <thead>
+      <tr>
+        <th id="th-project-number" scope="col">Number</th>
+        <th id="th-project-description" scope="col">Description</th>
+        <th id="th-project-status" scope="col">Status</th>
+        <th id="th-project-blocked" scope="col">Blocked</th>
+        <th id="th-project-currency" scope="col">Currency</th>
+        @if (p.canUpdate || p.canDelete) {
+          <th id="th-project-actions" scope="col" nzWidth="160px">Actions</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (project of projectsTable.data; track project.id) {
+        <tr>
+          <td><strong>{{ project.projectNumber || '—' }}</strong></td>
+          <td>{{ project.description || '—' }}</td>
+          <td>
+            <nz-tag [nzColor]="statusTagColor(project.status)">{{ project.status || '—' }}</nz-tag>
+          </td>
+          <td>{{ project.blocked || '—' }}</td>
+          <td>{{ project.currencyCode || '—' }}</td>
+          @if (p.canUpdate || p.canDelete) {
+            <td>
+              <nz-space [nzSize]="8">
+                @if (p.canUpdate) {
+                  <app-button
+                    *nzSpaceItem
+                    type="link"
+                    icon="edit"
+                    nz-tooltip
+                    nzTooltipTitle="View or edit project"
+                    [routerLink]="paths.DETAIL(project.id)"
+                    ariaLabel="Edit project"
+                  ></app-button>
+                }
+                @if (p.canDelete) {
+                  <app-button
+                    *nzSpaceItem
+                    type="link"
+                    danger
+                    icon="delete"
+                    nz-tooltip
+                    nzTooltipTitle="Delete project"
+                    nz-popconfirm
+                    nzPopconfirmTitle="Delete this project?"
+                    (nzOnConfirm)="deleteProject(project)"
+                    nzPopconfirmPlacement="left"
+                    ariaLabel="Delete project"
+                  ></app-button>
+                }
+              </nz-space>
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </nz-table>
+</div>
+}

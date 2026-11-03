@@ -58,7 +58,7 @@ describe('EntityChangesListComponent', () => {
 
     const authSpy = jasmine.createSpyObj('AuthService', ['getModulePermissions']);
     authSpy.getModulePermissions.and.returnValue(
-      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: false, canExport: false }),
+      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: false, canExport: false, canExecute: false }),
     );
 
     await TestBed.configureTestingModule({
@@ -192,7 +192,7 @@ describe('EntityChangesListComponent', () => {
   it('should hide content when user lacks read permission', async () => {
     const authSpy = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
     authSpy.getModulePermissions.and.returnValue(
-      of({ canRead: false, canCreate: false, canUpdate: false, canDelete: false, canExport: false }),
+      of({ canRead: false, canCreate: false, canUpdate: false, canDelete: false, canExport: false, canExecute: false }),
     );
     const deniedFixture = TestBed.createComponent(EntityChangesListComponent);
     deniedFixture.detectChanges();

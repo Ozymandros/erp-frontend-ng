@@ -45,6 +45,7 @@ export class PermissionService {
     canUpdate: boolean;
     canDelete: boolean;
     canExport: boolean;
+    canExecute: boolean;
   } {
     const user = this.authService.getCurrentUser();
     if (!user) {
@@ -54,6 +55,7 @@ export class PermissionService {
         canUpdate: false,
         canDelete: false,
         canExport: false,
+        canExecute: false,
       };
     }
     if (user.isAdmin) {
@@ -63,6 +65,7 @@ export class PermissionService {
         canUpdate: true,
         canDelete: true,
         canExport: true,
+        canExecute: true,
       };
     }
     return {
@@ -71,6 +74,7 @@ export class PermissionService {
       canUpdate: this.hasPermission(module, PERMISSION_ACTIONS.UPDATE),
       canDelete: this.hasPermission(module, PERMISSION_ACTIONS.DELETE),
       canExport: true, // Default to true
+      canExecute: this.hasPermission(module, PERMISSION_ACTIONS.EXECUTE),
     };
   }
 }

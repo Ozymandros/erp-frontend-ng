@@ -185,6 +185,7 @@ export interface ModulePermissions {
   canUpdate: boolean;
   canDelete: boolean;
   canExport: boolean;
+  canExecute: boolean;
 }
 
 // User Types

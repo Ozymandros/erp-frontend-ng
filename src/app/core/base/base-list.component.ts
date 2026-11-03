@@ -51,6 +51,7 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
     canUpdate: false,
     canDelete: false,
     canExport: false,
+    canExecute: false,
   });
 
   constructor(

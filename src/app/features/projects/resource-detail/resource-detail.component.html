@@ -1,0 +1,35 @@
+<a [routerLink]="paths.RESOURCES" class="back-link">← Back to resources</a>
+<h1 nz-typography>{{ isEditMode ? 'Edit resource' : 'New resource' }}</h1>
+
+<nz-card [nzLoading]="loading">
+  <form nz-form [formGroup]="form" (ngSubmit)="save()">
+    <app-input formControlName="resourceNo" label="Resource no." inputId="resource-no"></app-input>
+    <app-input formControlName="name" label="Name" inputId="resource-name"></app-input>
+    <nz-form-item>
+      <nz-form-label nzFor="resource-type">Type</nz-form-label>
+      <nz-form-control>
+        <nz-select id="resource-type" formControlName="type">
+          @for (opt of typeOptions; track opt.value) {
+            <nz-option [nzValue]="opt.value" [nzLabel]="opt.label"></nz-option>
+          }
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzFor="resource-group">Group</nz-form-label>
+      <nz-form-control>
+        <nz-select id="resource-group" formControlName="resourceGroupId" nzAllowClear>
+          @for (g of groups; track g.id) {
+            <nz-option [nzValue]="g.id" [nzLabel]="g.code + ' — ' + g.name"></nz-option>
+          }
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <app-input formControlName="baseUnitOfMeasure" label="Unit of measure" inputId="resource-uom"></app-input>
+    <app-input-number formControlName="unitCost" label="Unit cost" inputId="resource-cost"></app-input-number>
+    <app-input-number formControlName="unitPrice" label="Unit price" inputId="resource-price"></app-input-number>
+    <app-input-number formControlName="dailyCapacity" label="Daily capacity" inputId="resource-capacity"></app-input-number>
+    <span nz-checkbox formControlName="blocked">Blocked</span>
+    <app-button type="primary" btnType="submit" [loading]="saving">Save</app-button>
+  </form>
+</nz-card>

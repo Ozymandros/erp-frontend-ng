@@ -277,6 +277,79 @@ export const routes: Routes = [
         canActivate: [permissionGuard],
         data: { module: PERMISSION_MODULES.BILLING, action: PERMISSION_ACTIONS.READ },
         loadComponent: () => import('./features/billing/credit-note-detail/credit-note-detail.component').then(m => m.CreditNoteDetailComponent)
+      },
+      {
+        path: APP_ROUTES.PROJECTS.ROOT,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.PROJECTS, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/projects/projects-list/projects-list.component').then(m => m.ProjectsListComponent)
+      },
+      {
+        path: APP_ROUTES.PROJECTS.NEW,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.PROJECTS, action: PERMISSION_ACTIONS.CREATE },
+        loadComponent: () => import('./features/projects/project-detail/project-detail.component').then(m => m.ProjectDetailComponent)
+      },
+      // Static master-data paths must come before projects/:id
+      {
+        path: APP_ROUTES.PROJECTS.CURRENCIES,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.PROJECTS, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/projects/currencies-list/currencies-list.component').then(m => m.CurrenciesListComponent)
+      },
+      {
+        path: APP_ROUTES.PROJECTS.CURRENCY_NEW,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.PROJECTS, action: PERMISSION_ACTIONS.CREATE },
+        loadComponent: () => import('./features/projects/currency-detail/currency-detail.component').then(m => m.CurrencyDetailComponent)
+      },
+      {
+        path: APP_ROUTES.PROJECTS.CURRENCY_DETAIL,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.PROJECTS, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/projects/currency-detail/currency-detail.component').then(m => m.CurrencyDetailComponent)
+      },
+      {
+        path: APP_ROUTES.PROJECTS.RESOURCES,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.PROJECTS, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/projects/resources-list/resources-list.component').then(m => m.ResourcesListComponent)
+      },
+      {
+        path: APP_ROUTES.PROJECTS.RESOURCE_NEW,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.PROJECTS, action: PERMISSION_ACTIONS.CREATE },
+        loadComponent: () => import('./features/projects/resource-detail/resource-detail.component').then(m => m.ResourceDetailComponent)
+      },
+      {
+        path: APP_ROUTES.PROJECTS.RESOURCE_DETAIL,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.PROJECTS, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/projects/resource-detail/resource-detail.component').then(m => m.ResourceDetailComponent)
+      },
+      {
+        path: APP_ROUTES.PROJECTS.RESOURCE_GROUPS,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.PROJECTS, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/projects/resource-groups-list/resource-groups-list.component').then(m => m.ResourceGroupsListComponent)
+      },
+      {
+        path: APP_ROUTES.PROJECTS.RESOURCE_GROUP_NEW,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.PROJECTS, action: PERMISSION_ACTIONS.CREATE },
+        loadComponent: () => import('./features/projects/resource-group-detail/resource-group-detail.component').then(m => m.ResourceGroupDetailComponent)
+      },
+      {
+        path: APP_ROUTES.PROJECTS.RESOURCE_GROUP_DETAIL,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.PROJECTS, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/projects/resource-group-detail/resource-group-detail.component').then(m => m.ResourceGroupDetailComponent)
+      },
+      {
+        path: APP_ROUTES.PROJECTS.DETAIL,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.PROJECTS, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/projects/project-detail/project-detail.component').then(m => m.ProjectDetailComponent)
       }
     ]
   },

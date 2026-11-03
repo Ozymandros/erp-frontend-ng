@@ -1,0 +1,156 @@
+<a [routerLink]="paths.ROOT" class="back-link">← Back to projects</a>
+
+<div class="page-header">
+  <h1 nz-typography>
+    @if (isNewMode) {
+      New project
+    } @else {
+      Project {{ project?.projectNumber || projectId }}
+    }
+  </h1>
+  @if (!isNewMode && project) {
+    <div class="header-actions">
+      @if (canRunOps) {
+        <app-button (click)="openStatusModal()">Change status</app-button>
+        <app-button (click)="openCopyModal()">Copy</app-button>
+      }
+      @if (permissions.canUpdate) {
+        <app-button type="primary" [loading]="saving" (click)="save()">Save</app-button>
+      }
+    </div>
+  }
+</div>
+
+@if (!isNewMode && project) {
+  <nz-tag [nzColor]="statusTagColor(project.status)">{{ project.status }}</nz-tag>
+}
+
+<nz-card [nzLoading]="loading">
+  <form nz-form [formGroup]="form" (ngSubmit)="save()">
+    <app-input formControlName="description" placeholder="Description"></app-input>
+    <nz-form-item>
+      <nz-form-label nzFor="project-customer">Customer</nz-form-label>
+      <nz-form-control>
+        <nz-select id="project-customer" formControlName="customerId" style="width: 100%">
+          @for (c of customers; track c.id) {
+            <nz-option [nzValue]="c.id" [nzLabel]="c.name"></nz-option>
+          }
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzFor="project-currency">Currency</nz-form-label>
+      <nz-form-control>
+        <nz-select id="project-currency" formControlName="currencyCode" nzAllowClear style="width: 100%">
+          @for (cur of currencies; track cur.id) {
+            <nz-option [nzValue]="cur.code" [nzLabel]="cur.code + ' — ' + cur.description"></nz-option>
+          }
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    @if (!isNewMode) {
+      <nz-form-item>
+        <nz-form-label nzFor="project-blocked">Blocked</nz-form-label>
+        <nz-form-control>
+          <nz-select id="project-blocked" formControlName="blocked" style="width: 100%">
+            @for (b of blockedOptions; track b.value) {
+              <nz-option [nzValue]="b.value" [nzLabel]="b.label"></nz-option>
+            }
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    }
+    <app-input formControlName="externalReference" placeholder="External reference"></app-input>
+    @if (isNewMode) {
+      <app-button type="primary" btnType="submit" [loading]="saving">Create project</app-button>
+    }
+  </form>
+</nz-card>
+
+@if (!isNewMode && statistics?.totals) {
+  <nz-card nzTitle="Statistics" class="stats-card">
+    <nz-descriptions [nzColumn]="3" nzBordered nzSize="small">
+      <nz-descriptions-item nzTitle="Budget cost (LCY)">{{ statistics?.totals?.budgetCostLcy }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Usage cost (LCY)">{{ statistics?.totals?.usageCostLcy }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Invoiced">{{ statistics?.totals?.invoicedPrice }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Profit (LCY)">{{ statistics?.totals?.profitLcy }}</nz-descriptions-item>
+    </nz-descriptions>
+  </nz-card>
+}
+
+@if (!isNewMode && projectId) {
+  <div class="project-tabs" role="tablist" aria-label="Project sections">
+    @for (tab of [
+      { id: 'tasks', label: 'Tasks' },
+      { id: 'planning', label: 'Planning' },
+      { id: 'ledger', label: 'Ledger' },
+      { id: 'usage', label: 'Usage' },
+      { id: 'consumption', label: 'Consumption' },
+      { id: 'invoices', label: 'Invoices' }
+    ]; track tab.id) {
+      <button
+        type="button"
+        role="tab"
+        class="project-tab"
+        [class.project-tab--active]="activeTab === tab.id"
+        [attr.aria-selected]="activeTab === tab.id"
+        (click)="activeTab = $any(tab.id)"
+      >
+        {{ tab.label }}
+      </button>
+    }
+  </div>
+  @switch (activeTab) {
+    @case ('tasks') {
+      <app-project-tasks-panel [projectId]="projectId" [permissions]="permissions"></app-project-tasks-panel>
+    }
+    @case ('planning') {
+      <app-project-planning-panel [projectId]="projectId" [permissions]="permissions"></app-project-planning-panel>
+    }
+    @case ('ledger') {
+      <app-project-ledger-panel [projectId]="projectId" [permissions]="permissions"></app-project-ledger-panel>
+    }
+    @case ('usage') {
+      <app-project-usage-panel [projectId]="projectId" [permissions]="permissions"></app-project-usage-panel>
+    }
+    @case ('consumption') {
+      <app-project-consumption-panel [projectId]="projectId" [permissions]="permissions"></app-project-consumption-panel>
+    }
+    @case ('invoices') {
+      <app-project-invoices-panel [projectId]="projectId" [permissions]="permissions"></app-project-invoices-panel>
+    }
+  }
+}
+
+<nz-modal
+  [(nzVisible)]="statusModalVisible"
+  nzTitle="Change project status"
+  (nzOnCancel)="statusModalVisible = false"
+  (nzOnOk)="applyStatus()"
+  appThemedModal
+>
+  <ng-container *nzModalContent>
+    <form [formGroup]="statusForm">
+      <nz-select formControlName="status" style="width: 100%">
+        @for (s of statusOptions; track s.value) {
+          <nz-option [nzValue]="s.value" [nzLabel]="s.label"></nz-option>
+        }
+      </nz-select>
+    </form>
+  </ng-container>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="copyModalVisible"
+  nzTitle="Copy project"
+  (nzOnCancel)="copyModalVisible = false"
+  (nzOnOk)="copyProject()"
+  appThemedModal
+>
+  <ng-container *nzModalContent>
+    <form [formGroup]="copyForm">
+      <app-input formControlName="description" placeholder="New description (optional)"></app-input>
+      <span nz-checkbox formControlName="includePlanningLines">Include planning lines</span>
+    </form>
+  </ng-container>
+</nz-modal>

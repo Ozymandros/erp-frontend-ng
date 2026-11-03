@@ -97,6 +97,7 @@ describe('PermissionService', () => {
     expect(perms.canUpdate).toBeFalse();
     expect(perms.canDelete).toBeFalse();
     expect(perms.canExport).toBeFalse();
+    expect(perms.canExecute).toBeFalse();
   });
 
   it('should return all true for getModulePermissions when admin', () => {
@@ -107,6 +108,7 @@ describe('PermissionService', () => {
     expect(perms.canUpdate).toBeTrue();
     expect(perms.canDelete).toBeTrue();
     expect(perms.canExport).toBeTrue();
+    expect(perms.canExecute).toBeTrue();
   });
 
   it('should return module-specific permissions for non-admin', () => {
