@@ -1,0 +1,53 @@
+<div class="panel-toolbar">
+  @if (canCreate) {
+    <app-button type="primary" icon="plus" (click)="openCreate()">Request invoice</app-button>
+  }
+</div>
+
+<nz-table [nzData]="requests" [nzLoading]="loading">
+  <thead>
+    <tr>
+      <th id="th-ir-status" scope="col">Status</th>
+      <th id="th-ir-date" scope="col">Requested</th>
+      <th id="th-ir-invoice" scope="col">Invoice</th>
+      <th id="th-ir-total" scope="col">Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (r of requests; track r.id) {
+      <tr>
+        <td>{{ r.status }}</td>
+        <td>{{ r.requestedAt | date: 'short' }}</td>
+        <td>{{ r.invoiceNumber || '—' }}</td>
+        <td>{{ r.totalAmount }}</td>
+      </tr>
+    }
+  </tbody>
+</nz-table>
+
+<nz-modal
+  [(nzVisible)]="modalVisible"
+  nzTitle="Invoice request"
+  (nzOnCancel)="modalVisible = false"
+  (nzOnOk)="submit()"
+  appThemedModal
+>
+  <ng-container *nzModalContent>
+    <form [formGroup]="form">
+      <app-input-number formControlName="taxRate"></app-input-number>
+      <div formArrayName="lines">
+        @for (line of lineControls.controls; track $index) {
+          <div [formGroupName]="$index">
+            <label [for]="'inv-line-' + $index">Planning line</label>
+            <nz-select [id]="'inv-line-' + $index" formControlName="planningLineId" style="width: 100%">
+              @for (pl of billableLines; track pl.id) {
+                <nz-option [nzValue]="pl.id" [nzLabel]="pl.lineNo + ' — ' + pl.description"></nz-option>
+              }
+            </nz-select>
+            <app-input-number formControlName="quantity"></app-input-number>
+          </div>
+        }
+      </div>
+    </form>
+  </ng-container>
+</nz-modal>

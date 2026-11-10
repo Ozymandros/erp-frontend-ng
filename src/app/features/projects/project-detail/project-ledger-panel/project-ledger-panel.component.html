@@ -1,0 +1,42 @@
+<div class="panel-toolbar">
+  <label for="ledger-task-filter">Filter by task</label>
+  <nz-select
+    id="ledger-task-filter"
+    [ngModel]="filterTaskId"
+    (ngModelChange)="onFilterChange($event)"
+    nzAllowClear
+    style="min-width: 200px"
+  >
+    @for (t of tasks; track t.id) {
+      <nz-option [nzValue]="t.id" [nzLabel]="t.taskNo"></nz-option>
+    }
+  </nz-select>
+  @if (permissions?.canExport) {
+    <app-button icon="file-excel" (click)="exportXlsx()">Export XLSX</app-button>
+  }
+</div>
+
+<nz-table [nzData]="entries" [nzLoading]="loading" [nzScroll]="{ x: '900px' }">
+  <thead>
+    <tr>
+      <th id="th-le-no" scope="col">Entry</th>
+      <th id="th-le-type" scope="col">Type</th>
+      <th id="th-le-date" scope="col">Date</th>
+      <th id="th-le-desc" scope="col">Description</th>
+      <th id="th-le-qty" scope="col">Qty</th>
+      <th id="th-le-amount" scope="col">Amount</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (e of entries; track e.id) {
+      <tr>
+        <td>{{ e.entryNo }}</td>
+        <td>{{ e.entryType }}</td>
+        <td>{{ e.postingDate | date: 'shortDate' }}</td>
+        <td>{{ e.description }}</td>
+        <td>{{ e.quantity }}</td>
+        <td>{{ e.lineAmount }}</td>
+      </tr>
+    }
+  </tbody>
+</nz-table>

@@ -9,6 +9,7 @@ export const PERMISSION_MODULES = {
   CRM: "CRM",
   BILLING: "Billing",
   AUDIT: "Audit",
+  PROJECTS: "Projects",
 } as const;
 
 export const PERMISSION_ACTIONS = {
@@ -17,6 +18,7 @@ export const PERMISSION_ACTIONS = {
   UPDATE: "Update",
   DELETE: "Delete",
   EXPORT: "Export",
+  EXECUTE: "Execute",
 } as const;
 
 export type PermissionModule = typeof PERMISSION_MODULES[keyof typeof PERMISSION_MODULES];

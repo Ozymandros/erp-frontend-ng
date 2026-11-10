@@ -25,7 +25,7 @@ describe('SuppliersListComponent', () => {
   beforeEach(async () => {
     const authSpy = jasmine.createSpyObj('AuthService', ['getModulePermissions']);
     authSpy.getModulePermissions.and.returnValue(
-      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: false }),
+      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: false, canExecute: false }),
     );
     suppliersServiceSpy = jasmine.createSpyObj('SuppliersService', ['getAll', 'delete', 'exportToXlsx', 'exportToPdf']);
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);

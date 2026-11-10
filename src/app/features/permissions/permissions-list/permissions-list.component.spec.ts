@@ -32,7 +32,7 @@ describe('PermissionsListComponent', () => {
     permissionsServiceSpy.getAll.and.returnValue(of(mockResponse as any));
     const authSpy = jasmine.createSpyObj('AuthService', ['getModulePermissions']);
     authSpy.getModulePermissions.and.returnValue(
-      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: true }),
+      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: true, canExecute: false }),
     );
 
     await TestBed.configureTestingModule({

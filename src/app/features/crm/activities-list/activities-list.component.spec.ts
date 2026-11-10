@@ -21,7 +21,7 @@ describe('ActivitiesListComponent', () => {
     activitiesServiceSpy = jasmine.createSpyObj('CrmActivitiesService', ['getAll']);
     authServiceSpy = jasmine.createSpyObj('AuthService', ['getModulePermissions']);
     authServiceSpy.getModulePermissions.and.returnValue(
-      of({ canRead: true, canCreate: true, canUpdate: true, canDelete: true, canExport: false }),
+      of({ canRead: true, canCreate: true, canUpdate: true, canDelete: true, canExport: false, canExecute: false }),
     );
     activitiesServiceSpy.getAll.and.returnValue(
       of({ items: [{ id: '1', subject: 'Call', type: 'Call', status: 'Open', dueAt: new Date().toISOString(), assignedToUsername: 'u' }], total: 1 } as any),

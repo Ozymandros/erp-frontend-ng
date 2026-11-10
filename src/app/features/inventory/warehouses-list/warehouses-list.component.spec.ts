@@ -29,7 +29,7 @@ describe('WarehousesListComponent', () => {
     warehousesServiceSpy.delete.and.returnValue(of(void 0));
     const authSpy = jasmine.createSpyObj('AuthService', ['getModulePermissions']);
     authSpy.getModulePermissions.and.returnValue(
-      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: false }),
+      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: false, canExecute: false }),
     );
 
     await TestBed.configureTestingModule({

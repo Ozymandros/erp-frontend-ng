@@ -1,0 +1,89 @@
+<div class="panel-toolbar">
+  @if (permissions?.canCreate) {
+    <app-button type="primary" icon="plus" (click)="openCreate()">Add task</app-button>
+  }
+  @if (permissions?.canExport) {
+    <app-button icon="file-excel" (click)="exportXlsx()">Export XLSX</app-button>
+  }
+</div>
+
+<nz-table [nzData]="flatTasks" [nzLoading]="loading" [nzShowPagination]="false">
+  <thead>
+    <tr>
+      <th id="th-task-no" scope="col">Task no.</th>
+      <th id="th-task-desc" scope="col">Description</th>
+      <th id="th-task-type" scope="col">Type</th>
+      <th id="th-task-actions" scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (row of flatTasks; track row.task.id) {
+      <tr>
+        <td [style.padding-left.px]="12 + row.level * 16">{{ row.task.taskNo }}</td>
+        <td>{{ row.task.description }}</td>
+        <td>{{ row.task.taskType }}</td>
+        <td>
+          @if (permissions?.canUpdate) {
+            <app-button type="link" icon="edit" (click)="openEdit(row.task)" ariaLabel="Edit task"></app-button>
+            <app-button type="link" icon="drag" (click)="openMove(row.task)" ariaLabel="Move task"></app-button>
+          }
+          @if (permissions?.canDelete) {
+            <app-button
+              type="link"
+              danger
+              icon="delete"
+              nz-popconfirm
+              nzPopconfirmTitle="Delete task?"
+              (nzOnConfirm)="deleteTask(row.task)"
+              ariaLabel="Delete task"
+            ></app-button>
+          }
+        </td>
+      </tr>
+    }
+  </tbody>
+</nz-table>
+
+<nz-modal
+  [(nzVisible)]="modalVisible"
+  [nzTitle]="editingTask ? 'Edit task' : 'New task'"
+  (nzOnCancel)="modalVisible = false"
+  (nzOnOk)="saveTask()"
+  appThemedModal
+>
+  <ng-container *nzModalContent>
+    <form [formGroup]="form">
+      <app-input formControlName="taskNo" label="Task no." inputId="task-no"></app-input>
+      <app-input formControlName="description" label="Description" inputId="task-desc"></app-input>
+      @if (!editingTask) {
+        <label for="task-parent">Parent task</label>
+        <nz-select id="task-parent" formControlName="parentTaskId" nzAllowClear style="width: 100%">
+          @for (t of allTasks; track t.id) {
+            <nz-option [nzValue]="t.id" [nzLabel]="t.taskNo + ' — ' + t.description"></nz-option>
+          }
+        </nz-select>
+      }
+    </form>
+  </ng-container>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="moveModalVisible"
+  nzTitle="Move task"
+  (nzOnCancel)="moveModalVisible = false"
+  (nzOnOk)="saveMove()"
+  appThemedModal
+>
+  <ng-container *nzModalContent>
+    <form [formGroup]="moveForm">
+      <label for="move-parent">New parent</label>
+      <nz-select id="move-parent" formControlName="newParentTaskId" nzAllowClear style="width: 100%">
+        @for (t of allTasks; track t.id) {
+          @if (t.id !== moveTarget?.id) {
+            <nz-option [nzValue]="t.id" [nzLabel]="t.taskNo + ' — ' + t.description"></nz-option>
+          }
+        }
+      </nz-select>
+    </form>
+  </ng-container>
+</nz-modal>

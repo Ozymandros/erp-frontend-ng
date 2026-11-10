@@ -38,7 +38,7 @@ describe('LeadsListComponent', () => {
     ]);
     authServiceSpy = jasmine.createSpyObj('AuthService', ['getModulePermissions']);
     authServiceSpy.getModulePermissions.and.returnValue(
-      of({ canRead: true, canCreate: true, canUpdate: true, canDelete: true, canExport: false }),
+      of({ canRead: true, canCreate: true, canUpdate: true, canDelete: true, canExport: false, canExecute: false }),
     );
     leadsServiceSpy.getAll.and.returnValue(of(mockResponse as any));
 

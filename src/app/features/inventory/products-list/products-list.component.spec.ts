@@ -41,7 +41,7 @@ describe('ProductsListComponent', () => {
     fileServiceSpy = jasmine.createSpyObj('FileService', ['saveFile']);
     const authSpy = jasmine.createSpyObj('AuthService', ['getModulePermissions']);
     authSpy.getModulePermissions.and.returnValue(
-      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: true }),
+      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: true, canExecute: false }),
     );
 
     productsServiceSpy.getAll.and.returnValue(of({

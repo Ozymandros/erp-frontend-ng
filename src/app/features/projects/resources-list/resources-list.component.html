@@ -1,0 +1,84 @@
+@if (permissions$ | async; as p) {
+<div class="resources-list">
+  <div class="page-header">
+    <h1 nz-typography>Resources</h1>
+    <div class="header-actions">
+      @if (p.canExport) {
+        <app-button icon="file-excel" (click)="exportToXlsx('resources.xlsx')">Export XLSX</app-button>
+        <app-button icon="file-pdf" (click)="exportToPdf('resources.pdf')">Export PDF</app-button>
+      }
+      @if (p.canCreate) {
+        <app-button type="primary" icon="plus" [routerLink]="paths.RESOURCE_NEW">New resource</app-button>
+      }
+    </div>
+  </div>
+  <div class="list-search">
+    <app-input
+      placeholder="Search (min 3 characters)..."
+      [(ngModel)]="searchTerm"
+      (ngModelChange)="onSearch()"
+      aria-label="Search resources"
+    ></app-input>
+  </div>
+  <nz-table
+    #table
+    [nzData]="resources"
+    [nzLoading]="loading"
+    [nzPageSize]="pageSize"
+    [nzPageIndex]="pageIndex"
+    [nzTotal]="total"
+    [nzFrontPagination]="false"
+    (nzPageIndexChange)="onPageChange($event)"
+    (nzPageSizeChange)="onPageSizeChange($event)"
+  >
+    <thead>
+      <tr>
+        <th id="th-res-no" scope="col">No.</th>
+        <th id="th-res-name" scope="col">Name</th>
+        <th id="th-res-type" scope="col">Type</th>
+        <th id="th-res-group" scope="col">Group</th>
+        @if (p.canUpdate || p.canDelete) {
+          <th id="th-res-actions" scope="col">Actions</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (r of table.data; track r.id) {
+        <tr>
+          <td>{{ r.resourceNo }}</td>
+          <td><strong>{{ r.name }}</strong></td>
+          <td>{{ r.type }}</td>
+          <td>{{ r.resourceGroupCode || '—' }}</td>
+          @if (p.canUpdate || p.canDelete) {
+            <td>
+              <nz-space [nzSize]="8">
+                @if (p.canUpdate) {
+                  <app-button
+                    *nzSpaceItem
+                    type="link"
+                    icon="edit"
+                    [routerLink]="paths.RESOURCE_DETAIL(r.id)"
+                    ariaLabel="Edit resource"
+                  ></app-button>
+                }
+                @if (p.canDelete) {
+                  <app-button
+                    *nzSpaceItem
+                    type="link"
+                    danger
+                    icon="delete"
+                    nz-popconfirm
+                    nzPopconfirmTitle="Delete this resource?"
+                    (nzOnConfirm)="deleteResource(r)"
+                    ariaLabel="Delete resource"
+                  ></app-button>
+                }
+              </nz-space>
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </nz-table>
+</div>
+}

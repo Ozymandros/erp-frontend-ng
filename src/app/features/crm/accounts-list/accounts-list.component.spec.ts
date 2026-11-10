@@ -34,7 +34,7 @@ describe('AccountsListComponent', () => {
     );
     const authServiceSpy = jasmine.createSpyObj('AuthService', ['getModulePermissions']);
     authServiceSpy.getModulePermissions.and.returnValue(
-      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: false, canExport: false }),
+      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: false, canExport: false, canExecute: false }),
     );
 
     await TestBed.configureTestingModule({
