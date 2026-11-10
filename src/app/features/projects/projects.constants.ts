@@ -67,5 +67,5 @@ export function canRunProjectOperations(perms: {
   canExecute?: boolean;
   canUpdate: boolean;
 }): boolean {
-  return Boolean(perms.canExecute ?? perms.canUpdate);
+  return Boolean(perms.canExecute || perms.canUpdate);
 }
