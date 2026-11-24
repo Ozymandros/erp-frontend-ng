@@ -76,8 +76,10 @@
   align-items: center;
   margin-top: 16px;
   padding: 16px;
-  background: #fafafa;
+  background: var(--app-hover-bg);
+  border: 1px solid var(--app-border-color);
   border-radius: 4px;
+  color: var(--app-text-color);
 }
 
 .total-section {
@@ -89,12 +91,13 @@
 .total-label {
   font-size: 16px;
   font-weight: 500;
+  color: var(--app-text-color);
 }
 
 .total-value {
   font-size: 20px;
   font-weight: 600;
-  color: #1890ff;
+  color: var(--ant-primary-color);
 }
 
 .submit-section {
