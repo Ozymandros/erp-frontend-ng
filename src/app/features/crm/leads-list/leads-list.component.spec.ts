@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -38,14 +38,14 @@ describe('LeadsListComponent', () => {
     ]);
     authServiceSpy = jasmine.createSpyObj('AuthService', ['getModulePermissions']);
     authServiceSpy.getModulePermissions.and.returnValue(
-      of({ canRead: true, canCreate: true, canUpdate: true, canDelete: true, canExport: false }),
+      of({ canRead: true, canCreate: true, canUpdate: true, canDelete: true, canExport: false, canExecute: false }),
     );
     leadsServiceSpy.getAll.and.returnValue(of(mockResponse as any));
 
     await TestBed.configureTestingModule({
       imports: [LeadsListComponent],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: CrmLeadsService, useValue: leadsServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },

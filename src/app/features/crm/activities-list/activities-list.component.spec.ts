@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
@@ -21,7 +21,7 @@ describe('ActivitiesListComponent', () => {
     activitiesServiceSpy = jasmine.createSpyObj('CrmActivitiesService', ['getAll']);
     authServiceSpy = jasmine.createSpyObj('AuthService', ['getModulePermissions']);
     authServiceSpy.getModulePermissions.and.returnValue(
-      of({ canRead: true, canCreate: true, canUpdate: true, canDelete: true, canExport: false }),
+      of({ canRead: true, canCreate: true, canUpdate: true, canDelete: true, canExport: false, canExecute: false }),
     );
     activitiesServiceSpy.getAll.and.returnValue(
       of({ items: [{ id: '1', subject: 'Call', type: 'Call', status: 'Open', dueAt: new Date().toISOString(), assignedToUsername: 'u' }], total: 1 } as any),
@@ -30,7 +30,7 @@ describe('ActivitiesListComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ActivitiesListComponent],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: CrmActivitiesService, useValue: activitiesServiceSpy },
         { provide: NzMessageService, useValue: jasmine.createSpyObj('NzMessageService', ['success', 'error']) },

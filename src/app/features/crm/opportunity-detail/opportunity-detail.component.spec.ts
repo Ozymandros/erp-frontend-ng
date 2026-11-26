@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OpportunityDetailComponent } from './opportunity-detail.component';
@@ -37,7 +37,7 @@ describe('OpportunityDetailComponent', () => {
     await TestBed.configureTestingModule({
       imports: [OpportunityDetailComponent],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: CrmOpportunitiesService, useValue: opportunitiesSpy },
         { provide: CustomersService, useValue: customersSpy },

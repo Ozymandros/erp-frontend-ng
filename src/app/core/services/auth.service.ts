@@ -178,11 +178,25 @@ export class AuthService {
     return this.currentUser$.pipe(
       map(user => {
         if (!user) {
-          return { canRead: false, canCreate: false, canUpdate: false, canDelete: false, canExport: false };
+          return {
+            canRead: false,
+            canCreate: false,
+            canUpdate: false,
+            canDelete: false,
+            canExport: false,
+            canExecute: false,
+          };
         }
         
         if (user.isAdmin) {
-          return { canRead: true, canCreate: true, canUpdate: true, canDelete: true, canExport: true };
+          return {
+            canRead: true,
+            canCreate: true,
+            canUpdate: true,
+            canDelete: true,
+            canExport: true,
+            canExecute: true,
+          };
         }
 
         const perms = user.permissions || [];
@@ -193,7 +207,8 @@ export class AuthService {
           canCreate: modulePerms.some((p: { action: string }) => ['create', 'add', 'new'].includes(p.action.toLowerCase())),
           canUpdate: modulePerms.some((p: { action: string }) => ['update', 'edit', 'modify'].includes(p.action.toLowerCase())),
           canDelete: modulePerms.some((p: { action: string }) => ['delete', 'remove'].includes(p.action.toLowerCase())),
-          canExport: modulePerms.some((p: { action: string }) => ['export', 'download'].includes(p.action.toLowerCase()))
+          canExport: modulePerms.some((p: { action: string }) => ['export', 'download'].includes(p.action.toLowerCase())),
+          canExecute: modulePerms.some((p: { action: string }) => ['execute', 'run'].includes(p.action.toLowerCase())),
         };
       })
     );

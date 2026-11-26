@@ -61,6 +61,7 @@ export function runCommonOrderDetailTests<T>(
     orderNumberPrefix: string;
     entityIdField: string;
     entityIdValue: string;
+    statusColorExpectations?: Array<[unknown, string]>;
   }
 ) {
   let component: T;
@@ -134,10 +135,15 @@ export function runCommonOrderDetailTests<T>(
   it('should return correct status colors', () => {
     createComponent('new');
     const comp = component as unknown as OrderDetailComponentInternal;
-    expect(comp.getStatusColor(0)).toBe('default');
-    expect(comp.getStatusColor(1)).toBe('orange');
-    expect(comp.getStatusColor(2)).toBe('blue');
-    expect(comp.getStatusColor(5)).toBe('red');
+    const cases = config.statusColorExpectations ?? [
+      [0, 'default'],
+      [1, 'orange'],
+      [2, 'blue'],
+      [5, 'red'],
+    ];
+    for (const [status, color] of cases) {
+      expect(comp.getStatusColor(status as string | number)).toBe(color);
+    }
     expect(comp.getStatusColor('Invalid')).toBe('default');
   });
 

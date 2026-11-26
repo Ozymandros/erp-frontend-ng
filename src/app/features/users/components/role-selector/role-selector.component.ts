@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
@@ -28,6 +28,7 @@ import { AppButtonComponent, AppInputComponent } from '../../../../shared/compon
     AppInputComponent
   ],
   templateUrl: './role-selector.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./role-selector.component.css']
 })
 export class RoleSelectorComponent implements OnInit, OnDestroy {

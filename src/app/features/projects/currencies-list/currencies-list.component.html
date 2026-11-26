@@ -1,0 +1,61 @@
+<div class="page-header">
+  <h1 nz-typography>Project currencies</h1>
+  <div class="header-actions">
+    @if (permissions.canExport) {
+      <app-button icon="file-excel" (click)="exportToXlsx()">Export XLSX</app-button>
+      <app-button icon="file-pdf" (click)="exportToPdf()">Export PDF</app-button>
+    }
+    @if (permissions.canCreate) {
+      <app-button type="primary" icon="plus" [routerLink]="paths.CURRENCY_NEW">New currency</app-button>
+    }
+  </div>
+</div>
+
+<nz-table #table [nzData]="currencies" [nzLoading]="loading" [nzFrontPagination]="true">
+  <thead>
+    <tr>
+      <th id="th-currency-code" scope="col">Code</th>
+      <th id="th-currency-desc" scope="col">Description</th>
+      <th id="th-currency-local" scope="col">Local</th>
+      @if (permissions.canUpdate || permissions.canDelete) {
+        <th id="th-currency-actions" scope="col">Actions</th>
+      }
+    </tr>
+  </thead>
+  <tbody>
+    @for (c of table.data; track c.id) {
+      <tr>
+        <td><strong>{{ c.code }}</strong></td>
+        <td>{{ c.description }}</td>
+        <td>{{ c.isLocalCurrency ? 'Yes' : 'No' }}</td>
+        @if (permissions.canUpdate || permissions.canDelete) {
+          <td>
+            <nz-space [nzSize]="8">
+              @if (permissions.canUpdate) {
+                <app-button
+                  *nzSpaceItem
+                  type="link"
+                  icon="edit"
+                  [routerLink]="paths.CURRENCY_DETAIL(c.code)"
+                  ariaLabel="Edit currency"
+                ></app-button>
+              }
+              @if (permissions.canDelete) {
+                <app-button
+                  *nzSpaceItem
+                  type="link"
+                  danger
+                  icon="delete"
+                  nz-popconfirm
+                  nzPopconfirmTitle="Delete this currency?"
+                  (nzOnConfirm)="deleteCurrency(c)"
+                  ariaLabel="Delete currency"
+                ></app-button>
+              }
+            </nz-space>
+          </td>
+        }
+      </tr>
+    }
+  </tbody>
+</nz-table>

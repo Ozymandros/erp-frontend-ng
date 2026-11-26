@@ -1,4 +1,4 @@
-import { Component, computed } from '@angular/core';
+import { Component, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
@@ -14,6 +14,7 @@ import { NAV_ITEMS_CONFIG, NavItemConfig } from '../../core/config/routes.config
   standalone: true,
   imports: [CommonModule, RouterLink, RouterLinkActive, NzMenuModule, NzIconModule, NzLayoutModule],
   templateUrl: './sidebar.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent {

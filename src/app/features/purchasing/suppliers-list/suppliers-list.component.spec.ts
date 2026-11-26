@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { SuppliersListComponent } from './suppliers-list.component';
 import { SuppliersService } from '../../../core/services/suppliers.service';
@@ -25,7 +25,7 @@ describe('SuppliersListComponent', () => {
   beforeEach(async () => {
     const authSpy = jasmine.createSpyObj('AuthService', ['getModulePermissions']);
     authSpy.getModulePermissions.and.returnValue(
-      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: false }),
+      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: false, canExecute: false }),
     );
     suppliersServiceSpy = jasmine.createSpyObj('SuppliersService', ['getAll', 'delete', 'exportToXlsx', 'exportToPdf']);
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
@@ -44,7 +44,7 @@ describe('SuppliersListComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ SuppliersListComponent ],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: SuppliersService, useValue: suppliersServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },

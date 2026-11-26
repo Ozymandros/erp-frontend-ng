@@ -1,0 +1,16 @@
+.back-link {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.rates-card {
+  margin-top: 1rem;
+}
+
+.rate-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+  margin-bottom: 1rem;
+}

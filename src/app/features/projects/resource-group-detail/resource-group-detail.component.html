@@ -1,0 +1,10 @@
+<a [routerLink]="paths.RESOURCE_GROUPS" class="back-link">← Back to resource groups</a>
+<h1 nz-typography>{{ isEditMode ? 'Edit resource group' : 'New resource group' }}</h1>
+
+<nz-card [nzLoading]="loading">
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <app-input formControlName="code" label="Code" inputId="rg-code"></app-input>
+    <app-input formControlName="name" label="Name" inputId="rg-name"></app-input>
+    <app-button type="primary" btnType="submit" [loading]="saving">Save</app-button>
+  </form>
+</nz-card>

@@ -7,6 +7,9 @@ const ORDERS_SERVICE_BASE = "/orders/api";
 const SALES_SERVICE_BASE = "/sales/api/sales";
 const PURCHASING_SERVICE_BASE = "/purchasing/api/purchasing";
 const CRM_SERVICE_BASE = "/crm/api/crm";
+const BILLING_SERVICE_BASE = "/billing/api/billing";
+const AUDIT_SERVICE_BASE = "/audit/api/audit";
+const PROJECTS_SERVICE_BASE = "/projects/api/projects";
 
 export const AUTH_ENDPOINTS = {
   LOGIN: `${AUTH_SERVICE_BASE}/auth/login`,
@@ -76,6 +79,7 @@ export const SALES_ENDPOINTS = {
   CREATE_QUOTE: `${SALES_SERVICE_BASE}/orders/quote`,
   CONFIRM_QUOTE: (id: string) => `${SALES_SERVICE_BASE}/orders/quote/${id}/confirm`,
   CHECK_STOCK: `${SALES_SERVICE_BASE}/orders/check-stock`,
+  CREATE_RETURN: (id: string) => `${SALES_SERVICE_BASE}/orders/${id}/returns`,
 } as const;
 
 export const PURCHASING_ENDPOINTS = {
@@ -83,6 +87,7 @@ export const PURCHASING_ENDPOINTS = {
   ORDER_BY_ID: (id: string) => `${PURCHASING_SERVICE_BASE}/orders/${id}`,
   APPROVE: (id: string) => `${PURCHASING_SERVICE_BASE}/orders/${id}/approve`,
   RECEIVE: (id: string) => `${PURCHASING_SERVICE_BASE}/orders/${id}/receive`,
+  MATCH: (id: string) => `${PURCHASING_SERVICE_BASE}/orders/${id}/match`,
   EXPORT_XLSX: `${PURCHASING_SERVICE_BASE}/orders/export-xlsx`,
   EXPORT_PDF: `${PURCHASING_SERVICE_BASE}/orders/export-pdf`,
   SUPPLIERS: `${PURCHASING_SERVICE_BASE}/suppliers`,
@@ -119,4 +124,92 @@ export const CRM_ENDPOINTS = {
   ACCOUNT_CONTACTS: (accountId: string) => `${CRM_SERVICE_BASE}/accounts/${accountId}/contacts`,
   CONTACT_SET_PRIMARY: (accountId: string, contactId: string) =>
     `${CRM_SERVICE_BASE}/accounts/${accountId}/contacts/${contactId}/set-primary`,
+} as const;
+
+export const BILLING_ENDPOINTS = {
+  INVOICES: `${BILLING_SERVICE_BASE}/invoices`,
+  INVOICE_BY_ID: (id: string) => `${BILLING_SERVICE_BASE}/invoices/${id}`,
+  INVOICES_BY_CUSTOMER: (customerId: string) => `${BILLING_SERVICE_BASE}/invoices/customer/${customerId}`,
+  INVOICES_BY_ORDER: (orderId: string) => `${BILLING_SERVICE_BASE}/invoices/order/${orderId}`,
+  INVOICES_EXPORT_XLSX: `${BILLING_SERVICE_BASE}/invoices/export-xlsx`,
+  INVOICES_EXPORT_PDF: `${BILLING_SERVICE_BASE}/invoices/export-pdf`,
+  INVOICE_ISSUE: (id: string) => `${BILLING_SERVICE_BASE}/invoices/${id}/issue`,
+  INVOICE_PAYMENTS: (id: string) => `${BILLING_SERVICE_BASE}/invoices/${id}/payments`,
+  INVOICE_CANCEL: (id: string) => `${BILLING_SERVICE_BASE}/invoices/${id}/cancel`,
+  INVOICE_CREDIT_NOTES: (id: string) => `${BILLING_SERVICE_BASE}/invoices/${id}/credit-notes`,
+  CREDIT_NOTES: `${BILLING_SERVICE_BASE}/credit-notes`,
+  CREDIT_NOTE_BY_ID: (id: string) => `${BILLING_SERVICE_BASE}/credit-notes/${id}`,
+  CREDIT_NOTES_BY_INVOICE: (invoiceId: string) => `${BILLING_SERVICE_BASE}/credit-notes/invoice/${invoiceId}`,
+  CREDIT_NOTES_EXPORT_XLSX: `${BILLING_SERVICE_BASE}/credit-notes/export-xlsx`,
+  CREDIT_NOTES_EXPORT_PDF: `${BILLING_SERVICE_BASE}/credit-notes/export-pdf`,
+  PAYMENTS: `${BILLING_SERVICE_BASE}/payments`,
+  PAYMENT_BY_ID: (id: string) => `${BILLING_SERVICE_BASE}/payments/${id}`,
+  PAYMENTS_BY_INVOICE: (invoiceId: string) => `${BILLING_SERVICE_BASE}/payments/invoice/${invoiceId}`,
+  PAYMENTS_EXPORT_XLSX: `${BILLING_SERVICE_BASE}/payments/export-xlsx`,
+  PAYMENTS_EXPORT_PDF: `${BILLING_SERVICE_BASE}/payments/export-pdf`,
+  SUPPLIER_INVOICES: `${BILLING_SERVICE_BASE}/supplier-invoices`,
+  SUPPLIER_INVOICE_BY_ID: (id: string) => `${BILLING_SERVICE_BASE}/supplier-invoices/${id}`,
+  SUPPLIER_INVOICES_BY_PO: (purchaseOrderId: string) =>
+    `${BILLING_SERVICE_BASE}/supplier-invoices/by-purchase-order/${purchaseOrderId}`,
+} as const;
+
+export const AUDIT_ENDPOINTS = {
+  ENTITY_CHANGES: `${AUDIT_SERVICE_BASE}/entity-changes`,
+  BY_ID: (id: string) => `${AUDIT_SERVICE_BASE}/entity-changes/${id}`,
+  BY_ENTITY: (entityName: string, entityId: string) =>
+    `${AUDIT_SERVICE_BASE}/entity-changes/by-entity/${encodeURIComponent(entityName)}/${entityId}`,
+} as const;
+
+export const PROJECTS_ENDPOINTS = {
+  PROJECTS: `${PROJECTS_SERVICE_BASE}`,
+  PROJECT_BY_ID: (id: string) => `${PROJECTS_SERVICE_BASE}/${id}`,
+  PROJECT_BY_NUMBER: (projectNumber: string) =>
+    `${PROJECTS_SERVICE_BASE}/number/${encodeURIComponent(projectNumber)}`,
+  PROJECT_STATUS: (id: string) => `${PROJECTS_SERVICE_BASE}/${id}/status`,
+  PROJECT_COPY: (id: string) => `${PROJECTS_SERVICE_BASE}/${id}/copy`,
+  PROJECT_STATISTICS: (id: string) => `${PROJECTS_SERVICE_BASE}/${id}/statistics`,
+  PROJECTS_EXPORT_XLSX: `${PROJECTS_SERVICE_BASE}/export-xlsx`,
+  PROJECTS_EXPORT_PDF: `${PROJECTS_SERVICE_BASE}/export-pdf`,
+  TASKS: (projectId: string) => `${PROJECTS_SERVICE_BASE}/${projectId}/tasks`,
+  TASKS_TREE: (projectId: string) => `${PROJECTS_SERVICE_BASE}/${projectId}/tasks/tree`,
+  TASK_BY_ID: (projectId: string, taskId: string) =>
+    `${PROJECTS_SERVICE_BASE}/${projectId}/tasks/${taskId}`,
+  TASK_MOVE: (projectId: string, taskId: string) =>
+    `${PROJECTS_SERVICE_BASE}/${projectId}/tasks/${taskId}/move`,
+  TASKS_EXPORT_XLSX: (projectId: string) =>
+    `${PROJECTS_SERVICE_BASE}/${projectId}/tasks/export-xlsx`,
+  TASKS_EXPORT_PDF: (projectId: string) =>
+    `${PROJECTS_SERVICE_BASE}/${projectId}/tasks/export-pdf`,
+  PLANNING_LINES: (projectId: string) => `${PROJECTS_SERVICE_BASE}/${projectId}/planning-lines`,
+  PLANNING_LINE_BY_ID: (projectId: string, lineId: string) =>
+    `${PROJECTS_SERVICE_BASE}/${projectId}/planning-lines/${lineId}`,
+  PLANNING_LINES_EXPORT_XLSX: (projectId: string) =>
+    `${PROJECTS_SERVICE_BASE}/${projectId}/planning-lines/export-xlsx`,
+  PLANNING_LINES_EXPORT_PDF: (projectId: string) =>
+    `${PROJECTS_SERVICE_BASE}/${projectId}/planning-lines/export-pdf`,
+  USAGE: (projectId: string) => `${PROJECTS_SERVICE_BASE}/${projectId}/usage`,
+  LEDGER_ENTRIES: (projectId: string) => `${PROJECTS_SERVICE_BASE}/${projectId}/ledger-entries`,
+  LEDGER_EXPORT_XLSX: (projectId: string) =>
+    `${PROJECTS_SERVICE_BASE}/${projectId}/ledger-entries/export-xlsx`,
+  LEDGER_EXPORT_PDF: (projectId: string) =>
+    `${PROJECTS_SERVICE_BASE}/${projectId}/ledger-entries/export-pdf`,
+  ITEM_CONSUMPTION: (projectId: string) => `${PROJECTS_SERVICE_BASE}/${projectId}/item-consumption`,
+  INVOICE_REQUESTS: (projectId: string) => `${PROJECTS_SERVICE_BASE}/${projectId}/invoice-requests`,
+  CURRENCIES: `${PROJECTS_SERVICE_BASE}/currencies`,
+  CURRENCY_BY_CODE: (code: string) => `${PROJECTS_SERVICE_BASE}/currencies/${encodeURIComponent(code)}`,
+  CURRENCY_RATE: (code: string) => `${PROJECTS_SERVICE_BASE}/currencies/${encodeURIComponent(code)}/rate`,
+  CURRENCY_EXCHANGE_RATES: (code: string) =>
+    `${PROJECTS_SERVICE_BASE}/currencies/${encodeURIComponent(code)}/exchange-rates`,
+  CURRENCY_EXCHANGE_RATE_BY_ID: (code: string, rateId: string) =>
+    `${PROJECTS_SERVICE_BASE}/currencies/${encodeURIComponent(code)}/exchange-rates/${rateId}`,
+  CURRENCIES_EXPORT_XLSX: `${PROJECTS_SERVICE_BASE}/currencies/export-xlsx`,
+  CURRENCIES_EXPORT_PDF: `${PROJECTS_SERVICE_BASE}/currencies/export-pdf`,
+  RESOURCES: `${PROJECTS_SERVICE_BASE}/resources`,
+  RESOURCE_BY_ID: (id: string) => `${PROJECTS_SERVICE_BASE}/resources/${id}`,
+  RESOURCES_EXPORT_XLSX: `${PROJECTS_SERVICE_BASE}/resources/export-xlsx`,
+  RESOURCES_EXPORT_PDF: `${PROJECTS_SERVICE_BASE}/resources/export-pdf`,
+  RESOURCE_GROUPS: `${PROJECTS_SERVICE_BASE}/resource-groups`,
+  RESOURCE_GROUP_BY_ID: (id: string) => `${PROJECTS_SERVICE_BASE}/resource-groups/${id}`,
+  RESOURCE_GROUPS_EXPORT_XLSX: `${PROJECTS_SERVICE_BASE}/resource-groups/export-xlsx`,
+  RESOURCE_GROUPS_EXPORT_PDF: `${PROJECTS_SERVICE_BASE}/resource-groups/export-pdf`,
 } as const;

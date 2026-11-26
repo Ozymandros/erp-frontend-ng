@@ -16,6 +16,10 @@ export const APP_ROUTES = {
   PERMISSIONS: {
     ROOT: 'permissions',
   },
+  AUDIT: {
+    ROOT: 'audit/entity-changes',
+    DETAIL: 'audit/entity-changes/:id',
+  },
   INVENTORY: {
     PRODUCTS: 'inventory/products',
     PRODUCT_DETAIL: 'inventory/products/:id',
@@ -53,6 +57,28 @@ export const APP_ROUTES = {
     CONTACT_NEW: 'crm/contacts/new',
     CONTACT_DETAIL: 'crm/contacts/:id',
   },
+  BILLING: {
+    INVOICES: 'billing/invoices',
+    INVOICE_DETAIL: 'billing/invoices/:id',
+    CREDIT_NOTES: 'billing/credit-notes',
+    CREDIT_NOTE_DETAIL: 'billing/credit-notes/:id',
+    PAYMENTS: 'billing/payments',
+    PAYMENT_DETAIL: 'billing/payments/:id',
+  },
+  PROJECTS: {
+    ROOT: 'projects',
+    NEW: 'projects/new',
+    DETAIL: 'projects/:id',
+    CURRENCIES: 'projects/currencies',
+    CURRENCY_NEW: 'projects/currencies/new',
+    CURRENCY_DETAIL: 'projects/currencies/:code',
+    RESOURCES: 'projects/resources',
+    RESOURCE_NEW: 'projects/resources/new',
+    RESOURCE_DETAIL: 'projects/resources/:id',
+    RESOURCE_GROUPS: 'projects/resource-groups',
+    RESOURCE_GROUP_NEW: 'projects/resource-groups/new',
+    RESOURCE_GROUP_DETAIL: 'projects/resource-groups/:id',
+  },
 } as const;
 
 export const APP_PATHS = {
@@ -72,6 +98,10 @@ export const APP_PATHS = {
   },
   PERMISSIONS: {
     ROOT: `/${APP_ROUTES.PERMISSIONS.ROOT}`,
+  },
+  AUDIT: {
+    ROOT: `/${APP_ROUTES.AUDIT.ROOT}`,
+    DETAIL: (id: string) => `/${APP_ROUTES.AUDIT.ROOT}/${id}`,
   },
   INVENTORY: {
     PRODUCTS: `/${APP_ROUTES.INVENTORY.PRODUCTS}`,
@@ -109,5 +139,27 @@ export const APP_PATHS = {
     CONTACTS: `/${APP_ROUTES.CRM.CONTACTS}`,
     CONTACT_NEW: `/${APP_ROUTES.CRM.CONTACT_NEW}`,
     CONTACT_DETAIL: (id: string) => `/${APP_ROUTES.CRM.CONTACTS}/${id}`,
+  },
+  BILLING: {
+    INVOICES: `/${APP_ROUTES.BILLING.INVOICES}`,
+    INVOICE_DETAIL: (id: string) => `/${APP_ROUTES.BILLING.INVOICES}/${id}`,
+    CREDIT_NOTES: `/${APP_ROUTES.BILLING.CREDIT_NOTES}`,
+    CREDIT_NOTE_DETAIL: (id: string) => `/${APP_ROUTES.BILLING.CREDIT_NOTES}/${id}`,
+    PAYMENTS: `/${APP_ROUTES.BILLING.PAYMENTS}`,
+    PAYMENT_DETAIL: (id: string) => `/${APP_ROUTES.BILLING.PAYMENTS}/${id}`,
+  },
+  PROJECTS: {
+    ROOT: `/${APP_ROUTES.PROJECTS.ROOT}`,
+    NEW: `/${APP_ROUTES.PROJECTS.NEW}`,
+    DETAIL: (id: string) => `/${APP_ROUTES.PROJECTS.ROOT}/${id}`,
+    CURRENCIES: `/${APP_ROUTES.PROJECTS.CURRENCIES}`,
+    CURRENCY_NEW: `/${APP_ROUTES.PROJECTS.CURRENCY_NEW}`,
+    CURRENCY_DETAIL: (code: string) => `/${APP_ROUTES.PROJECTS.CURRENCIES}/${encodeURIComponent(code)}`,
+    RESOURCES: `/${APP_ROUTES.PROJECTS.RESOURCES}`,
+    RESOURCE_NEW: `/${APP_ROUTES.PROJECTS.RESOURCE_NEW}`,
+    RESOURCE_DETAIL: (id: string) => `/${APP_ROUTES.PROJECTS.RESOURCES}/${id}`,
+    RESOURCE_GROUPS: `/${APP_ROUTES.PROJECTS.RESOURCE_GROUPS}`,
+    RESOURCE_GROUP_NEW: `/${APP_ROUTES.PROJECTS.RESOURCE_GROUP_NEW}`,
+    RESOURCE_GROUP_DETAIL: (id: string) => `/${APP_ROUTES.PROJECTS.RESOURCE_GROUPS}/${id}`,
   },
 } as const;

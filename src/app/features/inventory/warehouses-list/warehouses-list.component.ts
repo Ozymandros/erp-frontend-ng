@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -136,6 +136,7 @@ import { AuthService } from '../../../core/services/auth.service';
 </div>
 }
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     .page-header {
       margin-bottom: 24px;

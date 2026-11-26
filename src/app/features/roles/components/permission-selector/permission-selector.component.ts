@@ -9,6 +9,7 @@ import {
   OnInit,
   Output,
   SimpleChanges,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -43,6 +44,7 @@ const SEARCH_DEBOUNCE_MS = 300;
     AppSelectComponent
   ],
   templateUrl: './permission-selector.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./permission-selector.component.css'],
 })
 export class PermissionSelectorComponent implements OnInit, OnChanges, OnDestroy {

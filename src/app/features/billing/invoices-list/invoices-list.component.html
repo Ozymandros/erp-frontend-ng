@@ -1,0 +1,94 @@
+@if (permissions$ | async; as p) {
+  <div class="page-header">
+    <h1 nz-typography>Invoices</h1>
+    <div class="header-actions">
+      @if (p.canExport) {
+        <app-button (click)="exportToXlsx()" icon="file-excel">
+          Export XLSX
+        </app-button>
+      }
+      @if (p.canExport) {
+        <app-button (click)="exportToPdf()" icon="file-pdf">
+          Export PDF
+        </app-button>
+      }
+    </div>
+  </div>
+
+  <nz-card>
+    <div class="search-container">
+      <app-input
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearch()"
+        placeholder="Search by invoice number, customer, currency or status..."
+        icon="search"
+        size="large"
+      ></app-input>
+    </div>
+
+    <nz-table
+      #basicTable
+      [nzData]="data"
+      [nzLoading]="loading"
+      [nzTotal]="total"
+      [(nzPageIndex)]="pageIndex"
+      [(nzPageSize)]="pageSize"
+      [nzFrontPagination]="false"
+      (nzPageIndexChange)="onPageChange($event)"
+      (nzPageSizeChange)="onPageSizeChange($event)"
+    >
+      <thead>
+        <tr>
+          <th scope="col">Invoice #</th>
+          <th scope="col">Customer</th>
+          <th scope="col">Issue Date</th>
+          <th scope="col">Due Date</th>
+          <th scope="col">Currency</th>
+          <th scope="col">Total</th>
+          <th scope="col">Outstanding</th>
+          <th scope="col">Status</th>
+          @if (p.canUpdate || p.canDelete) {
+            <th scope="col">Actions</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of basicTable.data; track item.id) {
+          <tr>
+            <td>
+              <a [routerLink]="[paths.INVOICE_DETAIL(item.id)]">{{
+                item.invoiceNumber
+              }}</a>
+            </td>
+            <td>{{ getCustomerName(item.customerId) }}</td>
+            <td>{{ item.issueDate | date: 'shortDate' }}</td>
+            <td>{{ item.dueDate | date: 'shortDate' }}</td>
+            <td>{{ item.currency }}</td>
+            <td>{{ item.totalGross | currency:item.currency }}</td>
+            <td>{{ item.outstandingAmount | currency:item.currency }}</td>
+            <td>
+              <nz-tag [nzColor]="getStatusColor(item.status)">
+                {{ item.status }}
+              </nz-tag>
+            </td>
+            @if (p.canUpdate || p.canDelete) {
+              <td>
+                <nz-space>
+                  @if (p.canUpdate) {
+                    <app-button
+                      *nzSpaceItem
+                      type="link"
+                      [routerLink]="[paths.INVOICE_DETAIL(item.id)]"
+                      icon="eye"
+                      tooltip="View Invoice"
+                    ></app-button>
+                  }
+                </nz-space>
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+  </nz-card>
+}

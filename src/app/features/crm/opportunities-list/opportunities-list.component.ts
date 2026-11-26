@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -41,6 +41,7 @@ const FORECAST_REQUEST_TIMEOUT_MS = 60_000;
     AppInputComponent,
   ],
   templateUrl: './opportunities-list.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./opportunities-list.component.css'],
 })
 export class OpportunitiesListComponent extends BaseListComponent<OpportunityDto> implements OnInit {

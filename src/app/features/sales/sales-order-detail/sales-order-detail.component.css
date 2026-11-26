@@ -18,8 +18,25 @@
   font-weight: 500;
 }
 
+.order-actions {
+  margin-bottom: 16px;
+}
+
 .order-info {
   margin-bottom: 24px;
+}
+
+.return-line-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.return-product-id {
+  flex: 1;
+  font-size: 12px;
+  word-break: break-all;
 }
 
 .info-row {

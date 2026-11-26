@@ -1,0 +1,21 @@
+@if (!canPost) {
+  <p>You need Execute or Update permission to post usage.</p>
+} @else {
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <label for="usage-task">Task</label>
+    <nz-select id="usage-task" formControlName="projectTaskId" style="width: 100%">
+      @for (t of tasks; track t.id) {
+        <nz-option [nzValue]="t.id" [nzLabel]="t.taskNo + ' — ' + t.description"></nz-option>
+      }
+    </nz-select>
+    <label for="usage-resource">Resource</label>
+    <nz-select id="usage-resource" formControlName="resourceId" nzAllowClear style="width: 100%">
+      @for (r of resources; track r.id) {
+        <nz-option [nzValue]="r.id" [nzLabel]="r.resourceNo + ' — ' + r.name"></nz-option>
+      }
+    </nz-select>
+    <app-input formControlName="description" placeholder="Description"></app-input>
+    <app-input-number formControlName="quantity"></app-input-number>
+    <app-button type="primary" btnType="submit" [loading]="posting">Post usage</app-button>
+  </form>
+}

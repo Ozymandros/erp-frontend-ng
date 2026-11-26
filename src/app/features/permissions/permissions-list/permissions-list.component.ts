@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -111,6 +111,7 @@ import { AuthService } from '../../../core/services/auth.service';
     </div>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     h1 {
       margin: 0;

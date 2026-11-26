@@ -1,0 +1,74 @@
+<a [routerLink]="paths.CURRENCIES" class="back-link">← Back to currencies</a>
+<h1 nz-typography>{{ isNewMode ? 'New currency' : 'Currency ' + (code || '') }}</h1>
+
+<nz-card [nzLoading]="loading">
+  <form nz-form [formGroup]="form" (ngSubmit)="save()">
+    <nz-form-item>
+      <nz-form-label nzFor="currency-code">Code</nz-form-label>
+      <nz-form-control>
+        <app-input formControlName="code" placeholder="ISO code"></app-input>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzFor="currency-description">Description</nz-form-label>
+      <nz-form-control>
+        <app-input formControlName="description" placeholder="Description"></app-input>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzFor="currency-symbol">Symbol</nz-form-label>
+      <nz-form-control>
+        <app-input formControlName="symbol" placeholder="Symbol"></app-input>
+      </nz-form-control>
+    </nz-form-item>
+    <app-button type="primary" btnType="submit" [loading]="saving">Save</app-button>
+  </form>
+</nz-card>
+
+@if (!isNewMode && currency) {
+  <nz-card nzTitle="Exchange rates" class="rates-card">
+    <form nz-form [formGroup]="rateForm" class="rate-form">
+      <nz-form-item>
+        <nz-form-label nzFor="rate-start">Starting date</nz-form-label>
+        <nz-form-control>
+          <nz-date-picker id="rate-start" formControlName="startingDate"></nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="rate-value">Rate to local</nz-form-label>
+        <nz-form-control>
+          <app-input-number formControlName="rateToLocal"></app-input-number>
+        </nz-form-control>
+      </nz-form-item>
+      <app-button type="default" (click)="addRate()">Add rate</app-button>
+    </form>
+    <nz-table [nzData]="currency.exchangeRates || []" [nzShowPagination]="false" nzSize="small">
+      <thead>
+        <tr>
+          <th id="th-rate-date" scope="col">Starting date</th>
+          <th id="th-rate-value" scope="col">Rate</th>
+          <th id="th-rate-actions" scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (rate of currency.exchangeRates || []; track rate.id) {
+          <tr>
+            <td>{{ rate.startingDate | date: 'mediumDate' }}</td>
+            <td>{{ rate.rateToLocal }}</td>
+            <td>
+              <app-button
+                type="link"
+                danger
+                icon="delete"
+                nz-popconfirm
+                nzPopconfirmTitle="Delete this rate?"
+                (nzOnConfirm)="deleteRate(rate.id)"
+                ariaLabel="Delete exchange rate"
+              ></app-button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+  </nz-card>
+}

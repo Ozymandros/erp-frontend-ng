@@ -1,0 +1,111 @@
+@if (permissions$ | async; as p) {
+  @if (p.canRead) {
+    <div class="entity-changes-list">
+      <div class="page-header">
+        <h1 nz-typography>Entity change audit log</h1>
+        <p class="page-subtitle">Read-only history of entity modifications across the system.</p>
+      </div>
+
+      <nz-card>
+        <div class="filters-panel" role="search" aria-label="Filter audit entries">
+          <div class="filters-row">
+            <div class="filter-field">
+              <span id="audit-filter-entity-name-label" class="filter-label">Entity name</span>
+              <app-input
+                name="audit-filter-entity-name"
+                placeholder="e.g. User, Product…"
+                [(ngModel)]="filterEntityName"
+                (ngModelChange)="applyFilters()"
+              ></app-input>
+            </div>
+            <div class="filter-field">
+              <span id="audit-filter-change-type-label" class="filter-label">Change type</span>
+              <app-select
+                [options]="changeTypeOptions"
+                labelKey="label"
+                valueKey="value"
+                [(ngModel)]="filterChangeType"
+                (ngModelChange)="applyFilters()"
+                [showSearch]="false"
+              ></app-select>
+            </div>
+          </div>
+          <div class="list-search">
+            <span id="audit-search-label" class="filter-label">Search</span>
+            <nz-space-compact nzSize="large" class="list-search__compact">
+              <app-input
+                name="audit-search"
+                placeholder="Entity name or changed by (min. 3 characters)…"
+                [(ngModel)]="searchTerm"
+                (ngModelChange)="onSearch()"
+              ></app-input>
+            </nz-space-compact>
+          </div>
+          <div class="filters-actions">
+            <app-button (click)="clearFilters()" aria-label="Clear all filters">Clear filters</app-button>
+          </div>
+        </div>
+
+        <nz-table
+          #auditTable
+          [nzData]="entityChanges"
+          [nzLoading]="loading"
+          [nzTotal]="total"
+          [(nzPageIndex)]="pageIndex"
+          [(nzPageSize)]="pageSize"
+          [nzPageSizeOptions]="pageSizeOptions"
+          [nzShowSizeChanger]="true"
+          [nzFrontPagination]="false"
+          (nzPageIndexChange)="onPageChange($event)"
+          (nzPageSizeChange)="onPageSizeChange($event)"
+          [nzScroll]="{ x: '1100px' }"
+        >
+          <thead>
+            <tr>
+              <th scope="col">
+                <button type="button" class="sort-header" (click)="onSort('entityName')" [attr.aria-sort]="sortBy === 'entityName' ? (sortDesc ? 'descending' : 'ascending') : 'none'">
+                  Entity
+                </button>
+              </th>
+              <th scope="col">Entity ID</th>
+              <th scope="col">
+                <button type="button" class="sort-header" (click)="onSort('changeType')" [attr.aria-sort]="sortBy === 'changeType' ? (sortDesc ? 'descending' : 'ascending') : 'none'">
+                  Change type
+                </button>
+              </th>
+              <th scope="col">
+                <button type="button" class="sort-header" (click)="onSort('createdAt')" [attr.aria-sort]="sortBy === 'createdAt' ? (sortDesc ? 'descending' : 'ascending') : 'none'">
+                  When
+                </button>
+              </th>
+              <th scope="col">Changed by</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of auditTable.data; track row.id) {
+              <tr>
+                <td>
+                  <nz-tag [nzColor]="'cyan'">{{ row.entityName }}</nz-tag>
+                </td>
+                <td>
+                  <span [nz-tooltip]="row.entityId" nzTooltipPlacement="topLeft">{{ truncateId(row.entityId) }}</span>
+                </td>
+                <td>
+                  <nz-tag [nzColor]="getChangeTypeColor(row.changeType)">{{ row.changeType }}</nz-tag>
+                </td>
+                <td>{{ row.createdAt | date: 'medium' }}</td>
+                <td>{{ row.createdBy }}</td>
+                <td>
+                  <a [routerLink]="detailPath(row.id)" [queryParamsHandling]="'preserve'">View</a>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </nz-table>
+      </nz-card>
+    </div>
+  } @else {
+    <p role="status">You do not have permission to view the audit log.</p>
+  }
+}

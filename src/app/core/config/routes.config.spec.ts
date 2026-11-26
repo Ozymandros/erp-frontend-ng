@@ -40,4 +40,22 @@ describe('routes.config', () => {
     const permission = getRoutePermission(APP_PATHS.CRM.LEADS);
     expect(permission).toEqual(createPermission(PERMISSION_MODULES.CRM, PERMISSION_ACTIONS.READ));
   });
+
+  it('should include audit route permissions', () => {
+    expect(ROUTE_PERMISSIONS[APP_PATHS.AUDIT.ROOT]).toEqual(
+      createPermission(PERMISSION_MODULES.AUDIT, PERMISSION_ACTIONS.READ),
+    );
+    expect(getRoutePermission(`/${APP_ROUTES.AUDIT.ROOT}/abc`)).toEqual(
+      createPermission(PERMISSION_MODULES.AUDIT, PERMISSION_ACTIONS.READ),
+    );
+  });
+
+  it('should include audit log in Auth nav children', () => {
+    const auth = NAV_ITEMS_CONFIG.find((item) => item.title === 'Auth');
+    const auditNav = auth?.children?.find((child) => child.title === 'Audit log');
+    expect(auditNav?.href).toBe(APP_PATHS.AUDIT.ROOT);
+    expect(auditNav?.permission).toEqual(
+      createPermission(PERMISSION_MODULES.AUDIT, PERMISSION_ACTIONS.READ),
+    );
+  });
 });

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -36,6 +36,7 @@ import { APP_PATHS } from '../../../core/constants/routes.constants';
     AppInputComponent,
   ],
   templateUrl: './leads-list.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./leads-list.component.css'],
 })
 export class LeadsListComponent extends BaseListComponent<LeadDto> {

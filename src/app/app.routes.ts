@@ -57,6 +57,18 @@ export const routes: Routes = [
         loadComponent: () => import('./features/permissions/permissions-list/permissions-list.component').then(m => m.PermissionsListComponent)
       },
       {
+        path: APP_ROUTES.AUDIT.ROOT,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.AUDIT, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/audit/entity-changes-list/entity-changes-list.component').then(m => m.EntityChangesListComponent)
+      },
+      {
+        path: APP_ROUTES.AUDIT.DETAIL,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.AUDIT, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/audit/entity-change-detail/entity-change-detail.component').then(m => m.EntityChangeDetailComponent)
+      },
+      {
         path: APP_ROUTES.INVENTORY.PRODUCTS,
         canActivate: [permissionGuard],
         data: { module: 'products', action: 'read' },
@@ -229,6 +241,115 @@ export const routes: Routes = [
         canActivate: [permissionGuard],
         data: { module: PERMISSION_MODULES.CRM, action: PERMISSION_ACTIONS.READ },
         loadComponent: () => import('./features/crm/contact-detail/contact-detail.component').then(m => m.ContactDetailComponent)
+      },
+      {
+        path: APP_ROUTES.BILLING.INVOICES,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.BILLING, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/billing/invoices-list/invoices-list.component').then(m => m.InvoicesListComponent)
+      },
+      {
+        path: APP_ROUTES.BILLING.INVOICE_DETAIL,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.BILLING, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/billing/invoice-detail/invoice-detail.component').then(m => m.InvoiceDetailComponent)
+      },
+      {
+        path: APP_ROUTES.BILLING.CREDIT_NOTES,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.BILLING, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/billing/credit-notes-list/credit-notes-list.component').then(m => m.CreditNotesListComponent)
+      },
+      {
+        path: APP_ROUTES.BILLING.PAYMENTS,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.BILLING, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/billing/payments-list/payments-list.component').then(m => m.PaymentsListComponent)
+      },
+      {
+        path: APP_ROUTES.BILLING.PAYMENT_DETAIL,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.BILLING, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/billing/payment-detail/payment-detail.component').then(m => m.PaymentDetailComponent)
+      },
+      {
+        path: APP_ROUTES.BILLING.CREDIT_NOTE_DETAIL,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.BILLING, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/billing/credit-note-detail/credit-note-detail.component').then(m => m.CreditNoteDetailComponent)
+      },
+      {
+        path: APP_ROUTES.PROJECTS.ROOT,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.PROJECTS, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/projects/projects-list/projects-list.component').then(m => m.ProjectsListComponent)
+      },
+      {
+        path: APP_ROUTES.PROJECTS.NEW,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.PROJECTS, action: PERMISSION_ACTIONS.CREATE },
+        loadComponent: () => import('./features/projects/project-detail/project-detail.component').then(m => m.ProjectDetailComponent)
+      },
+      // Static master-data paths must come before projects/:id
+      {
+        path: APP_ROUTES.PROJECTS.CURRENCIES,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.PROJECTS, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/projects/currencies-list/currencies-list.component').then(m => m.CurrenciesListComponent)
+      },
+      {
+        path: APP_ROUTES.PROJECTS.CURRENCY_NEW,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.PROJECTS, action: PERMISSION_ACTIONS.CREATE },
+        loadComponent: () => import('./features/projects/currency-detail/currency-detail.component').then(m => m.CurrencyDetailComponent)
+      },
+      {
+        path: APP_ROUTES.PROJECTS.CURRENCY_DETAIL,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.PROJECTS, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/projects/currency-detail/currency-detail.component').then(m => m.CurrencyDetailComponent)
+      },
+      {
+        path: APP_ROUTES.PROJECTS.RESOURCES,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.PROJECTS, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/projects/resources-list/resources-list.component').then(m => m.ResourcesListComponent)
+      },
+      {
+        path: APP_ROUTES.PROJECTS.RESOURCE_NEW,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.PROJECTS, action: PERMISSION_ACTIONS.CREATE },
+        loadComponent: () => import('./features/projects/resource-detail/resource-detail.component').then(m => m.ResourceDetailComponent)
+      },
+      {
+        path: APP_ROUTES.PROJECTS.RESOURCE_DETAIL,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.PROJECTS, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/projects/resource-detail/resource-detail.component').then(m => m.ResourceDetailComponent)
+      },
+      {
+        path: APP_ROUTES.PROJECTS.RESOURCE_GROUPS,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.PROJECTS, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/projects/resource-groups-list/resource-groups-list.component').then(m => m.ResourceGroupsListComponent)
+      },
+      {
+        path: APP_ROUTES.PROJECTS.RESOURCE_GROUP_NEW,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.PROJECTS, action: PERMISSION_ACTIONS.CREATE },
+        loadComponent: () => import('./features/projects/resource-group-detail/resource-group-detail.component').then(m => m.ResourceGroupDetailComponent)
+      },
+      {
+        path: APP_ROUTES.PROJECTS.RESOURCE_GROUP_DETAIL,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.PROJECTS, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/projects/resource-group-detail/resource-group-detail.component').then(m => m.ResourceGroupDetailComponent)
+      },
+      {
+        path: APP_ROUTES.PROJECTS.DETAIL,
+        canActivate: [permissionGuard],
+        data: { module: PERMISSION_MODULES.PROJECTS, action: PERMISSION_ACTIONS.READ },
+        loadComponent: () => import('./features/projects/project-detail/project-detail.component').then(m => m.ProjectDetailComponent)
       }
     ]
   },

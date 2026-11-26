@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CustomersListComponent } from './customers-list.component';
 import { CustomersService } from '../../../core/services/customers.service';
@@ -39,13 +39,13 @@ describe('CustomersListComponent', () => {
     customersServiceSpy.getAll.and.returnValue(of(mockResponse as any));
     const authSpy = jasmine.createSpyObj('AuthService', ['getModulePermissions']);
     authSpy.getModulePermissions.and.returnValue(
-      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: true }),
+      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: true, canExecute: false }),
     );
 
     await TestBed.configureTestingModule({
       imports: [ CustomersListComponent ],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: CustomersService, useValue: customersServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { SupplierDetailComponent } from './supplier-detail.component';
 import { SuppliersService } from '../../../core/services/suppliers.service';
@@ -31,7 +31,7 @@ describe('SupplierDetailComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ SupplierDetailComponent ],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: SuppliersService, useValue: suppliersServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },

@@ -1,0 +1,57 @@
+<div class="panel-toolbar">
+  @if (canCreate) {
+    <app-button type="primary" icon="plus" (click)="openCreate()">Create consumption</app-button>
+  }
+</div>
+
+<nz-table [nzData]="orders" [nzLoading]="loading">
+  <thead>
+    <tr>
+      <th id="th-co-number" scope="col">Order</th>
+      <th id="th-co-status" scope="col">Status</th>
+      <th id="th-co-date" scope="col">Posting date</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (o of orders; track o.id) {
+      <tr>
+        <td>{{ o.orderNumber || o.orderId }}</td>
+        <td>{{ o.status }}</td>
+        <td>{{ o.postingDate | date: 'shortDate' }}</td>
+      </tr>
+    }
+  </tbody>
+</nz-table>
+
+<nz-modal
+  [(nzVisible)]="modalVisible"
+  nzTitle="Item consumption"
+  (nzOnCancel)="modalVisible = false"
+  (nzOnOk)="submit()"
+  appThemedModal
+>
+  <ng-container *nzModalContent>
+    <form [formGroup]="form">
+      <label for="cons-warehouse">Warehouse</label>
+      <nz-select id="cons-warehouse" formControlName="warehouseId" style="width: 100%">
+        @for (w of warehouses; track w.id) {
+          <nz-option [nzValue]="w.id" [nzLabel]="w.name"></nz-option>
+        }
+      </nz-select>
+      <div formArrayName="lines">
+        @for (line of lineControls.controls; track $index) {
+          <div [formGroupName]="$index">
+            <label [for]="'cons-line-' + $index">Planning line</label>
+            <nz-select [id]="'cons-line-' + $index" formControlName="planningLineId" style="width: 100%">
+              @for (pl of itemLines; track pl.id) {
+                <nz-option [nzValue]="pl.id" [nzLabel]="pl.lineNo + ' — ' + pl.description"></nz-option>
+              }
+            </nz-select>
+            <app-input-number formControlName="quantity"></app-input-number>
+          </div>
+        }
+      </div>
+      <app-button type="default" (click)="addLine()">Add line</app-button>
+    </form>
+  </ng-container>
+</nz-modal>

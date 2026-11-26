@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WarehouseStocksListComponent } from './warehouse-stocks-list.component';
@@ -37,13 +37,13 @@ describe('WarehouseStocksListComponent', () => {
     warehouseStocksServiceSpy.getAll.and.returnValue(of(mockResponse as any));
     const authSpy = jasmine.createSpyObj('AuthService', ['getModulePermissions']);
     authSpy.getModulePermissions.and.returnValue(
-      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: false }),
+      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: false, canExecute: false }),
     );
 
     await TestBed.configureTestingModule({
       imports: [ WarehouseStocksListComponent ],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: WarehouseStocksService, useValue: warehouseStocksServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },

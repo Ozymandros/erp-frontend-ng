@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InventoryTransactionsListComponent } from './inventory-transactions-list.component';
@@ -37,13 +37,13 @@ describe('InventoryTransactionsListComponent', () => {
     inventoryTransactionsServiceSpy.getAll.and.returnValue(of(mockResponse as any));
     const authSpy = jasmine.createSpyObj('AuthService', ['getModulePermissions']);
     authSpy.getModulePermissions.and.returnValue(
-      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: false }),
+      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: false, canExecute: false }),
     );
 
     await TestBed.configureTestingModule({
       imports: [ InventoryTransactionsListComponent ],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: InventoryTransactionsService, useValue: inventoryTransactionsServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },

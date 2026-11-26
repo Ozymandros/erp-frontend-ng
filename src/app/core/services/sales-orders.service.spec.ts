@@ -3,6 +3,7 @@ import { of } from 'rxjs';
 import { SalesOrdersService } from './sales-orders.service';
 import { ApiClientService } from '../api/http-client.service';
 import { SalesOrderDto, PaginatedResponse } from '../../types/api.types';
+import { SALES_ENDPOINTS } from '../api/endpoints.constants';
 
 describe('SalesOrdersService', () => {
   let service: SalesOrdersService;
@@ -51,6 +52,18 @@ describe('SalesOrdersService', () => {
     service.exportToXlsx().subscribe(blob => {
       expect(blob).toEqual(mockBlob);
       expect(apiClientSpy.download).toHaveBeenCalled();
+      done();
+    });
+  });
+
+  it('should POST createReturn to sales order returns endpoint', (done) => {
+    const dto = { warehouseId: 'w1', lines: [{ productId: 'p1', quantity: 1 }] };
+    const updated = { id: '1', returnOrderId: 'ret-1' } as SalesOrderDto;
+    apiClientSpy.post.and.returnValue(of(updated));
+
+    service.createReturn('1', dto).subscribe((result) => {
+      expect(result).toEqual(updated);
+      expect(apiClientSpy.post).toHaveBeenCalledWith(SALES_ENDPOINTS.CREATE_RETURN('1'), dto);
       done();
     });
   });

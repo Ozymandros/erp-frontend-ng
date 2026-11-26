@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
@@ -32,6 +32,7 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
       </nz-layout>
     </nz-layout>
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     .app-layout {
       height: 100vh;

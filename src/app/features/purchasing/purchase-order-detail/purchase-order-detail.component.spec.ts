@@ -1,13 +1,16 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
+import { provideNzDateFnsAdapter } from 'ng-zorro-antd/core/time';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { of, throwError } from 'rxjs';
 import { ProductsService } from '../../../core/services/products.service';
 import { PurchaseOrdersService } from '../../../core/services/purchase-orders.service';
 import { SuppliersService } from '../../../core/services/suppliers.service';
+import { SupplierInvoicesService } from '../../../core/services/supplier-invoices.service';
+import { WarehousesService } from '../../../core/services/warehouses.service';
 import { runCommonOrderDetailTests } from '../../../core/testing/order-detail-spec.helper';
 import { PurchaseOrderDetailComponent } from './purchase-order-detail.component';
 
@@ -15,8 +18,12 @@ describe('PurchaseOrderDetailComponent', () => {
   let purchaseOrdersServiceSpy: jasmine.SpyObj<PurchaseOrdersService>;
   let productsServiceSpy: jasmine.SpyObj<ProductsService>;
   let suppliersServiceSpy: jasmine.SpyObj<SuppliersService>;
+  let supplierInvoicesServiceSpy: jasmine.SpyObj<SupplierInvoicesService>;
+  let warehousesServiceSpy: jasmine.SpyObj<WarehousesService>;
   let messageServiceSpy: jasmine.SpyObj<NzMessageService>;
   let routerSpy: jasmine.SpyObj<Router>;
+
+  const emptyPage = { items: [], total: 0, page: 1, pageSize: 10, totalPages: 0, hasPreviousPage: false, hasNextPage: false };
 
   const mockOrder = { 
     id: '1', 
@@ -31,9 +38,22 @@ describe('PurchaseOrderDetailComponent', () => {
   const mockSuppliers = { items: [{ id: 'S1', name: 'Supplier 1' }], total: 1 };
 
   beforeEach(async () => {
-    purchaseOrdersServiceSpy = jasmine.createSpyObj('PurchaseOrdersService', ['getById', 'create']);
+    purchaseOrdersServiceSpy = jasmine.createSpyObj('PurchaseOrdersService', [
+      'getById',
+      'create',
+      'matchPurchaseOrder',
+      'approvePurchaseOrder',
+      'receivePurchaseOrder',
+    ]);
     productsServiceSpy = jasmine.createSpyObj('ProductsService', ['getAll']);
     suppliersServiceSpy = jasmine.createSpyObj('SuppliersService', ['getAll']);
+    supplierInvoicesServiceSpy = jasmine.createSpyObj('SupplierInvoicesService', [
+      'getByPurchaseOrder',
+      'create',
+    ]);
+    warehousesServiceSpy = jasmine.createSpyObj('WarehousesService', ['getAll']);
+    supplierInvoicesServiceSpy.getByPurchaseOrder.and.returnValue(of([]));
+    warehousesServiceSpy.getAll.and.returnValue(of(emptyPage as any));
     messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error', 'warning']);
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
@@ -43,14 +63,17 @@ describe('PurchaseOrderDetailComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ PurchaseOrderDetailComponent ],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: PurchaseOrdersService, useValue: purchaseOrdersServiceSpy },
         { provide: ProductsService, useValue: productsServiceSpy },
         { provide: SuppliersService, useValue: suppliersServiceSpy },
+        { provide: SupplierInvoicesService, useValue: supplierInvoicesServiceSpy },
+        { provide: WarehousesService, useValue: warehousesServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },
         { provide: Router, useValue: routerSpy },
         { provide: NZ_I18N, useValue: en_US },
+        provideNzDateFnsAdapter(),
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => 'new' } } } }
       ]
     })
@@ -80,12 +103,15 @@ describe('PurchaseOrderDetailComponent', () => {
       TestBed.configureTestingModule({
         imports: [PurchaseOrderDetailComponent],
         providers: [
-          provideHttpClient(),
+          provideHttpClient(withXhr()),
           provideHttpClientTesting(),
           { provide: NZ_I18N, useValue: en_US },
+          provideNzDateFnsAdapter(),
           { provide: PurchaseOrdersService, useValue: purchaseOrdersServiceSpy },
           { provide: SuppliersService, useValue: suppliersServiceSpy },
           { provide: ProductsService, useValue: productsServiceSpy },
+          { provide: SupplierInvoicesService, useValue: supplierInvoicesServiceSpy },
+          { provide: WarehousesService, useValue: warehousesServiceSpy },
           { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
           { provide: NzMessageService, useValue: messageServiceSpy },
           { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => '1' } } } }
@@ -106,12 +132,15 @@ describe('PurchaseOrderDetailComponent', () => {
       TestBed.configureTestingModule({
         imports: [PurchaseOrderDetailComponent],
         providers: [
-          provideHttpClient(),
+          provideHttpClient(withXhr()),
           provideHttpClientTesting(),
           { provide: NZ_I18N, useValue: en_US },
+          provideNzDateFnsAdapter(),
           { provide: PurchaseOrdersService, useValue: purchaseOrdersServiceSpy },
           { provide: SuppliersService, useValue: suppliersServiceSpy },
           { provide: ProductsService, useValue: productsServiceSpy },
+          { provide: SupplierInvoicesService, useValue: supplierInvoicesServiceSpy },
+          { provide: WarehousesService, useValue: warehousesServiceSpy },
           { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
           { provide: NzMessageService, useValue: messageServiceSpy },
           { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => '1' } } } }
@@ -182,6 +211,15 @@ describe('PurchaseOrderDetailComponent', () => {
       component.lines.at(1).patchValue({ quantity: 3, unitPrice: 5 });
       
       expect(component.calculateTotal()).toBe(35);
+    });
+
+    it('should call matchPurchaseOrder when runMatch is invoked', () => {
+      (component as unknown as { orderId: string }).orderId = '1';
+      purchaseOrdersServiceSpy.matchPurchaseOrder.and.returnValue(
+        of({ purchaseOrderId: '1', matchStatus: 'Matched', summary: 'OK' }),
+      );
+      component.runMatch();
+      expect(purchaseOrdersServiceSpy.matchPurchaseOrder).toHaveBeenCalledWith('1');
     });
   });
 });

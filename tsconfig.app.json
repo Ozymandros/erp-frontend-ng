@@ -9,5 +9,19 @@
   ],
   "include": [
     "src/**/*.ts"
-  ]
+  ],
+  "exclude": [
+    "src/**/*.spec.ts",
+    "src/app/core/testing/**/*",
+    "src/app/test/**/*"
+  ],
+  "angularCompilerOptions": {
+    "extendedDiagnostics": {
+      "checks": {
+        "nullishCoalescingNotNullable": "suppress",
+        "optionalChainNotNullable": "suppress"
+      }
+    },
+    "strictTemplates": true
+  }
 }

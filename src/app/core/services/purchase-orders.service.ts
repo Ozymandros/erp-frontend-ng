@@ -6,7 +6,8 @@ import {
   PurchaseOrderDto,
   CreateUpdatePurchaseOrderDto,
   ApprovePurchaseOrderDto,
-  ReceivePurchaseOrderDto
+  ReceivePurchaseOrderDto,
+  PurchaseOrderMatchResultDto,
 } from '../../types/api.types';
 import { BaseApiService } from '../base/base-api.service';
 
@@ -34,5 +35,9 @@ export class PurchaseOrdersService extends BaseApiService<PurchaseOrderDto, Crea
       PURCHASING_ENDPOINTS.RECEIVE(data.purchaseOrderId), 
       data
     );
+  }
+
+  matchPurchaseOrder(purchaseOrderId: string): Observable<PurchaseOrderMatchResultDto> {
+    return this.apiClient.post<PurchaseOrderMatchResultDto>(PURCHASING_ENDPOINTS.MATCH(purchaseOrderId), {});
   }
 }

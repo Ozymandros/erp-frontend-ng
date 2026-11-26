@@ -1,0 +1,59 @@
+<div class="page-header">
+  <h1 nz-typography>Resource groups</h1>
+  <div class="header-actions">
+    @if (permissions.canExport) {
+      <app-button icon="file-excel" (click)="exportToXlsx()">Export XLSX</app-button>
+      <app-button icon="file-pdf" (click)="exportToPdf()">Export PDF</app-button>
+    }
+    @if (permissions.canCreate) {
+      <app-button type="primary" icon="plus" [routerLink]="paths.RESOURCE_GROUP_NEW">New group</app-button>
+    }
+  </div>
+</div>
+
+<nz-table #table [nzData]="groups" [nzLoading]="loading">
+  <thead>
+    <tr>
+      <th id="th-rg-code" scope="col">Code</th>
+      <th id="th-rg-name" scope="col">Name</th>
+      @if (permissions.canUpdate || permissions.canDelete) {
+        <th id="th-rg-actions" scope="col">Actions</th>
+      }
+    </tr>
+  </thead>
+  <tbody>
+    @for (g of table.data; track g.id) {
+      <tr>
+        <td><strong>{{ g.code }}</strong></td>
+        <td>{{ g.name }}</td>
+        @if (permissions.canUpdate || permissions.canDelete) {
+          <td>
+            <nz-space [nzSize]="8">
+              @if (permissions.canUpdate) {
+                <app-button
+                  *nzSpaceItem
+                  type="link"
+                  icon="edit"
+                  [routerLink]="paths.RESOURCE_GROUP_DETAIL(g.id)"
+                  ariaLabel="Edit resource group"
+                ></app-button>
+              }
+              @if (permissions.canDelete) {
+                <app-button
+                  *nzSpaceItem
+                  type="link"
+                  danger
+                  icon="delete"
+                  nz-popconfirm
+                  nzPopconfirmTitle="Delete this group?"
+                  (nzOnConfirm)="deleteGroup(g)"
+                  ariaLabel="Delete resource group"
+                ></app-button>
+              }
+            </nz-space>
+          </td>
+        }
+      </tr>
+    }
+  </tbody>
+</nz-table>

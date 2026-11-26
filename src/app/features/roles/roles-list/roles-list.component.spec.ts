@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { RolesListComponent } from './roles-list.component';
 import { RolesService } from '../../../core/services/roles.service';
@@ -33,13 +33,13 @@ describe('RolesListComponent', () => {
     rolesServiceSpy.getAll.and.returnValue(of(mockResponse as any));
     const authSpy = jasmine.createSpyObj('AuthService', ['getModulePermissions']);
     authSpy.getModulePermissions.and.returnValue(
-      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: true }),
+      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: true, canExecute: false }),
     );
 
     await TestBed.configureTestingModule({
       imports: [ RolesListComponent ],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: RolesService, useValue: rolesServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },

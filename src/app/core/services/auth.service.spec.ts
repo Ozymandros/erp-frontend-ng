@@ -164,6 +164,7 @@ describe('AuthService', () => {
       expect(p.canRead).toBeFalse();
       expect(p.canCreate).toBeFalse();
       expect(p.canExport).toBeFalse();
+      expect(p.canExecute).toBeFalse();
       done();
     });
   });
@@ -176,6 +177,7 @@ describe('AuthService', () => {
         expect(p.canCreate).toBeTrue();
         expect(p.canDelete).toBeTrue();
         expect(p.canExport).toBeTrue();
+        expect(p.canExecute).toBeTrue();
         done();
       });
     });

@@ -12,5 +12,14 @@
     "src/app/test/**/*.spec.ts",
     "src/app/test/mocks/**/*",
     "src/app/test/e2e/**/*"
-  ]
+  ],
+  "angularCompilerOptions": {
+    "extendedDiagnostics": {
+      "checks": {
+        "nullishCoalescingNotNullable": "suppress",
+        "optionalChainNotNullable": "suppress"
+      }
+    },
+    "strictTemplates": false
+  }
 }

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { of } from 'rxjs';
@@ -34,13 +34,13 @@ describe('ContactsListComponent', () => {
     );
     const authServiceSpy = jasmine.createSpyObj('AuthService', ['getModulePermissions']);
     authServiceSpy.getModulePermissions.and.returnValue(
-      of({ canRead: true, canCreate: true, canUpdate: true, canDelete: true, canExport: false }),
+      of({ canRead: true, canCreate: true, canUpdate: true, canDelete: true, canExport: false, canExecute: false }),
     );
 
     await TestBed.configureTestingModule({
       imports: [ContactsListComponent],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: CrmContactsService, useValue: contactsServiceSpy },
         { provide: NzMessageService, useValue: jasmine.createSpyObj('NzMessageService', ['success', 'error']) },

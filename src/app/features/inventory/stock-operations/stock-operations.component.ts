@@ -9,6 +9,7 @@ import {
   Component,
   OnDestroy,
   OnInit,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -50,6 +51,7 @@ const DROPDOWN_PAGE_SIZE = 50;
     AppSelectComponent
   ],
   templateUrl: './stock-operations.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./stock-operations.component.css'],
 })
 export class StockOperationsComponent implements OnInit, OnDestroy {

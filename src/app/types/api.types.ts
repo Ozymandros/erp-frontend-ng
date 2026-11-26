@@ -129,6 +129,7 @@ export interface PaginationParams {
 
 export interface SearchParams extends PaginationParams {
   search?: string;
+  searchFields?: string;
 }
 
 // ==================== AUTH MODULE ====================
@@ -184,6 +185,7 @@ export interface ModulePermissions {
   canUpdate: boolean;
   canDelete: boolean;
   canExport: boolean;
+  canExecute: boolean;
 }
 
 // User Types
@@ -317,7 +319,7 @@ export interface OrderDto extends IAuditableDto<string> {
   sourceId: string;
   targetId: string;
   externalOrderId?: string;
-  orderLines: OrderLineDto[];
+  lines: OrderLineDto[];
 }
 
 export interface OrderLineDto {
@@ -355,11 +357,13 @@ export interface SalesOrderDto extends IAuditableDto<string> {
   orderNumber: string;
   customerId: string;
   customerName?: string;
-  status: number;
+  status: number | SalesOrderStatus | string;
   orderDate: string;
   totalAmount: number;
   lines: SalesOrderLineDto[];
   customer?: CustomerDto;
+  /** Operational return order linked after POST .../returns */
+  returnOrderId?: string;
   // Quote tracking
   isQuote: boolean;
   quoteExpiryDate?: string;
@@ -402,6 +406,16 @@ export interface ConfirmQuoteDto {
   shippingAddress?: string;
 }
 
+export interface CreateSalesReturnLineDto {
+  productId: string;
+  quantity: number;
+}
+
+export interface CreateSalesReturnDto {
+  warehouseId: string;
+  lines: CreateSalesReturnLineDto[];
+}
+
 export interface StockAvailabilityCheckDto {
   productId: string;
   requestedQuantity: number;
@@ -425,16 +439,32 @@ export interface CustomerDto extends IAuditableDto<string> {
 
 // ==================== PURCHASING MODULE ====================
 
+export enum PurchaseOrderMatchStatus {
+  Unmatched = 'Unmatched',
+  Partial = 'Partial',
+  Matched = 'Matched',
+  Overbilled = 'Overbilled',
+}
+
+export interface PurchaseOrderMatchResultDto {
+  purchaseOrderId: string;
+  matchStatus: PurchaseOrderMatchStatus | string | number;
+  matchedAt?: string;
+  summary?: string;
+}
+
 export interface PurchaseOrderDto extends IAuditableDto<string> {
   orderNumber: string;
   supplierId: string;
   supplierName?: string;
-  status: number;
+  status: number | string;
   orderDate: string;
   expectedDeliveryDate?: string;
   totalAmount: number;
   lines: PurchaseOrderLineDto[];
   supplier?: SupplierDto;
+  matchStatus?: PurchaseOrderMatchStatus | string | number;
+  matchedAt?: string;
 }
 
 export interface CreateUpdatePurchaseOrderDto {
@@ -448,10 +478,12 @@ export interface CreateUpdatePurchaseOrderDto {
 }
 
 export interface PurchaseOrderLineDto {
+  id?: string;
   productId: string;
   quantity: number;
   unitPrice: number;
   lineTotal: number;
+  receivedQuantity?: number;
 }
 
 export interface ApprovePurchaseOrderDto {
@@ -507,11 +539,9 @@ export enum OrderStatus {
 
 export enum SalesOrderStatus {
   Draft = "Draft",
-  Quote = "Quote",
   Confirmed = "Confirmed",
-  Processing = "Processing",
+  Invoiced = "Invoiced",
   Shipped = "Shipped",
-  Delivered = "Delivered",
   Cancelled = "Cancelled",
 }
 
@@ -539,4 +569,193 @@ export enum AdjustmentType {
   Lost = "Lost",
   Damaged = "Damaged",
   Expired = "Expired",
+}
+
+// ==================== BILLING MODULE ====================
+
+export enum InvoiceStatus {
+  Draft = "Draft",
+  Issued = "Issued",
+  Paid = "Paid",
+  PartiallyPaid = "PartiallyPaid",
+  Overdue = "Overdue",
+  Cancelled = "Cancelled",
+}
+
+export enum PaymentMethod {
+  Cash = "Cash",
+  Card = "Card",
+  BankTransfer = "BankTransfer",
+  Cheque = "Cheque",
+  OnlinePayment = "OnlinePayment",
+}
+
+export enum PaymentStatus {
+  Pending = "Pending",
+  Completed = "Completed",
+  Failed = "Failed",
+  Refunded = "Refunded",
+}
+
+export enum CreditNoteStatus {
+  Pending = "Pending",
+  Applied = "Applied",
+  Cancelled = "Cancelled",
+}
+
+export interface InvoiceDto extends IAuditableDto<string> {
+  invoiceNumber: string;
+  customerId: string;
+  orderId?: string;
+  currency: string;
+  status: InvoiceStatus | string;
+  issueDate: string;
+  dueDate: string;
+  totalNet: number;
+  totalTax: number;
+  totalGross: number;
+  outstandingAmount: number;
+  lines: InvoiceLineDto[];
+}
+
+export interface InvoiceLineDto {
+  id: string;
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  discount: number;
+  taxRate: number;
+  lineNet: number;
+  lineTax: number;
+  lineGross: number;
+}
+
+export interface CreateInvoiceDto {
+  invoiceNumber: string;
+  customerId: string;
+  orderId?: string;
+  currency: string;
+  lines: CreateInvoiceLineDto[];
+  paymentTermsDays?: number;
+}
+
+export interface CreateInvoiceLineDto {
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  taxRate: number;
+  discount?: number;
+}
+
+export interface SupplierInvoiceLineDto {
+  id?: string;
+  productId: string;
+  quantity: number;
+  unitPrice: number;
+  lineTotal?: number;
+}
+
+export interface SupplierInvoiceDto extends IAuditableDto<string> {
+  invoiceNumber: string;
+  supplierId: string;
+  purchaseOrderId: string;
+  currency: string;
+  totalNet?: number;
+  totalTax?: number;
+  totalGross?: number;
+  lines: SupplierInvoiceLineDto[];
+}
+
+export interface CreateSupplierInvoiceLineDto {
+  productId: string;
+  quantity: number;
+  unitPrice: number;
+}
+
+export interface CreateSupplierInvoiceDto {
+  invoiceNumber: string;
+  supplierId: string;
+  purchaseOrderId: string;
+  currency: string;
+  lines: CreateSupplierInvoiceLineDto[];
+}
+
+export interface IssueInvoiceRequest {
+  invoiceNumber: string;
+  issueDate: string;
+}
+
+export interface CancelInvoiceRequest {
+  reason: string;
+}
+
+export interface RecordPaymentDto {
+  invoiceId: string;
+  amount: number;
+  method: PaymentMethod | string;
+  paidAt: string;
+  externalPaymentId?: string;
+}
+
+export interface PaymentDto extends IAuditableDto<string> {
+  invoiceId: string;
+  amount: number;
+  currency: string;
+  method: PaymentMethod | string;
+  status: PaymentStatus | string;
+  paidAt: string;
+}
+
+export interface CreditNoteDto extends IAuditableDto<string> {
+  originalInvoiceId: string;
+  reason: string;
+  status: CreditNoteStatus | string;
+  totalNet: number;
+  totalTax: number;
+  totalGross: number;
+  createdAt: string;
+}
+
+export interface CreditNoteLineDto {
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  taxRate: number;
+  discount?: number;
+}
+
+export interface CreateCreditNoteDto {
+  invoiceId: string;
+  lines: CreditNoteLineDto[];
+  reason: string;
+}
+
+// ==================== AUDIT MODULE ====================
+
+export interface PropertyChangeDto {
+  id: string;
+  propertyName: string;
+  originalValue: string | null;
+  newValue: string | null;
+}
+
+export interface EntityChangeDto {
+  id: string;
+  entityName: string;
+  entityId: string;
+  changeType: string;
+  originalValue: string | null;
+  newValue: string | null;
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+  updatedBy: string | null;
+  propertyChanges: PropertyChangeDto[];
+}
+
+export interface EntityChangeListParams extends SearchParams {
+  sortDesc?: boolean;
+  filters?: Record<string, string>;
+  searchFields?: string;
+  searchTerm?: string;
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -23,6 +23,7 @@ import { RegisterRequest } from '../../../types/api.types';
     NzCardModule
   ],
   templateUrl: './register.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {

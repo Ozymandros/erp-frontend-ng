@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ProductsListComponent } from './products-list.component';
 import { ProductsService } from '../../../core/services/products.service';
@@ -41,7 +41,7 @@ describe('ProductsListComponent', () => {
     fileServiceSpy = jasmine.createSpyObj('FileService', ['saveFile']);
     const authSpy = jasmine.createSpyObj('AuthService', ['getModulePermissions']);
     authSpy.getModulePermissions.and.returnValue(
-      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: true }),
+      of({ canRead: true, canCreate: false, canUpdate: false, canDelete: true, canExport: true, canExecute: false }),
     );
 
     productsServiceSpy.getAll.and.returnValue(of({
@@ -57,7 +57,7 @@ describe('ProductsListComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ ProductsListComponent ],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: ProductsService, useValue: productsServiceSpy },
         { provide: NzMessageService, useValue: messageServiceSpy },

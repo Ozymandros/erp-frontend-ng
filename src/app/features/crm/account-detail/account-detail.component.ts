@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -36,6 +36,7 @@ import { APP_PATHS } from '../../../core/constants/routes.constants';
     AppInputComponent,
   ],
   templateUrl: './account-detail.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./account-detail.component.css'],
 })
 export class AccountDetailComponent implements OnInit {
